@@ -35,8 +35,8 @@ var map = {
 };
 
 function Camera(map, width, height) {
-    this.x = 0;
-    this.y = 0;
+    this.x = width / 2;
+    this.y = height / 2;
     this.width = width;
     this.height = height;
     this.maxX = map.cols * map.tsize - width;
