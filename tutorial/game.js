@@ -12,7 +12,7 @@ var bgImage = new Image();
 bgImage.onload = function () {
   bgReady = true;
 };
-bgImage.src = "images/background.png";
+bgImage.src = "background.png";
 
 // Load Hero image
 var heroReady = false;
@@ -20,7 +20,7 @@ var heroImage = new Image();
 heroImage.onload = function () {
   heroReady = true;
 };
-heroImage.src = "images/hero.png";
+heroImage.src = "hero.png";
 
 // Load Monster image
 var monsterReady = false;
@@ -28,7 +28,7 @@ var monsterImage = new Image;
 monsterImage.onload = function () {
   monsterReady = true;
 };
-monsterImage.src = "images/monster.png";
+monsterImage.src = "monster.png";
 
 // Load Tileset image
 var tilesetReady = false;
