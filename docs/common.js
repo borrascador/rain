@@ -38,6 +38,8 @@ Keyboard.LEFT = 37;
 Keyboard.RIGHT = 39;
 Keyboard.UP = 38;
 Keyboard.DOWN = 40;
+Keyboard.PLUS = 107;
+Keyboard.MINUS = 109;
 
 Keyboard._keys = {};
 
@@ -94,7 +96,7 @@ Game.tick = function (elapsed) {
     window.requestAnimationFrame(this.tick);
 
     // clear previous frame
-    this.ctx.clearRect(0, 0, 800, 800);
+    this.ctx.clearRect(0, 0, 1024, 768);
 
     // compute delta time in seconds -- also cap it
     var delta = (elapsed - this._previousElapsed) / 1000.0;

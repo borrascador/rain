@@ -41,17 +41,19 @@ function Camera(map, width, height) {
     this.height = height;
     this.maxX = map.cols * map.tsize - width;
     this.maxY = map.rows * map.tsize - height;
+    console.log(this.maxX, this.maxY);
 }
 
-Camera.SPEED = 512; // pixels per second
+Camera.SPEED = 768; // pixels per second
 
 Camera.prototype.move = function (delta, dirx, diry) {
     // move camera
     this.x += dirx * Camera.SPEED * delta;
     this.y += diry * Camera.SPEED * delta;
     // clamp values
-    this.x = Math.max(0, Math.min(this.x, this.maxX));
-    this.y = Math.max(0, Math.min(this.y, this.maxY));
+    // subtracting one from this.maxX and this.maxY solved visual bugs
+    this.x = Math.max(0, Math.min(this.x, this.maxX-1));
+    this.y = Math.max(0, Math.min(this.y, this.maxY-1));
 };
 
 Game.load = function () {
@@ -64,7 +66,8 @@ Game.init = function () {
     Keyboard.listenForEvents(
         [Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
     this.tileAtlas = Loader.getImage('tiles');
-    this.camera = new Camera(map, 800, 800);
+    this.camera = new Camera(map, 1024, 768);
+    this.zoom = 2;
 };
 
 Game.update = function (delta) {
@@ -75,6 +78,9 @@ Game.update = function (delta) {
     if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
     if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
     if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
+    
+    if (Keyboard.isDown(Keyboard.PLUS)) { this.zoom = 2; }
+    if (Keyboard.isDown(Keyboard.MINUS)) { this.zoom = 1; }
 
     this.camera.move(delta, dirx, diry);
 };
@@ -86,13 +92,12 @@ Game._drawLayer = function (layer) {
     var endRow = startRow + (this.camera.height / map.tsize);
     var offsetX = -this.camera.x + startCol * map.tsize;
     var offsetY = -this.camera.y + startRow * map.tsize;
-
     for (var c = startCol; c <= endCol; c++) {
         for (var r = startRow; r <= endRow; r++) {
             var tile = map.getTile(layer, c, r);
             var x = (c - startCol) * map.tsize + offsetX;
             var y = (r - startRow) * map.tsize + offsetY;
-            if (tile[0] && tile[1] !== 0) { // 0 => empty tile
+            if (tile[0] && tile[1] !== (0 || undefined)) { // 0 => empty tile
                 this.ctx.drawImage(
                     this.tileAtlas, // image
                     (tile[0]-1) * map.tsize, // source x
