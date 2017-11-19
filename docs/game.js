@@ -30,6 +30,14 @@ monsterImage.onload = function () {
 };
 monsterImage.src = "images/monster.png";
 
+// Load Tileset image
+var tilesetReady = false;
+var tilesetImage = new Image;
+tilesetImage.onload = function () {
+  tilesetReady = true;
+};
+tilesetImage.src = "images/tileset-small.png";
+
 // Game objects
 var hero = {
   speed: 256, // movement in pixels per second

@@ -1,17 +1,13 @@
 $(document).ready(function(){
-	var mapHeight = 7;
-	var mapWidth  = 7;
-    var tileType  = "river"
-	
 	var parsedTiles = JSON.parse(tiles.replace(/&quot;/g,'"'));
+	var mapHeight = 7;
+	var mapWidth = 14;
+    var tileType = "river"
+	
 	drawMap(parsedTiles, mapHeight, mapWidth);
-	var mapTiles = makePaths(parsedTiles, mapHeight, mapWidth, tileType);
+	var mapTiles = makeRiver(parsedTiles, mapHeight, mapWidth, tileType);
 	drawRiver(mapTiles);
 	makeStyles(parsedTiles);
-});
-
-$( function() {
-    $( document ).tooltip();
 });
 
 /* TO DO */
@@ -39,40 +35,42 @@ function replaceTile(tile_name, r, d) {
 	$("tr#row-"+r+" > td#col-"+d).replaceWith('<td class="'+tile_name+'" id="col-'+d+'"></td>');
 }
 
-function makePaths(parsedTiles, mapHeight, mapWidth, tileType) {
-	var pathTileset = parsedTiles.filter(function(tile) {
+function makeRiver(parsedTiles, mapHeight, mapWidth, tileType) {
+	var riverTiles = parsedTiles.filter(function(tile) {
 		return tile.fields.tile_type == tileType;
 	});
-	var randomTile = pathTileset[Math.floor(Math.random()*pathTileset.length)].fields;
+	var randomTile = riverTiles[Math.floor(Math.random()*riverTiles.length)].fields;
 	
 	var r = Math.floor(Math.random() * mapHeight);
 	var d = Math.floor(Math.random() * mapWidth);
 	var mapTiles = [{x:d, y:r, name:randomTile.tile_name}];
 	
-	var seedEnds = findEnds(mapTiles[0], tileType);
+	var seedEnds = findEnds(mapTiles[0]);
 	while (seedEnds.length > 0) {
 		var nextTile = seedEnds.pop();
 		if (nextTile.x < 0 || nextTile.x >= mapWidth || nextTile.y < 0 || nextTile.y >= mapHeight) {
 			continue;
 		}
-		if (nextTile.pass.length > 4) {
+		if (isOpen(nextTile, mapTiles) == false) {
 			mapTiles=[];
-			makePaths(parsedTiles, mapHeight, mapWidth, tileType);
+			makeRiver(parsedTiles, mapHeight, mapWidth);
 		} else {
 			var neighbors = getOpenNeighbors(nextTile, mapTiles, mapHeight, mapWidth)
 			if (neighbors.length === 0) {
 				mapTiles=[];
+                console.log("No neighbors");
 				/* this return thing is temporary: find out why console.log(neighbors) is 0 sometimes! */
-                console.log("line 68");
-				return makePaths(parsedTiles, mapHeight, mapWidth, tileType);
+				return makeRiver(parsedTiles, mapHeight, mapWidth);
 			}
+			console.log(neighbors);
 			var randomNeighbor = neighbors[Math.floor(Math.random()*neighbors.length)];
 			var newPass = [nextTile.pass, randomNeighbor.pass];
 			var order = ['n','s','e','w'];
 			newPass.sort(function(a, b) {
 				return order.indexOf(a) - order.indexOf(b)
 			});
-			mapTiles.push({x:nextTile.x, y:nextTile.y, name:(tileType+"_"+newPass.join(""))});
+			mapTiles.push({x:nextTile.x, y:nextTile.y, name:("river_"+newPass.join(""))});
+            console.log(mapTiles[mapTiles.length-1]);
 			switch (true) {
 				case (randomNeighbor.pass.indexOf("n") != -1):
 					randomNeighbor.pass="s"; break;
@@ -83,17 +81,14 @@ function makePaths(parsedTiles, mapHeight, mapWidth, tileType) {
 				case (randomNeighbor.pass.indexOf("w") != -1):
 					randomNeighbor.pass="e"; break;
 			}
-
-            if (newPass.length < 3) {
-                seedEnds.push(randomNeighbor);
-            }
+			seedEnds.push(randomNeighbor);
 		}
 	}
 	return mapTiles;
 }
 
-function findEnds(seed, tileType) {
-	var directions = seed.name.substr(tileType.length+1).split('');
+function findEnds(seed) {
+	var directions = seed.name.substr(6).split('');
 	var seedEnds = []
 	if (directions.indexOf("n") != -1) {
 		seedEnds.push({x:seed.x, y:seed.y-1, pass:"s"});
@@ -120,13 +115,12 @@ function getOpenNeighbors(tile, mapTiles, mapHeight, mapWidth) {
 	var openNeighbors = [];
 	for (let i = 0; i < tiles.length; i++) {
 		if (tiles[i].x < 0 || tiles[i] >= mapWidth || tiles[i] < 0 || tiles[i] >= mapHeight) {
+			continue;
 		}
 		if (isOpen(tiles[i], mapTiles) == false) {
-            /* makes sure that the path doesn't go to an onuccupied space */
 			continue;
 		}
 	   	if (tile.pass == tiles[i].pass) {
-            /* makes sure the path doesn't reverse on its source */
 			continue;
 		}
         openNeighbors.push(tiles[i]);
