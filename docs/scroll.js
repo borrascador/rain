@@ -64,7 +64,7 @@ Game.init = function () {
     Keyboard.listenForEvents(
         [Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
     this.tileAtlas = Loader.getImage('tiles');
-    this.camera = new Camera(map, 512, 512);
+    this.camera = new Camera(map, 800, 800);
 };
 
 Game.update = function (delta) {
