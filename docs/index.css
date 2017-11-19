@@ -1,7 +1,13 @@
+@font-face {
+  font-family: 'MECC';
+  src: url('mecc.ttf') format('truetype');
+}
+
 html, body {
   background-color: #222;
   height: 100%;
   margin: 0;
+	font-family: 'MECC', Courier, sans-serif;
 }
 
 #flex-container {
