@@ -76,6 +76,32 @@ Keyboard.isDown = function (keyCode) {
 };
 
 //
+// Camera
+//
+
+function Camera(map, width, height) {
+    // x and y are starting position for map
+    this.x = ((map.cols * map.tsize) - width) / 2;
+    this.y = ((map.rows * map.tsize) - height) / 2;
+    this.width = width;
+    this.height = height;
+    this.maxX = map.cols * map.tsize - width;
+    this.maxY = map.rows * map.tsize - height;
+} 
+
+Camera.SPEED = 768; // pixels per second
+
+Camera.prototype.move = function (delta, dirx, diry) {
+    // move camera
+    this.x += dirx * Camera.SPEED * delta;
+    this.y += diry * Camera.SPEED * delta;
+    // clamp values
+    // subtracting one from this.maxX and this.maxY solved visual bugs
+    this.x = Math.max(0, Math.min(this.x, this.maxX-1));
+    this.y = Math.max(0, Math.min(this.y, this.maxY-1));
+};
+
+//
 // Game object
 //
 
@@ -107,10 +133,76 @@ Game.tick = function (elapsed) {
     this.render();
 }.bind(Game);
 
-// override these methods to create the demo
-Game.init = function () {};
-Game.update = function (delta) {};
-Game.render = function () {};
+Game.load = function () {
+    return [
+        Loader.loadImage('tiles', 'images/tileset-small.png'),
+    ];
+};
+
+Game.init = function () {
+    Keyboard.listenForEvents([
+        Keyboard.LEFT, Keyboard.RIGHT, 
+        Keyboard.UP, Keyboard.DOWN, 
+        Keyboard.PLUS, Keyboard.MINUS
+    ]);
+    this.tileAtlas = Loader.getImage('tiles');
+    // Viewport is 1024px by 768px
+    this.camera = new Camera(map, 1024, 768);
+};
+
+Game.update = function (delta) {
+    // handle camera movement with arrow keys
+    var dirx = 0;
+    var diry = 0;
+    if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
+    if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
+    if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
+    if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
+   
+    var zoom = 1; 
+    if (Keyboard.isDown(Keyboard.PLUS)) { zoom = 1.5; }
+    if (Keyboard.isDown(Keyboard.MINUS)) { zoom = 0.5; }
+
+    this.camera.move(delta, dirx, diry);
+};
+
+Game._drawLayer = function (layer) {
+    var startCol = Math.floor(this.camera.x / map.tsize);
+    var endCol = startCol + (this.camera.width / map.tsize);
+    var startRow = Math.floor(this.camera.y / map.tsize);
+    var endRow = startRow + (this.camera.height / map.tsize);
+    var offsetX = -this.camera.x + startCol * map.tsize;
+    var offsetY = -this.camera.y + startRow * map.tsize;
+    for (var c = startCol; c <= endCol; c++) {
+        for (var r = startRow; r <= endRow; r++) {
+            var tile = map.getTile(layer, c, r);
+            var x = (c - startCol) * map.tsize + offsetX;
+            var y = (r - startRow) * map.tsize + offsetY;
+            if (tile[0] && tile[1] !== (0 || undefined)) { // 0 => empty tile
+                this.ctx.drawImage(
+                    this.tileAtlas, // image
+                    (tile[0]-1) * map.tsize, // source x
+                    (tile[1]-1) * map.tsize, // source y
+                    map.tsize, // source width
+                    map.tsize, // source height
+                    Math.round(x),  // target x
+                    Math.round(y), // target y
+                    map.tsize, // target width
+                    map.tsize // target height
+                );
+            }
+        }
+    }
+};
+
+Game.render = function () {
+    // draw map background layer
+    this._drawLayer(0);
+    // draw map top layer
+    this._drawLayer(1);
+    // draw map top layer
+    this._drawLayer(2);
+};
 
 //
 // start up function
