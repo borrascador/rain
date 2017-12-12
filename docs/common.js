@@ -29,6 +29,22 @@ Loader.getImage = function (key) {
 };
 
 //
+// Mouse handler
+//
+
+var Mouse = {};
+
+Mouse._buttons = {};
+
+Mouse.listenForEvents = function (buttons) {
+  window.addEventListener('click', this._onClick.bind(this));
+
+  buttons.forEach(function (button) {
+    this._buttons[button] = false;
+  }.bind(this));
+}
+
+//
 // Keyboard handler
 //
 
@@ -96,9 +112,9 @@ Camera.prototype.move = function (delta, dirx, diry) {
   this.x += dirx * Camera.SPEED * delta;
   this.y += diry * Camera.SPEED * delta;
   // clamp values
-  // subtracting one from this.maxX and this.maxY solved visual bugs
-  this.x = Math.max(0, Math.min(this.x, this.maxX-1));
-  this.y = Math.max(0, Math.min(this.y, this.maxY-1));
+  // subtracting 1 from this.maxX and this.maxY solved visual bugs
+  this.x = Math.max(0, Math.min(this.x, this.maxX - 1));
+  this.y = Math.max(0, Math.min(this.y, this.maxY - 1));
 };
 
 //
