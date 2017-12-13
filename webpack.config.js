@@ -26,13 +26,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader'
-        ]
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf)$/,
+        test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf)$/,
         use: [
           'url-loader'
         ]
