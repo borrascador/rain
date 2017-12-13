@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'MECC';
-  src: url('mecc.ttf') format('truetype');
+  src: url('./meccfont/mecc.ttf') format('truetype');
 }
 
 html, body {
