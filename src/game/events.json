@@ -1,0 +1,20 @@
+{
+    "0": {
+        "text": "First event",
+        "children": [
+            "1"
+        ]
+    },
+    "1": {
+        "text": "Second event",
+        "children": [
+            "3"
+        ]
+    },
+    "2": {
+        "text": "Third event",
+        "children": [
+            
+        ]
+    }
+}

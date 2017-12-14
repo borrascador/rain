@@ -30,6 +30,12 @@ module.exports = {
         use: [
           'url-loader'
         ]
+      },
+      {
+        test: /\.json$/,
+        use: [
+          'json-loader'
+        ]
       }
     ]
   },
