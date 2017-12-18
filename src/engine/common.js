@@ -6,8 +6,8 @@ import tiles from './tiles.json';
 import map from './map.json';
 
 map.getTile = function (layer, col, row) {
-    let id = this.layers[layer][row * map.cols + col];
-    return tiles[id-1];
+  let id = this.layers[layer][row * map.cols + col];
+  return tiles[id-1];
 }
 
 //
@@ -46,17 +46,9 @@ Loader.getImage = function (key) {
 // Mouse handler
 //
 
+// TODO: Decide how to split click-handling between Game class and
+// this Mouse handler
 var Mouse = {};
-
-Mouse._buttons = {};
-
-Mouse.listenForEvents = function (buttons) {
-  window.addEventListener('click', this._onClick.bind(this));
-
-  buttons.forEach(function (button) {
-    this._buttons[button] = false;
-  }.bind(this));
-}
 
 //
 // Keyboard handler
@@ -79,7 +71,7 @@ Keyboard.listenForEvents = function (keys) {
 
   keys.forEach(function (key) {
     this._keys[key] = false;
-  }.bind(this));0
+  }.bind(this));
 }
 
 Keyboard._onKeyDown = function (event) {
@@ -119,7 +111,7 @@ function Camera(map, width, height) {
   this.maxY = map.rows * map.tsize - height;
 } 
 
-Camera.SPEED = 768; // pixels per second
+Camera.SPEED = 500; // pixels per second
 
 Camera.prototype.move = function (delta, dirx, diry) {
   // move camera
@@ -131,6 +123,21 @@ Camera.prototype.move = function (delta, dirx, diry) {
   this.y = Math.max(0, Math.min(this.y, this.maxY));
 };
 
+Camera.prototype.worldToScreen = function (x, y) {
+  return {x: x - this.x, y: y - this.y};
+};
+
+Camera.prototype.screenToWorld = function (x, y) {
+  return {x: x + this.x, y: y + this.y};
+};
+
+Camera.prototype.screenToTile = function (x, y) {
+  return {
+    x: Math.ceil((x + this.x) / map.tsize),
+    y: Math.ceil((y + this.y) / map.tsize)
+  }
+};
+
 //
 // Game object
 //
@@ -140,6 +147,7 @@ var Game = {};
 Game.run = function (context, canvas) {
   this.width = canvas.width;
   this.height = canvas.height;
+  this.canvas = canvas;
   this.ctx = context;
   this._previousElapsed = 0;
 
@@ -174,14 +182,27 @@ Game.load = function () {
 };
 
 Game.init = function () {
-  Keyboard.listenForEvents([
-    Keyboard.LEFT, Keyboard.RIGHT, 
-    Keyboard.UP, Keyboard.DOWN, 
-    Keyboard.PLUS, Keyboard.MINUS
-  ]);
   this.tileAtlas = Loader.getImage('tiles');
   this.camera = new Camera(map, this.width, this.height);
+  Keyboard.listenForEvents([
+      Keyboard.LEFT, Keyboard.RIGHT, 
+      Keyboard.UP, Keyboard.DOWN, 
+      Keyboard.PLUS, Keyboard.MINUS
+  ]);
+  this.canvas.addEventListener(
+      'click', this.logTileClick.bind(this), false
+  );
 };
+
+Game.logTileClick = function (event) {
+  if (this.mode === 'map') {
+    let rect = this.canvas.getBoundingClientRect();
+    let x = Math.floor(event.clientX - rect.left);
+    let y = Math.floor(event.clientY - rect.top);
+    let tile = this.camera.screenToTile(x, y);
+    console.log("x: " + tile.x + " y: " + tile.y);
+  }
+}
 
 Game.update = function (delta) {
   if (this.mode === 'map') {
