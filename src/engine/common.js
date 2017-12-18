@@ -1,5 +1,5 @@
 //
-// map object
+// Map object
 //
 
 import tiles from './tiles.json';
@@ -79,7 +79,7 @@ Keyboard.listenForEvents = function (keys) {
 
   keys.forEach(function (key) {
     this._keys[key] = false;
-  }.bind(this));
+  }.bind(this));0
 }
 
 Keyboard._onKeyDown = function (event) {
@@ -127,8 +127,8 @@ Camera.prototype.move = function (delta, dirx, diry) {
   this.y += diry * Camera.SPEED * delta;
   // clamp values
   // subtracting 1 from this.maxX and this.maxY solved visual bugs
-  this.x = Math.max(0, Math.min(this.x, this.maxX - 1));
-  this.y = Math.max(0, Math.min(this.y, this.maxY - 1));
+  this.x = Math.max(0, Math.min(this.x, this.maxX));
+  this.y = Math.max(0, Math.min(this.y, this.maxY));
 };
 
 //
@@ -137,9 +137,13 @@ Camera.prototype.move = function (delta, dirx, diry) {
 
 var Game = {};
 
-Game.run = function (context) {
+Game.run = function (context, canvas) {
+  this.width = canvas.width;
+  this.height = canvas.height;
   this.ctx = context;
   this._previousElapsed = 0;
+
+  this.mode = 'map';
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -152,7 +156,7 @@ Game.tick = function (elapsed) {
   window.requestAnimationFrame(this.tick);
 
   // clear previous frame
-  this.ctx.clearRect(0, 0, 1024, 768);
+  this.ctx.clearRect(0, 0, this.width, this.height);
 
   // compute delta time in seconds -- also cap it
   var delta = (elapsed - this._previousElapsed) / 1000.0;
@@ -176,31 +180,31 @@ Game.init = function () {
     Keyboard.PLUS, Keyboard.MINUS
   ]);
   this.tileAtlas = Loader.getImage('tiles');
-  // Viewport is 1024px by 768px
-  this.camera = new Camera(map, 1024, 768);
+  this.camera = new Camera(map, this.width, this.height);
 };
 
 Game.update = function (delta) {
-  // handle camera movement with arrow keys
-  var dirx = 0;
-  var diry = 0;
-  if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
-  if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
-  if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
-  if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
- 
-  var zoom = 1; 
-  if (Keyboard.isDown(Keyboard.PLUS)) { zoom = 1.5; }
-  if (Keyboard.isDown(Keyboard.MINUS)) { zoom = 0.5; }
+  if (this.mode === 'map') {
+    // handle camera movement with arrow keys
+    var dirx = 0;
+    var diry = 0;
+    if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
+    if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
+    if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
+    if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
+   
+    this.camera.move(delta, dirx, diry);
+  }
 
-  this.camera.move(delta, dirx, diry);
+  if (Keyboard.isDown(Keyboard.PLUS)) { this.mode = 'map'; }
+  if (Keyboard.isDown(Keyboard.MINUS)) { this.mode = 'text'; }
 };
 
 Game._drawLayer = function (layer) {
   var startCol = Math.floor(this.camera.x / map.tsize);
-  var endCol = startCol + (this.camera.width / map.tsize);
+  var endCol = startCol + (this.camera.width / map.tsize) + 1;
   var startRow = Math.floor(this.camera.y / map.tsize);
-  var endRow = startRow + (this.camera.height / map.tsize);
+  var endRow = startRow + (this.camera.height / map.tsize) + 1;
   var offsetX = -this.camera.x + startCol * map.tsize;
   var offsetY = -this.camera.y + startRow * map.tsize;
   for (var c = startCol; c <= endCol; c++) {
@@ -226,11 +230,42 @@ Game._drawLayer = function (layer) {
   }
 };
 
+Game._drawSampleText = function () {
+  // draw black background
+  this.ctx.fillStyle = '#000';
+  this.ctx.fillRect(0, 0, this.width, this.height);
+
+  // draw white text
+  let size = 32;
+  this.ctx.font = (size-2)+'px MECC';
+  this.ctx.fillStyle = '#FFF';
+
+  let txt = "Welcome to the Amazon Trail";
+  // example of how to achieve centered text using measureText()
+  let txtWidth = this.ctx.measureText(txt).width;
+  let txtPos = Math.floor((this.width - txtWidth) / 2);
+
+  this.ctx.fillText(txt, size, 2*size);
+  this.ctx.fillText("You may:", size, 4*size);
+  this.ctx.fillText("1. Travel the trail", 2*size, 6*size);
+  this.ctx.fillText("2. Learn about the trail", 2*size, 7*size);
+  this.ctx.fillText("3. See the Amazon Top Ten", 2*size, 8*size);
+  this.ctx.fillText("4. Turn sound off", 2*size, 9*size);
+  this.ctx.fillText("5. Choose Management Options", 2*size, 10*size);
+  this.ctx.fillText("6. End", 2*size, 11*size);
+  this.ctx.fillText("What is your choice? _", size, 13*size);
+};
+
 Game.render = function () {
-  // draw map background layer
-  this._drawLayer(0);
-  // draw map top layer
-  this._drawLayer(1);
+  if (this.mode === 'map') {
+    // draw map background layer
+    this._drawLayer(0);
+    // draw map top layer
+    this._drawLayer(1); 
+  } else if (this.mode === 'text') {
+    // draw text layer with background
+    this._drawSampleText();
+  }
 };
 
 //
@@ -238,6 +273,7 @@ Game.render = function () {
 //
 
 window.onload = function () {
-  var context = document.getElementById('demo').getContext('2d');
-  Game.run(context);
+  var canvas = document.getElementById('demo')
+  var context = canvas.getContext('2d');
+  Game.run(context, canvas);
 };
