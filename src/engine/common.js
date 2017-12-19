@@ -251,13 +251,44 @@ Game._drawLayer = function (layer) {
   }
 };
 
+Game._drawTextBackground = function () {
+  this.ctx.fillStyle = '#000';
+  this.ctx.fillRect(0, 0, this.width, this.height);
+};
+
+import events from './events.json';
+
+Game._drawTextPayload = function (node) {
+  let text = events[node].text;
+  let options = events[node].children;
+
+  let size = 32;
+  this.ctx.font = (size - 2) + 'px MECC';
+  this.ctx.fillStyle = '#FFF';
+  
+  let line = 2;
+  for (let i=0; i<text.length; i++) {
+    this.ctx.fillText(text[i], size, line*size);
+    line += 2;
+  }
+
+  for (let i=0; i<options.length; i++) {
+    let optionText = (i+1)+". "+options[i].text;
+    this.ctx.fillText(optionText, 2*size, line*size);
+    line++;
+  }
+  line++;
+
+  this.ctx.fillText("What is your choice? _", size, line*size);
+};
+
 Game._drawSampleText = function () {
   // draw black background
   this.ctx.fillStyle = '#000';
   this.ctx.fillRect(0, 0, this.width, this.height);
 
   // draw white text
-  let size = 32;
+  let size = 30;
   this.ctx.font = (size-2)+'px MECC';
   this.ctx.fillStyle = '#FFF';
 
@@ -285,7 +316,8 @@ Game.render = function () {
     this._drawLayer(1); 
   } else if (this.mode === 'text') {
     // draw text layer with background
-    this._drawSampleText();
+    this._drawTextBackground();
+    this._drawTextPayload(3);
   }
 };
 
