@@ -1,18 +1,30 @@
 {
     "0": {
-        "text": "First event",
+        "text": [
+            "First event"
+        ],
         "children": [
-            "1"
+            {
+                "ref": "1",
+                "text": "First sample choice"
+            }
         ]
     },
     "1": {
-        "text": "Second event",
+        "text": [
+            "Second event"
+        ],
         "children": [
-            "3"
+            {
+                "ref": "3",
+                "text": "Sample choice"
+            }            
         ]
     },
     "2": {
-        "text": "Third event",
+        "text": [
+            "Third event"
+        ],
         "children": [
             
         ]

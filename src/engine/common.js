@@ -282,32 +282,6 @@ Game._drawTextPayload = function (node) {
   this.ctx.fillText("What is your choice? _", size, line*size);
 };
 
-Game._drawSampleText = function () {
-  // draw black background
-  this.ctx.fillStyle = '#000';
-  this.ctx.fillRect(0, 0, this.width, this.height);
-
-  // draw white text
-  let size = 30;
-  this.ctx.font = (size-2)+'px MECC';
-  this.ctx.fillStyle = '#FFF';
-
-  let txt = "Welcome to the Amazon Trail";
-  // example of how to achieve centered text using measureText()
-  let txtWidth = this.ctx.measureText(txt).width;
-  let txtPos = Math.floor((this.width - txtWidth) / 2);
-
-  this.ctx.fillText(txt, size, 2*size);
-  this.ctx.fillText("You may:", size, 4*size);
-  this.ctx.fillText("1. Travel the trail", 2*size, 6*size);
-  this.ctx.fillText("2. Learn about the trail", 2*size, 7*size);
-  this.ctx.fillText("3. See the Amazon Top Ten", 2*size, 8*size);
-  this.ctx.fillText("4. Turn sound off", 2*size, 9*size);
-  this.ctx.fillText("5. Choose Management Options", 2*size, 10*size);
-  this.ctx.fillText("6. End", 2*size, 11*size);
-  this.ctx.fillText("What is your choice? _", size, 13*size);
-};
-
 Game.render = function () {
   if (this.mode === 'map') {
     // draw map background layer

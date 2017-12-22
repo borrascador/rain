@@ -1,27 +1,33 @@
 // const storyEvents = require('./events.json'); is necessary for node testing
 // import storyEvents from './events.json'; should be OK for Babel deployment
 
-const storyEvents = require('./events.json');
+const storyEvents = require('../engine/events.json');
 
 console.log(checkForCycles(storyEvents));
 
-function logChildEvents (firstEvent) {
-  firstEvent.children.forEach( (childId) => {
-    let childEvent = storyEvents[childId];
-    console.log(JSON.stringify(childEvent, null, '    '));
-    logChildEvents(childEvent);
-  });
+if (!checkForCycles(storyEvents)) {
+  logChildEvents(storyEvents, 0);
+}
+
+function logChildEvents (graph, node) {
+  console.log(JSON.stringify(graph[node], null, '    '));
+  for (let i = 0; i < graph[node].children.length; i++) { 
+    let nextNode = graph[node].children[i].ref;
+    if (graph.hasOwnProperty(nextNode)) {
+      logChildEvents(graph, nextNode);
+    }
+  }
 }
 
 function checkChildCycles (node, graph, visited) {
   let hasCycle = false;
   let children = graph[node].children;
   for (let i=0; i < children.length; i++) {
-    if (visited[children[i]] === true) {
+    if (visited[children[i].ref] === true) {
       return true;
     } else {
-      visited[children[i]] = true;
-      nextNode = children[i];
+      visited[children[i].ref] = true;
+      nextNode = children[i].ref;
       if (graph.hasOwnProperty(nextNode)) { 
         hasCycle = checkChildCycles (nextNode, graph, visited);
       } else {
