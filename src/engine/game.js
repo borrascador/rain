@@ -20,7 +20,7 @@ import src from '../images/tileset-small.png';
 import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
 import Camera from './camera.js';
-// import Menu from './menu.js';
+import Menu from './menu.js';
 // import Text from './text.js';
 
 Game.run = function (canvas, context) {
@@ -60,7 +60,9 @@ Game.load = function () {
 
 Game.init = function () {
   this.tileAtlas = Loader.getImage('tiles');
-  this.camera = new Camera(map, this.cvs.width, this.cvs.height);
+  this.menu = new Menu();
+  let mapWidth = this.cvs.width - this.menu.buttonSize;
+  this.camera = new Camera(map, mapWidth, this.cvs.height);
   Mouse.listenForEvents(this.cvs);
   Keyboard.listenForEvents([
       Keyboard.LEFT, Keyboard.RIGHT, 
@@ -80,12 +82,34 @@ Game.update = function (delta) {
     if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
    
     this.camera.move(delta, dirx, diry);
+
+    // handle mouse click
+    if (Mouse.isClicked()) {
+      let clickPos = Mouse.getClick();
+      if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
+        let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
+        console.log(tilePos);
+      } else {
+        let buttonIndex = Math.floor(clickPos.y / this.menu.buttonSize);
+        let button = this.menu.buttons[buttonIndex];
+        console.log(button);
+        this.mode = button.mode;
+        if (this.mode === 'map') {
+          let screenPos = this.camera.tileToScreen(button.pos.x, button.pos.y);
+          this.camera.focusTile(screenPos.x, screenPos.y);
+        }
+      }
+    }
+  } else if (this.mode === 'text') {
+    // handle mouse click
+    if (Mouse.isClicked()) {
+      console.log(Mouse.getClick());
+      this.mode = 'map';
+    }
   }
 
   if (Keyboard.isDown(Keyboard.PLUS)) { this.mode = 'map'; }
   if (Keyboard.isDown(Keyboard.MINUS)) { this.mode = 'text'; }
-
-  if (Mouse.isClicked()) { console.log(Mouse.getClick()); }
 };
 
 Game._drawLayer = function (layer) {
@@ -118,34 +142,25 @@ Game._drawLayer = function (layer) {
   }
 };
 
-Game._drawInterface = function () {
-  // Set button properties
-  let buttons = [
-    { text : 'INFO', mode : 'text', link : [] },
-    { text : 'MAP',  mode : 'map', link : [] },
-    { text : 'CAMP', mode : 'map', link : [] },
-    { text : 'MOVE', mode : 'map', link : [] }
-  ];
-  let menuSize = 120;
-
+Game._drawMenu = function () {
   // Make menu bar
   this.ctx.fillStyle = '#000';
   this.ctx.fillRect(
-      this.cvs.width - menuSize, 0, this.cvs.width, this.cvs.height
+      this.cvs.width - this.menu.buttonSize, 0, this.cvs.width, this.cvs.height
   );
 
-  for (let i = 0; i < buttons.length; i++) {
+  for (let i = 0; i < this.menu.buttons.length; i++) {
     // Make button box
     this.ctx.strokeStyle = '#FFF';
     this.ctx.lineWidth = 4;
-    let rectX = this.cvs.width - menuSize + 8;
-    let rectY = (menuSize * i) + 8;
-    let rectWidth = menuSize - 16;
-    let rectHeight = menuSize - 16;
+    let rectX = this.cvs.width - this.menu.buttonSize + 8;
+    let rectY = (this.menu.buttonSize * i) + 8;
+    let rectWidth = this.menu.buttonSize - 16;
+    let rectHeight = this.menu.buttonSize - 16;
     this.ctx.strokeRect(rectX, rectY, rectWidth, rectHeight);
 
     // Make button text
-    let buttonText = buttons[i].text;
+    let buttonText = this.menu.buttons[i].text;
     this.ctx.font = '20px MECC';
     this.ctx.fillStyle = '#FFF';
     this.ctx.textAlign = 'center';
@@ -194,7 +209,7 @@ Game.render = function () {
     // draw map top layer
     this._drawLayer(1); 
     // draw Interface
-    this._drawInterface();
+    this._drawMenu();
   } else if (this.mode === 'text') {
     // draw text layer with background
     this._drawTextBackground();
