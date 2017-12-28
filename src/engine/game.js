@@ -23,12 +23,21 @@ import Camera from './camera.js';
 import Menu from './menu.js';
 // import Text from './text.js';
 
+Game.connect = function(){
+    var socket = io.connect("http://localhost:4004");
+    socket.on('connect', function(data){
+        console.log("Connected to server");
+    });
+}
+
 Game.run = function (canvas, context) {
   this.cvs = canvas;
   this.ctx = context;
   this._previousElapsed = 0;
 
   this.mode = 'map';
+
+  this.connect();
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -65,8 +74,8 @@ Game.init = function () {
   this.camera = new Camera(map, mapWidth, this.cvs.height);
   Mouse.listenForEvents(this.cvs);
   Keyboard.listenForEvents([
-      Keyboard.LEFT, Keyboard.RIGHT, 
-      Keyboard.UP, Keyboard.DOWN, 
+      Keyboard.LEFT, Keyboard.RIGHT,
+      Keyboard.UP, Keyboard.DOWN,
       Keyboard.PLUS, Keyboard.MINUS
   ]);
 };
@@ -80,7 +89,7 @@ Game.update = function (delta) {
     if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
     if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
     if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
-   
+
     this.camera.move(delta, dirx, diry);
 
     // handle mouse click
@@ -185,7 +194,7 @@ Game._drawTextPayload = function (node) {
   this.ctx.fillStyle = '#FFF';
   this.ctx.textAlign = 'start';
   this.ctx.textBaseline = 'alphabetic';
-  
+
   let line = 2;
   for (let i = 0; i < text.length; i++) {
     this.ctx.fillText(text[i], size, line * size);
@@ -207,7 +216,7 @@ Game.render = function () {
     // draw map background layer
     this._drawLayer(0);
     // draw map top layer
-    this._drawLayer(1); 
+    this._drawLayer(1);
     // draw Interface
     this._drawMenu();
   } else if (this.mode === 'text') {
