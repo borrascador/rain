@@ -29,9 +29,10 @@ Game.run = function (canvas, context) {
   this.ctx = context;
   this._previousElapsed = 0;
 
-  this.mode = 'map';
+  this.mode = 'text';
   
   Client.connect();
+  Client.requestEvent('3');
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -180,11 +181,9 @@ Game._drawTextBackground = function () {
   this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
 };
 
-import events from './events.json';
-
-Game._drawTextPayload = function (node) {
-  let text = events[node].text;
-  let options = events[node].children;
+Game._drawTextPayload = function () {
+  let text = Client.payload.text;
+  let options = Client.payload.children;
 
   let size = 32;
   this.ctx.font = (size - 4) + 'px MECC';
@@ -219,7 +218,7 @@ Game.render = function () {
   } else if (this.mode === 'text') {
     // draw text layer with background
     this._drawTextBackground();
-    this._drawTextPayload(3);
+    this._drawTextPayload();
   }
 };
 

@@ -2,6 +2,7 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var UUID = require('uuid/v4');
+var events = require('./engine/events.json');
 
 server.listen(4004);
 
@@ -54,6 +55,12 @@ io.on('connection', function(socket) {
     console.log('i-- ' + time + ' Socket ' + socket.userid + ' tile clicked: ' + pos);
     console.log('|');
   });
+  
+  socket.on('request event', function(data) {
+    let requestedEvent = events[data.ref];
+    socket.emit('send event', requestedEvent);
+  });
+
 });
 
 function getTimestamp() {

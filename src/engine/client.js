@@ -34,6 +34,16 @@ Client.sendTileClick = function(pos) {
   });
 }
 
+Client.requestEvent = function(ref) {
+  this.socket.emit('request event', {
+    ref: ref
+  });
+
+  this.socket.on('send event', (data) => {
+    this.payload = data;
+  });
+}
+
 
 
 module.exports = Client;
