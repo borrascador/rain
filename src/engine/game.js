@@ -16,6 +16,7 @@ map.getTile = function (layer, col, row) {
 
 var Game = {};
 
+import Client from './client.js';
 import src from '../images/tileset-small.png';
 import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
@@ -23,31 +24,14 @@ import Camera from './camera.js';
 import Menu from './menu.js';
 // import Text from './text.js';
 
-import io from 'socket.io-client';
-
-Game.connect = function() {
-  this.socket = io.connect("http://localhost:4004");
-  console.log("Attempting connection");
-
-  this.socket.on('send id', function(data) {
-    console.log('socket id: ' + JSON.stringify(data.id));
-  });
-}
-
-Game.sendClick = function(pos) {
-  this.socket.emit('send click', {
-    pos: pos
-  });
-}
-
 Game.run = function (canvas, context) {
   this.cvs = canvas;
   this.ctx = context;
   this._previousElapsed = 0;
 
   this.mode = 'map';
-
-  this.connect();
+  
+  Client.connect();
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -108,6 +92,7 @@ Game.update = function (delta) {
       if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
         let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
         console.log(tilePos);
+        Client.sendTileClick(tilePos);
       } else {
         let buttonIndex = Math.floor(clickPos.y / this.menu.buttonSize);
         let button = this.menu.buttons[buttonIndex];
@@ -124,7 +109,7 @@ Game.update = function (delta) {
     if (Mouse.isClicked()) {
       let clickPos = Mouse.getClick();
       console.log(clickPos);
-      this.sendClick(clickPos);
+      Client.sendClick(clickPos);
       this.mode = 'map';
     }
   }
