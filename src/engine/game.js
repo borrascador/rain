@@ -23,11 +23,21 @@ import Camera from './camera.js';
 import Menu from './menu.js';
 // import Text from './text.js';
 
-Game.connect = function(){
-    var socket = io.connect("http://localhost:4004");
-    socket.on('connect', function(data){
-        console.log("Connected to server");
-    });
+import io from 'socket.io-client';
+
+Game.connect = function() {
+  this.socket = io.connect("http://localhost:4004");
+  console.log("Attempting connection");
+
+  this.socket.on('send id', function(data) {
+    console.log('socket id: ' + JSON.stringify(data.id));
+  });
+}
+
+Game.sendClick = function(pos) {
+  this.socket.emit('send click', {
+    pos: pos
+  });
 }
 
 Game.run = function (canvas, context) {
@@ -112,7 +122,9 @@ Game.update = function (delta) {
   } else if (this.mode === 'text') {
     // handle mouse click
     if (Mouse.isClicked()) {
-      console.log(Mouse.getClick());
+      let clickPos = Mouse.getClick();
+      console.log(clickPos);
+      this.sendClick(clickPos);
       this.mode = 'map';
     }
   }
