@@ -16,6 +16,7 @@ map.getTile = function (layer, col, row) {
 
 var Game = {};
 
+import Client from './client.js';
 import src from '../images/tileset-small.png';
 import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
@@ -23,21 +24,15 @@ import Camera from './camera.js';
 import Menu from './menu.js';
 // import Text from './text.js';
 
-Game.connect = function(){
-    var socket = io.connect("http://localhost:4004");
-    socket.on('connect', function(data){
-        console.log("Connected to server");
-    });
-}
-
 Game.run = function (canvas, context) {
   this.cvs = canvas;
   this.ctx = context;
   this._previousElapsed = 0;
 
-  this.mode = 'map';
-
-  this.connect();
+  this.mode = 'text';
+  
+  Client.connect();
+  Client.requestEvent('3');
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -98,6 +93,7 @@ Game.update = function (delta) {
       if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
         let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
         console.log(tilePos);
+        Client.sendTileClick(tilePos);
       } else {
         let buttonIndex = Math.floor(clickPos.y / this.menu.buttonSize);
         let button = this.menu.buttons[buttonIndex];
@@ -112,7 +108,9 @@ Game.update = function (delta) {
   } else if (this.mode === 'text') {
     // handle mouse click
     if (Mouse.isClicked()) {
-      console.log(Mouse.getClick());
+      let clickPos = Mouse.getClick();
+      console.log(clickPos);
+      Client.sendClick(clickPos);
       this.mode = 'map';
     }
   }
@@ -183,11 +181,9 @@ Game._drawTextBackground = function () {
   this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
 };
 
-import events from './events.json';
-
-Game._drawTextPayload = function (node) {
-  let text = events[node].text;
-  let options = events[node].children;
+Game._drawTextPayload = function () {
+  let text = Client.payload.text;
+  let options = Client.payload.children;
 
   let size = 32;
   this.ctx.font = (size - 4) + 'px MECC';
@@ -222,7 +218,7 @@ Game.render = function () {
   } else if (this.mode === 'text') {
     // draw text layer with background
     this._drawTextBackground();
-    this._drawTextPayload(3);
+    this._drawTextPayload();
   }
 };
 
