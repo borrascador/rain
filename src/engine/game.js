@@ -16,6 +16,7 @@ map.getTile = function (layer, col, row) {
 
 var Game = {};
 
+import Client from './client.js';
 import src from '../images/tileset-small.png';
 import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
@@ -28,7 +29,10 @@ Game.run = function (canvas, context) {
   this.ctx = context;
   this._previousElapsed = 0;
 
-  this.mode = 'map';
+  this.mode = 'text';
+  
+  Client.connect();
+  Client.requestEvent('3');
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -65,8 +69,8 @@ Game.init = function () {
   this.camera = new Camera(map, mapWidth, this.cvs.height);
   Mouse.listenForEvents(this.cvs);
   Keyboard.listenForEvents([
-      Keyboard.LEFT, Keyboard.RIGHT, 
-      Keyboard.UP, Keyboard.DOWN, 
+      Keyboard.LEFT, Keyboard.RIGHT,
+      Keyboard.UP, Keyboard.DOWN,
       Keyboard.PLUS, Keyboard.MINUS
   ]);
 };
@@ -80,7 +84,7 @@ Game.update = function (delta) {
     if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
     if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
     if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
-   
+
     this.camera.move(delta, dirx, diry);
 
     // handle mouse click
@@ -89,6 +93,7 @@ Game.update = function (delta) {
       if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
         let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
         console.log(tilePos);
+        Client.sendTileClick(tilePos);
       } else {
         let buttonIndex = Math.floor(clickPos.y / this.menu.buttonSize);
         let button = this.menu.buttons[buttonIndex];
@@ -103,7 +108,9 @@ Game.update = function (delta) {
   } else if (this.mode === 'text') {
     // handle mouse click
     if (Mouse.isClicked()) {
-      console.log(Mouse.getClick());
+      let clickPos = Mouse.getClick();
+      console.log(clickPos);
+      Client.sendClick(clickPos);
       this.mode = 'map';
     }
   }
@@ -174,18 +181,16 @@ Game._drawTextBackground = function () {
   this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
 };
 
-import events from './events.json';
-
-Game._drawTextPayload = function (node) {
-  let text = events[node].text;
-  let options = events[node].children;
+Game._drawTextPayload = function () {
+  let text = Client.payload.text;
+  let options = Client.payload.children;
 
   let size = 32;
   this.ctx.font = (size - 4) + 'px MECC';
   this.ctx.fillStyle = '#FFF';
   this.ctx.textAlign = 'start';
   this.ctx.textBaseline = 'alphabetic';
-  
+
   let line = 2;
   for (let i = 0; i < text.length; i++) {
     this.ctx.fillText(text[i], size, line * size);
@@ -207,13 +212,13 @@ Game.render = function () {
     // draw map background layer
     this._drawLayer(0);
     // draw map top layer
-    this._drawLayer(1); 
+    this._drawLayer(1);
     // draw Interface
     this._drawMenu();
   } else if (this.mode === 'text') {
     // draw text layer with background
     this._drawTextBackground();
-    this._drawTextPayload(3);
+    this._drawTextPayload();
   }
 };
 
