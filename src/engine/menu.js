@@ -13,4 +13,10 @@ function Menu() {
   this.buttonSize = 120;
 }
 
+Menu.getClickedButton = function (clickPos) {
+  let buttonIndex = Math.floor(clickPos.y / this.buttonSize);
+  let clickedButton = this.buttons[buttonIndex];
+  return clickedButton;
+}
+
 module.exports = Menu;

@@ -22,7 +22,7 @@ import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
 import Camera from './camera.js';
 import Menu from './menu.js';
-// import Text from './text.js';
+import Text from './text.js';
 
 Game.run = function (canvas, context) {
   this.cvs = canvas;
@@ -30,9 +30,10 @@ Game.run = function (canvas, context) {
   this._previousElapsed = 0;
 
   this.mode = 'text';
+  this.currentEvent = '3';
   
   Client.connect();
-  Client.requestEvent('3');
+  Client.requestEvent(this.currentEvent);
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -65,6 +66,7 @@ Game.load = function () {
 Game.init = function () {
   this.tileAtlas = Loader.getImage('tiles');
   this.menu = new Menu();
+  this.text = new Text();
   let mapWidth = this.cvs.width - this.menu.buttonSize;
   this.camera = new Camera(map, mapWidth, this.cvs.height);
   Mouse.listenForEvents(this.cvs);
@@ -76,43 +78,43 @@ Game.init = function () {
 };
 
 Game.update = function (delta) {
-  if (this.mode === 'map') {
-    // handle camera movement with arrow keys
-    var dirx = 0;
-    var diry = 0;
-    if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
-    if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
-    if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
-    if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
+  switch (this.mode) {
+    case 'map':
+      // handle camera movement with arrow keys
+      var dirx = 0;
+      var diry = 0;
+      if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
+      if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
+      if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
+      if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
 
-    this.camera.move(delta, dirx, diry);
+      this.camera.move(delta, dirx, diry);
 
-    // handle mouse click
-    if (Mouse.isClicked()) {
-      let clickPos = Mouse.getClick();
-      if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
-        let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
-        console.log(tilePos);
-        Client.sendTileClick(tilePos);
-      } else {
-        let buttonIndex = Math.floor(clickPos.y / this.menu.buttonSize);
-        let button = this.menu.buttons[buttonIndex];
-        console.log(button);
-        this.mode = button.mode;
-        if (this.mode === 'map') {
-          let screenPos = this.camera.tileToScreen(button.pos.x, button.pos.y);
-          this.camera.focusTile(screenPos.x, screenPos.y);
+      // handle mouse click
+      if (Mouse.isClicked()) {
+        let clickPos = Mouse.getClick();
+        if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
+          let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
+          console.log(tilePos);
+          Client.sendTileClick(tilePos);
+        } else {
+          let button = Menu.getClickedButton(clickPos); 
+          this.mode = button.mode;
+          if (this.mode === 'map') {
+            let screenPos = this.camera.tileToScreen(button.pos.x, button.pos.y);
+            this.camera.focusTile(screenPos.x, screenPos.y);
+          }
         }
       }
-    }
-  } else if (this.mode === 'text') {
-    // handle mouse click
-    if (Mouse.isClicked()) {
-      let clickPos = Mouse.getClick();
-      console.log(clickPos);
-      Client.sendClick(clickPos);
-      this.mode = 'map';
-    }
+      break;
+
+    case 'text':
+      // handle mouse click
+      if (Mouse.isClicked()) {
+        let clickPos = Mouse.getClick();
+        this.text.getClickedButtons(clickPos); 
+        Client.sendClick(clickPos);
+      }
   }
 
   if (Keyboard.isDown(Keyboard.PLUS)) { this.mode = 'map'; }
@@ -185,40 +187,63 @@ Game._drawTextPayload = function () {
   let text = Client.payload.text;
   let options = Client.payload.children;
 
-  let size = 32;
-  this.ctx.font = (size - 4) + 'px MECC';
+  let fontSize = 28;
+  let lineSize = fontSize + 4;
+  this.ctx.font = fontSize + 'px MECC';
   this.ctx.fillStyle = '#FFF';
   this.ctx.textAlign = 'start';
   this.ctx.textBaseline = 'alphabetic';
 
-  let line = 2;
+  let currentLine = 2;
   for (let i = 0; i < text.length; i++) {
-    this.ctx.fillText(text[i], size, line * size);
-    line += 2;
+    this.ctx.fillText(text[i], lineSize, currentLine * lineSize);
+    currentLine += 2;
   }
 
   for (let i = 0; i < options.length; i++) {
-    let optionText = (i + 1) + ". " + options[i].text;
-    this.ctx.fillText(optionText, 2 * size, line * size);
-    line++;
+    let optionText = options[i].id + ". " + options[i].text;
+    this.ctx.fillText(optionText, 2 * lineSize, currentLine * lineSize);
+    
+    if (this.text.eventID !== this.currentEvent) {
+      let coordsObject = {
+        id: options[i].id,
+        width: this.ctx.measureText(optionText).width,
+        height: fontSize,
+        xPos: 2 * lineSize,
+        yPos: lineSize * currentLine
+      };
+      console.log(this.text.inputButtonCoords);
+      this.text.inputButtonCoords(this.currentEvent, coordsObject);
+    }  
+    currentLine++;
   }
-  line++;
+  currentLine++;
 
-  this.ctx.fillText("What is your choice? _", size, line * size);
+  this.ctx.fillText("What is your choice? _", lineSize, currentLine * lineSize);
 };
 
 Game.render = function () {
-  if (this.mode === 'map') {
-    // draw map background layer
-    this._drawLayer(0);
-    // draw map top layer
-    this._drawLayer(1);
-    // draw Interface
-    this._drawMenu();
-  } else if (this.mode === 'text') {
-    // draw text layer with background
-    this._drawTextBackground();
-    this._drawTextPayload();
+  switch (this.mode) {
+
+    case 'map':
+      // draw map background layer
+      this._drawLayer(0);
+      // draw map top layer
+      this._drawLayer(1);
+      // draw Interface
+      this._drawMenu();
+      break;
+
+    case 'text':
+      if (Client.payload !== undefined) {
+        // draw text layer with background
+        this._drawTextBackground();
+        this._drawTextPayload();
+      }
+      break;
+
+    default:
+      console.log('invalid render mode');
   }
 };
 
