@@ -3,25 +3,63 @@
 //
 
 function Text() {
-  this.eventID = null; 
-  this.eventButtonCoords = [];
+  this.eventID = null;
+  this.selectedID = null;
 }
 
-Text.getClickedButton = function (clickPos) {
-  for (let i = 0; i < this.eventButtonCoords.length; i++) {
-    let button = this.eventButtonCoords[i];
-    if (clickPos.x >= button.xPos
-        && clickPos.x <= (button.xPos + button.width)
-        && clickPos.y <= button.yPos
-        && clickPos.y >= (button.yPos - button.height)) {
-      console.log(button.id);
+Text.prototype.screenToButton = function (x, y) {
+  for (let i = 0; i < this.eventPayload.options.length; i++) {
+    let button = this.eventPayload.options[i];
+    if (x >= button.xPos
+        && x <= (button.xPos + button.width)
+        && y <= button.yPos
+        && y >= (button.yPos - button.height)) {
+      this.selectOptionByID(button.id);
+      return this.selectedID;
     }
   }
+  this.selectOptionByID(null);
+  return this.selectedID;
 };
 
-Text.inputButtonCoords = function (id, coordsObject) {
-  this.eventID = id;
-  this.eventButtonCoords.push(coordsObject);
+Text.prototype.checkSelected = function (option) {
+  return this.selectedID === option.id;
+};
+
+Text.prototype.selectOption = function (option) {
+  this.selectedID = option.id;
+};
+
+Text.prototype.selectOptionByID = function (id) {
+  if (parseInt(id) > this.eventPayload.options.length) {
+    return;
+  }
+  this.selectedID = id;
+};
+
+Text.prototype.confirmOption = function (option) {}
+
+Text.prototype.loadPayload = function (payload) {
+  this.eventPayload = payload;
+};
+
+Text.prototype.getPayload = function () {
+  return this.eventPayload;
+};
+
+Text.prototype.checkButtonCoords = function (option) {
+  return option.hasOwnProperty('width')
+    && option.hasOwnProperty('height')
+    && option.hasOwnProperty('xPos')
+    && option.hasOwnProperty('yPos');
+};
+
+Text.prototype.mergeButtonCoords = function (id, buttonCoords) {
+  for (var attrname in buttonCoords) {
+    // Select elements in options array by id property
+    // Then add new properties to that object
+    this.eventPayload.options.find(x => x.id === id)[attrname] =  buttonCoords[attrname];
+  }
 };
 
 module.exports = Text;

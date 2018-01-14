@@ -55,4 +55,10 @@ Camera.prototype.tileToScreen = function (x, y) {
   };
 };
 
+Camera.prototype.hasClick = function (x, y) {
+  let validX = (x >= 0) && (x < this.width);
+  let validY = (y >= 0) && (Y < this.height);
+  return validX && validY;
+}
+
 module.exports = Camera;

@@ -38,10 +38,27 @@ Mouse.getClick = function () {
 
 var Keyboard = {};
 
+Keyboard.BACKSPACE = 8;
+Keyboard.DELETE = 46;
+Keyboard.ENTER = 13;
+Keyboard.ESCAPE = 27;
+
 Keyboard.LEFT = 37;
 Keyboard.RIGHT = 39;
 Keyboard.UP = 38;
 Keyboard.DOWN = 40;
+
+Keyboard.DIGIT0 = 48;
+Keyboard.DIGIT1 = 49;
+Keyboard.DIGIT2 = 50;
+Keyboard.DIGIT3 = 51;
+Keyboard.DIGIT4 = 52;
+Keyboard.DIGIT5 = 53;
+Keyboard.DIGIT6 = 54;
+Keyboard.DIGIT7 = 55;
+Keyboard.DIGIT8 = 56;
+Keyboard.DIGIT9 = 57;
+
 Keyboard.PLUS = 107;
 Keyboard.MINUS = 109;
 

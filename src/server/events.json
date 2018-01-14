@@ -3,7 +3,7 @@
         "text": [
             "First event"
         ],
-        "children": [
+        "options": [
             {
                 "id": "1",
                 "ref": "1",
@@ -15,19 +15,19 @@
         "text": [
             "Second event"
         ],
-        "children": [
+        "options": [
             {
                 "id": "1",
                 "ref": "3",
                 "text": "Sample choice"
-            }            
+            }
         ]
     },
     "2": {
         "text": [
             "Third event"
         ],
-        "children": [
+        "options": [
             
         ]
     },
@@ -36,7 +36,7 @@
             "Welcome to the Amazon Trail", 
             "You may:"
         ],
-        "children": [
+        "options": [
             {
                 "id": "1",
                 "ref": "4",
