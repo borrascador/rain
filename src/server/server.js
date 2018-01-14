@@ -2,7 +2,7 @@ var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var UUID = require('uuid/v4');
-var events = require('./engine/events.json');
+var events = require('./events.json');
 
 server.listen(4004);
 
