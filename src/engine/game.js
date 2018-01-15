@@ -16,13 +16,15 @@ map.getTile = function (layer, col, row) {
 
 var Game = {};
 
-import Client from './client.js';
+//import Client from './client.js';
 import src from '../images/tileset-small.png';
 import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
 import Camera from './camera.js';
 import Menu from './menu.js';
 import Text from './text.js';
+
+import events from '../server/events.json';
 
 Game.run = function (canvas, context) {
   this.cvs = canvas;
@@ -31,9 +33,10 @@ Game.run = function (canvas, context) {
 
   this.mode = 'text';
   this.currentEvent = '3';
-  
-  Client.connect();
-  Client.requestEvent(this.currentEvent);
+  this.payload = events['3'];
+
+  //Client.connect();
+  //Client.requestEvent(this.currentEvent);
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -103,7 +106,7 @@ Game.update = function (delta) {
         if (this.camera.hasClick(clickPos.x, clickPos.y)) {
           let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
           console.log(tilePos);
-          Client.sendTileClick(tilePos);
+          //Client.sendTileClick(tilePos);
         } else if (this.menu.hasClick(clickPos.x, clickPos.y)) {
           let button = this.menu.screenToButton(clickPos.x, clickPos.y); 
           this.mode = button.mode;
@@ -135,12 +138,17 @@ Game.update = function (delta) {
         this.text.selectOptionByID(selectedID);
       };
 
+      if (Keyboard.isDown(Keyboard.ENTER) && this.text.selectedID === '1') {
+        this.text.selectOptionByID(null);
+        this.mode = 'map';
+      };
+
       // handle mouse click
       if (Mouse.isClicked()) {
         let clickPos = Mouse.getClick();
         let button = this.text.screenToButton(clickPos.x, clickPos.y);
         console.log(button);
-        Client.sendClick(clickPos);
+        //Client.sendClick(clickPos);
       }
   }
     
@@ -212,8 +220,10 @@ Game._drawTextBackground = function () {
 };
 
 Game._drawTextPayload = function () {
-  this.text.loadPayload(Client.payload);
-  let payload = this.text.getPayload();
+  //this.text.loadPayload(Client.payload);
+  //let payload = this.text.getPayload();
+  this.text.loadPayload(this.payload);
+  let payload = this.payload;
 
   let fontSize = 28;
   let lineSize = fontSize + 4;
@@ -271,11 +281,11 @@ Game.render = function () {
       break;
 
     case 'text':
-      if (Client.payload !== undefined) {
+      //if (Client.payload !== undefined) {
         // draw text layer with background
         this._drawTextBackground();
         this._drawTextPayload();
-      }
+      //}
       break;
 
     default:
