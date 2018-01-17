@@ -4,7 +4,7 @@ var io = require('socket.io')(server);
 var UUID = require('uuid/v4');
 var events = require('./events.json');
 
-server.listen(4004);
+server.listen(4200);
 
 app.get('/', function (req, res) {
   // What is this for? I did this but I'm confused

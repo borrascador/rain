@@ -12,7 +12,7 @@ let types = {
 };
 
 Client.connect = function() {
-  this.socket = io.connect("http://localhost:4004");
+  this.socket = io.connect("http://localhost:4200");
   console.log('connecting...');
 
   this.socket.on('connect', function() {
