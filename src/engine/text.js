@@ -37,7 +37,10 @@ Text.prototype.selectOptionByID = function (id) {
   this.selectedID = id;
 };
 
-Text.prototype.confirmOption = function (option) {}
+Text.prototype.confirmOption = function (id) {
+  this.selectedID = null;
+  return this.eventPayload.options.find(x => x.id === id).ref;
+}
 
 Text.prototype.loadPayload = function (payload) {
   this.eventPayload = payload;

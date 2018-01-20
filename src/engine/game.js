@@ -24,16 +24,13 @@ import Camera from './camera.js';
 import Menu from './menu.js';
 import Text from './text.js';
 
-import events from '../server/events.json';
+import events from '../story/story_1.json';
 
 Game.run = function (canvas, context) {
   this.cvs = canvas;
   this.ctx = context;
   this._previousElapsed = 0;
 
-  this.mode = 'text';
-  this.currentEvent = '3';
-  this.payload = events['3'];
 
   //Client.connect();
   //Client.requestEvent(this.currentEvent);
@@ -70,6 +67,9 @@ Game.init = function () {
   this.tileAtlas = Loader.getImage('tiles');
   this.menu = new Menu(this.cvs.width, this.cvs.height);
   this.text = new Text();
+  this.mode = 'text';
+  this.currentEvent = '0';
+  this.payload = events[this.currentEvent];
   let mapWidth = this.cvs.width - this.menu.buttonSize;
   this.camera = new Camera(map, mapWidth, this.cvs.height);
   Mouse.listenForEvents(this.cvs);
@@ -105,12 +105,13 @@ Game.update = function (delta) {
         let clickPos = Mouse.getClick();
         if (this.camera.hasClick(clickPos.x, clickPos.y)) {
           let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
-          console.log(tilePos);
           //Client.sendTileClick(tilePos);
         } else if (this.menu.hasClick(clickPos.x, clickPos.y)) {
           let button = this.menu.screenToButton(clickPos.x, clickPos.y); 
           this.mode = button.mode;
-          if (this.mode === 'map') {
+          if (this.mode === 'text') {
+            this.payload = events['0'];
+          } else if (this.mode === 'map') {
             let screenPos = this.camera.tileToScreen(button.pos.x, button.pos.y);
             this.camera.focusTile(screenPos.x, screenPos.y);
           }
@@ -138,22 +139,40 @@ Game.update = function (delta) {
         this.text.selectOptionByID(selectedID);
       };
 
-      if (Keyboard.isDown(Keyboard.ENTER) && this.text.selectedID === '1') {
-        this.text.selectOptionByID(null);
-        this.mode = 'map';
+      if (Keyboard.isDown(Keyboard.ENTER) && selectedID !== null) {
+        let newID = this.text.confirmOption(selectedID);
+        this.payload = events[newID];
+        let action = this.payload.action;
+        this.mode = this.payload.type.substr(0, this.payload.type.indexOf('_')).toLowerCase();
+        if (this.mode === 'map') {
+          let screenPos = this.camera.tileToScreen(action.payload.x, action.payload.y);
+          this.camera.focusTile(screenPos.x, screenPos.y);
+        } 
       };
 
       // handle mouse click
       if (Mouse.isClicked()) {
         let clickPos = Mouse.getClick();
         let button = this.text.screenToButton(clickPos.x, clickPos.y);
-        console.log(button);
+        if (button === selectedID) {
+          let newID = this.text.confirmOption(selectedID);
+          this.payload = events[newID];
+          let action = this.payload.action;
+          this.mode = this.payload.type.substr(0, this.payload.type.indexOf('_')).toLowerCase();
+          if (this.mode === 'map') {
+            let screenPos = this.camera.tileToScreen(action.payload.x, action.payload.y);
+            this.camera.focusTile(screenPos.x, screenPos.y);
+          } 
+        }
         //Client.sendClick(clickPos);
       }
   }
     
   if (Keyboard.isDown(Keyboard.PLUS)) { this.mode = 'map'; }
-  if (Keyboard.isDown(Keyboard.MINUS)) { this.mode = 'text'; }
+  if (Keyboard.isDown(Keyboard.MINUS)) {
+    this.payload = events['0'];
+    this.mode = 'text'; 
+  }
 };
 
 Game._drawLayer = function (layer) {
@@ -235,8 +254,9 @@ Game._drawTextPayload = function () {
   let currentLine = 2;
   for (let i = 0; i < payload.text.length; i++) {
     this.ctx.fillText(payload.text[i], lineSize, currentLine * lineSize);
-    currentLine += 2;
+    currentLine++;
   }
+  currentLine++;
 
   for (let i = 0; i < payload.options.length; i++) {
     if (this.text.checkSelected(payload.options[i])) {
@@ -256,13 +276,12 @@ Game._drawTextPayload = function () {
         xPos: 2 * lineSize,
         yPos: lineSize * currentLine
       });
-    }  
+    }
     currentLine++;
   }
   currentLine++;
 
   this.ctx.fillStyle = '#FFF';
-  console.log(this.text.selectedID);
   let displayID = (this.text.selectedID !== null) ? this.text.selectedID : '';
   let promptText = "What is your choice? " + displayID + "_";
   this.ctx.fillText(promptText, lineSize, currentLine * lineSize);
