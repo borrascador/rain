@@ -16,23 +16,24 @@ map.getTile = function (layer, col, row) {
 
 var Game = {};
 
-import Client from './client.js';
+//import Client from './client.js';
 import src from '../images/tileset-small.png';
 import Loader from './loader.js';
 import { Mouse, Keyboard } from './input.js';
 import Camera from './camera.js';
 import Menu from './menu.js';
-// import Text from './text.js';
+import Text from './text.js';
+
+import events from '../story/story_1.json';
 
 Game.run = function (canvas, context) {
   this.cvs = canvas;
   this.ctx = context;
   this._previousElapsed = 0;
 
-  this.mode = 'text';
-  
-  Client.connect();
-  Client.requestEvent('3');
+
+  //Client.connect();
+  //Client.requestEvent(this.currentEvent);
 
   var p = this.load();
   Promise.all(p).then(function (loaded) {
@@ -64,59 +65,114 @@ Game.load = function () {
 
 Game.init = function () {
   this.tileAtlas = Loader.getImage('tiles');
-  this.menu = new Menu();
+  this.menu = new Menu(this.cvs.width, this.cvs.height);
+  this.text = new Text();
+  this.mode = 'text';
+  this.currentEvent = '0';
+  this.payload = events[this.currentEvent];
   let mapWidth = this.cvs.width - this.menu.buttonSize;
   this.camera = new Camera(map, mapWidth, this.cvs.height);
   Mouse.listenForEvents(this.cvs);
   Keyboard.listenForEvents([
+      Keyboard.BACKSPACE, Keyboard.DELETE,
+      Keyboard.ENTER, Keyboard.ESCAPE,
       Keyboard.LEFT, Keyboard.RIGHT,
       Keyboard.UP, Keyboard.DOWN,
+      Keyboard.DIGIT0, Keyboard.DIGIT1,
+      Keyboard.DIGIT2, Keyboard.DIGIT3,
+      Keyboard.DIGIT4, Keyboard.DIGIT5,
+      Keyboard.DIGIT6, Keyboard.DIGIT7,
+      Keyboard.DIGIT8, Keyboard.DIGIT9,
       Keyboard.PLUS, Keyboard.MINUS
   ]);
 };
 
 Game.update = function (delta) {
-  if (this.mode === 'map') {
-    // handle camera movement with arrow keys
-    var dirx = 0;
-    var diry = 0;
-    if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
-    if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
-    if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
-    if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
+  switch (this.mode) {
+    case 'map':
+      // handle camera movement with arrow keys
+      let dirx = 0;
+      let diry = 0;
+      if (Keyboard.isDown(Keyboard.LEFT)) { dirx = -1; }
+      if (Keyboard.isDown(Keyboard.RIGHT)) { dirx = 1; }
+      if (Keyboard.isDown(Keyboard.UP)) { diry = -1; }
+      if (Keyboard.isDown(Keyboard.DOWN)) { diry = 1; }
 
-    this.camera.move(delta, dirx, diry);
+      this.camera.move(delta, dirx, diry);
 
-    // handle mouse click
-    if (Mouse.isClicked()) {
-      let clickPos = Mouse.getClick();
-      if (clickPos.x < (this.cvs.width - this.menu.buttonSize)) {
-        let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
-        console.log(tilePos);
-        Client.sendTileClick(tilePos);
-      } else {
-        let buttonIndex = Math.floor(clickPos.y / this.menu.buttonSize);
-        let button = this.menu.buttons[buttonIndex];
-        console.log(button);
-        this.mode = button.mode;
-        if (this.mode === 'map') {
-          let screenPos = this.camera.tileToScreen(button.pos.x, button.pos.y);
-          this.camera.focusTile(screenPos.x, screenPos.y);
+      // handle mouse click
+      if (Mouse.isClicked()) {
+        let clickPos = Mouse.getClick();
+        if (this.camera.hasClick(clickPos.x, clickPos.y)) {
+          let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
+          //Client.sendTileClick(tilePos);
+        } else if (this.menu.hasClick(clickPos.x, clickPos.y)) {
+          let button = this.menu.screenToButton(clickPos.x, clickPos.y); 
+          this.mode = button.mode;
+          if (this.mode === 'text') {
+            this.payload = events['0'];
+          } else if (this.mode === 'map') {
+            let screenPos = this.camera.tileToScreen(button.pos.x, button.pos.y);
+            this.camera.focusTile(screenPos.x, screenPos.y);
+          }
         }
       }
-    }
-  } else if (this.mode === 'text') {
-    // handle mouse click
-    if (Mouse.isClicked()) {
-      let clickPos = Mouse.getClick();
-      console.log(clickPos);
-      Client.sendClick(clickPos);
-      this.mode = 'map';
-    }
-  }
+      break;
 
+    case 'text':
+      // handle keyboard events
+      let selectedID = this.text.selectedID; 
+      if (Keyboard.isDown(Keyboard.DIGIT1)) { selectedID = '1'; }
+      if (Keyboard.isDown(Keyboard.DIGIT2)) { selectedID = '2'; }
+      if (Keyboard.isDown(Keyboard.DIGIT3)) { selectedID = '3'; }
+      if (Keyboard.isDown(Keyboard.DIGIT4)) { selectedID = '4'; }
+      if (Keyboard.isDown(Keyboard.DIGIT5)) { selectedID = '5'; }
+      if (Keyboard.isDown(Keyboard.DIGIT6)) { selectedID = '6'; }
+      if (Keyboard.isDown(Keyboard.DIGIT7)) { selectedID = '7'; }
+      if (Keyboard.isDown(Keyboard.DIGIT8)) { selectedID = '8'; }
+      if (Keyboard.isDown(Keyboard.DIGIT9)) { selectedID = '9'; }
+      if (Keyboard.isDown(Keyboard.ESCAPE)) { selectedID = null; }
+      if (Keyboard.isDown(Keyboard.DELETE)) { selectedID = null; }
+      if (Keyboard.isDown(Keyboard.BACKSPACE)) { selectedID = null; }
+      
+      if (selectedID !== this.text.selectedID) {
+        this.text.selectOptionByID(selectedID);
+      };
+
+      if (Keyboard.isDown(Keyboard.ENTER) && selectedID !== null) {
+        let newID = this.text.confirmOption(selectedID);
+        this.payload = events[newID];
+        let action = this.payload.action;
+        this.mode = this.payload.type.substr(0, this.payload.type.indexOf('_')).toLowerCase();
+        if (this.mode === 'map') {
+          let screenPos = this.camera.tileToScreen(action.payload.x, action.payload.y);
+          this.camera.focusTile(screenPos.x, screenPos.y);
+        } 
+      };
+
+      // handle mouse click
+      if (Mouse.isClicked()) {
+        let clickPos = Mouse.getClick();
+        let button = this.text.screenToButton(clickPos.x, clickPos.y);
+        if (button === selectedID) {
+          let newID = this.text.confirmOption(selectedID);
+          this.payload = events[newID];
+          let action = this.payload.action;
+          this.mode = this.payload.type.substr(0, this.payload.type.indexOf('_')).toLowerCase();
+          if (this.mode === 'map') {
+            let screenPos = this.camera.tileToScreen(action.payload.x, action.payload.y);
+            this.camera.focusTile(screenPos.x, screenPos.y);
+          } 
+        }
+        //Client.sendClick(clickPos);
+      }
+  }
+    
   if (Keyboard.isDown(Keyboard.PLUS)) { this.mode = 'map'; }
-  if (Keyboard.isDown(Keyboard.MINUS)) { this.mode = 'text'; }
+  if (Keyboard.isDown(Keyboard.MINUS)) {
+    this.payload = events['0'];
+    this.mode = 'text'; 
+  }
 };
 
 Game._drawLayer = function (layer) {
@@ -178,47 +234,81 @@ Game._drawMenu = function () {
 
 Game._drawTextBackground = function () {
   this.ctx.fillStyle = '#000';
+  
   this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
 };
 
 Game._drawTextPayload = function () {
-  let text = Client.payload.text;
-  let options = Client.payload.children;
+  //this.text.loadPayload(Client.payload);
+  //let payload = this.text.getPayload();
+  this.text.loadPayload(this.payload);
+  let payload = this.payload;
 
-  let size = 32;
-  this.ctx.font = (size - 4) + 'px MECC';
+  let fontSize = 28;
+  let lineSize = fontSize + 4;
+  this.ctx.font = fontSize + 'px MECC';
   this.ctx.fillStyle = '#FFF';
   this.ctx.textAlign = 'start';
   this.ctx.textBaseline = 'alphabetic';
 
-  let line = 2;
-  for (let i = 0; i < text.length; i++) {
-    this.ctx.fillText(text[i], size, line * size);
-    line += 2;
+  let currentLine = 2;
+  for (let i = 0; i < payload.text.length; i++) {
+    this.ctx.fillText(payload.text[i], lineSize, currentLine * lineSize);
+    currentLine++;
   }
+  currentLine++;
 
-  for (let i = 0; i < options.length; i++) {
-    let optionText = (i + 1) + ". " + options[i].text;
-    this.ctx.fillText(optionText, 2 * size, line * size);
-    line++;
+  for (let i = 0; i < payload.options.length; i++) {
+    if (this.text.checkSelected(payload.options[i])) {
+      this.ctx.fillStyle = '#FF0';
+    } else {
+      this.ctx.fillStyle = '#FFF';
+    }
+
+    let optionText = payload.options[i].id + ". " + payload.options[i].text;
+    this.ctx.fillText(optionText, 2 * lineSize, currentLine * lineSize);
+    
+    if (this.text.checkButtonCoords(payload.options[i]) === false) {
+      let id = payload.options[i].id;
+      this.text.mergeButtonCoords(id, {
+        width: this.ctx.measureText(optionText).width,
+        height: fontSize,
+        xPos: 2 * lineSize,
+        yPos: lineSize * currentLine
+      });
+    }
+    currentLine++;
   }
-  line++;
+  currentLine++;
 
-  this.ctx.fillText("What is your choice? _", size, line * size);
+  this.ctx.fillStyle = '#FFF';
+  let displayID = (this.text.selectedID !== null) ? this.text.selectedID : '';
+  let promptText = "What is your choice? " + displayID + "_";
+  this.ctx.fillText(promptText, lineSize, currentLine * lineSize);
 };
 
 Game.render = function () {
-  if (this.mode === 'map') {
-    // draw map background layer
-    this._drawLayer(0);
-    // draw map top layer
-    this._drawLayer(1);
-    // draw Interface
-    this._drawMenu();
-  } else if (this.mode === 'text') {
-    // draw text layer with background
-    this._drawTextBackground();
-    this._drawTextPayload();
+  switch (this.mode) {
+
+    case 'map':
+      // draw map background layer
+      this._drawLayer(0);
+      // draw map top layer
+      this._drawLayer(1);
+      // draw Interface
+      this._drawMenu();
+      break;
+
+    case 'text':
+      //if (Client.payload !== undefined) {
+        // draw text layer with background
+        this._drawTextBackground();
+        this._drawTextPayload();
+      //}
+      break;
+
+    default:
+      console.log('Error: invalid render mode');
   }
 };
 

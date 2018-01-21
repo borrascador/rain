@@ -12,8 +12,16 @@ let types = {
 };
 
 Client.connect = function() {
-  this.socket = io.connect("http://localhost:4004");
-  console.log("Attempting connection");
+  this.socket = io.connect("http://localhost:4200");
+  console.log('connecting...');
+
+  this.socket.on('connect', function() {
+    console.log('connected');
+  });
+
+  this.socket.on('connect_error', function() {
+    console.log('connection failed');
+  });
 
   this.socket.on('send id', function(data) {
     console.log('socket id: ' + JSON.stringify(data.userid));

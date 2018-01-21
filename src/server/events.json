@@ -3,8 +3,9 @@
         "text": [
             "First event"
         ],
-        "children": [
+        "options": [
             {
+                "id": "1",
                 "ref": "1",
                 "text": "First sample choice"
             }
@@ -14,18 +15,19 @@
         "text": [
             "Second event"
         ],
-        "children": [
+        "options": [
             {
+                "id": "1",
                 "ref": "3",
                 "text": "Sample choice"
-            }            
+            }
         ]
     },
     "2": {
         "text": [
             "Third event"
         ],
-        "children": [
+        "options": [
             
         ]
     },
@@ -34,28 +36,34 @@
             "Welcome to the Amazon Trail", 
             "You may:"
         ],
-        "children": [
+        "options": [
             {
+                "id": "1",
                 "ref": "4",
                 "text": "Travel the trail"
             },
             {
+                "id": "2",
                 "ref": "5",
                 "text": "Learn about the trail"
             },
             {
+                "id": "3",
                 "ref": "10",
                 "text": "See the Amazon Top Ten"
             },
             {
+                "id": "4",
                 "ref": "15",
                 "text": "Turn sound off"
             },
             {
+                "id": "5",
                 "ref": "12",
                 "text": "Choose Management Options"
             },
             {
+                "id": "6",
                 "ref": "6",
                 "text": "End"
             }
