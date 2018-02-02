@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
+    "watch": "webpack --watch",
     "build": "webpack -p"
   },
   "repository": {
