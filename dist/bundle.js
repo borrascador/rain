@@ -1131,6 +1131,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function runGame(canvas, ctx) {
   var draw = function draw() {
     var state = store.getState();
+    for (var key in state.keys) {
+      if (state.keys[key] === true) {
+        console.log(key);
+      };
+    }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
@@ -1841,7 +1846,6 @@ var reducer = function reducer(state, action) {
   switch (action.type) {
     case 'KEYDOWN':
       if (state.keys.hasOwnProperty(action.key)) {
-        console.log(action.key, "down");
         var newKeys = Object.assign({}, state.keys);
         newKeys[action.key] = true;
         return {
@@ -1856,7 +1860,6 @@ var reducer = function reducer(state, action) {
       }
     case 'KEYUP':
       if (state.keys.hasOwnProperty(action.key)) {
-        console.log(action.key, "up");
         var newKeys = Object.assign({}, state.keys);
         newKeys[action.key] = false;
         return {

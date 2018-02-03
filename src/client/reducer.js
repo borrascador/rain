@@ -23,7 +23,6 @@ var reducer = function(state, action) {
   switch (action.type) {
     case 'KEYDOWN':
       if (state.keys.hasOwnProperty(action.key)) {
-        console.log(action.key, "down");
         var newKeys = Object.assign({}, state.keys);
         newKeys[action.key] = true;
         return {
@@ -38,7 +37,6 @@ var reducer = function(state, action) {
       }
     case 'KEYUP':
       if (state.keys.hasOwnProperty(action.key)) {
-        console.log(action.key, "up");
         var newKeys = Object.assign({}, state.keys);
         newKeys[action.key] = false;
         return {

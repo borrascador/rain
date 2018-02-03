@@ -4,6 +4,9 @@ import reducer from './reducer';
 function runGame(canvas, ctx) {
   var draw = function() {
     var state = store.getState();
+    for (const key in state.keys) {
+      if (state.keys[key] === true) { console.log(key) };
+    }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
