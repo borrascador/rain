@@ -6,7 +6,9 @@ import {
   translateCanvasStart,
   translateCanvas,
   translateCanvasEnd,
-  clickTile
+  // clickTile,
+  addTile,
+  removeTile,
 } from './actions/actions';
 
 import src from '../images/tileset-smaller.png';
@@ -23,29 +25,20 @@ function runGame(canvas, ctx) {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.setTransform(1, 0, 0, 1, state.input.canvas.x, state.input.canvas.y);
-    state.input.tiles.forEach((tile) => {
-      ctx.drawImage(
-        atlas,
-        0 * tile.srcTileSize,
-        0 * tile.srcTileSize,
-        tile.srcTileSize,
-        tile.srcTileSize,
-        tile.pos.x * tile.mapTileSize,
-        tile.pos.y * tile.mapTileSize,
-        tile.mapTileSize,
-        tile.mapTileSize
-      );
-      ctx.drawImage(
-        atlas,
-        tile.srcPos.x * tile.srcTileSize,
-        tile.srcPos.y * tile.srcTileSize,
-        tile.srcTileSize,
-        tile.srcTileSize,
-        tile.pos.x * tile.mapTileSize,
-        tile.pos.y * tile.mapTileSize,
-        tile.mapTileSize,
-        tile.mapTileSize
-      );
+    state.map.mapTiles.forEach((mapTile) => {
+      mapTile.layers.forEach((id) => {
+        ctx.drawImage(
+          atlas,
+          state.map.srcTiles[id].pos.x * state.map.srcTileSize,
+          state.map.srcTiles[id].pos.y * state.map.srcTileSize,
+          state.map.srcTileSize,
+          state.map.srcTileSize,
+          mapTile.pos.x * state.map.mapTileSize,
+          mapTile.pos.y * state.map.mapTileSize,
+          state.map.mapTileSize,
+          state.map.mapTileSize
+        );
+      });
     });
   };
 
@@ -72,17 +65,18 @@ function runGame(canvas, ctx) {
     store.dispatch(translateCanvasEnd());
   }, false);
 
-  canvas.addEventListener('click', (event) => {
-    var rect = canvas.getBoundingClientRect();
-    var x = Math.floor(event.clientX - rect.left);
-    var y = Math.floor(event.clientY - rect.top);
-    store.dispatch(clickTile(x, y));
-  }, false);
+  // canvas.addEventListener('click', (event) => {
+  //   var rect = canvas.getBoundingClientRect();
+  //   var x = Math.floor(event.clientX - rect.left);
+  //   var y = Math.floor(event.clientY - rect.top);
+  //   store.dispatch(clickTile(x, y));
+  // }, false);
   
   var atlas;
   var p = [loadImage('tiles', src)];
   Promise.all(p).then( (loaded) => {
     atlas = getImage('tiles');
+    store.dispatch(addTile());
     draw();
   });
 }

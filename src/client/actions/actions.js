@@ -4,7 +4,9 @@ import {
   TRANSLATE_CANVAS_START,
   TRANSLATE_CANVAS,
   TRANSLATE_CANVAS_END,
-  CLICK_TILE
+  // CLICK_TILE
+  ADD_TILE,
+  REMOVE_TILE,
 } from './types';
 
 export function keyDown(key) {
@@ -35,10 +37,18 @@ export function translateCanvasEnd() {
   return { type: TRANSLATE_CANVAS_END };
 }
 
-export function clickTile(x, y) {
-  return {
-    type: CLICK_TILE,
-    xClick: x,
-    yClick: y
-  };
+// export function clickTile(x, y) {
+//   return {
+//     type: CLICK_TILE,
+//     xClick: x,
+//     yClick: y
+//   };
+// }
+
+export function addTile() {
+  return { type: ADD_TILE };
+}
+
+export function removeTile() {
+  return { type: REMOVE_TILE };
 }
