@@ -4,7 +4,7 @@ import {
   TRANSLATE_CANVAS_START,
   TRANSLATE_CANVAS,
   TRANSLATE_CANVAS_END,
-  // CLICK_TILE
+  CLICK,
   ADD_TILE,
   REMOVE_TILE,
 } from './types';
@@ -37,13 +37,13 @@ export function translateCanvasEnd() {
   return { type: TRANSLATE_CANVAS_END };
 }
 
-// export function clickTile(x, y) {
-//   return {
-//     type: CLICK_TILE,
-//     xClick: x,
-//     yClick: y
-//   };
-// }
+export function click(x, y) {
+  return {
+    type: CLICK,
+    x: x,
+    y: y
+  };
+}
 
 export function addTile() {
   return { type: ADD_TILE };

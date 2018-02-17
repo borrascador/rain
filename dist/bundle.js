@@ -79,7 +79,7 @@ var TRANSLATE_CANVAS_START = exports.TRANSLATE_CANVAS_START = 'TRANSLATE_CANVAS_
 var TRANSLATE_CANVAS = exports.TRANSLATE_CANVAS = 'TRANSLATE_CANVAS';
 var TRANSLATE_CANVAS_END = exports.TRANSLATE_CANVAS_END = 'TRANSLATE_CANVAS_END';
 
-// export const CLICK_TILE = 'CLICK_TILE';
+var CLICK = exports.CLICK = 'CLICK';
 
 var ADD_TILE = exports.ADD_TILE = 'ADD_TILE';
 var REMOVE_TILE = exports.REMOVE_TILE = 'REMOVE_TILE';
@@ -1224,30 +1224,28 @@ function runGame(canvas, ctx) {
     store.dispatch((0, _actions.keyUp)(event.key));
   }, false);
 
-  canvas.addEventListener('mousedown', function (event) {
-    store.dispatch((0, _actions.translateCanvasStart)(event.offsetX, event.offsetY));
-  }, false);
-
-  canvas.addEventListener('mousemove', function (event) {
-    store.dispatch((0, _actions.translateCanvas)(event.offsetX, event.offsetY));
-  }, false);
-
-  canvas.addEventListener('mouseup', function () {
-    store.dispatch((0, _actions.translateCanvasEnd)());
-  }, false);
-
-  // canvas.addEventListener('click', (event) => {
-  //   var rect = canvas.getBoundingClientRect();
-  //   var x = Math.floor(event.clientX - rect.left);
-  //   var y = Math.floor(event.clientY - rect.top);
-  //   store.dispatch(clickTile(x, y));
+  // canvas.addEventListener('mousedown', (event) => {
+  //   store.dispatch(translateCanvasStart(event.offsetX, event.offsetY));
+  // }, false);
+  // 
+  // canvas.addEventListener('mousemove', (event) => {
+  //   store.dispatch(translateCanvas(event.offsetX, event.offsetY));
+  // }, false);
+  // 
+  // canvas.addEventListener('mouseup', () => {
+  //   store.dispatch(translateCanvasEnd());
   // }, false);
 
+  canvas.addEventListener('click', function (event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = Math.floor(event.clientX - rect.left);
+    var y = Math.floor(event.clientY - rect.top);
+    store.dispatch((0, _actions.click)(x, y));
+  }, false);
+
   var atlas;
-  var p = [(0, _loader.loadImage)('tiles', _tilesetSmaller2.default)];
-  Promise.all(p).then(function (loaded) {
+  Promise.resolve((0, _loader.loadImage)('tiles', _tilesetSmaller2.default)).then(function (loaded) {
     atlas = (0, _loader.getImage)('tiles');
-    store.dispatch((0, _actions.addTile)());
     draw();
   });
 }
@@ -1984,14 +1982,33 @@ module.exports = input;
 
 var _types = __webpack_require__(0);
 
-var initialState = {
-  srcTileSize: 32,
-  srcTiles: [{ pos: { x: 0, y: 0 } }, { pos: { x: 1, y: 0 } }],
-  mapTileSize: 128,
-  mapTiles: []
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var makeSrcTiles = function makeSrcTiles() {
+  var array = [];
+  for (var y = 0; y < 6; y++) {
+    for (var x = 0; x < 5; x++) {
+      array.push({ pos: { x: x, y: y } });
+    }
+  }
+  return array;
 };
 
-var testTiles = [{ pos: { x: 2, y: 1 }, layers: [0] }, { pos: { x: 2, y: 2 }, layers: [0, 1] }];
+var testTiles = [{ pos: { x: 0, y: 2 }, layers: [0] }, { pos: { x: 1, y: 1 }, layers: [0] }, { pos: { x: 1, y: 2 }, layers: [0] }, { pos: { x: 1, y: 3 }, layers: [0] }, { pos: { x: 2, y: 0 }, layers: [0] }, { pos: { x: 2, y: 1 }, layers: [0] }, { pos: { x: 2, y: 2 }, layers: [0, 29] }, { pos: { x: 2, y: 3 }, layers: [0] }, { pos: { x: 2, y: 4 }, layers: [0] }, { pos: { x: 3, y: 1 }, layers: [0, 3] }, { pos: { x: 3, y: 2 }, layers: [0, 3] }, { pos: { x: 3, y: 3 }, layers: [0, 3] }, { pos: { x: 4, y: 2 }, layers: [0] }];
+
+var screenToTile = function screenToTile(x, y, size) {
+  return {
+    x: Math.floor(x / size),
+    y: Math.floor(y / size)
+  };
+};
+
+var initialState = {
+  srcTileSize: 32,
+  srcTiles: makeSrcTiles(),
+  mapTileSize: 96,
+  mapTiles: testTiles
+};
 
 var map = function map(state, action) {
   if (typeof state === 'undefined') {
@@ -1999,14 +2016,23 @@ var map = function map(state, action) {
   }
   switch (action.type) {
     case _types.ADD_TILE:
+      return state; // TODO: push action.mapTile
+    case _types.REMOVE_TILE:
+      return state; // TODO: pop action.mapTile by pos
+    case _types.CLICK:
+      var pos = screenToTile(action.x, action.y, state.mapTileSize);
+      var tile = state.mapTiles.find(function (tile) {
+        return tile.pos.x === pos.x && tile.pos.y === pos.y;
+      });
       return {
         srcTileSize: state.srcTileSize,
         srcTiles: state.srcTiles,
         mapTileSize: state.mapTileSize,
-        mapTiles: testTiles // TODO: push action.mapTile
+        mapTiles: [].concat(_toConsumableArray(state.mapTiles), [{
+          pos: tile.pos,
+          layers: tile.layers.concat([28])
+        }])
       };
-    case _types.REMOVE_TILE:
-      return state; // TODO: pop action.mapTile by pos
     default:
       return state;
   }
@@ -2029,6 +2055,7 @@ exports.keyUp = keyUp;
 exports.translateCanvasStart = translateCanvasStart;
 exports.translateCanvas = translateCanvas;
 exports.translateCanvasEnd = translateCanvasEnd;
+exports.click = click;
 exports.addTile = addTile;
 exports.removeTile = removeTile;
 
@@ -2062,13 +2089,13 @@ function translateCanvasEnd() {
   return { type: _types.TRANSLATE_CANVAS_END };
 }
 
-// export function clickTile(x, y) {
-//   return {
-//     type: CLICK_TILE,
-//     xClick: x,
-//     yClick: y
-//   };
-// }
+function click(x, y) {
+  return {
+    type: _types.CLICK,
+    x: x,
+    y: y
+  };
+}
 
 function addTile() {
   return { type: _types.ADD_TILE };

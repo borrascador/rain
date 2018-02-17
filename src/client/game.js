@@ -6,7 +6,7 @@ import {
   translateCanvasStart,
   translateCanvas,
   translateCanvasEnd,
-  // clickTile,
+  click,
   addTile,
   removeTile,
 } from './actions/actions';
@@ -46,37 +46,36 @@ function runGame(canvas, ctx) {
   store.subscribe(draw);
 
   window.addEventListener('keydown', (event) => {
-    store.dispatch(keyDown(event.key));
+    store.dispatch(keyDown(event.key));    
   }, false);
 
   window.addEventListener('keyup', (event) => {
     store.dispatch(keyUp(event.key));
   }, false);
   
-  canvas.addEventListener('mousedown', (event) => {
-    store.dispatch(translateCanvasStart(event.offsetX, event.offsetY));
-  }, false);
-
-  canvas.addEventListener('mousemove', (event) => {
-    store.dispatch(translateCanvas(event.offsetX, event.offsetY));
-  }, false);
-
-  canvas.addEventListener('mouseup', () => {
-    store.dispatch(translateCanvasEnd());
-  }, false);
-
-  // canvas.addEventListener('click', (event) => {
-  //   var rect = canvas.getBoundingClientRect();
-  //   var x = Math.floor(event.clientX - rect.left);
-  //   var y = Math.floor(event.clientY - rect.top);
-  //   store.dispatch(clickTile(x, y));
+  // canvas.addEventListener('mousedown', (event) => {
+  //   store.dispatch(translateCanvasStart(event.offsetX, event.offsetY));
   // }, false);
+  // 
+  // canvas.addEventListener('mousemove', (event) => {
+  //   store.dispatch(translateCanvas(event.offsetX, event.offsetY));
+  // }, false);
+  // 
+  // canvas.addEventListener('mouseup', () => {
+  //   store.dispatch(translateCanvasEnd());
+  // }, false);
+
+  canvas.addEventListener('click', (event) => {
+    var rect = canvas.getBoundingClientRect();
+    var x = Math.floor(event.clientX - rect.left);
+    var y = Math.floor(event.clientY - rect.top);
+    store.dispatch(click(x, y));
+  }, false);
   
   var atlas;
-  var p = [loadImage('tiles', src)];
-  Promise.all(p).then( (loaded) => {
+  Promise.resolve(loadImage('tiles', src))
+  .then((loaded) => {
     atlas = getImage('tiles');
-    store.dispatch(addTile());
     draw();
   });
 }

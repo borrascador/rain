@@ -4,7 +4,7 @@ import {
   TRANSLATE_CANVAS_START,
   TRANSLATE_CANVAS,
   TRANSLATE_CANVAS_END,
-  // CLICK_TILE
+  CLICK_TILE
 } from '../actions/types';
 
 var initialState = {
