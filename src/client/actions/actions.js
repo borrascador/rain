@@ -5,8 +5,8 @@ import {
   TRANSLATE_CANVAS,
   TRANSLATE_CANVAS_END,
   CLICK,
-  ADD_TILE,
-  REMOVE_TILE,
+  ADD_TILES,
+  REMOVE_TILES,
 } from './types';
 
 export function keyDown(key) {
@@ -45,10 +45,10 @@ export function click(x, y) {
   };
 }
 
-export function addTile() {
-  return { type: ADD_TILE };
+export function addTiles() {
+  return { type: ADD_TILES };
 }
 
-export function removeTile() {
-  return { type: REMOVE_TILE };
+export function removeTiles() {
+  return { type: REMOVE_TILES };
 }

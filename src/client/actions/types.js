@@ -6,5 +6,5 @@ export const TRANSLATE_CANVAS_END = 'TRANSLATE_CANVAS_END';
 
 export const CLICK = 'CLICK';
 
-export const ADD_TILE = 'ADD_TILE';
-export const REMOVE_TILE = 'REMOVE_TILE';
+export const ADD_TILES = 'ADD_TILES';
+export const REMOVE_TILES = 'REMOVE_TILES';
