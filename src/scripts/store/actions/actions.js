@@ -5,6 +5,7 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
+  CHANGE_MODE,
 } from './types';
 
 export function keyDown(key) {
@@ -49,5 +50,12 @@ export function mouseUp(x, y) {
 export function clicked() {
   return {
     type: CLICKED,
+  };
+}
+
+export function changeMode(mode) {
+  return {
+    type: CHANGE_MODE,
+    payload: {mode,}
   };
 }

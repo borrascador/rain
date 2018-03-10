@@ -1,3 +1,5 @@
+import {MODE} from '../constants';
+import {changeMode} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
 
 export default class Text {
@@ -38,7 +40,7 @@ export default class Text {
     keys.map(key => {
       if (key >= "0" && key <= "9") this.selectedID = key;
       if (key === "Escape" || key === "Backspace" || key === "Delete") this.selectedID = null;
-      // if (key === "Enter" && this.selectedID) TODO
+      if (key === "Enter") this.store.dispatch(changeMode(MODE.MAP)); // TODO Change
     })
   }
 

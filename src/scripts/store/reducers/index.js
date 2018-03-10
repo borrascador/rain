@@ -5,7 +5,9 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
+  CHANGE_MODE,
 } from '../actions/types';
+import { changeMode } from '../utils/ui';
 import { makeSrcTiles, makeTestTiles, click, addLayer } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 
@@ -82,6 +84,8 @@ export default function reducer(state, action) {
       return mouseUp(state, action);
     case CLICKED:
       return clicked(state);
+    case CHANGE_MODE:
+      return changeMode(state, action);
     default:
       return state;
   }

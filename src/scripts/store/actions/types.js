@@ -4,3 +4,4 @@ export const MOUSEDOWN = 'MOUSEDOWN';
 export const DRAG = 'DRAG';
 export const MOUSEUP = 'MOUSEUP';
 export const CLICKED = 'CLICKED';
+export const CHANGE_MODE = 'CHANGE_MODE';
