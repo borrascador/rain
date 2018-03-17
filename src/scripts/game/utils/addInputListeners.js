@@ -24,6 +24,9 @@ export default function addInputListeners (dispatch, canvas) {
   }, false);
 
   canvas.addEventListener('mouseup', (event) => {
-    dispatch(mouseUp(event.x, event.y));
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    dispatch(mouseUp(x, y));
   }, false);
 }

@@ -1,5 +1,5 @@
 import {MODE} from '../constants';
-import {changeMode} from '../../store/actions/actions';
+import {changeMode, clicked} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
 
 export default class Text {
@@ -11,37 +11,69 @@ export default class Text {
     this.selectedID = null;
 
     this.connect = new Connect(this.store);
-    this.setEvent();
+    this.setEvent(this.eventID);
   }
 
-  setEvent() {
-    const event = this.connect.events[this.eventID];
+  setEvent(idx) {
+    const event = this.connect.events[idx];
     this.text = event.text;
     this.options = event.options;
   }
 
-  checkButtonCoords (option) {
-    return option.hasOwnProperty('width')
-      && option.hasOwnProperty('height')
-      && option.hasOwnProperty('xPos')
-      && option.hasOwnProperty('yPos');
+  getOptionById (id) {
+    return this.options.find(x => x.id === id);
   }
 
-  mergeButtonCoords (id, buttonCoords) {
-    for (var attrname in buttonCoords) {
-      // Select elements in options array by id property
-      // Then add new properties to that object
-      this.options.find(x => x.id === id)[attrname] =  buttonCoords[attrname];
+  chooseOption() {
+    const option = this.getOptionById(this.selectedID);
+    this.selectedID = null;
+    const event = this.connect.events[option.ref];
+    switch (event.type) {
+      case "TEXT_MC":
+        this.setEvent(option.ref);
+        break;
+      case "MAP_FOCUS":
+        this.store.dispatch(changeMode(MODE.MAP));
+        break;
+    }
+  }
+
+  screenToOption (x, y) {
+    const selectedOption = this.options.find(option => {
+      return (
+        x >= option.xPos && x <= (option.xPos + option.width) &&
+        y <= option.yPos && y >= (option.yPos - option.height)
+      );
+    });
+    return selectedOption && selectedOption.id || null;
+  }
+
+  updateKeys() {
+    const keys = this.connect.keys;
+    keys.map(key => {
+      if (key >= "1" && key <= this.options.length.toString()) this.selectedID = key;
+      if (["Escape", "Backspace", "Delete"].includes(key)) this.selectedID = null;
+      if (this.selectedID && key === "Enter") this.chooseOption();
+    });
+  }
+
+  updateClick() {
+    const {xClick, yClick} = this.connect.click;
+    if (xClick && yClick) {
+      const clickID = this.screenToOption(xClick, yClick);
+      this.store.dispatch(clicked());
+      if (this.selectedID && this.selectedID === clickID) {
+        this.selectedID = clickID;
+        this.chooseOption();
+      } else {
+        this.selectedID = clickID;
+      }
     }
   }
 
   update(delta) {
-    const keys = this.connect.keys;
-    keys.map(key => {
-      if (key >= "0" && key <= "9") this.selectedID = key;
-      if (key === "Escape" || key === "Backspace" || key === "Delete") this.selectedID = null;
-      if (key === "Enter") this.store.dispatch(changeMode(MODE.MAP)); // TODO Change
-    })
+    this.updateKeys();
+    this.updateClick();
   }
 
   render() {
@@ -55,34 +87,31 @@ export default class Text {
     this.ctx.textAlign = 'start';
     this.ctx.textBaseline = 'alphabetic';
 
-    let currentLine = 2;
-    for (let i = 0; i < this.text.length; i++) {
-      this.ctx.fillText(this.text[i], lineSize, currentLine * lineSize);
-      currentLine++;
-    }
-    currentLine++;
+    let linePos = 2;
+    this.text.map(line => {
+      this.ctx.fillText(line, lineSize, linePos * lineSize);
+      linePos++;
+    });
+    linePos++;
 
-    for (let i = 0; i < this.options.length; i++) {
-      this.ctx.fillStyle = (this.selectedID === this.options[i].id) ? '#FF0' : '#FFF';
-      let optionText = this.options[i].id + ". " + this.options[i].text;
-      this.ctx.fillText(optionText, 2 * lineSize, currentLine * lineSize);
-
-      if (this.checkButtonCoords(this.options[i]) === false) {
-        let id = this.options[i].id;
-        this.mergeButtonCoords(id, {
+    this.options.map(option => {
+      this.ctx.fillStyle = (this.selectedID === option.id) ? '#FF0' : '#FFF';
+      const optionText = `${option.id}. ${option.text}`;
+      this.ctx.fillText(optionText, 2 * lineSize, linePos * lineSize);
+      if (!['width', 'height', 'xPos', 'yPos'].every(item => Object.getOwnPropertyNames(option).includes(item))) {
+        Object.assign(option, {
           width: this.ctx.measureText(optionText).width,
           height: fontSize,
           xPos: 2 * lineSize,
-          yPos: lineSize * currentLine
+          yPos: lineSize * linePos
         });
       }
-      currentLine++;
-    }
-    currentLine++;
+      linePos++;
+    })
+    linePos++;
 
     this.ctx.fillStyle = '#FFF';
-    const displayID = (this.selectedID !== null) ? this.selectedID : '';
-    const promptText = "What is your choice? " + displayID + "_";
-    this.ctx.fillText(promptText, lineSize, currentLine * lineSize);
+    const promptText = `What is your choice? ${this.selectedID || ''}_`;
+    this.ctx.fillText(promptText, lineSize, linePos * lineSize);
   };
 }

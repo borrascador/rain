@@ -2445,7 +2445,10 @@ function addInputListeners(dispatch, canvas) {
   }, false);
 
   canvas.addEventListener('mouseup', function (event) {
-    dispatch((0, _actions.mouseUp)(event.x, event.y));
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    dispatch((0, _actions.mouseUp)(x, y));
   }, false);
 }
 
@@ -2859,47 +2862,87 @@ var Text = function () {
     this.selectedID = null;
 
     this.connect = new _Connect2.default(this.store);
-    this.setEvent();
+    this.setEvent(this.eventID);
   }
 
   _createClass(Text, [{
     key: 'setEvent',
-    value: function setEvent() {
-      var event = this.connect.events[this.eventID];
+    value: function setEvent(idx) {
+      var event = this.connect.events[idx];
       this.text = event.text;
       this.options = event.options;
     }
   }, {
-    key: 'checkButtonCoords',
-    value: function checkButtonCoords(option) {
-      return option.hasOwnProperty('width') && option.hasOwnProperty('height') && option.hasOwnProperty('xPos') && option.hasOwnProperty('yPos');
+    key: 'getOptionById',
+    value: function getOptionById(id) {
+      return this.options.find(function (x) {
+        return x.id === id;
+      });
     }
   }, {
-    key: 'mergeButtonCoords',
-    value: function mergeButtonCoords(id, buttonCoords) {
-      for (var attrname in buttonCoords) {
-        // Select elements in options array by id property
-        // Then add new properties to that object
-        this.options.find(function (x) {
-          return x.id === id;
-        })[attrname] = buttonCoords[attrname];
+    key: 'chooseOption',
+    value: function chooseOption() {
+      var option = this.getOptionById(this.selectedID);
+      this.selectedID = null;
+      var event = this.connect.events[option.ref];
+      switch (event.type) {
+        case "TEXT_MC":
+          this.setEvent(option.ref);
+          break;
+        case "MAP_FOCUS":
+          this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+          break;
+      }
+    }
+  }, {
+    key: 'screenToOption',
+    value: function screenToOption(x, y) {
+      var selectedOption = this.options.find(function (option) {
+        return x >= option.xPos && x <= option.xPos + option.width && y <= option.yPos && y >= option.yPos - option.height;
+      });
+      return selectedOption && selectedOption.id || null;
+    }
+  }, {
+    key: 'updateKeys',
+    value: function updateKeys() {
+      var _this = this;
+
+      var keys = this.connect.keys;
+      keys.map(function (key) {
+        if (key >= "1" && key <= _this.options.length.toString()) _this.selectedID = key;
+        if (["Escape", "Backspace", "Delete"].includes(key)) _this.selectedID = null;
+        if (_this.selectedID && key === "Enter") _this.chooseOption();
+      });
+    }
+  }, {
+    key: 'updateClick',
+    value: function updateClick() {
+      var _connect$click = this.connect.click,
+          xClick = _connect$click.xClick,
+          yClick = _connect$click.yClick;
+
+      if (xClick && yClick) {
+        var clickID = this.screenToOption(xClick, yClick);
+        this.store.dispatch((0, _actions.clicked)());
+        if (this.selectedID && this.selectedID === clickID) {
+          this.selectedID = clickID;
+          this.chooseOption();
+        } else {
+          this.selectedID = clickID;
+        }
       }
     }
   }, {
     key: 'update',
     value: function update(delta) {
-      var _this = this;
-
-      var keys = this.connect.keys;
-      keys.map(function (key) {
-        if (key >= "0" && key <= "9") _this.selectedID = key;
-        if (key === "Escape" || key === "Backspace" || key === "Delete") _this.selectedID = null;
-        if (key === "Enter") _this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP)); // TODO Change
-      });
+      this.updateKeys();
+      this.updateClick();
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       this.ctx.fillStyle = 'black';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -2910,35 +2953,34 @@ var Text = function () {
       this.ctx.textAlign = 'start';
       this.ctx.textBaseline = 'alphabetic';
 
-      var currentLine = 2;
-      for (var i = 0; i < this.text.length; i++) {
-        this.ctx.fillText(this.text[i], lineSize, currentLine * lineSize);
-        currentLine++;
-      }
-      currentLine++;
+      var linePos = 2;
+      this.text.map(function (line) {
+        _this2.ctx.fillText(line, lineSize, linePos * lineSize);
+        linePos++;
+      });
+      linePos++;
 
-      for (var _i = 0; _i < this.options.length; _i++) {
-        this.ctx.fillStyle = this.selectedID === this.options[_i].id ? '#FF0' : '#FFF';
-        var optionText = this.options[_i].id + ". " + this.options[_i].text;
-        this.ctx.fillText(optionText, 2 * lineSize, currentLine * lineSize);
-
-        if (this.checkButtonCoords(this.options[_i]) === false) {
-          var id = this.options[_i].id;
-          this.mergeButtonCoords(id, {
-            width: this.ctx.measureText(optionText).width,
+      this.options.map(function (option) {
+        _this2.ctx.fillStyle = _this2.selectedID === option.id ? '#FF0' : '#FFF';
+        var optionText = option.id + '. ' + option.text;
+        _this2.ctx.fillText(optionText, 2 * lineSize, linePos * lineSize);
+        if (!['width', 'height', 'xPos', 'yPos'].every(function (item) {
+          return Object.getOwnPropertyNames(option).includes(item);
+        })) {
+          Object.assign(option, {
+            width: _this2.ctx.measureText(optionText).width,
             height: fontSize,
             xPos: 2 * lineSize,
-            yPos: lineSize * currentLine
+            yPos: lineSize * linePos
           });
         }
-        currentLine++;
-      }
-      currentLine++;
+        linePos++;
+      });
+      linePos++;
 
       this.ctx.fillStyle = '#FFF';
-      var displayID = this.selectedID !== null ? this.selectedID : '';
-      var promptText = "What is your choice? " + displayID + "_";
-      this.ctx.fillText(promptText, lineSize, currentLine * lineSize);
+      var promptText = 'What is your choice? ' + (this.selectedID || '') + '_';
+      this.ctx.fillText(promptText, lineSize, linePos * lineSize);
     }
   }]);
 
