@@ -2314,7 +2314,7 @@ exports.clicked = clicked;
 /* 40 */
 /***/ (function(module, exports) {
 
-module.exports = {"0":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail","","You may:"],"options":[{"id":"1","ref":"1","text":"Explore the map"},{"id":"2","ref":"2","text":"Start new game"},{"id":"3","ref":"10","text":"See the Amazon High Scores"},{"id":"4","ref":"15","text":"Turn sound off"},{"id":"5","ref":"12","text":"Choose Management Options"},{"id":"6","ref":"6","text":"End"}]},"1":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":9,"y":9}},"text":[],"options":[]},"2":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail.","A world of adventure awaits you.","","Which path will you choose?"],"options":[{"id":"1","ref":"3","text":"The way of the tribe"},{"id":"2","ref":"4","text":"The life of a logger"},{"id":"3","ref":"5","text":"The researcher's journey"}]},"3":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":14,"y":10}},"text":[],"options":[]},"4":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":8,"y":13}},"text":[],"options":[]},"5":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":4,"y":6}},"text":[],"options":[]},"10":{"type":"TEXT_MC","action":null,"text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"options":[{"id":"1","ref":"0","text":"Go back to main menu"}]}}
+module.exports = {"0":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail","","You may:"],"options":[{"id":"1","ref":"1","text":"Explore the map"},{"id":"2","ref":"2","text":"Start new game"},{"id":"3","ref":"10","text":"See the Amazon High Scores"},{"id":"4","ref":"15","text":"Turn sound off"},{"id":"5","ref":"12","text":"Choose Management Options"},{"id":"6","ref":"6","text":"End"}]},"1":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":9,"y":9}},"text":[],"options":[]},"2":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail.","A world of adventure awaits you.","","Which path will you choose?"],"options":[{"id":"1","ref":"3","text":"The way of the tribe"},{"id":"2","ref":"4","text":"The life of a logger"},{"id":"3","ref":"5","text":"The researcher's journey"}]},"3":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":14,"y":10}},"text":[],"options":[]},"4":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":8,"y":13}},"text":[],"options":[]},"5":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":4,"y":6}},"text":[],"options":[]},"10":{"type":"TEXT_MC","action":null,"text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"options":[{"id":"1","ref":"0","text":"Go back to main menu"}]},"11":{"type":"MENU","action":null,"text":[],"options":[{"id":"1","ref":"0","text":"MENU"},{"id":"2","ref":"0","text":"MENU"},{"id":"3","ref":"0","text":"MENU"},{"id":"4","ref":"0","text":"MENU"}]}}
 
 /***/ }),
 /* 41 */
@@ -2486,20 +2486,20 @@ var MapView = function () {
     this.ctx = ctx;
 
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx);
-    // this.menu = new Menu(this.store, this.canvas, this.ctx);
+    this.menu = new _Menu2.default(this.store, this.canvas, this.ctx);
   }
 
   _createClass(MapView, [{
     key: 'update',
     value: function update(delta) {
       this.camera.update();
-      // this.menu.update();
+      this.menu.update();
     }
   }, {
     key: 'render',
     value: function render() {
       this.camera.render();
-      // this.menu.render();
+      this.menu.render();
     }
   }]);
 
@@ -2581,7 +2581,7 @@ var Camera = function () {
 
       this.ctx.fillStyle = 'black';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
+      // this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
 
       var _connect$map = this.connect.map,
           srcTileSize = _connect$map.srcTileSize,
@@ -2592,7 +2592,7 @@ var Camera = function () {
           MIDDLE = _constants.LAYER.MIDDLE,
           TOP = _constants.LAYER.TOP;
 
-      mapTiles.forEach(function (mapTile) {
+      mapTiles.map(function (mapTile) {
         [BASE, MIDDLE, TOP].forEach(function (layer) {
           var id = mapTile.layers[layer];
           if (typeof id === "number") {
@@ -2739,34 +2739,76 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _constants = __webpack_require__(0);
+
+var _actions = __webpack_require__(2);
+
+var _Connect = __webpack_require__(3);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _utils = __webpack_require__(50);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Menu = function () {
-  function Menu(store, width, height) {
+  function Menu(store, canvas, ctx) {
     _classCallCheck(this, Menu);
 
     this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
 
-    // Set button properties
-    this.buttons = [{ text: 'INFO', mode: 'text', pos: null, link: 3 }, { text: 'VIL', mode: 'map', pos: { x: 14, y: 10 }, link: null }, { text: 'LOG', mode: 'map', pos: { x: 8, y: 13 }, link: null }, { text: 'SCI', mode: 'map', pos: { x: 4, y: 6 }, link: null }];
-    this.buttonSize = 120;
-    this.width = width;
-    this.height = height;
+    this.connect = new _Connect2.default(this.store);
+    this.makeButtons();
   }
 
   _createClass(Menu, [{
-    key: 'screenToButton',
-    value: function screenToButton(x, y) {
-      var buttonIndex = Math.floor(y / this.buttonSize);
-      var clickedButton = this.buttons[buttonIndex];
-      return clickedButton;
+    key: 'makeButtons',
+    value: function makeButtons() {
+      var _this = this;
+
+      var menu = this.connect.events["11"];
+      this.buttons = menu.options;
+      this.buttonSize = this.canvas.height / 4;
+
+      // Set button properties
+      this.buttons.map(function (button) {
+        (0, _utils.addButtonCoords)(button, {
+          xPos: _this.canvas.width - _this.buttonSize,
+          yPos: _this.buttonSize * (button.id - 1),
+          width: _this.buttonSize,
+          height: _this.buttonSize
+        });
+      });
     }
   }, {
-    key: 'hasClick',
-    value: function hasClick(x, y) {
-      var validX = x >= this.width - this.buttonSize && x < this.width;
-      var validY = y >= 0 && y < this.height;
-      return validX && validY;
+    key: 'update',
+    value: function update() {}
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      this.buttons.map(function (button) {
+        // Make button box
+        _this2.ctx.strokeStyle = '#FFF';
+        _this2.ctx.lineWidth = 4;
+        var xPos = button.xPos + 8;
+        var yPos = button.yPos + 8;
+        var width = button.width - 16;
+        var height = button.height - 16;
+        _this2.ctx.strokeRect(xPos, yPos, width, height);
+
+        // Make button text
+        _this2.ctx.font = '20px MECC';
+        _this2.ctx.fillStyle = '#FFF';
+        _this2.ctx.textAlign = 'center';
+        _this2.ctx.textBaseline = 'middle';
+        _this2.ctx.fillText(button.text, xPos + width / 2, yPos + height / 2);
+      });
     }
   }]);
 
@@ -2847,6 +2889,8 @@ var _Connect = __webpack_require__(3);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _utils = __webpack_require__(50);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2895,14 +2939,6 @@ var Text = function () {
       }
     }
   }, {
-    key: 'screenToOption',
-    value: function screenToOption(x, y) {
-      var selectedOption = this.options.find(function (option) {
-        return x >= option.xPos && x <= option.xPos + option.width && y <= option.yPos && y >= option.yPos - option.height;
-      });
-      return selectedOption && selectedOption.id || null;
-    }
-  }, {
     key: 'updateKeys',
     value: function updateKeys() {
       var _this = this;
@@ -2922,7 +2958,7 @@ var Text = function () {
           yClick = _connect$click.yClick;
 
       if (xClick && yClick) {
-        var clickID = this.screenToOption(xClick, yClick);
+        var clickID = (0, _utils.screenToButtonID)(xClick, yClick, this.options);
         this.store.dispatch((0, _actions.clicked)());
         if (this.selectedID && this.selectedID === clickID) {
           this.selectedID = clickID;
@@ -2964,16 +3000,12 @@ var Text = function () {
         _this2.ctx.fillStyle = _this2.selectedID === option.id ? '#FF0' : '#FFF';
         var optionText = option.id + '. ' + option.text;
         _this2.ctx.fillText(optionText, 2 * lineSize, linePos * lineSize);
-        if (!['width', 'height', 'xPos', 'yPos'].every(function (item) {
-          return Object.getOwnPropertyNames(option).includes(item);
-        })) {
-          Object.assign(option, {
-            width: _this2.ctx.measureText(optionText).width,
-            height: fontSize,
-            xPos: 2 * lineSize,
-            yPos: lineSize * linePos
-          });
-        }
+        (0, _utils.addButtonCoords)(option, {
+          xPos: 2 * lineSize,
+          yPos: lineSize * linePos,
+          width: _this2.ctx.measureText(optionText).width,
+          height: fontSize
+        });
         linePos++;
       });
       linePos++;
@@ -2988,6 +3020,35 @@ var Text = function () {
 }();
 
 exports.default = Text;
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var addButtonCoords = function addButtonCoords(option, buttonCoords) {
+  var props = ['width', 'height', 'xPos', 'yPos'];
+  if (!props.every(function (prop) {
+    return Object.keys(option).includes(prop);
+  })) {
+    Object.assign(option, buttonCoords);
+  }
+};
+
+var screenToButtonID = function screenToButtonID(x, y, list) {
+  var selectedButton = list.find(function (button) {
+    return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
+  });
+  return selectedButton && selectedButton.id || null;
+};
+
+exports.addButtonCoords = addButtonCoords;
+exports.screenToButtonID = screenToButtonID;
 
 /***/ })
 /******/ ]);

@@ -1,6 +1,7 @@
 import {MODE} from '../constants';
 import {changeMode, clicked} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
+import {addButtonCoords, screenToButtonID} from './utils';
 
 export default class Text {
   constructor (store, canvas, ctx) {
@@ -38,16 +39,6 @@ export default class Text {
     }
   }
 
-  screenToOption (x, y) {
-    const selectedOption = this.options.find(option => {
-      return (
-        x >= option.xPos && x <= (option.xPos + option.width) &&
-        y <= option.yPos && y >= (option.yPos - option.height)
-      );
-    });
-    return selectedOption && selectedOption.id || null;
-  }
-
   updateKeys() {
     const keys = this.connect.keys;
     keys.map(key => {
@@ -60,7 +51,7 @@ export default class Text {
   updateClick() {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
-      const clickID = this.screenToOption(xClick, yClick);
+      const clickID = screenToButtonID(xClick, yClick, this.options);
       this.store.dispatch(clicked());
       if (this.selectedID && this.selectedID === clickID) {
         this.selectedID = clickID;
@@ -98,14 +89,12 @@ export default class Text {
       this.ctx.fillStyle = (this.selectedID === option.id) ? '#FF0' : '#FFF';
       const optionText = `${option.id}. ${option.text}`;
       this.ctx.fillText(optionText, 2 * lineSize, linePos * lineSize);
-      if (!['width', 'height', 'xPos', 'yPos'].every(item => Object.getOwnPropertyNames(option).includes(item))) {
-        Object.assign(option, {
-          width: this.ctx.measureText(optionText).width,
-          height: fontSize,
-          xPos: 2 * lineSize,
-          yPos: lineSize * linePos
-        });
-      }
+      addButtonCoords(option, {
+        xPos: 2 * lineSize,
+        yPos: lineSize * linePos,
+        width: this.ctx.measureText(optionText).width,
+        height: fontSize,
+      });
       linePos++;
     })
     linePos++;

@@ -4,7 +4,7 @@
         "action": null,
         "text": [
             "Welcome to the Amazon Trail",
-            "", 
+            "",
             "You may:"
         ],
         "options": [
@@ -132,6 +132,33 @@
                 "id": "1",
                 "ref": "0",
                 "text": "Go back to main menu"
+            }
+        ]
+    },
+    "11": {
+        "type": "MENU",
+        "action": null,
+        "text": [],
+        "options": [
+            {
+              "id": "1",
+              "ref": "0",
+              "text": "MENU"
+            },
+            {
+              "id": "2",
+              "ref": "0",
+              "text": "MENU"
+            },
+            {
+              "id": "3",
+              "ref": "0",
+              "text": "MENU"
+            },
+            {
+              "id": "4",
+              "ref": "0",
+              "text": "MENU"
             }
         ]
     }

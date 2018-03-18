@@ -30,11 +30,11 @@ export default class Camera {
     const {offsetX, offsetY} = this.connect.offset;
     this.ctx.fillStyle = 'black';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
+    // this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
 
     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
     const {BASE, MIDDLE, TOP} = LAYER;
-    mapTiles.forEach((mapTile) => {
+    mapTiles.map((mapTile) => {
       [BASE, MIDDLE, TOP].forEach(layer => {
         const id = mapTile.layers[layer];
         if (typeof id === "number") {

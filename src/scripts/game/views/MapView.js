@@ -8,16 +8,16 @@ export default class MapView {
     this.ctx = ctx;
 
     this.camera = new Camera(this.store, this.canvas, this.ctx);
-    // this.menu = new Menu(this.store, this.canvas, this.ctx);
+    this.menu = new Menu(this.store, this.canvas, this.ctx);
   }
 
   update(delta) {
     this.camera.update();
-    // this.menu.update();
+    this.menu.update();
   }
 
   render() {
     this.camera.render();
-    // this.menu.render();
+    this.menu.render();
   }
 }

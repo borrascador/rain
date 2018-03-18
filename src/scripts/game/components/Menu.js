@@ -1,30 +1,55 @@
+import {MODE} from '../constants';
+import {changeMode, clicked} from '../../store/actions/actions';
+import Connect from '../../store/reducers/Connect';
+import {addButtonCoords, screenToButtonID} from './utils';
+
 export default class Menu {
-  constructor (store, width, height) {
+  constructor (store, canvas, ctx) {
     this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.connect = new Connect(this.store);
+    this.makeButtons();
+  }
+
+  makeButtons() {
+    const menu = this.connect.events["11"];
+    this.buttons = menu.options;
+    this.buttonSize = this.canvas.height / 4;
 
     // Set button properties
-    this.buttons = [
-      { text : 'INFO', mode : 'text', pos : null, link: 3 },
-      { text : 'VIL', mode : 'map', pos : { x: 14, y: 10 }, link: null },
-      { text : 'LOG', mode : 'map', pos : { x: 8, y: 13 }, link: null },
-      { text : 'SCI', mode : 'map', pos : { x: 4, y: 6 }, link: null },
-    ];
-    this.buttonSize = 120;
-    this.width = width;
-    this.height = height;
+    this.buttons.map(button => {
+      addButtonCoords(button, {
+        xPos: this.canvas.width - this.buttonSize,
+        yPos: this.buttonSize * (button.id - 1),
+        width: this.buttonSize,
+        height: this.buttonSize,
+      });
+    });
   }
 
-  screenToButton (x, y) {
-    const buttonIndex = Math.floor(y / this.buttonSize);
-    const clickedButton = this.buttons[buttonIndex];
-    return clickedButton;
+  update() {
+
   }
 
-  hasClick (x, y) {
-    const validX = (x >= (this.width - this.buttonSize)) && (x < this.width);
-    const validY = (y >= 0) && (y < this.height);
-    return validX && validY;
-  }
+  render() {
+    this.buttons.map(button => {
+      // Make button box
+      this.ctx.strokeStyle = '#FFF';
+      this.ctx.lineWidth = 4;
+      const xPos = button.xPos + 8;
+      const yPos = button.yPos + 8;
+      const width = button.width - 16;
+      const height = button.height - 16;
+      this.ctx.strokeRect(xPos, yPos, width, height);
 
-  
+      // Make button text
+      this.ctx.font = '20px MECC';
+      this.ctx.fillStyle = '#FFF';
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      this.ctx.fillText(button.text, xPos + (width / 2), yPos + (height / 2));
+    });
+  }
 }
