@@ -2,7 +2,6 @@ import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
 import src from '../../../images/tileset-smaller.png';
 import {CAMERA_SPEED, LAYER} from '../constants.js'
-import {clicked} from '../../store/actions/actions';
 
 export default class Camera {
   constructor (store, canvas, ctx) {
@@ -18,12 +17,8 @@ export default class Camera {
     });
   }
 
-  update(delta) {
-    const {xClick, yClick} = this.connect.click;
-    if (xClick && yClick) {
-      console.log(xClick, yClick);
-      this.store.dispatch(clicked());
-    }
+  update(delta, x, y) {
+
   }
 
   render() {

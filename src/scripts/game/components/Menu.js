@@ -1,7 +1,7 @@
 import {MODE} from '../constants';
-import {changeMode, clicked} from '../../store/actions/actions';
+import {changeMode} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import {addButtonCoords, screenToButtonID} from './utils';
+import {addButtonCoords, screenToButtonID, getItemByID} from './utils';
 
 export default class Menu {
   constructor (store, canvas, ctx) {
@@ -29,19 +29,38 @@ export default class Menu {
     });
   }
 
-  update() {
+  chooseOption(clickID) {
+    const option = getItemByID(this.buttons, clickID);
+    const event = this.connect.events[option.ref];
+    switch (event.type) {
+      case "TEXT_MC":
+        this.store.dispatch(changeMode(MODE.TEXT));
+        break;
+      case "MAP_FOCUS":
+        this.store.dispatch(changeMode(MODE.MAP));
+        break;
+    }
+  }
 
+  updateClick(x, y) {
+    const clickID = x && y && screenToButtonID(x, y, this.buttons);
+    clickID && this.chooseOption(clickID);
+  }
+
+  update(delta, x, y) {
+    this.updateClick(x, y);
   }
 
   render() {
     this.buttons.map(button => {
-      // Make button box
-      this.ctx.strokeStyle = '#FFF';
-      this.ctx.lineWidth = 4;
       const xPos = button.xPos + 8;
       const yPos = button.yPos + 8;
       const width = button.width - 16;
       const height = button.height - 16;
+
+      // Make button box
+      this.ctx.strokeStyle = '#FFF';
+      this.ctx.lineWidth = 4;
       this.ctx.strokeRect(xPos, yPos, width, height);
 
       // Make button text

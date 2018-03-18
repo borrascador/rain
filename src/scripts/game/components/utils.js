@@ -15,4 +15,8 @@ const screenToButtonID = (x, y, list) => {
   return selectedButton && selectedButton.id || null;
 };
 
-export {addButtonCoords, screenToButtonID};
+const getItemByID = (array, id) => {
+  return array.find(x => x.id === id);
+}
+
+export {addButtonCoords, screenToButtonID, getItemByID};

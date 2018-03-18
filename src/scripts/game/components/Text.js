@@ -1,7 +1,7 @@
 import {MODE} from '../constants';
 import {changeMode, clicked} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import {addButtonCoords, screenToButtonID} from './utils';
+import {addButtonCoords, screenToButtonID, getItemByID} from './utils';
 
 export default class Text {
   constructor (store, canvas, ctx) {
@@ -21,12 +21,8 @@ export default class Text {
     this.options = event.options;
   }
 
-  getOptionById (id) {
-    return this.options.find(x => x.id === id);
-  }
-
   chooseOption() {
-    const option = this.getOptionById(this.selectedID);
+    const option = getItemByID(this.options, this.selectedID);
     this.selectedID = null;
     const event = this.connect.events[option.ref];
     switch (event.type) {
