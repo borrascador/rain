@@ -107,7 +107,7 @@ Game.update = function (delta) {
           let tilePos = this.camera.screenToTile(clickPos.x, clickPos.y);
           //Client.sendTileClick(tilePos);
         } else if (this.menu.hasClick(clickPos.x, clickPos.y)) {
-          let button = this.menu.screenToButton(clickPos.x, clickPos.y); 
+          let button = this.menu.screenToButton(clickPos.x, clickPos.y);
           this.mode = button.mode;
           if (this.mode === 'text') {
             this.payload = events['0'];
@@ -121,7 +121,7 @@ Game.update = function (delta) {
 
     case 'text':
       // handle keyboard events
-      let selectedID = this.text.selectedID; 
+      let selectedID = this.text.selectedID;
       if (Keyboard.isDown(Keyboard.DIGIT1)) { selectedID = '1'; }
       if (Keyboard.isDown(Keyboard.DIGIT2)) { selectedID = '2'; }
       if (Keyboard.isDown(Keyboard.DIGIT3)) { selectedID = '3'; }
@@ -134,7 +134,7 @@ Game.update = function (delta) {
       if (Keyboard.isDown(Keyboard.ESCAPE)) { selectedID = null; }
       if (Keyboard.isDown(Keyboard.DELETE)) { selectedID = null; }
       if (Keyboard.isDown(Keyboard.BACKSPACE)) { selectedID = null; }
-      
+
       if (selectedID !== this.text.selectedID) {
         this.text.selectOptionByID(selectedID);
       };
@@ -147,7 +147,7 @@ Game.update = function (delta) {
         if (this.mode === 'map') {
           let screenPos = this.camera.tileToScreen(action.payload.x, action.payload.y);
           this.camera.focusTile(screenPos.x, screenPos.y);
-        } 
+        }
       };
 
       // handle mouse click
@@ -162,16 +162,16 @@ Game.update = function (delta) {
           if (this.mode === 'map') {
             let screenPos = this.camera.tileToScreen(action.payload.x, action.payload.y);
             this.camera.focusTile(screenPos.x, screenPos.y);
-          } 
+          }
         }
         //Client.sendClick(clickPos);
       }
   }
-    
+
   if (Keyboard.isDown(Keyboard.PLUS)) { this.mode = 'map'; }
   if (Keyboard.isDown(Keyboard.MINUS)) {
     this.payload = events['0'];
-    this.mode = 'text'; 
+    this.mode = 'text';
   }
 };
 
@@ -234,7 +234,7 @@ Game._drawMenu = function () {
 
 Game._drawTextBackground = function () {
   this.ctx.fillStyle = '#000';
-  
+
   this.ctx.fillRect(0, 0, this.cvs.width, this.cvs.height);
 };
 
@@ -267,7 +267,7 @@ Game._drawTextPayload = function () {
 
     let optionText = payload.options[i].id + ". " + payload.options[i].text;
     this.ctx.fillText(optionText, 2 * lineSize, currentLine * lineSize);
-    
+
     if (this.text.checkButtonCoords(payload.options[i]) === false) {
       let id = payload.options[i].id;
       this.text.mergeButtonCoords(id, {
@@ -317,7 +317,7 @@ Game.render = function () {
 //
 
 window.onload = function () {
-  var canvas = document.getElementById('demo')
+  var canvas = document.getElementById('demo');
   var context = canvas.getContext('2d');
   Game.run(canvas, context);
 };

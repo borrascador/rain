@@ -1,2 +1,2 @@
 import './index.css';
-import './engine/game.js';
+import './scripts/index.js';

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
+    "watch": "webpack --watch",
     "build": "webpack -p"
   },
   "repository": {
@@ -24,6 +25,8 @@
     "babel-preset-es2015": "^6.24.1",
     "express": "^4.16.2",
     "jquery": "^3.2.1",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
     "socket.io": "^2.0.4",
     "url-loader": "^0.6.2",
     "uuid": "^3.1.0",
