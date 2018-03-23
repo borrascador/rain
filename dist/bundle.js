@@ -94,78 +94,6 @@ var MODE = exports.MODE = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.keyDown = keyDown;
-exports.keyUp = keyUp;
-exports.mouseDown = mouseDown;
-exports.drag = drag;
-exports.mouseUp = mouseUp;
-exports.clicked = clicked;
-exports.changeMode = changeMode;
-
-var _types = __webpack_require__(10);
-
-function keyDown(key) {
-  return {
-    type: _types.KEYDOWN,
-    payload: {
-      key: key
-    }
-  };
-}
-
-function keyUp(key) {
-  return {
-    type: _types.KEYUP,
-    payload: {
-      key: key
-    }
-  };
-}
-
-function mouseDown(x, y) {
-  return {
-    type: _types.MOUSEDOWN,
-    payload: { x: x, y: y }
-  };
-}
-
-function drag(x, y) {
-  return {
-    type: _types.DRAG,
-    payload: { x: x, y: y }
-  };
-}
-
-function mouseUp(x, y) {
-  return {
-    type: _types.MOUSEUP,
-    payload: { x: x, y: y }
-  };
-}
-
-function clicked() {
-  return {
-    type: _types.CLICKED
-  };
-}
-
-function changeMode(mode) {
-  return {
-    type: _types.CHANGE_MODE,
-    payload: { mode: mode }
-  };
-}
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -241,6 +169,78 @@ var Connect = function () {
 }();
 
 exports.default = Connect;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.keyDown = keyDown;
+exports.keyUp = keyUp;
+exports.mouseDown = mouseDown;
+exports.drag = drag;
+exports.mouseUp = mouseUp;
+exports.clicked = clicked;
+exports.changeMode = changeMode;
+
+var _types = __webpack_require__(10);
+
+function keyDown(key) {
+  return {
+    type: _types.KEYDOWN,
+    payload: {
+      key: key
+    }
+  };
+}
+
+function keyUp(key) {
+  return {
+    type: _types.KEYUP,
+    payload: {
+      key: key
+    }
+  };
+}
+
+function mouseDown(x, y) {
+  return {
+    type: _types.MOUSEDOWN,
+    payload: { x: x, y: y }
+  };
+}
+
+function drag(x, y) {
+  return {
+    type: _types.DRAG,
+    payload: { x: x, y: y }
+  };
+}
+
+function mouseUp(x, y) {
+  return {
+    type: _types.MOUSEUP,
+    payload: { x: x, y: y }
+  };
+}
+
+function clicked() {
+  return {
+    type: _types.CLICKED
+  };
+}
+
+function changeMode(mode) {
+  return {
+    type: _types.CHANGE_MODE,
+    payload: { mode: mode }
+  };
+}
 
 /***/ }),
 /* 3 */
@@ -2052,9 +2052,13 @@ var _input = __webpack_require__(40);
 
 var _constants = __webpack_require__(0);
 
-var _story_ = __webpack_require__(41);
+var _story = __webpack_require__(52);
 
-var _story_2 = _interopRequireDefault(_story_);
+var _story2 = _interopRequireDefault(_story);
+
+var _menu = __webpack_require__(53);
+
+var _menu2 = _interopRequireDefault(_menu);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2062,8 +2066,10 @@ var initialState = {
   // UI
   mode: _constants.MODE.TEXT,
 
-  // story
-  events: _story_2.default,
+  // events
+  // TODO: switch to entities
+  events: _story2.default, // TODO: change 'events' to story
+  menu: _menu2.default, // TODO: split it into entities, update Menu and Text
 
   // map
   srcTileSize: 32,
@@ -2347,12 +2353,7 @@ exports.mouseUp = mouseUp;
 exports.clicked = clicked;
 
 /***/ }),
-/* 41 */
-/***/ (function(module, exports) {
-
-module.exports = {"0":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail","","You may:"],"options":[{"id":"1","ref":"1","text":"Explore the map"},{"id":"2","ref":"2","text":"Start new game"},{"id":"3","ref":"10","text":"See the Amazon High Scores"},{"id":"4","ref":"15","text":"Turn sound off"},{"id":"5","ref":"12","text":"Choose Management Options"},{"id":"6","ref":"6","text":"End"}]},"1":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":9,"y":9}},"text":[],"options":[]},"2":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail.","A world of adventure awaits you.","","Which path will you choose?"],"options":[{"id":"1","ref":"3","text":"The way of the tribe"},{"id":"2","ref":"4","text":"The life of a logger"},{"id":"3","ref":"5","text":"The researcher's journey"}]},"3":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":14,"y":10}},"text":[],"options":[]},"4":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":8,"y":13}},"text":[],"options":[]},"5":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":4,"y":6}},"text":[],"options":[]},"10":{"type":"TEXT_MC","action":null,"text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"options":[{"id":"1","ref":"0","text":"Go back to main menu"}]},"11":{"type":"MENU","action":null,"text":[],"options":[{"id":"1","ref":"0","text":"MENU"},{"id":"2","ref":"0","text":"MENU"},{"id":"3","ref":"0","text":"MENU"},{"id":"4","ref":"0","text":"MENU"}]}}
-
-/***/ }),
+/* 41 */,
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2369,7 +2370,7 @@ var _addInputListeners = __webpack_require__(43);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
-var _Connect = __webpack_require__(2);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -2461,7 +2462,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = addInputListeners;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(2);
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
@@ -2501,7 +2502,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(2);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -2513,7 +2514,7 @@ var _Menu = __webpack_require__(48);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2569,7 +2570,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(2);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -2778,9 +2779,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(0);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(2);
 
-var _Connect = __webpack_require__(2);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -2943,9 +2944,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(0);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(2);
 
-var _Connect = __webpack_require__(2);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -3073,6 +3074,19 @@ var Text = function () {
 }();
 
 exports.default = Text;
+
+/***/ }),
+/* 51 */,
+/* 52 */
+/***/ (function(module, exports) {
+
+module.exports = {"0":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail","","You may:"],"options":[{"id":"1","ref":"1","text":"Explore the map"},{"id":"2","ref":"2","text":"Start new game"},{"id":"3","ref":"10","text":"See the Amazon High Scores"},{"id":"4","ref":"15","text":"Turn sound off"},{"id":"5","ref":"12","text":"Choose Management Options"},{"id":"6","ref":"6","text":"End"}]},"1":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":9,"y":9}},"text":[],"options":[]},"2":{"type":"TEXT_MC","action":null,"text":["Welcome to the Amazon Trail.","A world of adventure awaits you.","","Which path will you choose?"],"options":[{"id":"1","ref":"3","text":"The way of the tribe"},{"id":"2","ref":"4","text":"The life of a logger"},{"id":"3","ref":"5","text":"The researcher's journey"}]},"3":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":14,"y":10}},"text":[],"options":[]},"4":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":8,"y":13}},"text":[],"options":[]},"5":{"type":"MAP_FOCUS","action":{"type":"FOCUS_TILE","payload":{"x":4,"y":6}},"text":[],"options":[]},"10":{"type":"TEXT_MC","action":null,"text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"options":[{"id":"1","ref":"0","text":"Go back to main menu"}]},"11":{"type":"MENU","action":null,"text":[],"options":[{"id":"1","ref":"0","text":"MENU"},{"id":"2","ref":"0","text":"MENU"},{"id":"3","ref":"0","text":"MENU"},{"id":"4","ref":"0","text":"MENU"}]}}
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: Unexpected token } in JSON at position 1405\n    at JSON.parse (<anonymous>)\n    at Object.module.exports (/home/jan/dev/js/rain/node_modules/json-loader/index.js:4:49)");
 
 /***/ })
 /******/ ]);

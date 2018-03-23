@@ -1,0 +1,71 @@
+{
+    "menus": {
+        "byId": {
+            "overlay": {
+                "type": "MAP_OVERLAY",
+                "buttons": ["button1", "button1", "button1", "button1"]
+            },
+            "main": {
+                "type": "TEXT_MC",
+                "text": [
+                    "Welcome to the Amazon Trail",
+                    "",
+                    "You may:"
+                ],
+                "buttons": ["toMap", "newGame"]
+            },
+            "selectClass": {
+                "type": "TEXT_MC",
+                "text": [
+                    "A world of adventure awaits you.",
+                    "",
+                    "Which path will you choose?"
+                ],
+                "buttons": ["startTribe", "startScience", "startLogger", "toMain"]
+            },
+            "highscore": {
+                "type": "TEXT_MC",
+                "text": [
+                    "The Amazon Top Ten:",
+                    "",
+                    "  1. Darwin: 12414",
+                    "  2. Gabriel: 9843",
+                    "  3. Mom: 5634",
+                    "  4. Dan: 4197",
+                    "  5. Jan: 1206"
+                ],
+                "buttons": ["toMain"]
+            }
+        },
+        "allIds": ["overlay", "main", "selectClass", "highscore"]
+    },
+    "buttons": {
+        "byId": {
+            "button1": {
+                "text": "MENU",
+            },
+            "toMain": {
+                "text": "Return to main menu",
+            },
+            "toMap": {
+                "text": "Continue game"
+            },
+            "newGame": {
+                "text": "Start new game"
+            },
+            "startTribe": {
+                "text": "The way of the tribe"
+            },
+            "startScience": {
+                "text": "The life of a logger"
+            },
+            "startLogger": {
+                "text": "The researcher's journey"
+            }
+        },
+        "allIds": [
+            "button1", "toMain", "toMap", "newGame",
+            "startTribe", "startScience", "startLogger"
+        ]
+    }
+}

@@ -12,14 +12,17 @@ import { makeSrcTiles, makeTestTiles, click, addLayer } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 
 import {MODE} from '../../game/constants';
-import events from '../../../story/story_1.json';
+import story from '../../../events/story.json';
+import menu from '../../../events/menu.json';
 
 var initialState = {
   // UI
   mode: MODE.TEXT,
 
-  // story
-  events: events,
+  // events
+  // TODO: switch to entities
+  events: story, // TODO: change 'events' to story
+  menu: menu, // TODO: split it into entities, update Menu and Text
 
   // map
   srcTileSize: 32,
