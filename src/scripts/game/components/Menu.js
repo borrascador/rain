@@ -1,7 +1,7 @@
 import {MODE} from '../constants';
-import {changeMode} from '../../store/actions/actions';
+import {changeMode, clicked} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import {addButtonCoords, screenToButtonID, getItemByID} from './utils';
+import {addButtonCoords, screenToMenuId, getItemById} from './utils';
 
 export default class Menu {
   constructor (store, canvas, ctx) {
@@ -10,65 +10,84 @@ export default class Menu {
     this.ctx = ctx;
 
     this.connect = new Connect(this.store);
-    this.makeButtons();
+    this.setMenu();
   }
 
-  makeButtons() {
-    const menu = this.connect.events["11"];
-    this.buttons = menu.options;
-    this.buttonSize = this.canvas.height / 4;
+  setMenu() {
+    this.selectedId = null;
+    const menu = this.connect.getMenuById();
+    this.text = menu.text;
+    this.buttons = menu.buttons;
+  }
 
-    // Set button properties
-    this.buttons.map(button => {
-      addButtonCoords(button, {
-        xPos: this.canvas.width - this.buttonSize,
-        yPos: this.buttonSize * (button.id - 1),
-        width: this.buttonSize,
-        height: this.buttonSize,
-      });
+  chooseButton() {
+    const button = getItemById(this.buttons, this.selectedId);
+    this.store.dispatch(button.action);
+    setTimeout(this.setMenu());
+  }
+
+  updateKeys() {
+    const keys = this.connect.keys;
+    keys.map(key => {
+      if (key >= "1" && key <= this.buttons.length.toString()) this.selectedId = parseInt(key);
+      if (["Escape", "Backspace", "Delete"].includes(key)) this.selectedId = null;
+      if (this.selectedId && key === "Enter") this.chooseButton();
     });
   }
 
-  chooseOption(clickID) {
-    const option = getItemByID(this.buttons, clickID);
-    const event = this.connect.events[option.ref];
-    switch (event.type) {
-      case "TEXT_MC":
-        this.store.dispatch(changeMode(MODE.TEXT));
-        break;
-      case "MAP_FOCUS":
-        this.store.dispatch(changeMode(MODE.MAP));
-        break;
+  updateClick() {
+    const {xClick, yClick} = this.connect.click;
+    if (xClick && yClick) {
+      const clickId = screenToMenuId(xClick, yClick, this.buttons);
+      this.store.dispatch(clicked());
+      if (this.selectedId && this.selectedId === clickId) {
+        this.selectedId = clickId;
+        this.chooseButton();
+      } else {
+        this.selectedId = clickId;
+      }
     }
   }
 
-  updateClick(x, y) {
-    const clickID = x && y && screenToButtonID(x, y, this.buttons);
-    clickID && this.chooseOption(clickID);
-  }
-
-  update(delta, x, y) {
-    this.updateClick(x, y);
+  update(delta) {
+    this.updateKeys();
+    this.updateClick();
   }
 
   render() {
-    this.buttons.map(button => {
-      const xPos = button.xPos + 8;
-      const yPos = button.yPos + 8;
-      const width = button.width - 16;
-      const height = button.height - 16;
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      // Make button box
-      this.ctx.strokeStyle = '#FFF';
-      this.ctx.lineWidth = 4;
-      this.ctx.strokeRect(xPos, yPos, width, height);
+    const fontSize = 28;
+    const lineSize = fontSize + 4;
+    this.ctx.font = fontSize + 'px MECC';
+    this.ctx.fillStyle = '#FFF';
+    this.ctx.textAlign = 'start';
+    this.ctx.textBaseline = 'alphabetic';
 
-      // Make button text
-      this.ctx.font = '20px MECC';
-      this.ctx.fillStyle = '#FFF';
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'middle';
-      this.ctx.fillText(button.text, xPos + (width / 2), yPos + (height / 2));
+    let linePos = 2;
+    this.text.map(line => {
+      this.ctx.fillText(line, lineSize, linePos * lineSize);
+      linePos++;
     });
-  }
+    linePos++;
+
+    this.buttons.map((button, idx) => {
+      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
+      const buttonText = `${button.id}. ${button.text}`;
+      this.ctx.fillText(buttonText, 2 * lineSize, linePos * lineSize);
+      addButtonCoords(button, {
+        xPos: 2 * lineSize,
+        yPos: lineSize * linePos,
+        width: this.ctx.measureText(buttonText).width,
+        height: fontSize,
+      });
+      linePos++;
+    })
+    linePos++;
+
+    this.ctx.fillStyle = '#FFF';
+    const promptText = `What is your choice? ${this.selectedId || ''}_`;
+    this.ctx.fillText(promptText, lineSize, linePos * lineSize);
+  };
 }

@@ -7,8 +7,17 @@ export default class Connect {
     return this.store.getState().mode;
   }
 
-  get events() {
-    return this.store.getState().events;
+  get event() {
+    return this.store.getState().event;
+  }
+
+  getMenuById(id) {
+    const state = this.store.getState();
+    const menu = state.menus.byId[id || state.activeMenu];
+    const buttons = menu.buttons.map((button, idx) =>
+      Object.assign({}, state.buttons.byId[button], {id: idx + 1})
+    );
+    return Object.assign({}, menu, {buttons: buttons});
   }
 
   get map() {

@@ -5,24 +5,27 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
-  CHANGE_MODE,
+  FOCUS_MENU,
+  FOCUS_TILE,
 } from '../actions/types';
-import { changeMode } from '../utils/ui';
+import { focusMenu, focusTile } from '../utils/ui';
 import { makeSrcTiles, makeTestTiles, click, addLayer } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 
 import {MODE} from '../../game/constants';
 import story from '../../../events/story.json';
-import menu from '../../../events/menu.json';
+import menus from '../../../events/menus.json';
+import buttons from '../../../events/buttons.json';
 
 var initialState = {
   // UI
-  mode: MODE.TEXT,
-
-  // events
-  // TODO: switch to entities
-  events: story, // TODO: change 'events' to story
-  menu: menu, // TODO: split it into entities, update Menu and Text
+  mode: MODE.MENU,
+  focusX: null,
+  focusY: null,
+  activeMenu: "main",
+  story: story,
+  menus: menus,
+  buttons: buttons,
 
   // map
   srcTileSize: 32,
@@ -32,10 +35,10 @@ var initialState = {
 
   // player
   camp: {},
-  partyX: 2,
-  partyY: 2,
-  sight: 3,
-  moves: 3,
+  partyX: null,
+  partyY: null,
+  sight: null,
+  moves: null,
   members: [],
   modifiers: {},
   inventory: {},
@@ -87,8 +90,10 @@ export default function reducer(state, action) {
       return mouseUp(state, action);
     case CLICKED:
       return clicked(state);
-    case CHANGE_MODE:
-      return changeMode(state, action);
+    case FOCUS_MENU:
+      return focusMenu(state, action);
+    case FOCUS_TILE:
+      return focusTile(state, action);
     default:
       return state;
   }
