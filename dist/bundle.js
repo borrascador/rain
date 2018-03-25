@@ -2135,7 +2135,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var initialState = {
   // UI
-  mode: _constants.MODE.MAP,
+  mode: _constants.MODE.MENU,
   focusX: 2,
   focusY: 2,
   activeMenu: "main",

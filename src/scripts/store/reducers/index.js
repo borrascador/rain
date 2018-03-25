@@ -23,7 +23,7 @@ import { requestPos, receivePos, requestMove, receiveMove } from '../utils/playe
 
 var initialState = {
   // UI
-  mode: MODE.MAP,
+  mode: MODE.MENU,
   focusX: 2,
   focusY: 2,
   activeMenu: "main",
