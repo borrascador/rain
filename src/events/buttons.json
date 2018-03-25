@@ -23,8 +23,8 @@
             "action": {
                 "type": "FOCUS_TILE",
                 "payload": {
-                    "x": 0,
-                    "y": 0
+                    "x": 2,
+                    "y": 2
                 }
             }
         },
@@ -51,8 +51,8 @@
             "action": {
                 "type": "FOCUS_TILE",
                 "payload": {
-                    "x": 0,
-                    "y": 0
+                    "x": 2,
+                    "y": 2
                 }
             }
         },
@@ -61,8 +61,8 @@
             "action": {
                 "type": "FOCUS_TILE",
                 "payload": {
-                    "x": 0,
-                    "y": 0
+                    "x": 2,
+                    "y": 2
                 }
             }
         },
@@ -71,8 +71,8 @@
             "action": {
                 "type": "FOCUS_TILE",
                 "payload": {
-                    "x": 0,
-                    "y": 0
+                    "x": 2,
+                    "y": 2
                 }
             }
         }

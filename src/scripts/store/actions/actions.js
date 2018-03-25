@@ -6,6 +6,8 @@ import {
   MOUSEUP,
   CLICKED,
   CHANGE_MODE,
+  RECEIVE_POS,
+  RECEIVE_MOVE,
 } from './types';
 
 export function keyDown(key) {
@@ -57,5 +59,29 @@ export function changeMode(mode) {
   return {
     type: CHANGE_MODE,
     payload: {mode,}
+  };
+}
+
+export function receivePos(x, y) {
+  return {
+    type: RECEIVE_POS,
+    payload: {
+      focusX: x,
+      focusY: y,
+      partyX: x,
+      partyY: y
+    }
+  };
+}
+
+export function receiveMove(x, y) {
+  return {
+    type: RECEIVE_MOVE,
+    payload: {
+      focusX: x,
+      focusY: y,
+      partyX: x,
+      partyY: y
+    }
   };
 }

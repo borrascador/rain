@@ -1,5 +1,5 @@
 const addButtonCoords = (option, buttonCoords) => {
-  const props = ['width', 'height', 'xPos', 'yPos'];
+  const props = ['xPos', 'yPos', 'width', 'height'];
   if (!props.every(prop => Object.keys(option).includes(prop))) {
     Object.assign(option, buttonCoords);
   }

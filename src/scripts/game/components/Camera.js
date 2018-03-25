@@ -1,7 +1,9 @@
 import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
 import src from '../../../images/tileset-smaller.png';
-import {CAMERA_SPEED, LAYER} from '../constants.js'
+import {receiveMove} from '../../store/actions/actions';
+import {CAMERA_SPEED, LAYER} from '../constants'
+import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 
 export default class Camera {
   constructor (store, canvas, ctx) {
@@ -17,38 +19,117 @@ export default class Camera {
     });
   }
 
-  update(delta, x, y) {
+  findTile(tiles, x, y) {
+    return tiles.find(tile => {
+      return x === tile.x && y === tile.y;
+    });
+  }
 
+  getOffsetOrigin(size, x, y) {
+    // move camera
+    return {
+      x: x * size - Math.floor(this.canvas.width / 2) + size / 2,
+      y: y * size - Math.floor(this.canvas.height / 2) + size / 2
+    };
+    // clamp values
+    // this.x = Math.max(0, Math.min(this.x, this.maxX));
+    // this.y = Math.max(0, Math.min(this.y, this.maxY));
+  }
+
+  updateClick(x, y) {
+    const clickId = x && y && screenToButtonId(x, y, this.visibleTiles);
+    if (clickId) {
+      const tile = getItemById(this.visibleTiles, clickId);
+      this.store.dispatch(receiveMove(tile.x, tile.y));
+    }
+  }
+
+  update(delta, x, y) {
+    this.updateClick(x, y);
   }
 
   render() {
-    const {offsetX, offsetY} = this.connect.offset;
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    // this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
-
+    const {focusX, focusY} = this.connect.focus;
+    const {partyX, partyY} = this.connect.partyPos;
     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
     const {BASE, MIDDLE, TOP} = LAYER;
-    mapTiles.map((mapTile) => {
-      [BASE, MIDDLE, TOP].forEach(layer => {
-        const id = mapTile.layers[layer];
-        if (typeof id === "number") {
-          this.ctx.drawImage(
-            this.atlas,
-            srcTiles[id].x * srcTileSize,
-            srcTiles[id].y * srcTileSize,
-            srcTileSize,
-            srcTileSize,
-            mapTile.x * mapTileSize,
-            mapTile.y * mapTileSize,
-            mapTileSize,
-            mapTileSize
-          );
+
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    const origin = this.getOffsetOrigin(mapTileSize, focusX, focusY);
+    const startCol = Math.floor(origin.x / mapTileSize);
+    const endCol = startCol + Math.ceil((this.canvas.width / mapTileSize) + 1);
+    const startRow = Math.floor(origin.y / mapTileSize);
+    const endRow = startRow + Math.ceil((this.canvas.height / mapTileSize) + 1);
+    const offsetX = -origin.x + startCol * mapTileSize;
+    const offsetY = -origin.y + startRow * mapTileSize;
+    let visibleTiles = [];
+    for (let col = startCol; col <= endCol; col++) {
+      for (let row = startRow; row <= endRow; row++) {
+        const x = (col - startCol) * mapTileSize + offsetX;
+        const y = (row - startRow) * mapTileSize + offsetY;
+        const mapTile = this.findTile(mapTiles, col, row);
+        if (mapTile) {
+          visibleTiles.push(Object.assign({}, mapTile, {
+            xPos: Math.round(x),
+            yPos: Math.round(y),
+            width: mapTileSize,
+            height: mapTileSize,
+          }));
+          [BASE, MIDDLE, TOP].forEach(layer => {
+            let id;
+            if (partyX === col && partyY === row && layer === TOP) {
+              id = 29;
+            } else {
+              id = mapTile.layers[layer];
+            }
+            typeof id === "number" && this.ctx.drawImage(
+              this.atlas,
+              srcTiles[id].x * srcTileSize,
+              srcTiles[id].y * srcTileSize,
+              srcTileSize,
+              srcTileSize,
+              Math.round(x),
+              Math.round(y),
+              mapTileSize,
+              mapTileSize
+            );
+          });
         }
-      });
-    });
+      }
+    }
+    this.visibleTiles = visibleTiles;
   }
 }
+
+//     const {offsetX, offsetY} = this.connect.offset;
+//     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
+//     this.ctx.fillStyle = 'black';
+//     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+//     // this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
+//
+//     const {BASE, MIDDLE, TOP} = LAYER;
+//     mapTiles.map((mapTile) => {
+//       [BASE, MIDDLE, TOP].forEach(layer => {
+//         const id = mapTile.layers[layer];
+//         if (typeof id === "number") {
+//           this.ctx.drawImage(
+//             this.atlas,
+//             srcTiles[id].x * srcTileSize,
+//             srcTiles[id].y * srcTileSize,
+//             srcTileSize,
+//             srcTileSize,
+//             mapTile.x * mapTileSize,
+//             mapTile.y * mapTileSize,
+//             mapTileSize,
+//             mapTileSize
+//           );
+//         }
+//       });
+//     });
+//   }
+// }
 
 
 //     this.tsize = map.tsize;

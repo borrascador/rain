@@ -6,3 +6,7 @@ export const MOUSEUP = 'MOUSEUP';
 export const CLICKED = 'CLICKED';
 export const FOCUS_MENU = 'FOCUS_MENU';
 export const FOCUS_TILE = 'FOCUS_TILE';
+export const REQUEST_POS = 'REQUEST_POS';
+export const RECEIVE_POS = 'RECEIVE_POS';
+export const REQUEST_MOVE = 'REQUEST_MOVE';
+export const RECEIVE_MOVE = 'RECEIVE_MOVE';
