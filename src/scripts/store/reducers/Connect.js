@@ -42,6 +42,11 @@ export default class Connect {
     return trueKeys;
   }
 
+  get focus() {
+    const {focusX, focusY} = this.store.getState();
+    return {focusX, focusY,};
+  }
+
   get offset() {
     const {offsetX, offsetY} = this.store.getState();
     return {offsetX, offsetY,};

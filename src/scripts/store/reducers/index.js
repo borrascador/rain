@@ -7,21 +7,25 @@ import {
   CLICKED,
   FOCUS_MENU,
   FOCUS_TILE,
+  REQUEST_POS,
+  RECEIVE_POS,
+  REQUEST_MOVE,
+  RECEIVE_MOVE,
 } from '../actions/types';
-import { focusMenu, focusTile } from '../utils/ui';
-import { makeSrcTiles, makeTestTiles, click, addLayer } from '../utils/map';
-import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
-
-import {MODE} from '../../game/constants';
+import { MODE } from '../../game/constants';
 import story from '../../../events/story.json';
 import menus from '../../../events/menus.json';
 import buttons from '../../../events/buttons.json';
+import { makeSrcTiles, makeTestTiles, addLayer } from '../utils/map';
+import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
+import { focusMenu, focusTile } from '../utils/ui';
+import { requestPos, receivePos, requestMove, receiveMove } from '../utils/player';
 
 var initialState = {
   // UI
   mode: MODE.MENU,
-  focusX: null,
-  focusY: null,
+  focusX: 2,
+  focusY: 2,
   activeMenu: "main",
   story: story,
   menus: menus,
@@ -35,8 +39,8 @@ var initialState = {
 
   // player
   camp: {},
-  partyX: null,
-  partyY: null,
+  partyX: 2,
+  partyY: 2,
   sight: null,
   moves: null,
   members: [],
@@ -94,6 +98,14 @@ export default function reducer(state, action) {
       return focusMenu(state, action);
     case FOCUS_TILE:
       return focusTile(state, action);
+    case REQUEST_POS:
+      return requestPos(state);
+    case RECEIVE_POS:
+      return receivePos(state, action);
+    case REQUEST_MOVE:
+      return requestMove(state, action);
+    case RECEIVE_MOVE:
+      return receiveMove(state, action);
     default:
       return state;
   }

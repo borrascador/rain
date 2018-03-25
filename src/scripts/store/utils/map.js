@@ -20,7 +20,7 @@ function makeTestTiles() {
     { id: 4, x: 1, y: 3, layers: { base: 0 } },
     { id: 5, x: 2, y: 0, layers: { base: 0 } },
     { id: 6, x: 2, y: 1, layers: { base: 0 } },
-    { id: 7, x: 2, y: 2, layers: { base: 0, top: 29 } },
+    { id: 7, x: 2, y: 2, layers: { base: 0 } },
     { id: 8, x: 2, y: 3, layers: { base: 0 } },
     { id: 9, x: 2, y: 4, layers: { base: 0 } },
     { id: 10, x: 3, y: 1, layers: { base: 0, middle: 3 } },
