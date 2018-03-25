@@ -123,27 +123,33 @@ var Connect = function () {
       return this.store.getState().mode;
     }
   }, {
-    key: "event",
+    key: "story",
     get: function get() {
-      return this.store.getState().event;
+      var _store$getState = this.store.getState(),
+          story = _store$getState.story;
+
+      var buttons = story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, { id: idx + 1 });
+      });
+      return Object.assign({}, story, { buttons: buttons });
     }
   }, {
     key: "map",
     get: function get() {
-      var _store$getState = this.store.getState(),
-          srcTileSize = _store$getState.srcTileSize,
-          srcTiles = _store$getState.srcTiles,
-          mapTileSize = _store$getState.mapTileSize,
-          mapTiles = _store$getState.mapTiles;
+      var _store$getState2 = this.store.getState(),
+          srcTileSize = _store$getState2.srcTileSize,
+          srcTiles = _store$getState2.srcTiles,
+          mapTileSize = _store$getState2.mapTileSize,
+          mapTiles = _store$getState2.mapTiles;
 
       return { srcTileSize: srcTileSize, srcTiles: srcTiles, mapTileSize: mapTileSize, mapTiles: mapTiles };
     }
   }, {
     key: "click",
     get: function get() {
-      var _store$getState2 = this.store.getState(),
-          xClick = _store$getState2.xClick,
-          yClick = _store$getState2.yClick;
+      var _store$getState3 = this.store.getState(),
+          xClick = _store$getState3.xClick,
+          yClick = _store$getState3.yClick;
 
       return { xClick: xClick, yClick: yClick };
     }
@@ -159,18 +165,18 @@ var Connect = function () {
   }, {
     key: "offset",
     get: function get() {
-      var _store$getState3 = this.store.getState(),
-          offsetX = _store$getState3.offsetX,
-          offsetY = _store$getState3.offsetY;
+      var _store$getState4 = this.store.getState(),
+          offsetX = _store$getState4.offsetX,
+          offsetY = _store$getState4.offsetY;
 
       return { offsetX: offsetX, offsetY: offsetY };
     }
   }, {
     key: "partyPos",
     get: function get() {
-      var _store$getState4 = this.store.getState(),
-          partyX = _store$getState4.partyX,
-          partyY = _store$getState4.partyY;
+      var _store$getState5 = this.store.getState(),
+          partyX = _store$getState5.partyX,
+          partyY = _store$getState5.partyY;
 
       return { partyX: partyX, partyY: partyY };
     }
@@ -754,7 +760,7 @@ var addButtonCoords = function addButtonCoords(option, buttonCoords) {
   }
 };
 
-var screenToMenuId = function screenToMenuId(x, y, list) {
+var screenToTextId = function screenToTextId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
   });
@@ -775,7 +781,7 @@ var getItemById = function getItemById(array, id) {
 };
 
 exports.addButtonCoords = addButtonCoords;
-exports.screenToMenuId = screenToMenuId;
+exports.screenToTextId = screenToTextId;
 exports.screenToButtonId = screenToButtonId;
 exports.getItemById = getItemById;
 
@@ -2238,6 +2244,16 @@ function makeTestTiles() {
   return [{ id: 1, x: 0, y: 2, layers: { base: 0 } }, { id: 2, x: 1, y: 1, layers: { base: 0 } }, { id: 3, x: 1, y: 2, layers: { base: 0 } }, { id: 4, x: 1, y: 3, layers: { base: 0 } }, { id: 5, x: 2, y: 0, layers: { base: 0 } }, { id: 6, x: 2, y: 1, layers: { base: 0 } }, { id: 7, x: 2, y: 2, layers: { base: 0, top: 29 } }, { id: 8, x: 2, y: 3, layers: { base: 0 } }, { id: 9, x: 2, y: 4, layers: { base: 0 } }, { id: 10, x: 3, y: 1, layers: { base: 0, middle: 3 } }, { id: 11, x: 3, y: 2, layers: { base: 0, middle: 3 } }, { id: 12, x: 3, y: 3, layers: { base: 0, middle: 3 } }, { id: 13, x: 4, y: 2, layers: { base: 0 } }];
 }
 
+// function makeTestTiles() {
+//   let array = [];
+//   for (let y=0; y<10; y++) {
+//     for (let x=0; x<10; x++) {
+//       array.push({ id: (y*10 + x), x, y, layers: {base: 0, middle: x+y}});
+//     }
+//   }
+//   return array;
+// }
+
 // Helper functions
 
 function screenToTile(state, action) {
@@ -2438,6 +2454,10 @@ var _MenuView = __webpack_require__(54);
 
 var _MenuView2 = _interopRequireDefault(_MenuView);
 
+var _StoryView = __webpack_require__(55);
+
+var _StoryView2 = _interopRequireDefault(_StoryView);
+
 var _constants = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -2464,6 +2484,7 @@ var RainGame = function () {
 			(0, _addInputListeners2.default)(this.store.dispatch, this.canvas);
 			this.mapView = new _MapView2.default(this.store, this.canvas, this.ctx);
 			this.menuView = new _MenuView2.default(this.store, this.canvas, this.ctx);
+			this.storyView = new _StoryView2.default(this.store, this.canvas, this.ctx);
 			window.requestAnimationFrame(this.tick);
 		}
 	}, {
@@ -2488,6 +2509,8 @@ var RainGame = function () {
 				this.mapView.update(delta);
 			} else if (this.mode === _constants.MODE.MENU) {
 				this.menuView.update(delta);
+			} else if (this.mode === _constants.MODE.STORY) {
+				this.storyView.update(delta);
 			}
 		}
 	}, {
@@ -2497,6 +2520,8 @@ var RainGame = function () {
 				this.mapView.render();
 			} else if (this.mode === _constants.MODE.MENU) {
 				this.menuView.render();
+			} else if (this.mode === _constants.MODE.STORY) {
+				this.storyView.render();
 			}
 		}
 	}]);
@@ -2894,7 +2919,7 @@ var Menu = function () {
           yClick = _connect$click.yClick;
 
       if (xClick && yClick) {
-        var clickId = (0, _utils.screenToMenuId)(xClick, yClick, this.buttons);
+        var clickId = (0, _utils.screenToTextId)(xClick, yClick, this.buttons);
         this.store.dispatch((0, _actions.clicked)());
         if (this.selectedId && this.selectedId === clickId) {
           this.selectedId = clickId;
@@ -2963,7 +2988,7 @@ exports.default = Menu;
 /* 52 */
 /***/ (function(module, exports) {
 
-module.exports = {}
+module.exports = {"action":{},"text":["A wild jaguar creeps from the","shadows with glowing eyes."],"buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
 
 /***/ }),
 /* 53 */
@@ -3119,6 +3144,192 @@ var MenuView = function () {
 }();
 
 exports.default = MenuView;
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Story = __webpack_require__(56);
+
+var _Story2 = _interopRequireDefault(_Story);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var StoryView = function () {
+  function StoryView(store, canvas, ctx) {
+    _classCallCheck(this, StoryView);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.story = new _Story2.default(this.store, this.canvas, this.ctx);
+  }
+
+  _createClass(StoryView, [{
+    key: 'update',
+    value: function update(delta) {
+      this.story.update(delta);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      this.story.render();
+    }
+  }]);
+
+  return StoryView;
+}();
+
+exports.default = StoryView;
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _constants = __webpack_require__(0);
+
+var _actions = __webpack_require__(2);
+
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _utils = __webpack_require__(11);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Story = function () {
+  function Story(store, canvas, ctx) {
+    _classCallCheck(this, Story);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.connect = new _Connect2.default(this.store);
+    this.setEvent();
+  }
+
+  _createClass(Story, [{
+    key: 'setEvent',
+    value: function setEvent() {
+      // TODO: Is this the right way to do this?
+      this.selectedId = null;
+      var story = this.connect.story;
+      this.text = story.text;
+      this.buttons = story.buttons;
+    }
+  }, {
+    key: 'chooseButton',
+    value: function chooseButton() {
+      var button = (0, _utils.getItemById)(this.buttons, this.selectedId);
+      console.log(button.ref); // TODO: Implement async request / response
+    }
+  }, {
+    key: 'updateKeys',
+    value: function updateKeys(delta) {
+      var _this = this;
+
+      var keys = this.connect.keys;
+      keys.map(function (key) {
+        if (key >= "1" && key <= _this.buttons.length.toString()) _this.selectedId = parseInt(key);
+        if (["Escape", "Backspace", "Delete"].includes(key)) _this.selectedId = null;
+        if (_this.selectedId && key === "Enter") _this.chooseButton();
+      });
+    }
+  }, {
+    key: 'updateClick',
+    value: function updateClick() {
+      var _connect$click = this.connect.click,
+          xClick = _connect$click.xClick,
+          yClick = _connect$click.yClick;
+
+      if (xClick && yClick) {
+        var clickId = (0, _utils.screenToTextId)(xClick, yClick, this.buttons);
+        this.store.dispatch((0, _actions.clicked)());
+        if (this.selectedId && this.selectedId === clickId) {
+          this.selectedId = clickId;
+          this.chooseButton();
+        } else {
+          this.selectedId = clickId;
+        }
+      }
+    }
+  }, {
+    key: 'update',
+    value: function update(delta) {
+      this.updateKeys(delta);
+      this.updateClick();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+      var fontSize = 28;
+      var lineSize = fontSize + 4;
+      this.ctx.font = fontSize + 'px MECC';
+      this.ctx.fillStyle = '#6F6';
+      this.ctx.textAlign = 'start';
+      this.ctx.textBaseline = 'alphabetic';
+
+      var linePos = 2;
+      this.text.map(function (line) {
+        _this2.ctx.fillText(line, lineSize, linePos * lineSize);
+        linePos++;
+      });
+      linePos++;
+
+      this.buttons.map(function (button, idx) {
+        _this2.ctx.fillStyle = _this2.selectedId === button.id ? '#FF0' : '#6F6';
+        var buttonText = button.id + '. ' + button.text;
+        _this2.ctx.fillText(buttonText, 2 * lineSize, linePos * lineSize);
+        (0, _utils.addButtonCoords)(button, {
+          xPos: 2 * lineSize,
+          yPos: lineSize * linePos,
+          width: _this2.ctx.measureText(buttonText).width,
+          height: fontSize
+        });
+        linePos++;
+      });
+      linePos++;
+
+      this.ctx.fillStyle = '#6F6';
+      var promptText = 'What is your choice? ' + (this.selectedId || '') + '_';
+      this.ctx.fillText(promptText, lineSize, linePos * lineSize);
+    }
+  }]);
+
+  return Story;
+}();
+
+exports.default = Story;
 
 /***/ })
 /******/ ]);

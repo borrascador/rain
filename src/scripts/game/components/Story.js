@@ -3,30 +3,30 @@ import {clicked} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
 import {addButtonCoords, screenToTextId, getItemById} from './utils';
 
-export default class Menu {
+export default class Story {
   constructor (store, canvas, ctx) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
 
     this.connect = new Connect(this.store);
-    this.setMenu();
+    this.setEvent();
   }
 
-  setMenu() {
+  setEvent() {
+    // TODO: Is this the right way to do this?
     this.selectedId = null;
-    const menu = this.connect.getMenuById();
-    this.text = menu.text;
-    this.buttons = menu.buttons;
+    const story = this.connect.story;
+    this.text = story.text;
+    this.buttons = story.buttons;
   }
 
   chooseButton() {
     const button = getItemById(this.buttons, this.selectedId);
-    this.store.dispatch(button.action);
-    setTimeout(this.setMenu());
+    console.log(button.ref); // TODO: Implement async request / response
   }
 
-  updateKeys() {
+  updateKeys(delta) {
     const keys = this.connect.keys;
     keys.map(key => {
       if (key >= "1" && key <= this.buttons.length.toString()) this.selectedId = parseInt(key);
@@ -50,7 +50,7 @@ export default class Menu {
   }
 
   update(delta) {
-    this.updateKeys();
+    this.updateKeys(delta);
     this.updateClick();
   }
 
@@ -61,7 +61,7 @@ export default class Menu {
     const fontSize = 28;
     const lineSize = fontSize + 4;
     this.ctx.font = fontSize + 'px MECC';
-    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillStyle = '#6F6';
     this.ctx.textAlign = 'start';
     this.ctx.textBaseline = 'alphabetic';
 
@@ -73,7 +73,7 @@ export default class Menu {
     linePos++;
 
     this.buttons.map((button, idx) => {
-      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
+      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#6F6';
       const buttonText = `${button.id}. ${button.text}`;
       this.ctx.fillText(buttonText, 2 * lineSize, linePos * lineSize);
       addButtonCoords(button, {
@@ -86,7 +86,7 @@ export default class Menu {
     })
     linePos++;
 
-    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillStyle = '#6F6';
     const promptText = `What is your choice? ${this.selectedId || ''}_`;
     this.ctx.fillText(promptText, lineSize, linePos * lineSize);
   };

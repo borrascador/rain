@@ -5,7 +5,7 @@ const addButtonCoords = (option, buttonCoords) => {
   }
 };
 
-const screenToMenuId = (x, y, list) => {
+const screenToTextId = (x, y, list) => {
   const selectedButton = list.find(button => {
     return (
       x >= button.xPos && x <= (button.xPos + button.width) &&
@@ -29,4 +29,4 @@ const getItemById = (array, id) => {
   return array.find(x => x.id === id);
 }
 
-export {addButtonCoords, screenToMenuId, screenToButtonId, getItemById};
+export {addButtonCoords, screenToTextId, screenToButtonId, getItemById};

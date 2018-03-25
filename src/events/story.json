@@ -1,1 +1,21 @@
-{}
+{
+    "action": {},
+    "text": [
+        "A wild jaguar creeps from the",
+        "shadows with glowing eyes."
+    ],
+    "buttons": [
+        {
+            "text": "Run away",
+            "ref": "9184"
+        },
+        {
+            "text": "Stand your ground",
+            "ref": "5622"
+        },
+        {
+            "text": "Shoot",
+            "ref": "3214"
+        }
+    ]
+}
