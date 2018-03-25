@@ -4,4 +4,5 @@ export const MOUSEDOWN = 'MOUSEDOWN';
 export const DRAG = 'DRAG';
 export const MOUSEUP = 'MOUSEUP';
 export const CLICKED = 'CLICKED';
-export const CHANGE_MODE = 'CHANGE_MODE';
+export const FOCUS_MENU = 'FOCUS_MENU';
+export const FOCUS_TILE = 'FOCUS_TILE';

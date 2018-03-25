@@ -1,0 +1,84 @@
+{
+    "byId": {
+        "button1": {
+            "text": "MENU",
+            "action": {
+                "type": "FOCUS_MENU",
+                "payload": {
+                    "ref": "main"
+                }
+            }
+        },
+        "toMain": {
+            "text": "Return to main menu",
+            "action": {
+                "type": "FOCUS_MENU",
+                "payload": {
+                    "ref": "main"
+                }
+            }
+        },
+        "toMap": {
+            "text": "Continue game",
+            "action": {
+                "type": "FOCUS_TILE",
+                "payload": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        "newGame": {
+            "text": "Start new game",
+            "action": {
+                "type": "FOCUS_MENU",
+                "payload": {
+                    "ref": "selectClass"
+                }
+            }
+        },
+        "toHighscore": {
+            "text": "View high scores",
+            "action": {
+                "type": "FOCUS_MENU",
+                "payload": {
+                    "ref": "highscore"
+                }
+            }
+        },
+        "startTribe": {
+            "text": "The way of the tribe",
+            "action": {
+                "type": "FOCUS_TILE",
+                "payload": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        "startScience": {
+            "text": "The life of a logger",
+            "action": {
+                "type": "FOCUS_TILE",
+                "payload": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        },
+        "startLogger": {
+            "text": "The researcher's journey",
+            "action": {
+                "type": "FOCUS_TILE",
+                "payload": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        }
+    },
+    "allIds": [
+        "button1", "toMain", "toMap", "newGame", "toHighscore",
+        "startTribe", "startScience", "startLogger"
+    ]
+}

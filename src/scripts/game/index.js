@@ -1,7 +1,8 @@
 import addInputListeners from './utils/addInputListeners';
 import Connect from '../store/reducers/Connect';
 import MapView from './views/MapView';
-import TextView from './views/TextView';
+import MenuView from './views/MenuView';
+import StoryView from './views/StoryView';
 import {MODE} from './constants.js'
 
 export default class RainGame {
@@ -19,7 +20,8 @@ export default class RainGame {
   init () {
 		addInputListeners(this.store.dispatch, this.canvas);
 		this.mapView = new MapView(this.store, this.canvas, this.ctx);
-		this.textView = new TextView(this.store, this.canvas, this.ctx);
+		this.menuView = new MenuView(this.store, this.canvas, this.ctx);
+		this.storyView = new StoryView(this.store, this.canvas, this.ctx);
 		window.requestAnimationFrame(this.tick);
   }
 
@@ -40,16 +42,20 @@ export default class RainGame {
 	update (delta) {
 		if (this.mode === MODE.MAP) {
 			this.mapView.update(delta);
-		} else if (this.mode === MODE.TEXT) {
-			this.textView.update(delta);
+		} else if (this.mode === MODE.MENU) {
+			this.menuView.update(delta);
+		} else if (this.mode === MODE.STORY) {
+			this.storyView.update(delta);
 		}
 	}
 
 	render () {
 		if (this.mode === MODE.MAP) {
 			this.mapView.render();
-		} else if	(this.mode === MODE.TEXT) {
-			this.textView.render();
+		} else if	(this.mode === MODE.MENU) {
+			this.menuView.render();
+		} else if (this.mode === MODE.STORY) {
+			this.storyView.render();
 		}
 	}
 }
