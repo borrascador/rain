@@ -56,4 +56,9 @@ export default class Connect {
     const {partyX, partyY} = this.store.getState();
     return {partyX, partyY,};
   }
+
+  get sight() {
+    const {sight} = this.store.getState();
+    return {sight,};
+  }
 }

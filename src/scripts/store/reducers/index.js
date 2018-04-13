@@ -16,7 +16,8 @@ import { MODE } from '../../game/constants';
 import story from '../../../events/story.json';
 import menus from '../../../events/menus.json';
 import buttons from '../../../events/buttons.json';
-import { makeSrcTiles, makeTestTiles, addLayer } from '../utils/map';
+import tiles from '../../../../tilesets/tiles.json';
+import { makeSrcTiles, addLayer } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
 import { requestPos, receivePos, requestMove, receiveMove } from '../utils/player';
@@ -35,13 +36,13 @@ var initialState = {
   srcTileSize: 32,
   srcTiles: makeSrcTiles(),
   mapTileSize: 64,
-  mapTiles: makeTestTiles(),
+  mapTiles: tiles,
 
   // player
   camp: {},
   partyX: 2,
   partyY: 2,
-  sight: null,
+  sight: 2,
   moves: null,
   members: [],
   modifiers: {},

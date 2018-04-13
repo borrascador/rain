@@ -39,8 +39,11 @@ export default class Camera {
   updateClick(x, y) {
     const clickId = x && y && screenToButtonId(x, y, this.visibleTiles);
     if (clickId) {
+      const {partyX, partyY} = this.connect.partyPos;
       const tile = getItemById(this.visibleTiles, clickId);
-      this.store.dispatch(receiveMove(tile.x, tile.y));
+      if (Math.abs(partyX - tile.x) + Math.abs(partyY - tile.y) === 1) {
+        this.store.dispatch(receiveMove(tile.x, tile.y));
+      }
     }
   }
 
@@ -51,6 +54,7 @@ export default class Camera {
   render() {
     const {focusX, focusY} = this.connect.focus;
     const {partyX, partyY} = this.connect.partyPos;
+    const {sight} = this.connect.sight;
     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
     const {BASE, MIDDLE, TOP} = LAYER;
 
@@ -70,7 +74,7 @@ export default class Camera {
         const x = (col - startCol) * mapTileSize + offsetX;
         const y = (row - startRow) * mapTileSize + offsetY;
         const mapTile = this.findTile(mapTiles, col, row);
-        if (mapTile) {
+        if (mapTile && Math.abs(partyX - col) + Math.abs(partyY - row) <= sight) {
           visibleTiles.push(Object.assign({}, mapTile, {
             xPos: Math.round(x),
             yPos: Math.round(y),

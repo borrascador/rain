@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="tileset-small" tilewidth="128" tileheight="128" tilecount="30" columns="5">
- <image source="../docs/images/tileset-small.png" width="640" height="768"/>
+<tileset name="tileset-small" tilewidth="32" tileheight="32" tilecount="30" columns="5">
+ <grid orientation="orthogonal" width="128" height="128"/>
+ <image source="../src/images/tileset-smaller.png" width="160" height="192"/>
  <tile id="0" type="terrain"/>
  <tile id="1" type="road"/>
  <tile id="2" type="road"/>

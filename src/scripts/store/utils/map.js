@@ -30,15 +30,17 @@ function makeTestTiles() {
   ];
 }
 
-// function makeTestTiles() {
-//   let array = [];
-//   for (let y=0; y<10; y++) {
-//     for (let x=0; x<10; x++) {
-//       array.push({ id: (y*10 + x), x, y, layers: {base: 0, middle: x+y}});
-//     }
-//   }
-//   return array;
-// }
+function makeTestTiles() {
+  let array = [];
+  for (let y=0; y<20; y++) {
+    for (let x=0; x<20; x++) {
+      let id = y*20 + x;
+      // make in node using tiled data
+      array.push({ id, x, y, layers: {base: 0, middle: layer2[id] === 0 ? 0 : layer2[id] - 1}});
+    }
+  }
+  return array;
+}
 
 // Helper functions
 
