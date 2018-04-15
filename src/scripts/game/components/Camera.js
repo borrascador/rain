@@ -1,6 +1,6 @@
 import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
-import src from '../../../images/tileset-smaller.png';
+import src from '../../../images/tileset-ui.png';
 import {receiveMove} from '../../store/actions/actions';
 import {CAMERA_SPEED, LAYER} from '../constants'
 import {addButtonCoords, screenToButtonId, getItemById} from './utils';
