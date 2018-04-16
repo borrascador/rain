@@ -12,9 +12,10 @@ import {
   REQUEST_MOVE,
   RECEIVE_MOVE,
 } from '../actions/types';
-import { MODE } from '../../game/constants';
+import { MODE, VEHICLE } from '../../game/constants';
 import story from '../../../events/story.json';
 import menus from '../../../events/menus.json';
+import party from '../../../events/party.json';
 import buttons from '../../../events/buttons.json';
 import tiles from '../../../../tilesets/tiles.json';
 import { makeSrcTiles, addLayer } from '../utils/map';
@@ -35,7 +36,7 @@ var initialState = {
   // map
   srcTileSize: 32,
   srcTiles: makeSrcTiles(),
-  mapTileSize: 64,
+  mapTileSize: 96,
   mapTiles: tiles,
 
   // player
@@ -44,10 +45,14 @@ var initialState = {
   partyY: 2,
   sight: 2,
   moves: null,
-  members: [],
+  party: party,
   modifiers: {},
   inventory: {},
-  vehicle: {},
+  vehicle: {
+    type: VEHICLE.JEEP,
+    icon: 31,
+    repair: 5,
+  },
 
   // input
   offsetX: 0,

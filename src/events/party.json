@@ -1,0 +1,32 @@
+[
+    {
+        "name": "J. Cruz",
+        "icon": 32,
+        "health": 5,
+        "jeito": 3
+    },
+    {
+        "name": "H. Villa",
+        "icon": 33,
+        "health": 1,
+        "jeito": 2
+    },
+    {
+        "name": "F. Boa",
+        "icon": 34,
+        "health": 2,
+        "jeito": 4
+    },
+    {
+        "name": "R. Stone",
+        "icon": 32,
+        "health": 1,
+        "jeito": 1
+    },
+    {
+        "name": "D. Lee",
+        "icon": 33,
+        "health": 3,
+        "jeito": 5
+    }
+]
