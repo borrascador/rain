@@ -4,7 +4,7 @@ import { updateObject, updateItemInArray } from './utils';
 
 function makeSrcTiles() {
   let array = [];
-  for (let y=0; y<6; y++) {
+  for (let y=0; y<8; y++) {
     for (let x=0; x<5; x++) {
       array.push({ x, y, });
     }

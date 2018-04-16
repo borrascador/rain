@@ -9,3 +9,7 @@ export const MODE = {
   MENU: "menu",
   STORY: "story"
 };
+export const VEHICLE = {
+  JEEP: "jeep",
+  CANOE: "canoe",
+};
