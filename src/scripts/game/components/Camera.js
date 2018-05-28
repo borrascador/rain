@@ -11,6 +11,9 @@ export default class Camera {
     this.canvas = canvas;
     this.ctx = ctx;
 
+    this.playerIcon = 29;
+    this.second = 0;
+
     this.connect = new Connect(this.store);
     this.loader = new Loader();
     Promise.resolve(this.loader.setImage('tiles', src))
@@ -47,7 +50,16 @@ export default class Camera {
     }
   }
 
+  switchIcon() {
+    this.playerIcon = this.playerIcon === 29 ? 28 : 29;
+  }
+
   update(delta, x, y) {
+    this.second += delta;
+    if (this.second > 1) {
+      this.switchIcon();
+      this.second = 0;
+    }
     this.updateClick(x, y);
   }
 
@@ -69,6 +81,7 @@ export default class Camera {
     const offsetX = -origin.x + startCol * mapTileSize;
     const offsetY = -origin.y + startRow * mapTileSize;
     let visibleTiles = [];
+    let dim = false;
     for (let col = startCol; col <= endCol; col++) {
       for (let row = startRow; row <= endRow; row++) {
         const x = (col - startCol) * mapTileSize + offsetX;
@@ -81,10 +94,15 @@ export default class Camera {
             width: mapTileSize,
             height: mapTileSize,
           }));
+          dim = false;
+        } else {
+          dim = true;
+        }
+        if (mapTile) {
           [BASE, MIDDLE, TOP].forEach(layer => {
             let id;
             if (partyX === col && partyY === row && layer === TOP) {
-              id = 29;
+              id = this.playerIcon; // Player Icon
             } else {
               id = mapTile.layers[layer];
             }
@@ -96,10 +114,19 @@ export default class Camera {
               srcTileSize,
               Math.round(x),
               Math.round(y),
-              mapTileSize,
-              mapTileSize
+              mapTileSize - 1,
+              mapTileSize - 1
             );
           });
+        }
+        if (dim) {
+          this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+          this.ctx.fillRect(
+            Math.round(x),
+            Math.round(y),
+            mapTileSize -1 ,
+            mapTileSize -1
+          );
         }
       }
     }
