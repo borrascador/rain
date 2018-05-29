@@ -42,19 +42,14 @@ export default class Connect {
     return trueKeys;
   }
 
-  get focus() {
-    const {focusX, focusY} = this.store.getState();
-    return {focusX, focusY,};
-  }
-
   get offset() {
     const {offsetX, offsetY} = this.store.getState();
     return {offsetX, offsetY,};
   }
 
-  get partyPos() {
-    const {partyX, partyY} = this.store.getState();
-    return {partyX, partyY,};
+  get position() {
+    const {x, y} = this.store.getState().position;
+    return {x, y};
   }
 
   get party() {

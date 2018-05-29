@@ -1,7 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
 import src from '../../../images/tileset-ui.png';
-import {receiveMove} from '../../store/actions/actions';
+import {receiveMove, postMoveAndGetPosition} from '../../store/actions/actions';
 import {CAMERA_SPEED, LAYER} from '../constants'
 import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 
@@ -42,10 +42,13 @@ export default class Camera {
   updateClick(x, y) {
     const clickId = x && y && screenToButtonId(x, y, this.visibleTiles);
     if (clickId) {
-      const {partyX, partyY} = this.connect.partyPos;
+      const pos = this.connect.position;
       const tile = getItemById(this.visibleTiles, clickId);
-      if (Math.abs(partyX - tile.x) + Math.abs(partyY - tile.y) === 1) {
-        this.store.dispatch(receiveMove(tile.x, tile.y));
+      if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
+        this.store.dispatch(postMoveAndGetPosition({
+          x: tile.x,
+          y: tile.y
+        }));
       }
     }
   }
@@ -64,8 +67,7 @@ export default class Camera {
   }
 
   render() {
-    const {focusX, focusY} = this.connect.focus;
-    const {partyX, partyY} = this.connect.partyPos;
+    const pos = this.connect.position;
     const {sight} = this.connect.sight;
     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
     const {BASE, MIDDLE, TOP} = LAYER;
@@ -73,7 +75,7 @@ export default class Camera {
     this.ctx.fillStyle = 'black';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    const origin = this.getOffsetOrigin(mapTileSize, focusX, focusY);
+    const origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
     const startCol = Math.floor(origin.x / mapTileSize);
     const endCol = startCol + Math.ceil((this.canvas.width / mapTileSize) + 1);
     const startRow = Math.floor(origin.y / mapTileSize);
@@ -87,7 +89,7 @@ export default class Camera {
         const x = (col - startCol) * mapTileSize + offsetX;
         const y = (row - startRow) * mapTileSize + offsetY;
         const mapTile = this.findTile(mapTiles, col, row);
-        if (mapTile && Math.abs(partyX - col) + Math.abs(partyY - row) <= sight) {
+        if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
           visibleTiles.push(Object.assign({}, mapTile, {
             xPos: Math.round(x),
             yPos: Math.round(y),
@@ -101,7 +103,7 @@ export default class Camera {
         if (mapTile) {
           [BASE, MIDDLE, TOP].forEach(layer => {
             let id;
-            if (partyX === col && partyY === row && layer === TOP) {
+            if (pos.x === col && pos.y === row && layer === TOP) {
               id = this.playerIcon; // Player Icon
             } else {
               id = mapTile.layers[layer];

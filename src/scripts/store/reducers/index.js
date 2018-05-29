@@ -7,11 +7,16 @@ import {
   CLICKED,
   FOCUS_MENU,
   FOCUS_TILE,
-  REQUEST_POS,
-  RECEIVE_POS,
-  REQUEST_MOVE,
-  RECEIVE_MOVE,
-} from '../actions/types';
+  SEND_MOVE_REQUEST,
+  SEND_MOVE_SUCCESS,
+  SEND_MOVE_FAILURE,
+  LOAD_POSITION_REQUEST,
+  LOAD_POSITION_SUCCESS,
+  LOAD_POSITION_FAILURE,
+  LOAD_TILES_REQUEST,
+  LOAD_TILES_SUCCESS,
+  LOAD_TILES_FAILURE
+} from '../actions/actions';
 import { MODE, VEHICLE } from '../../game/constants';
 import story from '../../../events/story.json';
 import menus from '../../../events/menus.json';
@@ -21,7 +26,6 @@ import tiles from '../../../../tilesets/tiles.json';
 import { makeSrcTiles, addLayer } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
-import { requestPos, receivePos, requestMove, receiveMove } from '../utils/player';
 
 var initialState = {
   // UI
@@ -41,8 +45,10 @@ var initialState = {
 
   // player
   camp: {},
-  partyX: 2,
-  partyY: 2,
+  position: {
+    x: 2,
+    y: 2
+  },
   sight: 2,
   moves: null,
   party: party,
@@ -80,6 +86,10 @@ var initialState = {
     "7": false,
     "8": false,
     "9": false,
+
+    // foo
+    sending: false,
+    error: null
   },
 };
 
@@ -104,14 +114,54 @@ export default function reducer(state, action) {
       return focusMenu(state, action);
     case FOCUS_TILE:
       return focusTile(state, action);
-    case REQUEST_POS:
-      return requestPos(state);
-    case RECEIVE_POS:
-      return receivePos(state, action);
-    case REQUEST_MOVE:
-      return requestMove(state, action);
-    case RECEIVE_MOVE:
-      return receiveMove(state, action);
+
+    case SEND_MOVE_REQUEST:
+      return Object.assign({}, state, {
+        sending: true,
+        error: null
+      });
+    case SEND_MOVE_SUCCESS:
+      return Object.assign({}, state, {
+        sending: false
+      });
+    case SEND_MOVE_FAILURE:
+      return Object.assign({}, state, {
+        sending: false,
+        error: action.error
+      });
+
+    case LOAD_POSITION_REQUEST:
+      return Object.assign({}, state, {
+        loading: true,
+        error: null
+      });
+    case LOAD_POSITION_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        position: action.payload.position.result
+      });
+    case LOAD_POSITION_FAILURE:
+      return Object.assign({}, state, {
+        loading: false,
+        error: action.error
+      });
+
+    case LOAD_TILES_REQUEST:
+      return Object.assign({}, state, {
+        loading: true,
+        error: null
+      });
+    case LOAD_TILES_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        tiles: Object.values(action.payload.tiles.result || {})
+      });
+    case LOAD_TILES_FAILURE:
+      return Object.assign({}, state, {
+        loading: false,
+        error: action.error
+      });
+
     default:
       return state;
   }
