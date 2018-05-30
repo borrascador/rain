@@ -46,8 +46,8 @@ var initialState = {
   // player
   camp: {},
   position: {
-    x: 2,
-    y: 2
+    x: null,
+    y: null
   },
   sight: 2,
   moves: null,

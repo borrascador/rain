@@ -111,7 +111,7 @@ function postMove(move) {
   }
 }
 
-function getPosition() {
+export function getPosition() {
   return (dispatch) => {
     dispatch(loadPositionRequest())
     return fetch(URL + '/position/')

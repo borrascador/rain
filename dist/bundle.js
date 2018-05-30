@@ -74,11 +74,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.LOAD_TILES_FAILURE = exports.LOAD_TILES_SUCCESS = exports.LOAD_TILES_REQUEST = exports.LOAD_POSITION_FAILURE = exports.LOAD_POSITION_SUCCESS = exports.LOAD_POSITION_REQUEST = exports.SEND_MOVE_FAILURE = exports.SEND_MOVE_SUCCESS = exports.SEND_MOVE_REQUEST = exports.FOCUS_TILE = exports.changeMode = exports.CHANGE_MODE = exports.clicked = exports.CLICKED = exports.mouseUp = exports.MOUSEUP = exports.drag = exports.DRAG = exports.mouseDown = exports.MOUSEDOWN = exports.keyUp = exports.KEYUP = exports.keyDown = exports.KEYDOWN = undefined;
+exports.getPosition = getPosition;
 exports.postMoveAndGetPosition = postMoveAndGetPosition;
 exports.getTiles = getTiles;
 exports.postMoveAndGetTiles = postMoveAndGetTiles;
 
-var _crossFetch = __webpack_require__(43);
+var _crossFetch = __webpack_require__(42);
 
 var _crossFetch2 = _interopRequireDefault(_crossFetch);
 
@@ -433,30 +434,6 @@ exports.default = Connect;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-function updateObject(oldObject, newValues) {
-  return Object.assign({}, oldObject, newValues);
-};
-
-function updateItemInArray(array, itemId, updateItemCallback) {
-  return array.map(function (item) {
-    if (item.id !== itemId) return item;
-    return updateItemCallback(item);
-  });
-};
-
-exports.updateObject = updateObject;
-exports.updateItemInArray = updateItemInArray;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 var addButtonCoords = function addButtonCoords(option, buttonCoords) {
   var props = ['xPos', 'yPos', 'width', 'height'];
   if (!props.every(function (prop) {
@@ -492,7 +469,7 @@ exports.screenToButtonId = screenToButtonId;
 exports.getItemById = getItemById;
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 var g;
@@ -517,6 +494,30 @@ try {
 
 module.exports = g;
 
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function updateObject(oldObject, newValues) {
+  return Object.assign({}, oldObject, newValues);
+};
+
+function updateItemInArray(array, itemId, updateItemCallback) {
+  return array.map(function (item) {
+    if (item.id !== itemId) return item;
+    return updateItemCallback(item);
+  });
+};
+
+exports.updateObject = updateObject;
+exports.updateItemInArray = updateItemInArray;
 
 /***/ }),
 /* 6 */
@@ -1635,7 +1636,7 @@ var _store = __webpack_require__(22);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _index = __webpack_require__(53);
+var _index = __webpack_require__(51);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -1716,7 +1717,7 @@ thunk.withExtraArgument = createThunkMiddleware;
 
 /* WEBPACK VAR INJECTION */(function(global) {!function(e,t){ true?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(e.reduxLogger=e.reduxLogger||{})}(this,function(e){"use strict";function t(e,t){e.super_=t,e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}})}function r(e,t){Object.defineProperty(this,"kind",{value:e,enumerable:!0}),t&&t.length&&Object.defineProperty(this,"path",{value:t,enumerable:!0})}function n(e,t,r){n.super_.call(this,"E",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0}),Object.defineProperty(this,"rhs",{value:r,enumerable:!0})}function o(e,t){o.super_.call(this,"N",e),Object.defineProperty(this,"rhs",{value:t,enumerable:!0})}function i(e,t){i.super_.call(this,"D",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0})}function a(e,t,r){a.super_.call(this,"A",e),Object.defineProperty(this,"index",{value:t,enumerable:!0}),Object.defineProperty(this,"item",{value:r,enumerable:!0})}function f(e,t,r){var n=e.slice((r||t)+1||e.length);return e.length=t<0?e.length+t:t,e.push.apply(e,n),e}function u(e){var t="undefined"==typeof e?"undefined":N(e);return"object"!==t?t:e===Math?"math":null===e?"null":Array.isArray(e)?"array":"[object Date]"===Object.prototype.toString.call(e)?"date":"function"==typeof e.toString&&/^\/.*\//.test(e.toString())?"regexp":"object"}function l(e,t,r,c,s,d,p){s=s||[],p=p||[];var g=s.slice(0);if("undefined"!=typeof d){if(c){if("function"==typeof c&&c(g,d))return;if("object"===("undefined"==typeof c?"undefined":N(c))){if(c.prefilter&&c.prefilter(g,d))return;if(c.normalize){var h=c.normalize(g,d,e,t);h&&(e=h[0],t=h[1])}}}g.push(d)}"regexp"===u(e)&&"regexp"===u(t)&&(e=e.toString(),t=t.toString());var y="undefined"==typeof e?"undefined":N(e),v="undefined"==typeof t?"undefined":N(t),b="undefined"!==y||p&&p[p.length-1].lhs&&p[p.length-1].lhs.hasOwnProperty(d),m="undefined"!==v||p&&p[p.length-1].rhs&&p[p.length-1].rhs.hasOwnProperty(d);if(!b&&m)r(new o(g,t));else if(!m&&b)r(new i(g,e));else if(u(e)!==u(t))r(new n(g,e,t));else if("date"===u(e)&&e-t!==0)r(new n(g,e,t));else if("object"===y&&null!==e&&null!==t)if(p.filter(function(t){return t.lhs===e}).length)e!==t&&r(new n(g,e,t));else{if(p.push({lhs:e,rhs:t}),Array.isArray(e)){var w;e.length;for(w=0;w<e.length;w++)w>=t.length?r(new a(g,w,new i(void 0,e[w]))):l(e[w],t[w],r,c,g,w,p);for(;w<t.length;)r(new a(g,w,new o(void 0,t[w++])))}else{var x=Object.keys(e),S=Object.keys(t);x.forEach(function(n,o){var i=S.indexOf(n);i>=0?(l(e[n],t[n],r,c,g,n,p),S=f(S,i)):l(e[n],void 0,r,c,g,n,p)}),S.forEach(function(e){l(void 0,t[e],r,c,g,e,p)})}p.length=p.length-1}else e!==t&&("number"===y&&isNaN(e)&&isNaN(t)||r(new n(g,e,t)))}function c(e,t,r,n){return n=n||[],l(e,t,function(e){e&&n.push(e)},r),n.length?n:void 0}function s(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":s(o[r.path[n]],r.index,r.item);break;case"D":delete o[r.path[n]];break;case"E":case"N":o[r.path[n]]=r.rhs}}else switch(r.kind){case"A":s(e[t],r.index,r.item);break;case"D":e=f(e,t);break;case"E":case"N":e[t]=r.rhs}return e}function d(e,t,r){if(e&&t&&r&&r.kind){for(var n=e,o=-1,i=r.path?r.path.length-1:0;++o<i;)"undefined"==typeof n[r.path[o]]&&(n[r.path[o]]="number"==typeof r.path[o]?[]:{}),n=n[r.path[o]];switch(r.kind){case"A":s(r.path?n[r.path[o]]:n,r.index,r.item);break;case"D":delete n[r.path[o]];break;case"E":case"N":n[r.path[o]]=r.rhs}}}function p(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":p(o[r.path[n]],r.index,r.item);break;case"D":o[r.path[n]]=r.lhs;break;case"E":o[r.path[n]]=r.lhs;break;case"N":delete o[r.path[n]]}}else switch(r.kind){case"A":p(e[t],r.index,r.item);break;case"D":e[t]=r.lhs;break;case"E":e[t]=r.lhs;break;case"N":e=f(e,t)}return e}function g(e,t,r){if(e&&t&&r&&r.kind){var n,o,i=e;for(o=r.path.length-1,n=0;n<o;n++)"undefined"==typeof i[r.path[n]]&&(i[r.path[n]]={}),i=i[r.path[n]];switch(r.kind){case"A":p(i[r.path[n]],r.index,r.item);break;case"D":i[r.path[n]]=r.lhs;break;case"E":i[r.path[n]]=r.lhs;break;case"N":delete i[r.path[n]]}}}function h(e,t,r){if(e&&t){var n=function(n){r&&!r(e,t,n)||d(e,t,n)};l(e,t,n)}}function y(e){return"color: "+F[e].color+"; font-weight: bold"}function v(e){var t=e.kind,r=e.path,n=e.lhs,o=e.rhs,i=e.index,a=e.item;switch(t){case"E":return[r.join("."),n,"→",o];case"N":return[r.join("."),o];case"D":return[r.join(".")];case"A":return[r.join(".")+"["+i+"]",a];default:return[]}}function b(e,t,r,n){var o=c(e,t);try{n?r.groupCollapsed("diff"):r.group("diff")}catch(e){r.log("diff")}o?o.forEach(function(e){var t=e.kind,n=v(e);r.log.apply(r,["%c "+F[t].text,y(t)].concat(P(n)))}):r.log("—— no diff ——");try{r.groupEnd()}catch(e){r.log("—— diff end —— ")}}function m(e,t,r,n){switch("undefined"==typeof e?"undefined":N(e)){case"object":return"function"==typeof e[n]?e[n].apply(e,P(r)):e[n];case"function":return e(t);default:return e}}function w(e){var t=e.timestamp,r=e.duration;return function(e,n,o){var i=["action"];return i.push("%c"+String(e.type)),t&&i.push("%c@ "+n),r&&i.push("%c(in "+o.toFixed(2)+" ms)"),i.join(" ")}}function x(e,t){var r=t.logger,n=t.actionTransformer,o=t.titleFormatter,i=void 0===o?w(t):o,a=t.collapsed,f=t.colors,u=t.level,l=t.diff,c="undefined"==typeof t.titleFormatter;e.forEach(function(o,s){var d=o.started,p=o.startedTime,g=o.action,h=o.prevState,y=o.error,v=o.took,w=o.nextState,x=e[s+1];x&&(w=x.prevState,v=x.started-d);var S=n(g),k="function"==typeof a?a(function(){return w},g,o):a,j=D(p),E=f.title?"color: "+f.title(S)+";":"",A=["color: gray; font-weight: lighter;"];A.push(E),t.timestamp&&A.push("color: gray; font-weight: lighter;"),t.duration&&A.push("color: gray; font-weight: lighter;");var O=i(S,j,v);try{k?f.title&&c?r.groupCollapsed.apply(r,["%c "+O].concat(A)):r.groupCollapsed(O):f.title&&c?r.group.apply(r,["%c "+O].concat(A)):r.group(O)}catch(e){r.log(O)}var N=m(u,S,[h],"prevState"),P=m(u,S,[S],"action"),C=m(u,S,[y,h],"error"),F=m(u,S,[w],"nextState");if(N)if(f.prevState){var L="color: "+f.prevState(h)+"; font-weight: bold";r[N]("%c prev state",L,h)}else r[N]("prev state",h);if(P)if(f.action){var T="color: "+f.action(S)+"; font-weight: bold";r[P]("%c action    ",T,S)}else r[P]("action    ",S);if(y&&C)if(f.error){var M="color: "+f.error(y,h)+"; font-weight: bold;";r[C]("%c error     ",M,y)}else r[C]("error     ",y);if(F)if(f.nextState){var _="color: "+f.nextState(w)+"; font-weight: bold";r[F]("%c next state",_,w)}else r[F]("next state",w);l&&b(h,w,r,k);try{r.groupEnd()}catch(e){r.log("—— log end ——")}})}function S(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=Object.assign({},L,e),r=t.logger,n=t.stateTransformer,o=t.errorTransformer,i=t.predicate,a=t.logErrors,f=t.diffPredicate;if("undefined"==typeof r)return function(){return function(e){return function(t){return e(t)}}};if(e.getState&&e.dispatch)return console.error("[redux-logger] redux-logger not installed. Make sure to pass logger instance as middleware:\n// Logger with default options\nimport { logger } from 'redux-logger'\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n// Or you can create your own logger with custom options http://bit.ly/redux-logger-options\nimport createLogger from 'redux-logger'\nconst logger = createLogger({\n  // ...options\n});\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n"),function(){return function(e){return function(t){return e(t)}}};var u=[];return function(e){var r=e.getState;return function(e){return function(l){if("function"==typeof i&&!i(r,l))return e(l);var c={};u.push(c),c.started=O.now(),c.startedTime=new Date,c.prevState=n(r()),c.action=l;var s=void 0;if(a)try{s=e(l)}catch(e){c.error=o(e)}else s=e(l);c.took=O.now()-c.started,c.nextState=n(r());var d=t.diff&&"function"==typeof f?f(r,l):t.diff;if(x(u,Object.assign({},t,{diff:d})),u.length=0,c.error)throw c.error;return s}}}}var k,j,E=function(e,t){return new Array(t+1).join(e)},A=function(e,t){return E("0",t-e.toString().length)+e},D=function(e){return A(e.getHours(),2)+":"+A(e.getMinutes(),2)+":"+A(e.getSeconds(),2)+"."+A(e.getMilliseconds(),3)},O="undefined"!=typeof performance&&null!==performance&&"function"==typeof performance.now?performance:Date,N="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},P=function(e){if(Array.isArray(e)){for(var t=0,r=Array(e.length);t<e.length;t++)r[t]=e[t];return r}return Array.from(e)},C=[];k="object"===("undefined"==typeof global?"undefined":N(global))&&global?global:"undefined"!=typeof window?window:{},j=k.DeepDiff,j&&C.push(function(){"undefined"!=typeof j&&k.DeepDiff===c&&(k.DeepDiff=j,j=void 0)}),t(n,r),t(o,r),t(i,r),t(a,r),Object.defineProperties(c,{diff:{value:c,enumerable:!0},observableDiff:{value:l,enumerable:!0},applyDiff:{value:h,enumerable:!0},applyChange:{value:d,enumerable:!0},revertChange:{value:g,enumerable:!0},isConflict:{value:function(){return"undefined"!=typeof j},enumerable:!0},noConflict:{value:function(){return C&&(C.forEach(function(e){e()}),C=null),c},enumerable:!0}});var F={E:{color:"#2196F3",text:"CHANGED:"},N:{color:"#4CAF50",text:"ADDED:"},D:{color:"#F44336",text:"DELETED:"},A:{color:"#2196F3",text:"ARRAY:"}},L={level:"log",logger:console,logErrors:!0,collapsed:void 0,predicate:void 0,duration:!1,timestamp:!0,stateTransformer:function(e){return e},actionTransformer:function(e){return e},errorTransformer:function(e){return e},colors:{title:function(){return"inherit"},prevState:function(){return"#9E9E9E"},action:function(){return"#03A9F4"},nextState:function(){return"#4CAF50"},error:function(){return"#F20404"}},diff:!1,diffPredicate:void 0,transformer:void 0},T=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=e.dispatch,r=e.getState;return"function"==typeof t||"function"==typeof r?S()({dispatch:t,getState:r}):void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n")};e.defaults=L,e.createLogger=S,e.logger=T,e.default=T,Object.defineProperty(e,"__esModule",{value:!0})});
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 25 */
@@ -1819,7 +1820,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = (freeGlobal);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(4)))
 
 /***/ }),
 /* 29 */
@@ -2017,7 +2018,7 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(36)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(36)(module)))
 
 /***/ }),
 /* 36 */
@@ -2342,31 +2343,31 @@ var _actions = __webpack_require__(0);
 
 var _constants = __webpack_require__(1);
 
-var _story = __webpack_require__(44);
+var _story = __webpack_require__(43);
 
 var _story2 = _interopRequireDefault(_story);
 
-var _menus = __webpack_require__(45);
+var _menus = __webpack_require__(44);
 
 var _menus2 = _interopRequireDefault(_menus);
 
-var _party = __webpack_require__(46);
+var _party = __webpack_require__(45);
 
 var _party2 = _interopRequireDefault(_party);
 
-var _buttons = __webpack_require__(47);
+var _buttons = __webpack_require__(46);
 
 var _buttons2 = _interopRequireDefault(_buttons);
 
-var _tiles = __webpack_require__(48);
+var _tiles = __webpack_require__(47);
 
 var _tiles2 = _interopRequireDefault(_tiles);
 
-var _map = __webpack_require__(49);
+var _map = __webpack_require__(48);
 
-var _input = __webpack_require__(50);
+var _input = __webpack_require__(49);
 
-var _ui = __webpack_require__(51);
+var _ui = __webpack_require__(50);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2389,8 +2390,8 @@ var initialState = {
   // player
   camp: {},
   position: {
-    x: 2,
-    y: 2
+    x: null,
+    y: null
   },
   sight: 2,
   moves: null,
@@ -2511,8 +2512,7 @@ function reducer(state, action) {
 }
 
 /***/ }),
-/* 42 */,
-/* 43 */
+/* 42 */
 /***/ (function(module, exports) {
 
 var __root__ = (function (root) {
@@ -2998,37 +2998,37 @@ module.exports = fetch;
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports) {
 
 module.exports = {"action":{},"text":["A wild jaguar creeps from the","shadows with glowing eyes."],"buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports) {
 
 module.exports = {"byId":{"overlay":{"type":"MAP_OVERLAY","buttons":["button1","button1","button1","button1"]},"main":{"type":"TEXT_MENU","text":["Welcome to the Amazon Trail","","You may:"],"buttons":["toMap","newGame","toHighscore"]},"selectClass":{"type":"TEXT_MENU","text":["A world of adventure awaits you.","","Which path will you choose?"],"buttons":["startTribe","startScience","startLogger","toMain"]},"highscore":{"type":"TEXT_MENU","text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"buttons":["toMain"]}},"allIds":["overlay","main","selectClass","highscore"]}
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = [{"name":"J. Cruz","icon":32,"health":5,"jeito":3},{"name":"H. Villa","icon":33,"health":1,"jeito":2},{"name":"F. Boa","icon":34,"health":2,"jeito":4},{"name":"R. Stone","icon":32,"health":1,"jeito":1},{"name":"D. Lee","icon":33,"health":3,"jeito":5}]
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = {"byId":{"button1":{"text":"MENU","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMain":{"text":"Return to main menu","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMap":{"text":"Continue game","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"newGame":{"text":"Start new game","action":{"type":"FOCUS_MENU","payload":{"ref":"selectClass"}}},"toHighscore":{"text":"View high scores","action":{"type":"FOCUS_MENU","payload":{"ref":"highscore"}}},"startTribe":{"text":"The way of the tribe","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startScience":{"text":"The life of a logger","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startLogger":{"text":"The researcher's journey","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}}},"allIds":["button1","toMain","toMap","newGame","toHighscore","startTribe","startScience","startLogger"]}
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports) {
 
 module.exports = [{"id":0,"x":0,"y":0,"layers":{"base":0,"middle":0}},{"id":1,"x":1,"y":0,"layers":{"base":0,"middle":0}},{"id":2,"x":2,"y":0,"layers":{"base":0,"middle":0}},{"id":3,"x":3,"y":0,"layers":{"base":0,"middle":0}},{"id":4,"x":4,"y":0,"layers":{"base":0,"middle":0}},{"id":5,"x":5,"y":0,"layers":{"base":0,"middle":0}},{"id":6,"x":6,"y":0,"layers":{"base":0,"middle":1}},{"id":7,"x":7,"y":0,"layers":{"base":0,"middle":0}},{"id":8,"x":8,"y":0,"layers":{"base":0,"middle":0}},{"id":9,"x":9,"y":0,"layers":{"base":0,"middle":0}},{"id":10,"x":10,"y":0,"layers":{"base":0,"middle":0}},{"id":11,"x":11,"y":0,"layers":{"base":0,"middle":0}},{"id":12,"x":12,"y":0,"layers":{"base":0,"middle":0}},{"id":13,"x":13,"y":0,"layers":{"base":0,"middle":0}},{"id":14,"x":14,"y":0,"layers":{"base":0,"middle":0}},{"id":15,"x":15,"y":0,"layers":{"base":0,"middle":0}},{"id":16,"x":16,"y":0,"layers":{"base":0,"middle":0}},{"id":17,"x":17,"y":0,"layers":{"base":0,"middle":0}},{"id":18,"x":18,"y":0,"layers":{"base":0,"middle":0}},{"id":19,"x":19,"y":0,"layers":{"base":0,"middle":0}},{"id":20,"x":0,"y":1,"layers":{"base":0,"middle":0}},{"id":21,"x":1,"y":1,"layers":{"base":0,"middle":0}},{"id":22,"x":2,"y":1,"layers":{"base":0,"middle":0}},{"id":23,"x":3,"y":1,"layers":{"base":0,"middle":0}},{"id":24,"x":4,"y":1,"layers":{"base":0,"middle":0}},{"id":25,"x":5,"y":1,"layers":{"base":0,"middle":0}},{"id":26,"x":6,"y":1,"layers":{"base":0,"middle":1}},{"id":27,"x":7,"y":1,"layers":{"base":0,"middle":0}},{"id":28,"x":8,"y":1,"layers":{"base":0,"middle":0}},{"id":29,"x":9,"y":1,"layers":{"base":0,"middle":0}},{"id":30,"x":10,"y":1,"layers":{"base":0,"middle":0}},{"id":31,"x":11,"y":1,"layers":{"base":0,"middle":0}},{"id":32,"x":12,"y":1,"layers":{"base":0,"middle":0}},{"id":33,"x":13,"y":1,"layers":{"base":0,"middle":0}},{"id":34,"x":14,"y":1,"layers":{"base":0,"middle":0}},{"id":35,"x":15,"y":1,"layers":{"base":0,"middle":0}},{"id":36,"x":16,"y":1,"layers":{"base":0,"middle":0}},{"id":37,"x":17,"y":1,"layers":{"base":0,"middle":0}},{"id":38,"x":18,"y":1,"layers":{"base":0,"middle":0}},{"id":39,"x":19,"y":1,"layers":{"base":0,"middle":0}},{"id":40,"x":0,"y":2,"layers":{"base":0,"middle":0}},{"id":41,"x":1,"y":2,"layers":{"base":0,"middle":0}},{"id":42,"x":2,"y":2,"layers":{"base":0,"middle":0}},{"id":43,"x":3,"y":2,"layers":{"base":0,"middle":0}},{"id":44,"x":4,"y":2,"layers":{"base":0,"middle":0}},{"id":45,"x":5,"y":2,"layers":{"base":0,"middle":0}},{"id":46,"x":6,"y":2,"layers":{"base":0,"middle":1}},{"id":47,"x":7,"y":2,"layers":{"base":0,"middle":0}},{"id":48,"x":8,"y":2,"layers":{"base":0,"middle":0}},{"id":49,"x":9,"y":2,"layers":{"base":0,"middle":0}},{"id":50,"x":10,"y":2,"layers":{"base":0,"middle":0}},{"id":51,"x":11,"y":2,"layers":{"base":0,"middle":0}},{"id":52,"x":12,"y":2,"layers":{"base":0,"middle":0}},{"id":53,"x":13,"y":2,"layers":{"base":0,"middle":0}},{"id":54,"x":14,"y":2,"layers":{"base":0,"middle":0}},{"id":55,"x":15,"y":2,"layers":{"base":0,"middle":0}},{"id":56,"x":16,"y":2,"layers":{"base":0,"middle":0}},{"id":57,"x":17,"y":2,"layers":{"base":0,"middle":0}},{"id":58,"x":18,"y":2,"layers":{"base":0,"middle":0}},{"id":59,"x":19,"y":2,"layers":{"base":0,"middle":0}},{"id":60,"x":0,"y":3,"layers":{"base":0,"middle":9}},{"id":61,"x":1,"y":3,"layers":{"base":0,"middle":0}},{"id":62,"x":2,"y":3,"layers":{"base":0,"middle":0}},{"id":63,"x":3,"y":3,"layers":{"base":0,"middle":0}},{"id":64,"x":4,"y":3,"layers":{"base":0,"middle":0}},{"id":65,"x":5,"y":3,"layers":{"base":0,"middle":0}},{"id":66,"x":6,"y":3,"layers":{"base":0,"middle":1}},{"id":67,"x":7,"y":3,"layers":{"base":0,"middle":0}},{"id":68,"x":8,"y":3,"layers":{"base":0,"middle":0}},{"id":69,"x":9,"y":3,"layers":{"base":0,"middle":0}},{"id":70,"x":10,"y":3,"layers":{"base":0,"middle":0}},{"id":71,"x":11,"y":3,"layers":{"base":0,"middle":0}},{"id":72,"x":12,"y":3,"layers":{"base":0,"middle":0}},{"id":73,"x":13,"y":3,"layers":{"base":0,"middle":0}},{"id":74,"x":14,"y":3,"layers":{"base":0,"middle":0}},{"id":75,"x":15,"y":3,"layers":{"base":0,"middle":0}},{"id":76,"x":16,"y":3,"layers":{"base":0,"middle":0}},{"id":77,"x":17,"y":3,"layers":{"base":0,"middle":0}},{"id":78,"x":18,"y":3,"layers":{"base":0,"middle":0}},{"id":79,"x":19,"y":3,"layers":{"base":0,"middle":0}},{"id":80,"x":0,"y":4,"layers":{"base":0,"middle":3}},{"id":81,"x":1,"y":4,"layers":{"base":0,"middle":0}},{"id":82,"x":2,"y":4,"layers":{"base":0,"middle":0}},{"id":83,"x":3,"y":4,"layers":{"base":0,"middle":0}},{"id":84,"x":4,"y":4,"layers":{"base":0,"middle":0}},{"id":85,"x":5,"y":4,"layers":{"base":0,"middle":0}},{"id":86,"x":6,"y":4,"layers":{"base":0,"middle":1}},{"id":87,"x":7,"y":4,"layers":{"base":0,"middle":0}},{"id":88,"x":8,"y":4,"layers":{"base":0,"middle":0}},{"id":89,"x":9,"y":4,"layers":{"base":0,"middle":0}},{"id":90,"x":10,"y":4,"layers":{"base":0,"middle":0}},{"id":91,"x":11,"y":4,"layers":{"base":0,"middle":0}},{"id":92,"x":12,"y":4,"layers":{"base":0,"middle":0}},{"id":93,"x":13,"y":4,"layers":{"base":0,"middle":0}},{"id":94,"x":14,"y":4,"layers":{"base":0,"middle":0}},{"id":95,"x":15,"y":4,"layers":{"base":0,"middle":0}},{"id":96,"x":16,"y":4,"layers":{"base":0,"middle":0}},{"id":97,"x":17,"y":4,"layers":{"base":0,"middle":0}},{"id":98,"x":18,"y":4,"layers":{"base":0,"middle":0}},{"id":99,"x":19,"y":4,"layers":{"base":0,"middle":0}},{"id":100,"x":0,"y":5,"layers":{"base":0,"middle":18}},{"id":101,"x":1,"y":5,"layers":{"base":0,"middle":2}},{"id":102,"x":2,"y":5,"layers":{"base":0,"middle":2}},{"id":103,"x":3,"y":5,"layers":{"base":0,"middle":15}},{"id":104,"x":4,"y":5,"layers":{"base":0,"middle":2}},{"id":105,"x":5,"y":5,"layers":{"base":0,"middle":2}},{"id":106,"x":6,"y":5,"layers":{"base":0,"middle":23}},{"id":107,"x":7,"y":5,"layers":{"base":0,"middle":2}},{"id":108,"x":8,"y":5,"layers":{"base":0,"middle":2}},{"id":109,"x":9,"y":5,"layers":{"base":0,"middle":2}},{"id":110,"x":10,"y":5,"layers":{"base":0,"middle":2}},{"id":111,"x":11,"y":5,"layers":{"base":0,"middle":7}},{"id":112,"x":12,"y":5,"layers":{"base":0,"middle":0}},{"id":113,"x":13,"y":5,"layers":{"base":0,"middle":0}},{"id":114,"x":14,"y":5,"layers":{"base":0,"middle":0}},{"id":115,"x":15,"y":5,"layers":{"base":0,"middle":0}},{"id":116,"x":16,"y":5,"layers":{"base":0,"middle":0}},{"id":117,"x":17,"y":5,"layers":{"base":0,"middle":0}},{"id":118,"x":18,"y":5,"layers":{"base":0,"middle":0}},{"id":119,"x":19,"y":5,"layers":{"base":0,"middle":0}},{"id":120,"x":0,"y":6,"layers":{"base":0,"middle":13}},{"id":121,"x":1,"y":6,"layers":{"base":0,"middle":4}},{"id":122,"x":2,"y":6,"layers":{"base":0,"middle":9}},{"id":123,"x":3,"y":6,"layers":{"base":0,"middle":0}},{"id":124,"x":4,"y":6,"layers":{"base":0,"middle":0}},{"id":125,"x":5,"y":6,"layers":{"base":0,"middle":0}},{"id":126,"x":6,"y":6,"layers":{"base":0,"middle":1}},{"id":127,"x":7,"y":6,"layers":{"base":0,"middle":0}},{"id":128,"x":8,"y":6,"layers":{"base":0,"middle":0}},{"id":129,"x":9,"y":6,"layers":{"base":0,"middle":0}},{"id":130,"x":10,"y":6,"layers":{"base":0,"middle":0}},{"id":131,"x":11,"y":6,"layers":{"base":0,"middle":11}},{"id":132,"x":12,"y":6,"layers":{"base":0,"middle":2}},{"id":133,"x":13,"y":6,"layers":{"base":0,"middle":2}},{"id":134,"x":14,"y":6,"layers":{"base":0,"middle":2}},{"id":135,"x":15,"y":6,"layers":{"base":0,"middle":7}},{"id":136,"x":16,"y":6,"layers":{"base":0,"middle":0}},{"id":137,"x":17,"y":6,"layers":{"base":0,"middle":0}},{"id":138,"x":18,"y":6,"layers":{"base":0,"middle":0}},{"id":139,"x":19,"y":6,"layers":{"base":0,"middle":0}},{"id":140,"x":0,"y":7,"layers":{"base":0,"middle":0}},{"id":141,"x":1,"y":7,"layers":{"base":0,"middle":0}},{"id":142,"x":2,"y":7,"layers":{"base":0,"middle":13}},{"id":143,"x":3,"y":7,"layers":{"base":0,"middle":9}},{"id":144,"x":4,"y":7,"layers":{"base":0,"middle":0}},{"id":145,"x":5,"y":7,"layers":{"base":0,"middle":0}},{"id":146,"x":6,"y":7,"layers":{"base":0,"middle":1}},{"id":147,"x":7,"y":7,"layers":{"base":0,"middle":0}},{"id":148,"x":8,"y":7,"layers":{"base":0,"middle":0}},{"id":149,"x":9,"y":7,"layers":{"base":0,"middle":8}},{"id":150,"x":10,"y":7,"layers":{"base":0,"middle":9}},{"id":151,"x":11,"y":7,"layers":{"base":0,"middle":0}},{"id":152,"x":12,"y":7,"layers":{"base":0,"middle":0}},{"id":153,"x":13,"y":7,"layers":{"base":0,"middle":0}},{"id":154,"x":14,"y":7,"layers":{"base":0,"middle":0}},{"id":155,"x":15,"y":7,"layers":{"base":0,"middle":11}},{"id":156,"x":16,"y":7,"layers":{"base":0,"middle":7}},{"id":157,"x":17,"y":7,"layers":{"base":0,"middle":0}},{"id":158,"x":18,"y":7,"layers":{"base":0,"middle":0}},{"id":159,"x":19,"y":7,"layers":{"base":0,"middle":0}},{"id":160,"x":0,"y":8,"layers":{"base":0,"middle":0}},{"id":161,"x":1,"y":8,"layers":{"base":0,"middle":0}},{"id":162,"x":2,"y":8,"layers":{"base":0,"middle":8}},{"id":163,"x":3,"y":8,"layers":{"base":0,"middle":14}},{"id":164,"x":4,"y":8,"layers":{"base":0,"middle":0}},{"id":165,"x":5,"y":8,"layers":{"base":0,"middle":0}},{"id":166,"x":6,"y":8,"layers":{"base":0,"middle":1}},{"id":167,"x":7,"y":8,"layers":{"base":0,"middle":8}},{"id":168,"x":8,"y":8,"layers":{"base":0,"middle":9}},{"id":169,"x":9,"y":8,"layers":{"base":0,"middle":3}},{"id":170,"x":10,"y":8,"layers":{"base":0,"middle":13}},{"id":171,"x":11,"y":8,"layers":{"base":0,"middle":9}},{"id":172,"x":12,"y":8,"layers":{"base":0,"middle":0}},{"id":173,"x":13,"y":8,"layers":{"base":0,"middle":0}},{"id":174,"x":14,"y":8,"layers":{"base":0,"middle":0}},{"id":175,"x":15,"y":8,"layers":{"base":0,"middle":0}},{"id":176,"x":16,"y":8,"layers":{"base":0,"middle":11}},{"id":177,"x":17,"y":8,"layers":{"base":0,"middle":16}},{"id":178,"x":18,"y":8,"layers":{"base":0,"middle":2}},{"id":179,"x":19,"y":8,"layers":{"base":0,"middle":2}},{"id":180,"x":0,"y":9,"layers":{"base":0,"middle":0}},{"id":181,"x":1,"y":9,"layers":{"base":0,"middle":0}},{"id":182,"x":2,"y":9,"layers":{"base":0,"middle":13}},{"id":183,"x":3,"y":9,"layers":{"base":0,"middle":4}},{"id":184,"x":4,"y":9,"layers":{"base":0,"middle":9}},{"id":185,"x":5,"y":9,"layers":{"base":0,"middle":8}},{"id":186,"x":6,"y":9,"layers":{"base":0,"middle":19}},{"id":187,"x":7,"y":9,"layers":{"base":0,"middle":14}},{"id":188,"x":8,"y":9,"layers":{"base":0,"middle":13}},{"id":189,"x":9,"y":9,"layers":{"base":0,"middle":14}},{"id":190,"x":10,"y":9,"layers":{"base":0,"middle":0}},{"id":191,"x":11,"y":9,"layers":{"base":0,"middle":13}},{"id":192,"x":12,"y":9,"layers":{"base":0,"middle":4}},{"id":193,"x":13,"y":9,"layers":{"base":0,"middle":20}},{"id":194,"x":14,"y":9,"layers":{"base":0,"middle":9}},{"id":195,"x":15,"y":9,"layers":{"base":0,"middle":0}},{"id":196,"x":16,"y":9,"layers":{"base":0,"middle":0}},{"id":197,"x":17,"y":9,"layers":{"base":0,"middle":1}},{"id":198,"x":18,"y":9,"layers":{"base":0,"middle":0}},{"id":199,"x":19,"y":9,"layers":{"base":0,"middle":0}},{"id":200,"x":0,"y":10,"layers":{"base":0,"middle":0}},{"id":201,"x":1,"y":10,"layers":{"base":0,"middle":0}},{"id":202,"x":2,"y":10,"layers":{"base":0,"middle":0}},{"id":203,"x":3,"y":10,"layers":{"base":0,"middle":0}},{"id":204,"x":4,"y":10,"layers":{"base":0,"middle":13}},{"id":205,"x":5,"y":10,"layers":{"base":0,"middle":14}},{"id":206,"x":6,"y":10,"layers":{"base":0,"middle":1}},{"id":207,"x":7,"y":10,"layers":{"base":0,"middle":0}},{"id":208,"x":8,"y":10,"layers":{"base":0,"middle":0}},{"id":209,"x":9,"y":10,"layers":{"base":0,"middle":0}},{"id":210,"x":10,"y":10,"layers":{"base":0,"middle":0}},{"id":211,"x":11,"y":10,"layers":{"base":0,"middle":0}},{"id":212,"x":12,"y":10,"layers":{"base":0,"middle":0}},{"id":213,"x":13,"y":10,"layers":{"base":0,"middle":0}},{"id":214,"x":14,"y":10,"layers":{"base":0,"middle":3}},{"id":215,"x":15,"y":10,"layers":{"base":0,"middle":0}},{"id":216,"x":16,"y":10,"layers":{"base":0,"middle":0}},{"id":217,"x":17,"y":10,"layers":{"base":0,"middle":1}},{"id":218,"x":18,"y":10,"layers":{"base":0,"middle":0}},{"id":219,"x":19,"y":10,"layers":{"base":0,"middle":0}},{"id":220,"x":0,"y":11,"layers":{"base":0,"middle":0}},{"id":221,"x":1,"y":11,"layers":{"base":0,"middle":0}},{"id":222,"x":2,"y":11,"layers":{"base":0,"middle":0}},{"id":223,"x":3,"y":11,"layers":{"base":0,"middle":0}},{"id":224,"x":4,"y":11,"layers":{"base":0,"middle":0}},{"id":225,"x":5,"y":11,"layers":{"base":0,"middle":0}},{"id":226,"x":6,"y":11,"layers":{"base":0,"middle":1}},{"id":227,"x":7,"y":11,"layers":{"base":0,"middle":0}},{"id":228,"x":8,"y":11,"layers":{"base":0,"middle":0}},{"id":229,"x":9,"y":11,"layers":{"base":0,"middle":0}},{"id":230,"x":10,"y":11,"layers":{"base":0,"middle":0}},{"id":231,"x":11,"y":11,"layers":{"base":0,"middle":0}},{"id":232,"x":12,"y":11,"layers":{"base":0,"middle":0}},{"id":233,"x":13,"y":11,"layers":{"base":0,"middle":0}},{"id":234,"x":14,"y":11,"layers":{"base":0,"middle":13}},{"id":235,"x":15,"y":11,"layers":{"base":0,"middle":9}},{"id":236,"x":16,"y":11,"layers":{"base":0,"middle":8}},{"id":237,"x":17,"y":11,"layers":{"base":0,"middle":19}},{"id":238,"x":18,"y":11,"layers":{"base":0,"middle":9}},{"id":239,"x":19,"y":11,"layers":{"base":0,"middle":0}},{"id":240,"x":0,"y":12,"layers":{"base":0,"middle":0}},{"id":241,"x":1,"y":12,"layers":{"base":0,"middle":0}},{"id":242,"x":2,"y":12,"layers":{"base":0,"middle":0}},{"id":243,"x":3,"y":12,"layers":{"base":0,"middle":0}},{"id":244,"x":4,"y":12,"layers":{"base":0,"middle":0}},{"id":245,"x":5,"y":12,"layers":{"base":0,"middle":0}},{"id":246,"x":6,"y":12,"layers":{"base":0,"middle":21}},{"id":247,"x":7,"y":12,"layers":{"base":0,"middle":10}},{"id":248,"x":8,"y":12,"layers":{"base":0,"middle":2}},{"id":249,"x":9,"y":12,"layers":{"base":0,"middle":0}},{"id":250,"x":10,"y":12,"layers":{"base":0,"middle":0}},{"id":251,"x":11,"y":12,"layers":{"base":0,"middle":0}},{"id":252,"x":12,"y":12,"layers":{"base":0,"middle":0}},{"id":253,"x":13,"y":12,"layers":{"base":0,"middle":0}},{"id":254,"x":14,"y":12,"layers":{"base":0,"middle":0}},{"id":255,"x":15,"y":12,"layers":{"base":0,"middle":13}},{"id":256,"x":16,"y":12,"layers":{"base":0,"middle":14}},{"id":257,"x":17,"y":12,"layers":{"base":0,"middle":1}},{"id":258,"x":18,"y":12,"layers":{"base":0,"middle":13}},{"id":259,"x":19,"y":12,"layers":{"base":0,"middle":4}},{"id":260,"x":0,"y":13,"layers":{"base":0,"middle":0}},{"id":261,"x":1,"y":13,"layers":{"base":0,"middle":0}},{"id":262,"x":2,"y":13,"layers":{"base":0,"middle":0}},{"id":263,"x":3,"y":13,"layers":{"base":0,"middle":0}},{"id":264,"x":4,"y":13,"layers":{"base":0,"middle":0}},{"id":265,"x":5,"y":13,"layers":{"base":0,"middle":0}},{"id":266,"x":6,"y":13,"layers":{"base":0,"middle":1}},{"id":267,"x":7,"y":13,"layers":{"base":0,"middle":0}},{"id":268,"x":8,"y":13,"layers":{"base":0,"middle":0}},{"id":269,"x":9,"y":13,"layers":{"base":0,"middle":0}},{"id":270,"x":10,"y":13,"layers":{"base":0,"middle":0}},{"id":271,"x":11,"y":13,"layers":{"base":0,"middle":0}},{"id":272,"x":12,"y":13,"layers":{"base":0,"middle":0}},{"id":273,"x":13,"y":13,"layers":{"base":0,"middle":0}},{"id":274,"x":14,"y":13,"layers":{"base":0,"middle":0}},{"id":275,"x":15,"y":13,"layers":{"base":0,"middle":0}},{"id":276,"x":16,"y":13,"layers":{"base":0,"middle":0}},{"id":277,"x":17,"y":13,"layers":{"base":0,"middle":1}},{"id":278,"x":18,"y":13,"layers":{"base":0,"middle":0}},{"id":279,"x":19,"y":13,"layers":{"base":0,"middle":0}},{"id":280,"x":0,"y":14,"layers":{"base":0,"middle":0}},{"id":281,"x":1,"y":14,"layers":{"base":0,"middle":0}},{"id":282,"x":2,"y":14,"layers":{"base":0,"middle":0}},{"id":283,"x":3,"y":14,"layers":{"base":0,"middle":0}},{"id":284,"x":4,"y":14,"layers":{"base":0,"middle":0}},{"id":285,"x":5,"y":14,"layers":{"base":0,"middle":2}},{"id":286,"x":6,"y":14,"layers":{"base":0,"middle":17}},{"id":287,"x":7,"y":14,"layers":{"base":0,"middle":0}},{"id":288,"x":8,"y":14,"layers":{"base":0,"middle":0}},{"id":289,"x":9,"y":14,"layers":{"base":0,"middle":0}},{"id":290,"x":10,"y":14,"layers":{"base":0,"middle":0}},{"id":291,"x":11,"y":14,"layers":{"base":0,"middle":0}},{"id":292,"x":12,"y":14,"layers":{"base":0,"middle":0}},{"id":293,"x":13,"y":14,"layers":{"base":0,"middle":0}},{"id":294,"x":14,"y":14,"layers":{"base":0,"middle":0}},{"id":295,"x":15,"y":14,"layers":{"base":0,"middle":0}},{"id":296,"x":16,"y":14,"layers":{"base":0,"middle":0}},{"id":297,"x":17,"y":14,"layers":{"base":0,"middle":1}},{"id":298,"x":18,"y":14,"layers":{"base":0,"middle":0}},{"id":299,"x":19,"y":14,"layers":{"base":0,"middle":0}},{"id":300,"x":0,"y":15,"layers":{"base":0,"middle":0}},{"id":301,"x":1,"y":15,"layers":{"base":0,"middle":0}},{"id":302,"x":2,"y":15,"layers":{"base":0,"middle":0}},{"id":303,"x":3,"y":15,"layers":{"base":0,"middle":0}},{"id":304,"x":4,"y":15,"layers":{"base":0,"middle":0}},{"id":305,"x":5,"y":15,"layers":{"base":0,"middle":0}},{"id":306,"x":6,"y":15,"layers":{"base":0,"middle":1}},{"id":307,"x":7,"y":15,"layers":{"base":0,"middle":0}},{"id":308,"x":8,"y":15,"layers":{"base":0,"middle":0}},{"id":309,"x":9,"y":15,"layers":{"base":0,"middle":0}},{"id":310,"x":10,"y":15,"layers":{"base":0,"middle":0}},{"id":311,"x":11,"y":15,"layers":{"base":0,"middle":0}},{"id":312,"x":12,"y":15,"layers":{"base":0,"middle":0}},{"id":313,"x":13,"y":15,"layers":{"base":0,"middle":0}},{"id":314,"x":14,"y":15,"layers":{"base":0,"middle":0}},{"id":315,"x":15,"y":15,"layers":{"base":0,"middle":0}},{"id":316,"x":16,"y":15,"layers":{"base":0,"middle":0}},{"id":317,"x":17,"y":15,"layers":{"base":0,"middle":1}},{"id":318,"x":18,"y":15,"layers":{"base":0,"middle":0}},{"id":319,"x":19,"y":15,"layers":{"base":0,"middle":0}},{"id":320,"x":0,"y":16,"layers":{"base":0,"middle":0}},{"id":321,"x":1,"y":16,"layers":{"base":0,"middle":0}},{"id":322,"x":2,"y":16,"layers":{"base":0,"middle":0}},{"id":323,"x":3,"y":16,"layers":{"base":0,"middle":0}},{"id":324,"x":4,"y":16,"layers":{"base":0,"middle":0}},{"id":325,"x":5,"y":16,"layers":{"base":0,"middle":0}},{"id":326,"x":6,"y":16,"layers":{"base":0,"middle":0}},{"id":327,"x":7,"y":16,"layers":{"base":0,"middle":0}},{"id":328,"x":8,"y":16,"layers":{"base":0,"middle":0}},{"id":329,"x":9,"y":16,"layers":{"base":0,"middle":0}},{"id":330,"x":10,"y":16,"layers":{"base":0,"middle":0}},{"id":331,"x":11,"y":16,"layers":{"base":0,"middle":0}},{"id":332,"x":12,"y":16,"layers":{"base":0,"middle":0}},{"id":333,"x":13,"y":16,"layers":{"base":0,"middle":0}},{"id":334,"x":14,"y":16,"layers":{"base":0,"middle":0}},{"id":335,"x":15,"y":16,"layers":{"base":0,"middle":2}},{"id":336,"x":16,"y":16,"layers":{"base":0,"middle":2}},{"id":337,"x":17,"y":16,"layers":{"base":0,"middle":23}},{"id":338,"x":18,"y":16,"layers":{"base":0,"middle":2}},{"id":339,"x":19,"y":16,"layers":{"base":0,"middle":0}},{"id":340,"x":0,"y":17,"layers":{"base":0,"middle":0}},{"id":341,"x":1,"y":17,"layers":{"base":0,"middle":0}},{"id":342,"x":2,"y":17,"layers":{"base":0,"middle":0}},{"id":343,"x":3,"y":17,"layers":{"base":0,"middle":0}},{"id":344,"x":4,"y":17,"layers":{"base":0,"middle":0}},{"id":345,"x":5,"y":17,"layers":{"base":0,"middle":0}},{"id":346,"x":6,"y":17,"layers":{"base":0,"middle":0}},{"id":347,"x":7,"y":17,"layers":{"base":0,"middle":0}},{"id":348,"x":8,"y":17,"layers":{"base":0,"middle":0}},{"id":349,"x":9,"y":17,"layers":{"base":0,"middle":0}},{"id":350,"x":10,"y":17,"layers":{"base":0,"middle":0}},{"id":351,"x":11,"y":17,"layers":{"base":0,"middle":0}},{"id":352,"x":12,"y":17,"layers":{"base":0,"middle":0}},{"id":353,"x":13,"y":17,"layers":{"base":0,"middle":0}},{"id":354,"x":14,"y":17,"layers":{"base":0,"middle":0}},{"id":355,"x":15,"y":17,"layers":{"base":0,"middle":0}},{"id":356,"x":16,"y":17,"layers":{"base":0,"middle":0}},{"id":357,"x":17,"y":17,"layers":{"base":0,"middle":1}},{"id":358,"x":18,"y":17,"layers":{"base":0,"middle":0}},{"id":359,"x":19,"y":17,"layers":{"base":0,"middle":0}},{"id":360,"x":0,"y":18,"layers":{"base":0,"middle":0}},{"id":361,"x":1,"y":18,"layers":{"base":0,"middle":0}},{"id":362,"x":2,"y":18,"layers":{"base":0,"middle":0}},{"id":363,"x":3,"y":18,"layers":{"base":0,"middle":0}},{"id":364,"x":4,"y":18,"layers":{"base":0,"middle":0}},{"id":365,"x":5,"y":18,"layers":{"base":0,"middle":0}},{"id":366,"x":6,"y":18,"layers":{"base":0,"middle":0}},{"id":367,"x":7,"y":18,"layers":{"base":0,"middle":0}},{"id":368,"x":8,"y":18,"layers":{"base":0,"middle":0}},{"id":369,"x":9,"y":18,"layers":{"base":0,"middle":0}},{"id":370,"x":10,"y":18,"layers":{"base":0,"middle":0}},{"id":371,"x":11,"y":18,"layers":{"base":0,"middle":0}},{"id":372,"x":12,"y":18,"layers":{"base":0,"middle":0}},{"id":373,"x":13,"y":18,"layers":{"base":0,"middle":0}},{"id":374,"x":14,"y":18,"layers":{"base":0,"middle":0}},{"id":375,"x":15,"y":18,"layers":{"base":0,"middle":0}},{"id":376,"x":16,"y":18,"layers":{"base":0,"middle":0}},{"id":377,"x":17,"y":18,"layers":{"base":0,"middle":1}},{"id":378,"x":18,"y":18,"layers":{"base":0,"middle":0}},{"id":379,"x":19,"y":18,"layers":{"base":0,"middle":0}},{"id":380,"x":0,"y":19,"layers":{"base":0,"middle":0}},{"id":381,"x":1,"y":19,"layers":{"base":0,"middle":0}},{"id":382,"x":2,"y":19,"layers":{"base":0,"middle":0}},{"id":383,"x":3,"y":19,"layers":{"base":0,"middle":0}},{"id":384,"x":4,"y":19,"layers":{"base":0,"middle":0}},{"id":385,"x":5,"y":19,"layers":{"base":0,"middle":0}},{"id":386,"x":6,"y":19,"layers":{"base":0,"middle":0}},{"id":387,"x":7,"y":19,"layers":{"base":0,"middle":0}},{"id":388,"x":8,"y":19,"layers":{"base":0,"middle":0}},{"id":389,"x":9,"y":19,"layers":{"base":0,"middle":0}},{"id":390,"x":10,"y":19,"layers":{"base":0,"middle":0}},{"id":391,"x":11,"y":19,"layers":{"base":0,"middle":0}},{"id":392,"x":12,"y":19,"layers":{"base":0,"middle":0}},{"id":393,"x":13,"y":19,"layers":{"base":0,"middle":0}},{"id":394,"x":14,"y":19,"layers":{"base":0,"middle":0}},{"id":395,"x":15,"y":19,"layers":{"base":0,"middle":0}},{"id":396,"x":16,"y":19,"layers":{"base":0,"middle":0}},{"id":397,"x":17,"y":19,"layers":{"base":0,"middle":0}},{"id":398,"x":18,"y":19,"layers":{"base":0,"middle":0}},{"id":399,"x":19,"y":19,"layers":{"base":0,"middle":0}}]
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3039,7 +3039,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.addLayer = exports.click = exports.makeTestTiles = exports.makeSrcTiles = undefined;
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(5);
 
 // Initial state setup
 
@@ -3146,7 +3146,7 @@ exports.click = click;
 exports.addLayer = addLayer;
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3157,7 +3157,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.clicked = exports.mouseUp = exports.drag = exports.mouseDown = exports.keyUp = exports.keyDown = undefined;
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(5);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -3229,7 +3229,7 @@ exports.mouseUp = mouseUp;
 exports.clicked = clicked;
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3240,7 +3240,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.focusTile = exports.focusMenu = undefined;
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(5);
 
 var _constants = __webpack_require__(1);
 
@@ -3269,8 +3269,7 @@ exports.focusMenu = focusMenu;
 exports.focusTile = focusTile;
 
 /***/ }),
-/* 52 */,
-/* 53 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3282,7 +3281,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _addInputListeners = __webpack_require__(54);
+var _addInputListeners = __webpack_require__(52);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
@@ -3290,15 +3289,15 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _MapView = __webpack_require__(55);
+var _MapView = __webpack_require__(53);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _MenuView = __webpack_require__(58);
+var _MenuView = __webpack_require__(56);
 
 var _MenuView2 = _interopRequireDefault(_MenuView);
 
-var _StoryView = __webpack_require__(60);
+var _StoryView = __webpack_require__(58);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
@@ -3376,7 +3375,7 @@ var RainGame = function () {
 exports.default = RainGame;
 
 /***/ }),
-/* 54 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3415,7 +3414,7 @@ function addInputListeners(dispatch, canvas) {
 }
 
 /***/ }),
-/* 55 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3431,11 +3430,11 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Camera = __webpack_require__(56);
+var _Camera = __webpack_require__(54);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _Overlay = __webpack_require__(57);
+var _Overlay = __webpack_require__(55);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
@@ -3483,7 +3482,7 @@ var MapView = function () {
 exports.default = MapView;
 
 /***/ }),
-/* 56 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3511,7 +3510,7 @@ var _actions = __webpack_require__(0);
 
 var _constants = __webpack_require__(1);
 
-var _utils = __webpack_require__(4);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3529,6 +3528,8 @@ var Camera = function () {
 
     this.playerIcon = 29;
     this.second = 0;
+
+    this.store.dispatch((0, _actions.getPosition)());
 
     this.connect = new _Connect2.default(this.store);
     this.loader = new _Loader2.default();
@@ -3754,7 +3755,7 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 57 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3782,7 +3783,7 @@ var _tilesetUi = __webpack_require__(12);
 
 var _tilesetUi2 = _interopRequireDefault(_tilesetUi);
 
-var _utils = __webpack_require__(4);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4013,7 +4014,7 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 58 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4025,7 +4026,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Menu = __webpack_require__(59);
+var _Menu = __webpack_require__(57);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -4062,7 +4063,7 @@ var MenuView = function () {
 exports.default = MenuView;
 
 /***/ }),
-/* 59 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4082,7 +4083,7 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(4);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4199,7 +4200,7 @@ var Menu = function () {
 exports.default = Menu;
 
 /***/ }),
-/* 60 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4211,7 +4212,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(61);
+var _Story = __webpack_require__(59);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -4248,7 +4249,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 61 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4268,7 +4269,7 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(4);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

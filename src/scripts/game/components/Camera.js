@@ -1,7 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
 import src from '../../../images/tileset-ui.png';
-import {receiveMove, postMoveAndGetPosition} from '../../store/actions/actions';
+import {getPosition, postMoveAndGetPosition} from '../../store/actions/actions';
 import {CAMERA_SPEED, LAYER} from '../constants'
 import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 
@@ -13,6 +13,8 @@ export default class Camera {
 
     this.playerIcon = 29;
     this.second = 0;
+
+    this.store.dispatch(getPosition());
 
     this.connect = new Connect(this.store);
     this.loader = new Loader();
