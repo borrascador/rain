@@ -5,36 +5,60 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
-} from '../actions/types';
-import { makeSrcTiles, makeTestTiles, click, addLayer } from '../utils/map';
+  FOCUS_MENU,
+  FOCUS_TILE,
+  SEND_MOVE_REQUEST,
+  SEND_MOVE_SUCCESS,
+  SEND_MOVE_FAILURE,
+  LOAD_POSITION_REQUEST,
+  LOAD_POSITION_SUCCESS,
+  LOAD_POSITION_FAILURE,
+  LOAD_TILES_REQUEST,
+  LOAD_TILES_SUCCESS,
+  LOAD_TILES_FAILURE
+} from '../actions/actions';
+import { MODE, VEHICLE } from '../../game/constants';
+import story from '../../../events/story.json';
+import menus from '../../../events/menus.json';
+import party from '../../../events/party.json';
+import buttons from '../../../events/buttons.json';
+import tiles from '../../../../tilesets/tiles.json';
+import { makeSrcTiles, addLayer } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
-
-import {MODE} from '../../game/constants';
-import events from '../../../story/story_1.json';
+import { focusMenu, focusTile } from '../utils/ui';
 
 var initialState = {
   // UI
-  mode: MODE.TEXT,
-
-  // story
-  events: events,
+  mode: MODE.MENU,
+  focusX: 2,
+  focusY: 2,
+  activeMenu: "main",
+  story: story,
+  menus: menus,
+  buttons: buttons,
 
   // map
   srcTileSize: 32,
   srcTiles: makeSrcTiles(),
-  mapTileSize: 64,
-  mapTiles: makeTestTiles(),
+  mapTileSize: 96,
+  mapTiles: tiles,
 
   // player
   camp: {},
-  partyX: 2,
-  partyY: 2,
-  sight: 3,
-  moves: 3,
-  members: [],
+  position: {
+    x: null,
+    y: null
+  },
+  sight: 2,
+  moves: null,
+  party: party,
   modifiers: {},
   inventory: {},
-  vehicle: {},
+  vehicle: {
+    type: VEHICLE.JEEP,
+    icon: 31,
+    repair: 5,
+  },
 
   // input
   offsetX: 0,
@@ -62,6 +86,10 @@ var initialState = {
     "7": false,
     "8": false,
     "9": false,
+
+    // foo
+    sending: false,
+    error: null
   },
 };
 
@@ -82,6 +110,58 @@ export default function reducer(state, action) {
       return mouseUp(state, action);
     case CLICKED:
       return clicked(state);
+    case FOCUS_MENU:
+      return focusMenu(state, action);
+    case FOCUS_TILE:
+      return focusTile(state, action);
+
+    case SEND_MOVE_REQUEST:
+      return Object.assign({}, state, {
+        sending: true,
+        error: null
+      });
+    case SEND_MOVE_SUCCESS:
+      return Object.assign({}, state, {
+        sending: false
+      });
+    case SEND_MOVE_FAILURE:
+      return Object.assign({}, state, {
+        sending: false,
+        error: action.error
+      });
+
+    case LOAD_POSITION_REQUEST:
+      return Object.assign({}, state, {
+        loading: true,
+        error: null
+      });
+    case LOAD_POSITION_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        position: action.payload.position.result
+      });
+    case LOAD_POSITION_FAILURE:
+      return Object.assign({}, state, {
+        loading: false,
+        error: action.error
+      });
+
+    case LOAD_TILES_REQUEST:
+      return Object.assign({}, state, {
+        loading: true,
+        error: null
+      });
+    case LOAD_TILES_SUCCESS:
+      return Object.assign({}, state, {
+        loading: false,
+        tiles: Object.values(action.payload.tiles.result || {})
+      });
+    case LOAD_TILES_FAILURE:
+      return Object.assign({}, state, {
+        loading: false,
+        error: action.error
+      });
+
     default:
       return state;
   }

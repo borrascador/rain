@@ -4,7 +4,7 @@ import { updateObject, updateItemInArray } from './utils';
 
 function makeSrcTiles() {
   let array = [];
-  for (let y=0; y<6; y++) {
+  for (let y=0; y<11; y++) {
     for (let x=0; x<5; x++) {
       array.push({ x, y, });
     }
@@ -20,7 +20,7 @@ function makeTestTiles() {
     { id: 4, x: 1, y: 3, layers: { base: 0 } },
     { id: 5, x: 2, y: 0, layers: { base: 0 } },
     { id: 6, x: 2, y: 1, layers: { base: 0 } },
-    { id: 7, x: 2, y: 2, layers: { base: 0, top: 29 } },
+    { id: 7, x: 2, y: 2, layers: { base: 0 } },
     { id: 8, x: 2, y: 3, layers: { base: 0 } },
     { id: 9, x: 2, y: 4, layers: { base: 0 } },
     { id: 10, x: 3, y: 1, layers: { base: 0, middle: 3 } },
@@ -28,6 +28,18 @@ function makeTestTiles() {
     { id: 12, x: 3, y: 3, layers: { base: 0, middle: 3 } },
     { id: 13, x: 4, y: 2, layers: { base: 0 } },
   ];
+}
+
+function makeTestTiles() {
+  let array = [];
+  for (let y=0; y<20; y++) {
+    for (let x=0; x<20; x++) {
+      let id = y*20 + x;
+      // make in node using tiled data
+      array.push({ id, x, y, layers: {base: 0, middle: layer2[id] === 0 ? 0 : layer2[id] - 1}});
+    }
+  }
+  return array;
 }
 
 // Helper functions

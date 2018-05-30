@@ -6,5 +6,10 @@ export const LAYER = {
 };
 export const MODE = {
   MAP: "map",
-  TEXT: "text",
+  MENU: "menu",
+  STORY: "story"
+};
+export const VEHICLE = {
+  JEEP: "jeep",
+  CANOE: "canoe",
 };

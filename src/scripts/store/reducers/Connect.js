@@ -7,8 +7,21 @@ export default class Connect {
     return this.store.getState().mode;
   }
 
-  get events() {
-    return this.store.getState().events;
+  get story() {
+    const {story} = this.store.getState();
+    const buttons = story.buttons.map((button, idx) =>
+      Object.assign({}, button, {id: idx + 1})
+    );
+    return Object.assign({}, story, {buttons: buttons});
+  }
+
+  getMenuById(id) {
+    const state = this.store.getState();
+    const menu = state.menus.byId[id || state.activeMenu];
+    const buttons = menu.buttons.map((button, idx) =>
+      Object.assign({}, state.buttons.byId[button], {id: idx + 1})
+    );
+    return Object.assign({}, menu, {buttons: buttons});
   }
 
   get map() {
@@ -34,8 +47,23 @@ export default class Connect {
     return {offsetX, offsetY,};
   }
 
-  get partyPos() {
-    const {partyX, partyY} = this.store.getState();
-    return {partyX, partyY,};
+  get position() {
+    const {x, y} = this.store.getState().position;
+    return {x, y};
+  }
+
+  get party() {
+    const {party} = this.store.getState();
+    return {party,};
+  }
+
+  get vehicle() {
+    const {vehicle} = this.store.getState();
+    return {vehicle,};
+  }
+
+  get sight() {
+    const {sight} = this.store.getState();
+    return {sight,};
   }
 }
