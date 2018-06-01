@@ -86,11 +86,12 @@ var initialState = {
     "7": false,
     "8": false,
     "9": false,
-
-    // foo
-    sending: false,
-    error: null
   },
+
+  // network
+  loading: false,
+  sending: false,
+  error: null
 };
 
 export default function reducer(state, action) {

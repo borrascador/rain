@@ -1681,7 +1681,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function configureStore() {
 	var loggerMiddleware = (0, _reduxLogger.createLogger)();
-	return (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware));
+	return (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default
+	// loggerMiddleware
+	));
 }
 
 /***/ }),
@@ -2429,12 +2431,13 @@ var initialState = {
     "6": false,
     "7": false,
     "8": false,
-    "9": false,
+    "9": false
+  },
 
-    // foo
-    sending: false,
-    error: null
-  }
+  // network
+  loading: false,
+  sending: false,
+  error: null
 };
 
 function reducer(state, action) {
@@ -3665,93 +3668,6 @@ var Camera = function () {
   return Camera;
 }();
 
-//     const {offsetX, offsetY} = this.connect.offset;
-//     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
-//     this.ctx.fillStyle = 'black';
-//     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-//     // this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
-//
-//     const {BASE, MIDDLE, TOP} = LAYER;
-//     mapTiles.map((mapTile) => {
-//       [BASE, MIDDLE, TOP].forEach(layer => {
-//         const id = mapTile.layers[layer];
-//         if (typeof id === "number") {
-//           this.ctx.drawImage(
-//             this.atlas,
-//             srcTiles[id].x * srcTileSize,
-//             srcTiles[id].y * srcTileSize,
-//             srcTileSize,
-//             srcTileSize,
-//             mapTile.x * mapTileSize,
-//             mapTile.y * mapTileSize,
-//             mapTileSize,
-//             mapTileSize
-//           );
-//         }
-//       });
-//     });
-//   }
-// }
-
-
-//     this.tsize = map.tsize;
-//     // x and y are starting position for map
-//     this.x = ((map.cols * this.tsize) - width) / 2;
-//     this.y = ((map.rows * this.tsize) - height) / 2;
-//     this.width = width;
-//     this.height = height;
-//     this.maxX = map.cols * this.tsize - width;
-//     this.maxY = map.rows * this.tsize - height;
-//   }
-//
-//   move (delta, dirx, diry) {
-//     // move camera
-//     this.x += dirx * Camera.SPEED * delta;
-//     this.y += diry * Camera.SPEED * delta;
-//     // clamp values
-//     this.x = Math.max(0, Math.min(this.x, this.maxX));
-//     this.y = Math.max(0, Math.min(this.y, this.maxY));
-//   }
-//
-//   focusTile (x, y) {
-//     // move camera
-//     this.x = x - Math.floor(this.width / 2) - this.tsize / 2;
-//     this.y = y - Math.floor(this.height / 2) - this.tsize / 2;
-//     // clamp values
-//     this.x = Math.max(0, Math.min(this.x, this.maxX));
-//     this.y = Math.max(0, Math.min(this.y, this.maxY));
-//   }
-//
-//   worldToScreen (x, y) {
-//     return {x: x - this.x, y: y - this.y};
-//   }
-//
-//   screenToWorld (x, y) {
-//     return {x: x + this.x, y: y + this.y};
-//   }
-//
-//   screenToTile (x, y) {
-//     return {
-//       x: Math.ceil((x + this.x) / this.tsize),
-//       y: Math.ceil((y + this.y) / this.tsize)
-//     };
-//   }
-//
-//   tileToScreen (x, y) {
-//     return {
-//       x: x * this.tsize,
-//       y: y * this.tsize
-//     };
-//   }
-//
-//   hasClick (x, y) {
-//     let validX = (x >= 0) && (x < this.width);
-//     let validY = (y >= 0) && (y < this.height);
-//     return validX && validY;
-//   }
-// }
-
-
 exports.default = Camera;
 
 /***/ }),
@@ -3785,12 +3701,25 @@ var _tilesetUi2 = _interopRequireDefault(_tilesetUi);
 
 var _utils = __webpack_require__(3);
 
+var _Party = __webpack_require__(60);
+
+var _Party2 = _interopRequireDefault(_Party);
+
+var _Vehicle = __webpack_require__(61);
+
+var _Vehicle2 = _interopRequireDefault(_Vehicle);
+
+var _Inventory = __webpack_require__(62);
+
+var _Inventory2 = _interopRequireDefault(_Inventory);
+
+var _Zoom = __webpack_require__(63);
+
+var _Zoom2 = _interopRequireDefault(_Zoom);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TRUCK = 31;
-var SIZE = 64;
 
 var Overlay = function () {
   function Overlay(store, canvas, ctx) {
@@ -3803,208 +3732,33 @@ var Overlay = function () {
     this.ctx = ctx;
 
     this.connect = new _Connect2.default(this.store);
-    this.makeButtons();
 
     this.loader = new _Loader2.default();
     Promise.resolve(this.loader.setImage('tiles', _tilesetUi2.default)).then(function (loaded) {
       _this.atlas = _this.loader.getImage('tiles');
+    }).then(function () {
+      _this.party = new _Party2.default(_this.store, _this.canvas, _this.ctx, _this.atlas);
+      _this.vehicle = new _Vehicle2.default(_this.store, _this.canvas, _this.ctx, _this.atlas);
+      _this.inventory = new _Inventory2.default(_this.store, _this.canvas, _this.ctx, _this.atlas);
+      _this.zoom = new _Zoom2.default(_this.store, _this.canvas, _this.ctx, _this.atlas);
     });
   }
 
   _createClass(Overlay, [{
-    key: 'makeButtons',
-    value: function makeButtons() {
-      var _this2 = this;
-
-      var menu = this.connect.getMenuById("overlay");
-      this.buttons = menu.buttons;
-      this.buttonSize = this.canvas.height / 4;
-
-      // Set button properties
-      this.buttons.map(function (button, idx) {
-        (0, _utils.addButtonCoords)(button, {
-          xPos: _this2.canvas.width - _this2.buttonSize,
-          yPos: _this2.buttonSize * idx,
-          width: _this2.buttonSize,
-          height: _this2.buttonSize
-        });
-      });
-    }
-  }, {
-    key: 'chooseButton',
-    value: function chooseButton(clickId) {
-      var button = (0, _utils.getItemById)(this.buttons, clickId);
-      this.store.dispatch(button.action);
-    }
-  }, {
-    key: 'updateClick',
-    value: function updateClick(x, y) {
-      var clickId = x && y && (0, _utils.screenToButtonId)(x, y, this.buttons);
-      clickId && this.chooseButton(clickId);
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      this.updateClick(x, y);
-    }
-  }, {
-    key: 'renderParty',
-    value: function renderParty() {
-      var _this3 = this;
-
-      var _connect$map = this.connect.map,
-          srcTileSize = _connect$map.srcTileSize,
-          srcTiles = _connect$map.srcTiles;
-      var party = this.connect.party.party;
-
-
-      party.map(function (member, idx) {
-        _this3.ctx.drawImage(_this3.atlas, srcTiles[member.icon].x * srcTileSize, srcTiles[member.icon].y * srcTileSize, srcTileSize, srcTileSize, 0, idx * SIZE, SIZE, SIZE);
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = Array(member.health).keys()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var i = _step.value;
-
-            _this3.ctx.drawImage(_this3.atlas, 0, 192, 16, 16, 64 + i * 24, (idx * 2 + 0.4) * 32, 16, 16);
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        ;
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
-
-        try {
-          for (var _iterator2 = Array(member.jeito).keys()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var _i = _step2.value;
-
-            _this3.ctx.drawImage(_this3.atlas, 16, 192, 16, 16, 64 + _i * 24, (idx * 2 + 1.1) * 32, 16, 16);
-          }
-        } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
-            }
-          } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
-            }
-          }
-        }
-
-        ;
-      });
-    }
-  }, {
-    key: 'renderVehicle',
-    value: function renderVehicle() {
-      var _connect$map2 = this.connect.map,
-          srcTileSize = _connect$map2.srcTileSize,
-          srcTiles = _connect$map2.srcTiles;
-      var vehicle = this.connect.vehicle.vehicle;
-
-
-      this.ctx.drawImage(this.atlas, srcTiles[vehicle.icon].x * srcTileSize, srcTiles[vehicle.icon].y * srcTileSize, srcTileSize, srcTileSize, 0, 480 - SIZE, SIZE, SIZE);
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = Array(vehicle.repair).keys()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var i = _step3.value;
-
-          this.ctx.drawImage(this.atlas, 0, 208, 16, 16, 64 + i * 24, 480 - SIZE + 24, 16, 16);
-        }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
-      }
-
-      ;
-    }
-  }, {
-    key: 'renderZoom',
-    value: function renderZoom() {
-      var _connect$map3 = this.connect.map,
-          srcTileSize = _connect$map3.srcTileSize,
-          srcTiles = _connect$map3.srcTiles;
-
-
-      this.ctx.drawImage(this.atlas, srcTiles[36].x * srcTileSize, srcTiles[36].y * srcTileSize, srcTileSize, srcTileSize, 960 - SIZE, 0, SIZE, SIZE);
-      this.ctx.drawImage(this.atlas, srcTiles[37].x * srcTileSize, srcTiles[37].y * srcTileSize, srcTileSize, srcTileSize, 960 - SIZE * 2, 0, SIZE, SIZE);
-      this.ctx.drawImage(this.atlas, srcTiles[35].x * srcTileSize, srcTiles[35].y * srcTileSize, srcTileSize, srcTileSize, 960 - SIZE * 3, 0, SIZE, SIZE);
-    }
-  }, {
-    key: 'renderBag',
-    value: function renderBag() {
-      var _connect$map4 = this.connect.map,
-          srcTileSize = _connect$map4.srcTileSize,
-          srcTiles = _connect$map4.srcTiles;
-
-
-      this.ctx.drawImage(this.atlas, srcTiles[38].x * srcTileSize, srcTiles[38].y * srcTileSize, srcTileSize, srcTileSize, 960 - SIZE * 2, SIZE * 2, SIZE * 2, SIZE * 2);
-    }
-  }, {
-    key: 'renderButtons',
-    value: function renderButtons() {
-      var _this4 = this;
-
-      this.buttons.map(function (button) {
-        var xPos = button.xPos + 8;
-        var yPos = button.yPos + 8;
-        var width = button.width - 16;
-        var height = button.height - 16;
-
-        // Make button box
-        _this4.ctx.strokeStyle = '#FFF';
-        _this4.ctx.lineWidth = 4;
-        _this4.ctx.strokeRect(xPos, yPos, width, height);
-
-        // Make button text
-        _this4.ctx.font = '20px MECC';
-        _this4.ctx.fillStyle = '#FFF';
-        _this4.ctx.textAlign = 'center';
-        _this4.ctx.textBaseline = 'middle';
-        _this4.ctx.fillText(button.text, xPos + width / 2, yPos + height / 2);
-      });
+      // this.party.update(delta, xClick, yClick);
+      // this.vehicle.update(delta, xClick, yClick);
+      // this.inventory.update(delta, xClick, yClick);
+      // this.zoom.update(delta, xClick, yClick);
     }
   }, {
     key: 'render',
     value: function render() {
-      this.renderParty();
-      this.renderVehicle();
-      this.renderZoom();
-      this.renderBag();
-      // this.renderButtons();
+      this.party.render();
+      this.vehicle.render();
+      this.inventory.render();
+      this.zoom.render();
     }
   }]);
 
@@ -4384,6 +4138,280 @@ var Story = function () {
 }();
 
 exports.default = Story;
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Party = function () {
+  function Party(store, canvas, ctx, atlas) {
+    _classCallCheck(this, Party);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.atlas = atlas;
+
+    this.connect = new _Connect2.default(this.store);
+  }
+
+  _createClass(Party, [{
+    key: 'renderPortrait',
+    value: function renderPortrait(icon, idx, srcTileSize, srcTiles) {
+      this.ctx.drawImage(this.atlas, srcTiles[icon].x * srcTileSize, srcTiles[icon].y * srcTileSize, srcTileSize, srcTileSize, 0, idx * 64, 64, 64);
+    }
+  }, {
+    key: 'renderHealth',
+    value: function renderHealth(health, idx) {
+      var _this = this;
+
+      [].concat(_toConsumableArray(Array(health))).map(function (_, i) {
+        _this.ctx.drawImage(_this.atlas, 0, 192, // tilemap position
+        16, 16, // original size
+        64 + i * 24, (idx * 2 + 0.4) * 32, // screen position
+        16, 16 // rendered size
+        );
+      });
+    }
+  }, {
+    key: 'renderJeito',
+    value: function renderJeito(jeito, idx) {
+      var _this2 = this;
+
+      [].concat(_toConsumableArray(Array(jeito))).map(function (_, i) {
+        _this2.ctx.drawImage(_this2.atlas, 16, 192, // tilemap position
+        16, 16, // original size
+        64 + i * 24, (idx * 2 + 1.1) * 32, // screen position
+        16, 16 // rendered size
+        );
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      var _connect$map = this.connect.map,
+          srcTileSize = _connect$map.srcTileSize,
+          srcTiles = _connect$map.srcTiles;
+      var party = this.connect.party.party;
+
+
+      party.map(function (member, idx) {
+        _this3.renderPortrait(member.icon, idx, srcTileSize, srcTiles);
+        _this3.renderHealth(member.health, idx);
+        _this3.renderJeito(member.jeito, idx);
+      });
+    }
+  }]);
+
+  return Party;
+}();
+
+exports.default = Party;
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Vehicle = function () {
+  function Vehicle(store, canvas, ctx, atlas) {
+    _classCallCheck(this, Vehicle);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.atlas = atlas;
+
+    this.connect = new _Connect2.default(this.store);
+  }
+
+  _createClass(Vehicle, [{
+    key: 'renderVehicle',
+    value: function renderVehicle(icon, srcTileSize, srcTiles) {
+      this.ctx.drawImage(this.atlas, srcTiles[icon].x * srcTileSize, srcTiles[icon].y * srcTileSize, srcTileSize, srcTileSize, 0, 416, 64, 64);
+    }
+  }, {
+    key: 'renderRepair',
+    value: function renderRepair(repair) {
+      var _this = this;
+
+      [].concat(_toConsumableArray(Array(repair))).map(function (_, i) {
+        _this.ctx.drawImage(_this.atlas, 0, 208, // tilemap position
+        16, 16, // original size
+        64 + i * 24, 440, // screen position
+        16, 16 // rendered size
+        );
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _connect$map = this.connect.map,
+          srcTileSize = _connect$map.srcTileSize,
+          srcTiles = _connect$map.srcTiles;
+      var vehicle = this.connect.vehicle.vehicle;
+
+
+      this.renderVehicle(vehicle.icon, srcTileSize, srcTiles);
+      this.renderRepair(vehicle.repair);
+    }
+  }]);
+
+  return Vehicle;
+}();
+
+exports.default = Vehicle;
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Inventory = function () {
+  function Inventory(store, canvas, ctx, atlas) {
+    _classCallCheck(this, Inventory);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.atlas = atlas;
+
+    this.connect = new _Connect2.default(this.store);
+  }
+
+  _createClass(Inventory, [{
+    key: 'renderInventory',
+    value: function renderInventory(srcTileSize, srcTiles) {
+      this.ctx.drawImage(this.atlas, srcTiles[38].x * srcTileSize, srcTiles[38].y * srcTileSize, srcTileSize, srcTileSize, 960 - 64 * 2, 64 * 2.75, 128, 128);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _connect$map = this.connect.map,
+          srcTileSize = _connect$map.srcTileSize,
+          srcTiles = _connect$map.srcTiles;
+
+
+      this.renderInventory(srcTileSize, srcTiles);
+    }
+  }]);
+
+  return Inventory;
+}();
+
+exports.default = Inventory;
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Zoom = function () {
+  function Zoom(store, canvas, ctx, atlas) {
+    _classCallCheck(this, Zoom);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.atlas = atlas;
+
+    this.connect = new _Connect2.default(this.store);
+  }
+
+  _createClass(Zoom, [{
+    key: 'renderZoom',
+    value: function renderZoom(srcTileSize, srcTiles) {
+      this.ctx.drawImage(this.atlas, srcTiles[36].x * srcTileSize, srcTiles[36].y * srcTileSize, srcTileSize, srcTileSize, 960 - 64, 0, 64, 64);
+      this.ctx.drawImage(this.atlas, srcTiles[37].x * srcTileSize, srcTiles[37].y * srcTileSize, srcTileSize, srcTileSize, 960 - 64 * 2, 0, 64, 64);
+      this.ctx.drawImage(this.atlas, srcTiles[35].x * srcTileSize, srcTiles[35].y * srcTileSize, srcTileSize, srcTileSize, 960 - 64 * 3, 0, 64, 64);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _connect$map = this.connect.map,
+          srcTileSize = _connect$map.srcTileSize,
+          srcTiles = _connect$map.srcTiles;
+
+
+      this.renderZoom(srcTileSize, srcTiles);
+    }
+  }]);
+
+  return Zoom;
+}();
+
+exports.default = Zoom;
 
 /***/ })
 /******/ ]);
