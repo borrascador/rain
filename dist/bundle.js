@@ -3292,6 +3292,14 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _Loader = __webpack_require__(11);
+
+var _Loader2 = _interopRequireDefault(_Loader);
+
+var _tilesetUi = __webpack_require__(12);
+
+var _tilesetUi2 = _interopRequireDefault(_tilesetUi);
+
 var _MapView = __webpack_require__(53);
 
 var _MapView2 = _interopRequireDefault(_MapView);
@@ -3327,10 +3335,16 @@ var RainGame = function () {
 	_createClass(RainGame, [{
 		key: 'init',
 		value: function init() {
+			var _this = this;
+
 			(0, _addInputListeners2.default)(this.store.dispatch, this.canvas);
-			this.mapView = new _MapView2.default(this.store, this.canvas, this.ctx);
-			this.menuView = new _MenuView2.default(this.store, this.canvas, this.ctx);
-			this.storyView = new _StoryView2.default(this.store, this.canvas, this.ctx);
+			this.loader = new _Loader2.default();
+			Promise.resolve(this.loader.setImage('tiles', _tilesetUi2.default)).then(function (loaded) {
+				_this.atlas = _this.loader.getImage('tiles');
+				_this.mapView = new _MapView2.default(_this.store, _this.canvas, _this.ctx, _this.atlas);
+				_this.menuView = new _MenuView2.default(_this.store, _this.canvas, _this.ctx);
+				_this.storyView = new _StoryView2.default(_this.store, _this.canvas, _this.ctx);
+			});
 			window.requestAnimationFrame(this.tick);
 		}
 	}, {
@@ -3448,16 +3462,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var MapView = function () {
-  function MapView(store, canvas, ctx) {
+  function MapView(store, canvas, ctx, atlas) {
     _classCallCheck(this, MapView);
 
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.connect = new _Connect2.default(this.store);
-    this.camera = new _Camera2.default(this.store, this.canvas, this.ctx);
-    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx);
+    this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.atlas);
+    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.atlas);
   }
 
   _createClass(MapView, [{
@@ -3501,14 +3516,6 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Loader = __webpack_require__(11);
-
-var _Loader2 = _interopRequireDefault(_Loader);
-
-var _tilesetUi = __webpack_require__(12);
-
-var _tilesetUi2 = _interopRequireDefault(_tilesetUi);
-
 var _actions = __webpack_require__(0);
 
 var _constants = __webpack_require__(1);
@@ -3520,14 +3527,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Camera = function () {
-  function Camera(store, canvas, ctx) {
-    var _this = this;
-
+  function Camera(store, canvas, ctx, atlas) {
     _classCallCheck(this, Camera);
 
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.playerIcon = 29;
     this.second = 0;
@@ -3535,10 +3541,6 @@ var Camera = function () {
     this.store.dispatch((0, _actions.getPosition)());
 
     this.connect = new _Connect2.default(this.store);
-    this.loader = new _Loader2.default();
-    Promise.resolve(this.loader.setImage('tiles', _tilesetUi2.default)).then(function (loaded) {
-      _this.atlas = _this.loader.getImage('tiles');
-    });
   }
 
   _createClass(Camera, [{
@@ -3593,7 +3595,7 @@ var Camera = function () {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this = this;
 
       var pos = this.connect.position;
       var sight = this.connect.sight.sight;
@@ -3624,7 +3626,7 @@ var Camera = function () {
         var _loop2 = function _loop2(row) {
           var x = (col - startCol) * mapTileSize + offsetX;
           var y = (row - startRow) * mapTileSize + offsetY;
-          var mapTile = _this2.findTile(mapTiles, col, row);
+          var mapTile = _this.findTile(mapTiles, col, row);
           if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
             visibleTiles.push(Object.assign({}, mapTile, {
               xPos: Math.round(x),
@@ -3640,16 +3642,16 @@ var Camera = function () {
             [BASE, MIDDLE, TOP].forEach(function (layer) {
               var id = void 0;
               if (pos.x === col && pos.y === row && layer === TOP) {
-                id = _this2.playerIcon; // Player Icon
+                id = _this.playerIcon; // Player Icon
               } else {
                 id = mapTile.layers[layer];
               }
-              typeof id === "number" && _this2.ctx.drawImage(_this2.atlas, srcTiles[id].x * srcTileSize, srcTiles[id].y * srcTileSize, srcTileSize, srcTileSize, Math.round(x), Math.round(y), mapTileSize - 1, mapTileSize - 1);
+              typeof id === "number" && _this.ctx.drawImage(_this.atlas, srcTiles[id].x * srcTileSize, srcTiles[id].y * srcTileSize, srcTileSize, srcTileSize, Math.round(x), Math.round(y), mapTileSize - 1, mapTileSize - 1);
             });
           }
           if (dim) {
-            _this2.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-            _this2.ctx.fillRect(Math.round(x), Math.round(y), mapTileSize - 1, mapTileSize - 1);
+            _this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+            _this.ctx.fillRect(Math.round(x), Math.round(y), mapTileSize - 1, mapTileSize - 1);
           }
         };
 
@@ -3722,7 +3724,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Overlay = function () {
-  function Overlay(store, canvas, ctx) {
+  function Overlay(store, canvas, ctx, atlas) {
     var _this = this;
 
     _classCallCheck(this, Overlay);
@@ -3730,6 +3732,7 @@ var Overlay = function () {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.connect = new _Connect2.default(this.store);
 
@@ -3975,12 +3978,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var StoryView = function () {
-  function StoryView(store, canvas, ctx) {
+  function StoryView(store, canvas, ctx, atlas) {
     _classCallCheck(this, StoryView);
 
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.story = new _Story2.default(this.store, this.canvas, this.ctx);
   }

@@ -1,15 +1,14 @@
 import Connect from '../../store/reducers/Connect';
-import Loader from '../utils/Loader';
-import src from '../../../images/tileset-ui.png';
 import {getPosition, postMoveAndGetPosition} from '../../store/actions/actions';
 import {CAMERA_SPEED, LAYER} from '../constants'
 import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 
 export default class Camera {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, atlas) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.playerIcon = 29;
     this.second = 0;
@@ -17,11 +16,6 @@ export default class Camera {
     this.store.dispatch(getPosition());
 
     this.connect = new Connect(this.store);
-    this.loader = new Loader();
-    Promise.resolve(this.loader.setImage('tiles', src))
-    .then(loaded => {
-      this.atlas = this.loader.getImage('tiles');
-    });
   }
 
   findTile(tiles, x, y) {

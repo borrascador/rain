@@ -10,10 +10,11 @@ import Inventory from './Inventory';
 import Zoom from './Zoom';
 
 export default class Overlay {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, atlas) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.connect = new Connect(this.store);
 
