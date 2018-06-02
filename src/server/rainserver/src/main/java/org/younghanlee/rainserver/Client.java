@@ -23,9 +23,8 @@ public class Client extends WebSocketClient {
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
 		System.out.println("new connection opened");
-		sendRegister("Dan", "Miner");
-		sendRegister("Jan", "Logger");
-		sendRegister("Alice", "Teacher");
+		sendRegister("Dan", "MINER");
+		sendRegister("Jan", "LOGGER");
 	}
 
 	@Override
@@ -55,7 +54,23 @@ public class Client extends WebSocketClient {
 		jo.accumulate("player_class", playerClass);
 		send(jo.toString());
 	}
-
+	
+	public void sendRequestPosition(String name){
+		JSONObject jo = new JSONObject();
+		jo.accumulate("message_type", "request_position");
+		jo.accumulate("name", name);
+		send(jo.toString());
+	}
+	
+	public void sendMove(String name, int x, int y){
+		JSONObject jo = new JSONObject();
+		jo.accumulate("message_type", "move");
+		jo.accumulate("name", name);
+		jo.accumulate("x", x);
+		jo.accumulate("y", y);
+		send(jo.toString());
+	}
+	
 	public static void main(String[] args) throws URISyntaxException {		
 		Client client = new Client(new URI("ws://localhost:8887"));
 		client.connect();

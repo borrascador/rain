@@ -20,6 +20,9 @@ public class MessageHandler {
 			case "move":
 				break;
 				
+			case "request_position":
+				break;
+				
 			default:
 				System.out.println("Unrecognized message type:" + message_type);
 				
