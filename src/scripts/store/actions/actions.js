@@ -9,7 +9,7 @@ export function register() {
     payload: JSON.stringify({
       message_type: 'register',
       name: 'Alice',
-      player_class: 'Logger'
+      player_class: 'TRIBE'
     })
   };
 }
