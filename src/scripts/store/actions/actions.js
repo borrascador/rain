@@ -3,14 +3,15 @@ import fetch from 'cross-fetch';
 
 const URL = 'https://www.jsonstore.io/9d84dcf7d61861f8e2993f268a4e2f34a53b63f3cec297b778dfd2432f9dcba2';
 
-export function register() {
+export const REGISTER_REQUEST = 'REGISTER_REQUEST';
+export const register = (name) => {
   return {
-    type: `@@websocket/${ SEND }`,
-    payload: JSON.stringify({
-      message_type: 'register',
-      name: 'Alice',
-      player_class: 'TRIBE'
-    })
+    type: REGISTER_REQUEST,
+    meta: { send: true },
+    payload: {
+      name: name,
+      playerClass: 'TRIBE'
+    }
   };
 }
 

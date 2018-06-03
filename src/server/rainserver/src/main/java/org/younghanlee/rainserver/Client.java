@@ -49,22 +49,27 @@ public class Client extends WebSocketClient {
 	
 	public void sendRegister(String name, String playerClass){
 		JSONObject jo = new JSONObject();
-		jo.accumulate("message_type", "register");
-		jo.accumulate("name", name);
-		jo.accumulate("player_class", playerClass);
+		JSONObject payload = new JSONObject();
+		
+		payload.accumulate("name", name);
+		payload.accumulate("playerClass", playerClass);
+		
+		jo.accumulate("type", "REGISTER_REQUEST");
+		jo.accumulate("payload", payload);
+		
 		send(jo.toString());
 	}
 	
 	public void sendRequestPosition(String name){
 		JSONObject jo = new JSONObject();
-		jo.accumulate("message_type", "request_position");
+		jo.accumulate("type", "request_position");
 		jo.accumulate("name", name);
 		send(jo.toString());
 	}
 	
 	public void sendMove(String name, int x, int y){
 		JSONObject jo = new JSONObject();
-		jo.accumulate("message_type", "move");
+		jo.accumulate("type", "move");
 		jo.accumulate("name", name);
 		jo.accumulate("x", x);
 		jo.accumulate("y", y);

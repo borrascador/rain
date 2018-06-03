@@ -73,8 +73,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LOAD_TILES_FAILURE = exports.LOAD_TILES_SUCCESS = exports.LOAD_TILES_REQUEST = exports.LOAD_POSITION_FAILURE = exports.LOAD_POSITION_SUCCESS = exports.LOAD_POSITION_REQUEST = exports.SEND_MOVE_FAILURE = exports.SEND_MOVE_SUCCESS = exports.SEND_MOVE_REQUEST = exports.FOCUS_TILE = exports.changeMode = exports.CHANGE_MODE = exports.clicked = exports.CLICKED = exports.mouseUp = exports.MOUSEUP = exports.drag = exports.DRAG = exports.mouseDown = exports.MOUSEDOWN = exports.keyUp = exports.KEYUP = exports.keyDown = exports.KEYDOWN = undefined;
-exports.register = register;
+exports.LOAD_TILES_FAILURE = exports.LOAD_TILES_SUCCESS = exports.LOAD_TILES_REQUEST = exports.LOAD_POSITION_FAILURE = exports.LOAD_POSITION_SUCCESS = exports.LOAD_POSITION_REQUEST = exports.SEND_MOVE_FAILURE = exports.SEND_MOVE_SUCCESS = exports.SEND_MOVE_REQUEST = exports.FOCUS_TILE = exports.changeMode = exports.CHANGE_MODE = exports.clicked = exports.CLICKED = exports.mouseUp = exports.MOUSEUP = exports.drag = exports.DRAG = exports.mouseDown = exports.MOUSEDOWN = exports.keyUp = exports.KEYUP = exports.keyDown = exports.KEYDOWN = exports.register = exports.REGISTER_REQUEST = undefined;
 exports.getPosition = getPosition;
 exports.postMoveAndGetPosition = postMoveAndGetPosition;
 exports.getTiles = getTiles;
@@ -90,16 +89,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var URL = 'https://www.jsonstore.io/9d84dcf7d61861f8e2993f268a4e2f34a53b63f3cec297b778dfd2432f9dcba2';
 
-function register() {
+var REGISTER_REQUEST = exports.REGISTER_REQUEST = 'REGISTER_REQUEST';
+var register = exports.register = function register(name) {
   return {
-    type: '@@websocket/' + _reduxWebsocketBridge.SEND,
-    payload: JSON.stringify({
-      message_type: 'register',
-      name: 'Alice',
-      player_class: 'TRIBE'
-    })
+    type: REGISTER_REQUEST,
+    meta: { send: true },
+    payload: {
+      name: name,
+      playerClass: 'TRIBE'
+    }
   };
-}
+};
 
 var KEYDOWN = exports.KEYDOWN = 'KEYDOWN';
 var keyDown = exports.keyDown = function keyDown(key) {
@@ -683,36 +683,12 @@ function trimUndefined(map) {
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-function updateObject(oldObject, newValues) {
-  return Object.assign({}, oldObject, newValues);
-};
-
-function updateItemInArray(array, itemId, updateItemCallback) {
-  return array.map(function (item) {
-    if (item.id !== itemId) return item;
-    return updateItemCallback(item);
-  });
-};
-
-exports.updateObject = updateObject;
-exports.updateItemInArray = updateItemInArray;
-
-/***/ }),
-/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_symbol_observable__);
 
@@ -965,7 +941,7 @@ var ActionTypes = {
 }
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1037,7 +1013,7 @@ function isPlainObject(value) {
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1051,7 +1027,7 @@ var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["a" /* default */].Symbol;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1079,7 +1055,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1116,6 +1092,30 @@ function compose() {
     };
   });
 }
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function updateObject(oldObject, newValues) {
+  return Object.assign({}, oldObject, newValues);
+};
+
+function updateItemInArray(array, itemId, updateItemCallback) {
+  return array.map(function (item) {
+    if (item.id !== itemId) return item;
+    return updateItemCallback(item);
+  });
+};
+
+exports.updateObject = updateObject;
+exports.updateItemInArray = updateItemInArray;
 
 /***/ }),
 /* 12 */
@@ -1822,7 +1822,7 @@ var _store = __webpack_require__(23);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _index = __webpack_require__(54);
+var _index = __webpack_require__(48);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -1915,12 +1915,12 @@ thunk.withExtraArgument = createThunkMiddleware;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(9);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
@@ -1950,7 +1950,7 @@ if (undefined !== 'production' && typeof isCrushed.name === 'string' && isCrushe
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(31);
 
@@ -2017,7 +2017,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(8);
 
 
 /** Used for built-in method references. */
@@ -2273,9 +2273,9 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = combineReducers;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(9);
 
 
 
@@ -2467,7 +2467,7 @@ function bindActionCreators(actionCreators, dispatch) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyMiddleware;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -2529,110 +2529,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = reducer;
 
-var _reduxWebsocketBridge = __webpack_require__(5);
-
 var _actions = __webpack_require__(0);
 
-var _constants = __webpack_require__(1);
+var _reduxWebsocketBridge = __webpack_require__(5);
 
-var _story = __webpack_require__(46);
+var _input = __webpack_require__(46);
 
-var _story2 = _interopRequireDefault(_story);
+var _ui = __webpack_require__(47);
 
-var _menus = __webpack_require__(47);
-
-var _menus2 = _interopRequireDefault(_menus);
-
-var _party = __webpack_require__(48);
-
-var _party2 = _interopRequireDefault(_party);
-
-var _buttons = __webpack_require__(49);
-
-var _buttons2 = _interopRequireDefault(_buttons);
-
-var _tiles = __webpack_require__(50);
-
-var _tiles2 = _interopRequireDefault(_tiles);
-
-var _map = __webpack_require__(51);
-
-var _input = __webpack_require__(52);
-
-var _ui = __webpack_require__(53);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var initialState = {
-  // UI
-  mode: _constants.MODE.MENU,
-  focusX: 2,
-  focusY: 2,
-  activeMenu: "main",
-  story: _story2.default,
-  menus: _menus2.default,
-  buttons: _buttons2.default,
-
-  // map
-  srcTileSize: 32,
-  srcTiles: (0, _map.makeSrcTiles)(),
-  mapTileSize: 96,
-  mapTiles: _tiles2.default,
-
-  // player
-  camp: {},
-  position: {
-    x: null,
-    y: null
-  },
-  sight: 2,
-  moves: null,
-  party: _party2.default,
-  modifiers: {},
-  inventory: {},
-  vehicle: {
-    type: _constants.VEHICLE.JEEP,
-    icon: 31,
-    repair: 5
-  },
-
-  // input
-  offsetX: 0,
-  offsetY: 0,
-  xDragging: null,
-  yDragging: null,
-  xClick: null,
-  yClick: null,
-  keys: {
-    "ArrowUp": false,
-    "ArrowDown": false,
-    "ArrowRight": false,
-    "ArrowLeft": false,
-    "Enter": false,
-    "Backspace": false,
-    "Delete": false,
-    "Escape": false,
-    "0": false,
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-    "6": false,
-    "7": false,
-    "8": false,
-    "9": false
-  },
-
-  // connection
-  connected: false,
-  sending: false,
-  error: null
-};
+var _initialState = __webpack_require__(57);
 
 function reducer(state, action) {
   if (typeof state === 'undefined') {
-    return initialState;
+    return _initialState.initialState;
   }
   switch (action.type) {
     case _actions.KEYDOWN:
@@ -3246,154 +3155,6 @@ module.exports = fetch;
 
 /***/ }),
 /* 46 */
-/***/ (function(module, exports) {
-
-module.exports = {"action":{},"text":["A wild jaguar creeps from the","shadows with glowing eyes."],"buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports) {
-
-module.exports = {"byId":{"overlay":{"type":"MAP_OVERLAY","buttons":["button1","button1","button1","button1"]},"main":{"type":"TEXT_MENU","text":["Welcome to the Amazon Trail","","You may:"],"buttons":["toMap","newGame","toHighscore"]},"selectClass":{"type":"TEXT_MENU","text":["A world of adventure awaits you.","","Which path will you choose?"],"buttons":["startTribe","startScience","startLogger","toMain"]},"highscore":{"type":"TEXT_MENU","text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"buttons":["toMain"]}},"allIds":["overlay","main","selectClass","highscore"]}
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports) {
-
-module.exports = [{"name":"J. Cruz","icon":32,"health":5,"jeito":3},{"name":"H. Villa","icon":33,"health":1,"jeito":2},{"name":"F. Boa","icon":34,"health":2,"jeito":4},{"name":"R. Stone","icon":32,"health":1,"jeito":1},{"name":"D. Lee","icon":33,"health":3,"jeito":5}]
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports) {
-
-module.exports = {"byId":{"button1":{"text":"MENU","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMain":{"text":"Return to main menu","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMap":{"text":"Continue game","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"newGame":{"text":"Start new game","action":{"type":"FOCUS_MENU","payload":{"ref":"selectClass"}}},"toHighscore":{"text":"View high scores","action":{"type":"FOCUS_MENU","payload":{"ref":"highscore"}}},"startTribe":{"text":"The way of the tribe","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startScience":{"text":"The life of a logger","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startLogger":{"text":"The researcher's journey","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}}},"allIds":["button1","toMain","toMap","newGame","toHighscore","startTribe","startScience","startLogger"]}
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports) {
-
-module.exports = [{"id":0,"x":0,"y":0,"layers":{"base":0,"middle":0}},{"id":1,"x":1,"y":0,"layers":{"base":0,"middle":0}},{"id":2,"x":2,"y":0,"layers":{"base":0,"middle":0}},{"id":3,"x":3,"y":0,"layers":{"base":0,"middle":0}},{"id":4,"x":4,"y":0,"layers":{"base":0,"middle":0}},{"id":5,"x":5,"y":0,"layers":{"base":0,"middle":0}},{"id":6,"x":6,"y":0,"layers":{"base":0,"middle":1}},{"id":7,"x":7,"y":0,"layers":{"base":0,"middle":0}},{"id":8,"x":8,"y":0,"layers":{"base":0,"middle":0}},{"id":9,"x":9,"y":0,"layers":{"base":0,"middle":0}},{"id":10,"x":10,"y":0,"layers":{"base":0,"middle":0}},{"id":11,"x":11,"y":0,"layers":{"base":0,"middle":0}},{"id":12,"x":12,"y":0,"layers":{"base":0,"middle":0}},{"id":13,"x":13,"y":0,"layers":{"base":0,"middle":0}},{"id":14,"x":14,"y":0,"layers":{"base":0,"middle":0}},{"id":15,"x":15,"y":0,"layers":{"base":0,"middle":0}},{"id":16,"x":16,"y":0,"layers":{"base":0,"middle":0}},{"id":17,"x":17,"y":0,"layers":{"base":0,"middle":0}},{"id":18,"x":18,"y":0,"layers":{"base":0,"middle":0}},{"id":19,"x":19,"y":0,"layers":{"base":0,"middle":0}},{"id":20,"x":0,"y":1,"layers":{"base":0,"middle":0}},{"id":21,"x":1,"y":1,"layers":{"base":0,"middle":0}},{"id":22,"x":2,"y":1,"layers":{"base":0,"middle":0}},{"id":23,"x":3,"y":1,"layers":{"base":0,"middle":0}},{"id":24,"x":4,"y":1,"layers":{"base":0,"middle":0}},{"id":25,"x":5,"y":1,"layers":{"base":0,"middle":0}},{"id":26,"x":6,"y":1,"layers":{"base":0,"middle":1}},{"id":27,"x":7,"y":1,"layers":{"base":0,"middle":0}},{"id":28,"x":8,"y":1,"layers":{"base":0,"middle":0}},{"id":29,"x":9,"y":1,"layers":{"base":0,"middle":0}},{"id":30,"x":10,"y":1,"layers":{"base":0,"middle":0}},{"id":31,"x":11,"y":1,"layers":{"base":0,"middle":0}},{"id":32,"x":12,"y":1,"layers":{"base":0,"middle":0}},{"id":33,"x":13,"y":1,"layers":{"base":0,"middle":0}},{"id":34,"x":14,"y":1,"layers":{"base":0,"middle":0}},{"id":35,"x":15,"y":1,"layers":{"base":0,"middle":0}},{"id":36,"x":16,"y":1,"layers":{"base":0,"middle":0}},{"id":37,"x":17,"y":1,"layers":{"base":0,"middle":0}},{"id":38,"x":18,"y":1,"layers":{"base":0,"middle":0}},{"id":39,"x":19,"y":1,"layers":{"base":0,"middle":0}},{"id":40,"x":0,"y":2,"layers":{"base":0,"middle":0}},{"id":41,"x":1,"y":2,"layers":{"base":0,"middle":0}},{"id":42,"x":2,"y":2,"layers":{"base":0,"middle":0}},{"id":43,"x":3,"y":2,"layers":{"base":0,"middle":0}},{"id":44,"x":4,"y":2,"layers":{"base":0,"middle":0}},{"id":45,"x":5,"y":2,"layers":{"base":0,"middle":0}},{"id":46,"x":6,"y":2,"layers":{"base":0,"middle":1}},{"id":47,"x":7,"y":2,"layers":{"base":0,"middle":0}},{"id":48,"x":8,"y":2,"layers":{"base":0,"middle":0}},{"id":49,"x":9,"y":2,"layers":{"base":0,"middle":0}},{"id":50,"x":10,"y":2,"layers":{"base":0,"middle":0}},{"id":51,"x":11,"y":2,"layers":{"base":0,"middle":0}},{"id":52,"x":12,"y":2,"layers":{"base":0,"middle":0}},{"id":53,"x":13,"y":2,"layers":{"base":0,"middle":0}},{"id":54,"x":14,"y":2,"layers":{"base":0,"middle":0}},{"id":55,"x":15,"y":2,"layers":{"base":0,"middle":0}},{"id":56,"x":16,"y":2,"layers":{"base":0,"middle":0}},{"id":57,"x":17,"y":2,"layers":{"base":0,"middle":0}},{"id":58,"x":18,"y":2,"layers":{"base":0,"middle":0}},{"id":59,"x":19,"y":2,"layers":{"base":0,"middle":0}},{"id":60,"x":0,"y":3,"layers":{"base":0,"middle":9}},{"id":61,"x":1,"y":3,"layers":{"base":0,"middle":0}},{"id":62,"x":2,"y":3,"layers":{"base":0,"middle":0}},{"id":63,"x":3,"y":3,"layers":{"base":0,"middle":0}},{"id":64,"x":4,"y":3,"layers":{"base":0,"middle":0}},{"id":65,"x":5,"y":3,"layers":{"base":0,"middle":0}},{"id":66,"x":6,"y":3,"layers":{"base":0,"middle":1}},{"id":67,"x":7,"y":3,"layers":{"base":0,"middle":0}},{"id":68,"x":8,"y":3,"layers":{"base":0,"middle":0}},{"id":69,"x":9,"y":3,"layers":{"base":0,"middle":0}},{"id":70,"x":10,"y":3,"layers":{"base":0,"middle":0}},{"id":71,"x":11,"y":3,"layers":{"base":0,"middle":0}},{"id":72,"x":12,"y":3,"layers":{"base":0,"middle":0}},{"id":73,"x":13,"y":3,"layers":{"base":0,"middle":0}},{"id":74,"x":14,"y":3,"layers":{"base":0,"middle":0}},{"id":75,"x":15,"y":3,"layers":{"base":0,"middle":0}},{"id":76,"x":16,"y":3,"layers":{"base":0,"middle":0}},{"id":77,"x":17,"y":3,"layers":{"base":0,"middle":0}},{"id":78,"x":18,"y":3,"layers":{"base":0,"middle":0}},{"id":79,"x":19,"y":3,"layers":{"base":0,"middle":0}},{"id":80,"x":0,"y":4,"layers":{"base":0,"middle":3}},{"id":81,"x":1,"y":4,"layers":{"base":0,"middle":0}},{"id":82,"x":2,"y":4,"layers":{"base":0,"middle":0}},{"id":83,"x":3,"y":4,"layers":{"base":0,"middle":0}},{"id":84,"x":4,"y":4,"layers":{"base":0,"middle":0}},{"id":85,"x":5,"y":4,"layers":{"base":0,"middle":0}},{"id":86,"x":6,"y":4,"layers":{"base":0,"middle":1}},{"id":87,"x":7,"y":4,"layers":{"base":0,"middle":0}},{"id":88,"x":8,"y":4,"layers":{"base":0,"middle":0}},{"id":89,"x":9,"y":4,"layers":{"base":0,"middle":0}},{"id":90,"x":10,"y":4,"layers":{"base":0,"middle":0}},{"id":91,"x":11,"y":4,"layers":{"base":0,"middle":0}},{"id":92,"x":12,"y":4,"layers":{"base":0,"middle":0}},{"id":93,"x":13,"y":4,"layers":{"base":0,"middle":0}},{"id":94,"x":14,"y":4,"layers":{"base":0,"middle":0}},{"id":95,"x":15,"y":4,"layers":{"base":0,"middle":0}},{"id":96,"x":16,"y":4,"layers":{"base":0,"middle":0}},{"id":97,"x":17,"y":4,"layers":{"base":0,"middle":0}},{"id":98,"x":18,"y":4,"layers":{"base":0,"middle":0}},{"id":99,"x":19,"y":4,"layers":{"base":0,"middle":0}},{"id":100,"x":0,"y":5,"layers":{"base":0,"middle":18}},{"id":101,"x":1,"y":5,"layers":{"base":0,"middle":2}},{"id":102,"x":2,"y":5,"layers":{"base":0,"middle":2}},{"id":103,"x":3,"y":5,"layers":{"base":0,"middle":15}},{"id":104,"x":4,"y":5,"layers":{"base":0,"middle":2}},{"id":105,"x":5,"y":5,"layers":{"base":0,"middle":2}},{"id":106,"x":6,"y":5,"layers":{"base":0,"middle":23}},{"id":107,"x":7,"y":5,"layers":{"base":0,"middle":2}},{"id":108,"x":8,"y":5,"layers":{"base":0,"middle":2}},{"id":109,"x":9,"y":5,"layers":{"base":0,"middle":2}},{"id":110,"x":10,"y":5,"layers":{"base":0,"middle":2}},{"id":111,"x":11,"y":5,"layers":{"base":0,"middle":7}},{"id":112,"x":12,"y":5,"layers":{"base":0,"middle":0}},{"id":113,"x":13,"y":5,"layers":{"base":0,"middle":0}},{"id":114,"x":14,"y":5,"layers":{"base":0,"middle":0}},{"id":115,"x":15,"y":5,"layers":{"base":0,"middle":0}},{"id":116,"x":16,"y":5,"layers":{"base":0,"middle":0}},{"id":117,"x":17,"y":5,"layers":{"base":0,"middle":0}},{"id":118,"x":18,"y":5,"layers":{"base":0,"middle":0}},{"id":119,"x":19,"y":5,"layers":{"base":0,"middle":0}},{"id":120,"x":0,"y":6,"layers":{"base":0,"middle":13}},{"id":121,"x":1,"y":6,"layers":{"base":0,"middle":4}},{"id":122,"x":2,"y":6,"layers":{"base":0,"middle":9}},{"id":123,"x":3,"y":6,"layers":{"base":0,"middle":0}},{"id":124,"x":4,"y":6,"layers":{"base":0,"middle":0}},{"id":125,"x":5,"y":6,"layers":{"base":0,"middle":0}},{"id":126,"x":6,"y":6,"layers":{"base":0,"middle":1}},{"id":127,"x":7,"y":6,"layers":{"base":0,"middle":0}},{"id":128,"x":8,"y":6,"layers":{"base":0,"middle":0}},{"id":129,"x":9,"y":6,"layers":{"base":0,"middle":0}},{"id":130,"x":10,"y":6,"layers":{"base":0,"middle":0}},{"id":131,"x":11,"y":6,"layers":{"base":0,"middle":11}},{"id":132,"x":12,"y":6,"layers":{"base":0,"middle":2}},{"id":133,"x":13,"y":6,"layers":{"base":0,"middle":2}},{"id":134,"x":14,"y":6,"layers":{"base":0,"middle":2}},{"id":135,"x":15,"y":6,"layers":{"base":0,"middle":7}},{"id":136,"x":16,"y":6,"layers":{"base":0,"middle":0}},{"id":137,"x":17,"y":6,"layers":{"base":0,"middle":0}},{"id":138,"x":18,"y":6,"layers":{"base":0,"middle":0}},{"id":139,"x":19,"y":6,"layers":{"base":0,"middle":0}},{"id":140,"x":0,"y":7,"layers":{"base":0,"middle":0}},{"id":141,"x":1,"y":7,"layers":{"base":0,"middle":0}},{"id":142,"x":2,"y":7,"layers":{"base":0,"middle":13}},{"id":143,"x":3,"y":7,"layers":{"base":0,"middle":9}},{"id":144,"x":4,"y":7,"layers":{"base":0,"middle":0}},{"id":145,"x":5,"y":7,"layers":{"base":0,"middle":0}},{"id":146,"x":6,"y":7,"layers":{"base":0,"middle":1}},{"id":147,"x":7,"y":7,"layers":{"base":0,"middle":0}},{"id":148,"x":8,"y":7,"layers":{"base":0,"middle":0}},{"id":149,"x":9,"y":7,"layers":{"base":0,"middle":8}},{"id":150,"x":10,"y":7,"layers":{"base":0,"middle":9}},{"id":151,"x":11,"y":7,"layers":{"base":0,"middle":0}},{"id":152,"x":12,"y":7,"layers":{"base":0,"middle":0}},{"id":153,"x":13,"y":7,"layers":{"base":0,"middle":0}},{"id":154,"x":14,"y":7,"layers":{"base":0,"middle":0}},{"id":155,"x":15,"y":7,"layers":{"base":0,"middle":11}},{"id":156,"x":16,"y":7,"layers":{"base":0,"middle":7}},{"id":157,"x":17,"y":7,"layers":{"base":0,"middle":0}},{"id":158,"x":18,"y":7,"layers":{"base":0,"middle":0}},{"id":159,"x":19,"y":7,"layers":{"base":0,"middle":0}},{"id":160,"x":0,"y":8,"layers":{"base":0,"middle":0}},{"id":161,"x":1,"y":8,"layers":{"base":0,"middle":0}},{"id":162,"x":2,"y":8,"layers":{"base":0,"middle":8}},{"id":163,"x":3,"y":8,"layers":{"base":0,"middle":14}},{"id":164,"x":4,"y":8,"layers":{"base":0,"middle":0}},{"id":165,"x":5,"y":8,"layers":{"base":0,"middle":0}},{"id":166,"x":6,"y":8,"layers":{"base":0,"middle":1}},{"id":167,"x":7,"y":8,"layers":{"base":0,"middle":8}},{"id":168,"x":8,"y":8,"layers":{"base":0,"middle":9}},{"id":169,"x":9,"y":8,"layers":{"base":0,"middle":3}},{"id":170,"x":10,"y":8,"layers":{"base":0,"middle":13}},{"id":171,"x":11,"y":8,"layers":{"base":0,"middle":9}},{"id":172,"x":12,"y":8,"layers":{"base":0,"middle":0}},{"id":173,"x":13,"y":8,"layers":{"base":0,"middle":0}},{"id":174,"x":14,"y":8,"layers":{"base":0,"middle":0}},{"id":175,"x":15,"y":8,"layers":{"base":0,"middle":0}},{"id":176,"x":16,"y":8,"layers":{"base":0,"middle":11}},{"id":177,"x":17,"y":8,"layers":{"base":0,"middle":16}},{"id":178,"x":18,"y":8,"layers":{"base":0,"middle":2}},{"id":179,"x":19,"y":8,"layers":{"base":0,"middle":2}},{"id":180,"x":0,"y":9,"layers":{"base":0,"middle":0}},{"id":181,"x":1,"y":9,"layers":{"base":0,"middle":0}},{"id":182,"x":2,"y":9,"layers":{"base":0,"middle":13}},{"id":183,"x":3,"y":9,"layers":{"base":0,"middle":4}},{"id":184,"x":4,"y":9,"layers":{"base":0,"middle":9}},{"id":185,"x":5,"y":9,"layers":{"base":0,"middle":8}},{"id":186,"x":6,"y":9,"layers":{"base":0,"middle":19}},{"id":187,"x":7,"y":9,"layers":{"base":0,"middle":14}},{"id":188,"x":8,"y":9,"layers":{"base":0,"middle":13}},{"id":189,"x":9,"y":9,"layers":{"base":0,"middle":14}},{"id":190,"x":10,"y":9,"layers":{"base":0,"middle":0}},{"id":191,"x":11,"y":9,"layers":{"base":0,"middle":13}},{"id":192,"x":12,"y":9,"layers":{"base":0,"middle":4}},{"id":193,"x":13,"y":9,"layers":{"base":0,"middle":20}},{"id":194,"x":14,"y":9,"layers":{"base":0,"middle":9}},{"id":195,"x":15,"y":9,"layers":{"base":0,"middle":0}},{"id":196,"x":16,"y":9,"layers":{"base":0,"middle":0}},{"id":197,"x":17,"y":9,"layers":{"base":0,"middle":1}},{"id":198,"x":18,"y":9,"layers":{"base":0,"middle":0}},{"id":199,"x":19,"y":9,"layers":{"base":0,"middle":0}},{"id":200,"x":0,"y":10,"layers":{"base":0,"middle":0}},{"id":201,"x":1,"y":10,"layers":{"base":0,"middle":0}},{"id":202,"x":2,"y":10,"layers":{"base":0,"middle":0}},{"id":203,"x":3,"y":10,"layers":{"base":0,"middle":0}},{"id":204,"x":4,"y":10,"layers":{"base":0,"middle":13}},{"id":205,"x":5,"y":10,"layers":{"base":0,"middle":14}},{"id":206,"x":6,"y":10,"layers":{"base":0,"middle":1}},{"id":207,"x":7,"y":10,"layers":{"base":0,"middle":0}},{"id":208,"x":8,"y":10,"layers":{"base":0,"middle":0}},{"id":209,"x":9,"y":10,"layers":{"base":0,"middle":0}},{"id":210,"x":10,"y":10,"layers":{"base":0,"middle":0}},{"id":211,"x":11,"y":10,"layers":{"base":0,"middle":0}},{"id":212,"x":12,"y":10,"layers":{"base":0,"middle":0}},{"id":213,"x":13,"y":10,"layers":{"base":0,"middle":0}},{"id":214,"x":14,"y":10,"layers":{"base":0,"middle":3}},{"id":215,"x":15,"y":10,"layers":{"base":0,"middle":0}},{"id":216,"x":16,"y":10,"layers":{"base":0,"middle":0}},{"id":217,"x":17,"y":10,"layers":{"base":0,"middle":1}},{"id":218,"x":18,"y":10,"layers":{"base":0,"middle":0}},{"id":219,"x":19,"y":10,"layers":{"base":0,"middle":0}},{"id":220,"x":0,"y":11,"layers":{"base":0,"middle":0}},{"id":221,"x":1,"y":11,"layers":{"base":0,"middle":0}},{"id":222,"x":2,"y":11,"layers":{"base":0,"middle":0}},{"id":223,"x":3,"y":11,"layers":{"base":0,"middle":0}},{"id":224,"x":4,"y":11,"layers":{"base":0,"middle":0}},{"id":225,"x":5,"y":11,"layers":{"base":0,"middle":0}},{"id":226,"x":6,"y":11,"layers":{"base":0,"middle":1}},{"id":227,"x":7,"y":11,"layers":{"base":0,"middle":0}},{"id":228,"x":8,"y":11,"layers":{"base":0,"middle":0}},{"id":229,"x":9,"y":11,"layers":{"base":0,"middle":0}},{"id":230,"x":10,"y":11,"layers":{"base":0,"middle":0}},{"id":231,"x":11,"y":11,"layers":{"base":0,"middle":0}},{"id":232,"x":12,"y":11,"layers":{"base":0,"middle":0}},{"id":233,"x":13,"y":11,"layers":{"base":0,"middle":0}},{"id":234,"x":14,"y":11,"layers":{"base":0,"middle":13}},{"id":235,"x":15,"y":11,"layers":{"base":0,"middle":9}},{"id":236,"x":16,"y":11,"layers":{"base":0,"middle":8}},{"id":237,"x":17,"y":11,"layers":{"base":0,"middle":19}},{"id":238,"x":18,"y":11,"layers":{"base":0,"middle":9}},{"id":239,"x":19,"y":11,"layers":{"base":0,"middle":0}},{"id":240,"x":0,"y":12,"layers":{"base":0,"middle":0}},{"id":241,"x":1,"y":12,"layers":{"base":0,"middle":0}},{"id":242,"x":2,"y":12,"layers":{"base":0,"middle":0}},{"id":243,"x":3,"y":12,"layers":{"base":0,"middle":0}},{"id":244,"x":4,"y":12,"layers":{"base":0,"middle":0}},{"id":245,"x":5,"y":12,"layers":{"base":0,"middle":0}},{"id":246,"x":6,"y":12,"layers":{"base":0,"middle":21}},{"id":247,"x":7,"y":12,"layers":{"base":0,"middle":10}},{"id":248,"x":8,"y":12,"layers":{"base":0,"middle":2}},{"id":249,"x":9,"y":12,"layers":{"base":0,"middle":0}},{"id":250,"x":10,"y":12,"layers":{"base":0,"middle":0}},{"id":251,"x":11,"y":12,"layers":{"base":0,"middle":0}},{"id":252,"x":12,"y":12,"layers":{"base":0,"middle":0}},{"id":253,"x":13,"y":12,"layers":{"base":0,"middle":0}},{"id":254,"x":14,"y":12,"layers":{"base":0,"middle":0}},{"id":255,"x":15,"y":12,"layers":{"base":0,"middle":13}},{"id":256,"x":16,"y":12,"layers":{"base":0,"middle":14}},{"id":257,"x":17,"y":12,"layers":{"base":0,"middle":1}},{"id":258,"x":18,"y":12,"layers":{"base":0,"middle":13}},{"id":259,"x":19,"y":12,"layers":{"base":0,"middle":4}},{"id":260,"x":0,"y":13,"layers":{"base":0,"middle":0}},{"id":261,"x":1,"y":13,"layers":{"base":0,"middle":0}},{"id":262,"x":2,"y":13,"layers":{"base":0,"middle":0}},{"id":263,"x":3,"y":13,"layers":{"base":0,"middle":0}},{"id":264,"x":4,"y":13,"layers":{"base":0,"middle":0}},{"id":265,"x":5,"y":13,"layers":{"base":0,"middle":0}},{"id":266,"x":6,"y":13,"layers":{"base":0,"middle":1}},{"id":267,"x":7,"y":13,"layers":{"base":0,"middle":0}},{"id":268,"x":8,"y":13,"layers":{"base":0,"middle":0}},{"id":269,"x":9,"y":13,"layers":{"base":0,"middle":0}},{"id":270,"x":10,"y":13,"layers":{"base":0,"middle":0}},{"id":271,"x":11,"y":13,"layers":{"base":0,"middle":0}},{"id":272,"x":12,"y":13,"layers":{"base":0,"middle":0}},{"id":273,"x":13,"y":13,"layers":{"base":0,"middle":0}},{"id":274,"x":14,"y":13,"layers":{"base":0,"middle":0}},{"id":275,"x":15,"y":13,"layers":{"base":0,"middle":0}},{"id":276,"x":16,"y":13,"layers":{"base":0,"middle":0}},{"id":277,"x":17,"y":13,"layers":{"base":0,"middle":1}},{"id":278,"x":18,"y":13,"layers":{"base":0,"middle":0}},{"id":279,"x":19,"y":13,"layers":{"base":0,"middle":0}},{"id":280,"x":0,"y":14,"layers":{"base":0,"middle":0}},{"id":281,"x":1,"y":14,"layers":{"base":0,"middle":0}},{"id":282,"x":2,"y":14,"layers":{"base":0,"middle":0}},{"id":283,"x":3,"y":14,"layers":{"base":0,"middle":0}},{"id":284,"x":4,"y":14,"layers":{"base":0,"middle":0}},{"id":285,"x":5,"y":14,"layers":{"base":0,"middle":2}},{"id":286,"x":6,"y":14,"layers":{"base":0,"middle":17}},{"id":287,"x":7,"y":14,"layers":{"base":0,"middle":0}},{"id":288,"x":8,"y":14,"layers":{"base":0,"middle":0}},{"id":289,"x":9,"y":14,"layers":{"base":0,"middle":0}},{"id":290,"x":10,"y":14,"layers":{"base":0,"middle":0}},{"id":291,"x":11,"y":14,"layers":{"base":0,"middle":0}},{"id":292,"x":12,"y":14,"layers":{"base":0,"middle":0}},{"id":293,"x":13,"y":14,"layers":{"base":0,"middle":0}},{"id":294,"x":14,"y":14,"layers":{"base":0,"middle":0}},{"id":295,"x":15,"y":14,"layers":{"base":0,"middle":0}},{"id":296,"x":16,"y":14,"layers":{"base":0,"middle":0}},{"id":297,"x":17,"y":14,"layers":{"base":0,"middle":1}},{"id":298,"x":18,"y":14,"layers":{"base":0,"middle":0}},{"id":299,"x":19,"y":14,"layers":{"base":0,"middle":0}},{"id":300,"x":0,"y":15,"layers":{"base":0,"middle":0}},{"id":301,"x":1,"y":15,"layers":{"base":0,"middle":0}},{"id":302,"x":2,"y":15,"layers":{"base":0,"middle":0}},{"id":303,"x":3,"y":15,"layers":{"base":0,"middle":0}},{"id":304,"x":4,"y":15,"layers":{"base":0,"middle":0}},{"id":305,"x":5,"y":15,"layers":{"base":0,"middle":0}},{"id":306,"x":6,"y":15,"layers":{"base":0,"middle":1}},{"id":307,"x":7,"y":15,"layers":{"base":0,"middle":0}},{"id":308,"x":8,"y":15,"layers":{"base":0,"middle":0}},{"id":309,"x":9,"y":15,"layers":{"base":0,"middle":0}},{"id":310,"x":10,"y":15,"layers":{"base":0,"middle":0}},{"id":311,"x":11,"y":15,"layers":{"base":0,"middle":0}},{"id":312,"x":12,"y":15,"layers":{"base":0,"middle":0}},{"id":313,"x":13,"y":15,"layers":{"base":0,"middle":0}},{"id":314,"x":14,"y":15,"layers":{"base":0,"middle":0}},{"id":315,"x":15,"y":15,"layers":{"base":0,"middle":0}},{"id":316,"x":16,"y":15,"layers":{"base":0,"middle":0}},{"id":317,"x":17,"y":15,"layers":{"base":0,"middle":1}},{"id":318,"x":18,"y":15,"layers":{"base":0,"middle":0}},{"id":319,"x":19,"y":15,"layers":{"base":0,"middle":0}},{"id":320,"x":0,"y":16,"layers":{"base":0,"middle":0}},{"id":321,"x":1,"y":16,"layers":{"base":0,"middle":0}},{"id":322,"x":2,"y":16,"layers":{"base":0,"middle":0}},{"id":323,"x":3,"y":16,"layers":{"base":0,"middle":0}},{"id":324,"x":4,"y":16,"layers":{"base":0,"middle":0}},{"id":325,"x":5,"y":16,"layers":{"base":0,"middle":0}},{"id":326,"x":6,"y":16,"layers":{"base":0,"middle":0}},{"id":327,"x":7,"y":16,"layers":{"base":0,"middle":0}},{"id":328,"x":8,"y":16,"layers":{"base":0,"middle":0}},{"id":329,"x":9,"y":16,"layers":{"base":0,"middle":0}},{"id":330,"x":10,"y":16,"layers":{"base":0,"middle":0}},{"id":331,"x":11,"y":16,"layers":{"base":0,"middle":0}},{"id":332,"x":12,"y":16,"layers":{"base":0,"middle":0}},{"id":333,"x":13,"y":16,"layers":{"base":0,"middle":0}},{"id":334,"x":14,"y":16,"layers":{"base":0,"middle":0}},{"id":335,"x":15,"y":16,"layers":{"base":0,"middle":2}},{"id":336,"x":16,"y":16,"layers":{"base":0,"middle":2}},{"id":337,"x":17,"y":16,"layers":{"base":0,"middle":23}},{"id":338,"x":18,"y":16,"layers":{"base":0,"middle":2}},{"id":339,"x":19,"y":16,"layers":{"base":0,"middle":0}},{"id":340,"x":0,"y":17,"layers":{"base":0,"middle":0}},{"id":341,"x":1,"y":17,"layers":{"base":0,"middle":0}},{"id":342,"x":2,"y":17,"layers":{"base":0,"middle":0}},{"id":343,"x":3,"y":17,"layers":{"base":0,"middle":0}},{"id":344,"x":4,"y":17,"layers":{"base":0,"middle":0}},{"id":345,"x":5,"y":17,"layers":{"base":0,"middle":0}},{"id":346,"x":6,"y":17,"layers":{"base":0,"middle":0}},{"id":347,"x":7,"y":17,"layers":{"base":0,"middle":0}},{"id":348,"x":8,"y":17,"layers":{"base":0,"middle":0}},{"id":349,"x":9,"y":17,"layers":{"base":0,"middle":0}},{"id":350,"x":10,"y":17,"layers":{"base":0,"middle":0}},{"id":351,"x":11,"y":17,"layers":{"base":0,"middle":0}},{"id":352,"x":12,"y":17,"layers":{"base":0,"middle":0}},{"id":353,"x":13,"y":17,"layers":{"base":0,"middle":0}},{"id":354,"x":14,"y":17,"layers":{"base":0,"middle":0}},{"id":355,"x":15,"y":17,"layers":{"base":0,"middle":0}},{"id":356,"x":16,"y":17,"layers":{"base":0,"middle":0}},{"id":357,"x":17,"y":17,"layers":{"base":0,"middle":1}},{"id":358,"x":18,"y":17,"layers":{"base":0,"middle":0}},{"id":359,"x":19,"y":17,"layers":{"base":0,"middle":0}},{"id":360,"x":0,"y":18,"layers":{"base":0,"middle":0}},{"id":361,"x":1,"y":18,"layers":{"base":0,"middle":0}},{"id":362,"x":2,"y":18,"layers":{"base":0,"middle":0}},{"id":363,"x":3,"y":18,"layers":{"base":0,"middle":0}},{"id":364,"x":4,"y":18,"layers":{"base":0,"middle":0}},{"id":365,"x":5,"y":18,"layers":{"base":0,"middle":0}},{"id":366,"x":6,"y":18,"layers":{"base":0,"middle":0}},{"id":367,"x":7,"y":18,"layers":{"base":0,"middle":0}},{"id":368,"x":8,"y":18,"layers":{"base":0,"middle":0}},{"id":369,"x":9,"y":18,"layers":{"base":0,"middle":0}},{"id":370,"x":10,"y":18,"layers":{"base":0,"middle":0}},{"id":371,"x":11,"y":18,"layers":{"base":0,"middle":0}},{"id":372,"x":12,"y":18,"layers":{"base":0,"middle":0}},{"id":373,"x":13,"y":18,"layers":{"base":0,"middle":0}},{"id":374,"x":14,"y":18,"layers":{"base":0,"middle":0}},{"id":375,"x":15,"y":18,"layers":{"base":0,"middle":0}},{"id":376,"x":16,"y":18,"layers":{"base":0,"middle":0}},{"id":377,"x":17,"y":18,"layers":{"base":0,"middle":1}},{"id":378,"x":18,"y":18,"layers":{"base":0,"middle":0}},{"id":379,"x":19,"y":18,"layers":{"base":0,"middle":0}},{"id":380,"x":0,"y":19,"layers":{"base":0,"middle":0}},{"id":381,"x":1,"y":19,"layers":{"base":0,"middle":0}},{"id":382,"x":2,"y":19,"layers":{"base":0,"middle":0}},{"id":383,"x":3,"y":19,"layers":{"base":0,"middle":0}},{"id":384,"x":4,"y":19,"layers":{"base":0,"middle":0}},{"id":385,"x":5,"y":19,"layers":{"base":0,"middle":0}},{"id":386,"x":6,"y":19,"layers":{"base":0,"middle":0}},{"id":387,"x":7,"y":19,"layers":{"base":0,"middle":0}},{"id":388,"x":8,"y":19,"layers":{"base":0,"middle":0}},{"id":389,"x":9,"y":19,"layers":{"base":0,"middle":0}},{"id":390,"x":10,"y":19,"layers":{"base":0,"middle":0}},{"id":391,"x":11,"y":19,"layers":{"base":0,"middle":0}},{"id":392,"x":12,"y":19,"layers":{"base":0,"middle":0}},{"id":393,"x":13,"y":19,"layers":{"base":0,"middle":0}},{"id":394,"x":14,"y":19,"layers":{"base":0,"middle":0}},{"id":395,"x":15,"y":19,"layers":{"base":0,"middle":0}},{"id":396,"x":16,"y":19,"layers":{"base":0,"middle":0}},{"id":397,"x":17,"y":19,"layers":{"base":0,"middle":0}},{"id":398,"x":18,"y":19,"layers":{"base":0,"middle":0}},{"id":399,"x":19,"y":19,"layers":{"base":0,"middle":0}}]
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.addLayer = exports.click = exports.makeTestTiles = exports.makeSrcTiles = undefined;
-
-var _utils = __webpack_require__(6);
-
-// Initial state setup
-
-function makeSrcTiles() {
-  var array = [];
-  for (var y = 0; y < 11; y++) {
-    for (var x = 0; x < 5; x++) {
-      array.push({ x: x, y: y });
-    }
-  }
-  return array;
-}
-
-function makeTestTiles() {
-  return [{ id: 1, x: 0, y: 2, layers: { base: 0 } }, { id: 2, x: 1, y: 1, layers: { base: 0 } }, { id: 3, x: 1, y: 2, layers: { base: 0 } }, { id: 4, x: 1, y: 3, layers: { base: 0 } }, { id: 5, x: 2, y: 0, layers: { base: 0 } }, { id: 6, x: 2, y: 1, layers: { base: 0 } }, { id: 7, x: 2, y: 2, layers: { base: 0 } }, { id: 8, x: 2, y: 3, layers: { base: 0 } }, { id: 9, x: 2, y: 4, layers: { base: 0 } }, { id: 10, x: 3, y: 1, layers: { base: 0, middle: 3 } }, { id: 11, x: 3, y: 2, layers: { base: 0, middle: 3 } }, { id: 12, x: 3, y: 3, layers: { base: 0, middle: 3 } }, { id: 13, x: 4, y: 2, layers: { base: 0 } }];
-}
-
-function makeTestTiles() {
-  var array = [];
-  for (var y = 0; y < 20; y++) {
-    for (var x = 0; x < 20; x++) {
-      var id = y * 20 + x;
-      // make in node using tiled data
-      array.push({ id: id, x: x, y: y, layers: { base: 0, middle: layer2[id] === 0 ? 0 : layer2[id] - 1 } });
-    }
-  }
-  return array;
-}
-
-// Helper functions
-
-function screenToTile(state, action) {
-  return state.mapTiles.find(function (tile) {
-    return tile.x === Math.floor(action.payload.x / state.mapTileSize) && tile.y === Math.floor(action.payload.y / state.mapTileSize);
-  });
-}
-
-function findTile(tiles, x, y) {
-  return tiles.find(function (tile) {
-    return tile.x === x && tile.y === y;
-  });
-}
-
-function isPlayer(tile, x, y) {
-  return tile.x === x && tile.y === y;
-}
-
-function isAdjacent(tile, x, y) {
-  var vertical = tile.x === x && (tile.y === y + 1 || tile.y === y - 1);
-  var horizontal = tile.y === y && (tile.x === x + 1 || tile.x === x - 1);
-  return vertical || horizontal;
-}
-
-function getDirLayer(tile, x, y) {
-  var xDir = tile.x - x;
-  var yDir = tile.y - y;
-  if (xDir === -1) return { top: 25 };
-  if (yDir === 1) return { top: 26 };
-  if (yDir === -1) return { top: 27 };
-  if (xDir === 1) return { top: 28 };
-}
-
-// Reducer functions
-
-function click(state, action) {
-  var tile = screenToTile(state, action);
-  var partyX = state.partyX,
-      partyY = state.partyY;
-
-  if (tile) {
-    if (isPlayer(tile, partyX, partyY)) {
-      console.log("player");
-    } else {
-      console.log("visible");
-    }
-    return state;
-  } else {
-    console.log("hidden");
-    return state;
-  }
-}
-
-function addLayer(state, action) {
-  var tile = screenToTile(state, action);
-  var partyX = state.partyX,
-      party = state.party;
-
-  if (tile && isAdjacent(tile, partyX, partyY)) {
-    return (0, _utils.updateObject)(state, {
-      mapTiles: (0, _utils.updateItemInArray)(state.mapTiles, tile.id, function (item) {
-        return (0, _utils.updateObject)(item, {
-          layers: (0, _utils.updateObject)(item.layers, getDirLayer(tile, partyX, partyY))
-        });
-      })
-    });
-  } else {
-    return state;
-  }
-}
-
-exports.makeSrcTiles = makeSrcTiles;
-exports.makeTestTiles = makeTestTiles;
-exports.click = click;
-exports.addLayer = addLayer;
-
-/***/ }),
-/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3404,7 +3165,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.clicked = exports.mouseUp = exports.drag = exports.mouseDown = exports.keyUp = exports.keyDown = undefined;
 
-var _utils = __webpack_require__(6);
+var _utils = __webpack_require__(11);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -3476,7 +3237,7 @@ exports.mouseUp = mouseUp;
 exports.clicked = clicked;
 
 /***/ }),
-/* 53 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3487,7 +3248,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.focusTile = exports.focusMenu = undefined;
 
-var _utils = __webpack_require__(6);
+var _utils = __webpack_require__(11);
 
 var _constants = __webpack_require__(1);
 
@@ -3516,7 +3277,7 @@ exports.focusMenu = focusMenu;
 exports.focusTile = focusTile;
 
 /***/ }),
-/* 54 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3528,7 +3289,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _addInputListeners = __webpack_require__(55);
+var _addInputListeners = __webpack_require__(49);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
@@ -3536,15 +3297,15 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _MapView = __webpack_require__(56);
+var _MapView = __webpack_require__(50);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _MenuView = __webpack_require__(59);
+var _MenuView = __webpack_require__(53);
 
 var _MenuView2 = _interopRequireDefault(_MenuView);
 
-var _StoryView = __webpack_require__(61);
+var _StoryView = __webpack_require__(55);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
@@ -3622,7 +3383,7 @@ var RainGame = function () {
 exports.default = RainGame;
 
 /***/ }),
-/* 55 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3648,9 +3409,9 @@ function addInputListeners(dispatch, canvas) {
     dispatch((0, _actions.mouseDown)(event.x, event.y));
   }, false);
 
-  canvas.addEventListener('mousemove', function (event) {
-    dispatch((0, _actions.drag)(event.x, event.y));
-  }, false);
+  // canvas.addEventListener('mousemove', (event) => {
+  //   dispatch(drag(event.x, event.y));
+  // }, false);
 
   canvas.addEventListener('mouseup', function (event) {
     var rect = canvas.getBoundingClientRect();
@@ -3661,7 +3422,7 @@ function addInputListeners(dispatch, canvas) {
 }
 
 /***/ }),
-/* 56 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3677,11 +3438,11 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Camera = __webpack_require__(57);
+var _Camera = __webpack_require__(51);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _Overlay = __webpack_require__(58);
+var _Overlay = __webpack_require__(52);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
@@ -3729,7 +3490,7 @@ var MapView = function () {
 exports.default = MapView;
 
 /***/ }),
-/* 57 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3816,7 +3577,6 @@ var Camera = function () {
             x: tile.x,
             y: tile.y
           }));
-          this.store.dispatch((0, _actions.register)());
         }
       }
     }
@@ -3913,97 +3673,10 @@ var Camera = function () {
   return Camera;
 }();
 
-//     const {offsetX, offsetY} = this.connect.offset;
-//     const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
-//     this.ctx.fillStyle = 'black';
-//     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-//     // this.ctx.setTransform(1, 0, 0, 1, offsetX, offsetY);
-//
-//     const {BASE, MIDDLE, TOP} = LAYER;
-//     mapTiles.map((mapTile) => {
-//       [BASE, MIDDLE, TOP].forEach(layer => {
-//         const id = mapTile.layers[layer];
-//         if (typeof id === "number") {
-//           this.ctx.drawImage(
-//             this.atlas,
-//             srcTiles[id].x * srcTileSize,
-//             srcTiles[id].y * srcTileSize,
-//             srcTileSize,
-//             srcTileSize,
-//             mapTile.x * mapTileSize,
-//             mapTile.y * mapTileSize,
-//             mapTileSize,
-//             mapTileSize
-//           );
-//         }
-//       });
-//     });
-//   }
-// }
-
-
-//     this.tsize = map.tsize;
-//     // x and y are starting position for map
-//     this.x = ((map.cols * this.tsize) - width) / 2;
-//     this.y = ((map.rows * this.tsize) - height) / 2;
-//     this.width = width;
-//     this.height = height;
-//     this.maxX = map.cols * this.tsize - width;
-//     this.maxY = map.rows * this.tsize - height;
-//   }
-//
-//   move (delta, dirx, diry) {
-//     // move camera
-//     this.x += dirx * Camera.SPEED * delta;
-//     this.y += diry * Camera.SPEED * delta;
-//     // clamp values
-//     this.x = Math.max(0, Math.min(this.x, this.maxX));
-//     this.y = Math.max(0, Math.min(this.y, this.maxY));
-//   }
-//
-//   focusTile (x, y) {
-//     // move camera
-//     this.x = x - Math.floor(this.width / 2) - this.tsize / 2;
-//     this.y = y - Math.floor(this.height / 2) - this.tsize / 2;
-//     // clamp values
-//     this.x = Math.max(0, Math.min(this.x, this.maxX));
-//     this.y = Math.max(0, Math.min(this.y, this.maxY));
-//   }
-//
-//   worldToScreen (x, y) {
-//     return {x: x - this.x, y: y - this.y};
-//   }
-//
-//   screenToWorld (x, y) {
-//     return {x: x + this.x, y: y + this.y};
-//   }
-//
-//   screenToTile (x, y) {
-//     return {
-//       x: Math.ceil((x + this.x) / this.tsize),
-//       y: Math.ceil((y + this.y) / this.tsize)
-//     };
-//   }
-//
-//   tileToScreen (x, y) {
-//     return {
-//       x: x * this.tsize,
-//       y: y * this.tsize
-//     };
-//   }
-//
-//   hasClick (x, y) {
-//     let validX = (x >= 0) && (x < this.width);
-//     let validY = (y >= 0) && (y < this.height);
-//     return validX && validY;
-//   }
-// }
-
-
 exports.default = Camera;
 
 /***/ }),
-/* 58 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4262,7 +3935,7 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 59 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4274,7 +3947,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Menu = __webpack_require__(60);
+var _Menu = __webpack_require__(54);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -4311,7 +3984,7 @@ var MenuView = function () {
 exports.default = MenuView;
 
 /***/ }),
-/* 60 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4448,7 +4121,7 @@ var Menu = function () {
 exports.default = Menu;
 
 /***/ }),
-/* 61 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4460,7 +4133,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(62);
+var _Story = __webpack_require__(56);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -4497,7 +4170,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 62 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4632,6 +4305,260 @@ var Story = function () {
 }();
 
 exports.default = Story;
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initialState = undefined;
+
+var _constants = __webpack_require__(1);
+
+var _story = __webpack_require__(58);
+
+var _story2 = _interopRequireDefault(_story);
+
+var _menus = __webpack_require__(59);
+
+var _menus2 = _interopRequireDefault(_menus);
+
+var _party = __webpack_require__(60);
+
+var _party2 = _interopRequireDefault(_party);
+
+var _buttons = __webpack_require__(61);
+
+var _buttons2 = _interopRequireDefault(_buttons);
+
+var _tiles = __webpack_require__(62);
+
+var _tiles2 = _interopRequireDefault(_tiles);
+
+var _map = __webpack_require__(63);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var uiState = {
+  mode: _constants.MODE.MENU,
+  focusX: 2,
+  focusY: 2,
+  activeMenu: "main",
+  story: _story2.default,
+  menus: _menus2.default,
+  buttons: _buttons2.default
+};
+
+var mapState = {
+  srcTileSize: 32,
+  srcTiles: (0, _map.makeSrcTiles)(),
+  mapTileSize: 96,
+  mapTiles: _tiles2.default
+};
+
+var playerState = {
+  camp: {},
+  position: {
+    x: null,
+    y: null
+  },
+  sight: 2,
+  moves: null,
+  party: _party2.default,
+  modifiers: {},
+  inventory: {},
+  vehicle: {
+    type: _constants.VEHICLE.JEEP,
+    icon: 31,
+    repair: 5
+  }
+};
+
+var inputState = {
+  offsetX: 0,
+  offsetY: 0,
+  xDragging: null,
+  yDragging: null,
+  xClick: null,
+  yClick: null,
+  keys: {
+    "ArrowUp": false,
+    "ArrowDown": false,
+    "ArrowRight": false,
+    "ArrowLeft": false,
+    "Enter": false,
+    "Backspace": false,
+    "Delete": false,
+    "Escape": false,
+    "0": false,
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": false
+  }
+};
+
+var connectionState = {
+  connected: false,
+  sending: false,
+  error: null
+};
+
+var initialState = exports.initialState = Object.assign({}, uiState, mapState, playerState, inputState, connectionState);
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports) {
+
+module.exports = {"action":{},"text":["A wild jaguar creeps from the","shadows with glowing eyes."],"buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports) {
+
+module.exports = {"byId":{"overlay":{"type":"MAP_OVERLAY","buttons":["button1","button1","button1","button1"]},"main":{"type":"TEXT_MENU","text":["Welcome to the Amazon Trail","","You may:"],"buttons":["toMap","newGame","toHighscore"]},"selectClass":{"type":"TEXT_MENU","text":["A world of adventure awaits you.","","Which path will you choose?"],"buttons":["startTribe","startScience","startLogger","toMain"]},"highscore":{"type":"TEXT_MENU","text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"buttons":["toMain"]}},"allIds":["overlay","main","selectClass","highscore"]}
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports) {
+
+module.exports = [{"name":"J. Cruz","icon":32,"health":5,"jeito":3},{"name":"H. Villa","icon":33,"health":1,"jeito":2},{"name":"F. Boa","icon":34,"health":2,"jeito":4},{"name":"R. Stone","icon":32,"health":1,"jeito":1},{"name":"D. Lee","icon":33,"health":3,"jeito":5}]
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports) {
+
+module.exports = {"byId":{"button1":{"text":"MENU","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMain":{"text":"Return to main menu","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMap":{"text":"Continue game","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"newGame":{"text":"Start new game","action":{"type":"FOCUS_MENU","payload":{"ref":"selectClass"}}},"toHighscore":{"text":"View high scores","action":{"type":"FOCUS_MENU","payload":{"ref":"highscore"}}},"startTribe":{"text":"The way of the tribe","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startScience":{"text":"The life of a logger","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startLogger":{"text":"The researcher's journey","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}}},"allIds":["button1","toMain","toMap","newGame","toHighscore","startTribe","startScience","startLogger"]}
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports) {
+
+module.exports = [{"id":0,"x":0,"y":0,"layers":{"base":0,"middle":0}},{"id":1,"x":1,"y":0,"layers":{"base":0,"middle":0}},{"id":2,"x":2,"y":0,"layers":{"base":0,"middle":0}},{"id":3,"x":3,"y":0,"layers":{"base":0,"middle":0}},{"id":4,"x":4,"y":0,"layers":{"base":0,"middle":0}},{"id":5,"x":5,"y":0,"layers":{"base":0,"middle":0}},{"id":6,"x":6,"y":0,"layers":{"base":0,"middle":1}},{"id":7,"x":7,"y":0,"layers":{"base":0,"middle":0}},{"id":8,"x":8,"y":0,"layers":{"base":0,"middle":0}},{"id":9,"x":9,"y":0,"layers":{"base":0,"middle":0}},{"id":10,"x":10,"y":0,"layers":{"base":0,"middle":0}},{"id":11,"x":11,"y":0,"layers":{"base":0,"middle":0}},{"id":12,"x":12,"y":0,"layers":{"base":0,"middle":0}},{"id":13,"x":13,"y":0,"layers":{"base":0,"middle":0}},{"id":14,"x":14,"y":0,"layers":{"base":0,"middle":0}},{"id":15,"x":15,"y":0,"layers":{"base":0,"middle":0}},{"id":16,"x":16,"y":0,"layers":{"base":0,"middle":0}},{"id":17,"x":17,"y":0,"layers":{"base":0,"middle":0}},{"id":18,"x":18,"y":0,"layers":{"base":0,"middle":0}},{"id":19,"x":19,"y":0,"layers":{"base":0,"middle":0}},{"id":20,"x":0,"y":1,"layers":{"base":0,"middle":0}},{"id":21,"x":1,"y":1,"layers":{"base":0,"middle":0}},{"id":22,"x":2,"y":1,"layers":{"base":0,"middle":0}},{"id":23,"x":3,"y":1,"layers":{"base":0,"middle":0}},{"id":24,"x":4,"y":1,"layers":{"base":0,"middle":0}},{"id":25,"x":5,"y":1,"layers":{"base":0,"middle":0}},{"id":26,"x":6,"y":1,"layers":{"base":0,"middle":1}},{"id":27,"x":7,"y":1,"layers":{"base":0,"middle":0}},{"id":28,"x":8,"y":1,"layers":{"base":0,"middle":0}},{"id":29,"x":9,"y":1,"layers":{"base":0,"middle":0}},{"id":30,"x":10,"y":1,"layers":{"base":0,"middle":0}},{"id":31,"x":11,"y":1,"layers":{"base":0,"middle":0}},{"id":32,"x":12,"y":1,"layers":{"base":0,"middle":0}},{"id":33,"x":13,"y":1,"layers":{"base":0,"middle":0}},{"id":34,"x":14,"y":1,"layers":{"base":0,"middle":0}},{"id":35,"x":15,"y":1,"layers":{"base":0,"middle":0}},{"id":36,"x":16,"y":1,"layers":{"base":0,"middle":0}},{"id":37,"x":17,"y":1,"layers":{"base":0,"middle":0}},{"id":38,"x":18,"y":1,"layers":{"base":0,"middle":0}},{"id":39,"x":19,"y":1,"layers":{"base":0,"middle":0}},{"id":40,"x":0,"y":2,"layers":{"base":0,"middle":0}},{"id":41,"x":1,"y":2,"layers":{"base":0,"middle":0}},{"id":42,"x":2,"y":2,"layers":{"base":0,"middle":0}},{"id":43,"x":3,"y":2,"layers":{"base":0,"middle":0}},{"id":44,"x":4,"y":2,"layers":{"base":0,"middle":0}},{"id":45,"x":5,"y":2,"layers":{"base":0,"middle":0}},{"id":46,"x":6,"y":2,"layers":{"base":0,"middle":1}},{"id":47,"x":7,"y":2,"layers":{"base":0,"middle":0}},{"id":48,"x":8,"y":2,"layers":{"base":0,"middle":0}},{"id":49,"x":9,"y":2,"layers":{"base":0,"middle":0}},{"id":50,"x":10,"y":2,"layers":{"base":0,"middle":0}},{"id":51,"x":11,"y":2,"layers":{"base":0,"middle":0}},{"id":52,"x":12,"y":2,"layers":{"base":0,"middle":0}},{"id":53,"x":13,"y":2,"layers":{"base":0,"middle":0}},{"id":54,"x":14,"y":2,"layers":{"base":0,"middle":0}},{"id":55,"x":15,"y":2,"layers":{"base":0,"middle":0}},{"id":56,"x":16,"y":2,"layers":{"base":0,"middle":0}},{"id":57,"x":17,"y":2,"layers":{"base":0,"middle":0}},{"id":58,"x":18,"y":2,"layers":{"base":0,"middle":0}},{"id":59,"x":19,"y":2,"layers":{"base":0,"middle":0}},{"id":60,"x":0,"y":3,"layers":{"base":0,"middle":9}},{"id":61,"x":1,"y":3,"layers":{"base":0,"middle":0}},{"id":62,"x":2,"y":3,"layers":{"base":0,"middle":0}},{"id":63,"x":3,"y":3,"layers":{"base":0,"middle":0}},{"id":64,"x":4,"y":3,"layers":{"base":0,"middle":0}},{"id":65,"x":5,"y":3,"layers":{"base":0,"middle":0}},{"id":66,"x":6,"y":3,"layers":{"base":0,"middle":1}},{"id":67,"x":7,"y":3,"layers":{"base":0,"middle":0}},{"id":68,"x":8,"y":3,"layers":{"base":0,"middle":0}},{"id":69,"x":9,"y":3,"layers":{"base":0,"middle":0}},{"id":70,"x":10,"y":3,"layers":{"base":0,"middle":0}},{"id":71,"x":11,"y":3,"layers":{"base":0,"middle":0}},{"id":72,"x":12,"y":3,"layers":{"base":0,"middle":0}},{"id":73,"x":13,"y":3,"layers":{"base":0,"middle":0}},{"id":74,"x":14,"y":3,"layers":{"base":0,"middle":0}},{"id":75,"x":15,"y":3,"layers":{"base":0,"middle":0}},{"id":76,"x":16,"y":3,"layers":{"base":0,"middle":0}},{"id":77,"x":17,"y":3,"layers":{"base":0,"middle":0}},{"id":78,"x":18,"y":3,"layers":{"base":0,"middle":0}},{"id":79,"x":19,"y":3,"layers":{"base":0,"middle":0}},{"id":80,"x":0,"y":4,"layers":{"base":0,"middle":3}},{"id":81,"x":1,"y":4,"layers":{"base":0,"middle":0}},{"id":82,"x":2,"y":4,"layers":{"base":0,"middle":0}},{"id":83,"x":3,"y":4,"layers":{"base":0,"middle":0}},{"id":84,"x":4,"y":4,"layers":{"base":0,"middle":0}},{"id":85,"x":5,"y":4,"layers":{"base":0,"middle":0}},{"id":86,"x":6,"y":4,"layers":{"base":0,"middle":1}},{"id":87,"x":7,"y":4,"layers":{"base":0,"middle":0}},{"id":88,"x":8,"y":4,"layers":{"base":0,"middle":0}},{"id":89,"x":9,"y":4,"layers":{"base":0,"middle":0}},{"id":90,"x":10,"y":4,"layers":{"base":0,"middle":0}},{"id":91,"x":11,"y":4,"layers":{"base":0,"middle":0}},{"id":92,"x":12,"y":4,"layers":{"base":0,"middle":0}},{"id":93,"x":13,"y":4,"layers":{"base":0,"middle":0}},{"id":94,"x":14,"y":4,"layers":{"base":0,"middle":0}},{"id":95,"x":15,"y":4,"layers":{"base":0,"middle":0}},{"id":96,"x":16,"y":4,"layers":{"base":0,"middle":0}},{"id":97,"x":17,"y":4,"layers":{"base":0,"middle":0}},{"id":98,"x":18,"y":4,"layers":{"base":0,"middle":0}},{"id":99,"x":19,"y":4,"layers":{"base":0,"middle":0}},{"id":100,"x":0,"y":5,"layers":{"base":0,"middle":18}},{"id":101,"x":1,"y":5,"layers":{"base":0,"middle":2}},{"id":102,"x":2,"y":5,"layers":{"base":0,"middle":2}},{"id":103,"x":3,"y":5,"layers":{"base":0,"middle":15}},{"id":104,"x":4,"y":5,"layers":{"base":0,"middle":2}},{"id":105,"x":5,"y":5,"layers":{"base":0,"middle":2}},{"id":106,"x":6,"y":5,"layers":{"base":0,"middle":23}},{"id":107,"x":7,"y":5,"layers":{"base":0,"middle":2}},{"id":108,"x":8,"y":5,"layers":{"base":0,"middle":2}},{"id":109,"x":9,"y":5,"layers":{"base":0,"middle":2}},{"id":110,"x":10,"y":5,"layers":{"base":0,"middle":2}},{"id":111,"x":11,"y":5,"layers":{"base":0,"middle":7}},{"id":112,"x":12,"y":5,"layers":{"base":0,"middle":0}},{"id":113,"x":13,"y":5,"layers":{"base":0,"middle":0}},{"id":114,"x":14,"y":5,"layers":{"base":0,"middle":0}},{"id":115,"x":15,"y":5,"layers":{"base":0,"middle":0}},{"id":116,"x":16,"y":5,"layers":{"base":0,"middle":0}},{"id":117,"x":17,"y":5,"layers":{"base":0,"middle":0}},{"id":118,"x":18,"y":5,"layers":{"base":0,"middle":0}},{"id":119,"x":19,"y":5,"layers":{"base":0,"middle":0}},{"id":120,"x":0,"y":6,"layers":{"base":0,"middle":13}},{"id":121,"x":1,"y":6,"layers":{"base":0,"middle":4}},{"id":122,"x":2,"y":6,"layers":{"base":0,"middle":9}},{"id":123,"x":3,"y":6,"layers":{"base":0,"middle":0}},{"id":124,"x":4,"y":6,"layers":{"base":0,"middle":0}},{"id":125,"x":5,"y":6,"layers":{"base":0,"middle":0}},{"id":126,"x":6,"y":6,"layers":{"base":0,"middle":1}},{"id":127,"x":7,"y":6,"layers":{"base":0,"middle":0}},{"id":128,"x":8,"y":6,"layers":{"base":0,"middle":0}},{"id":129,"x":9,"y":6,"layers":{"base":0,"middle":0}},{"id":130,"x":10,"y":6,"layers":{"base":0,"middle":0}},{"id":131,"x":11,"y":6,"layers":{"base":0,"middle":11}},{"id":132,"x":12,"y":6,"layers":{"base":0,"middle":2}},{"id":133,"x":13,"y":6,"layers":{"base":0,"middle":2}},{"id":134,"x":14,"y":6,"layers":{"base":0,"middle":2}},{"id":135,"x":15,"y":6,"layers":{"base":0,"middle":7}},{"id":136,"x":16,"y":6,"layers":{"base":0,"middle":0}},{"id":137,"x":17,"y":6,"layers":{"base":0,"middle":0}},{"id":138,"x":18,"y":6,"layers":{"base":0,"middle":0}},{"id":139,"x":19,"y":6,"layers":{"base":0,"middle":0}},{"id":140,"x":0,"y":7,"layers":{"base":0,"middle":0}},{"id":141,"x":1,"y":7,"layers":{"base":0,"middle":0}},{"id":142,"x":2,"y":7,"layers":{"base":0,"middle":13}},{"id":143,"x":3,"y":7,"layers":{"base":0,"middle":9}},{"id":144,"x":4,"y":7,"layers":{"base":0,"middle":0}},{"id":145,"x":5,"y":7,"layers":{"base":0,"middle":0}},{"id":146,"x":6,"y":7,"layers":{"base":0,"middle":1}},{"id":147,"x":7,"y":7,"layers":{"base":0,"middle":0}},{"id":148,"x":8,"y":7,"layers":{"base":0,"middle":0}},{"id":149,"x":9,"y":7,"layers":{"base":0,"middle":8}},{"id":150,"x":10,"y":7,"layers":{"base":0,"middle":9}},{"id":151,"x":11,"y":7,"layers":{"base":0,"middle":0}},{"id":152,"x":12,"y":7,"layers":{"base":0,"middle":0}},{"id":153,"x":13,"y":7,"layers":{"base":0,"middle":0}},{"id":154,"x":14,"y":7,"layers":{"base":0,"middle":0}},{"id":155,"x":15,"y":7,"layers":{"base":0,"middle":11}},{"id":156,"x":16,"y":7,"layers":{"base":0,"middle":7}},{"id":157,"x":17,"y":7,"layers":{"base":0,"middle":0}},{"id":158,"x":18,"y":7,"layers":{"base":0,"middle":0}},{"id":159,"x":19,"y":7,"layers":{"base":0,"middle":0}},{"id":160,"x":0,"y":8,"layers":{"base":0,"middle":0}},{"id":161,"x":1,"y":8,"layers":{"base":0,"middle":0}},{"id":162,"x":2,"y":8,"layers":{"base":0,"middle":8}},{"id":163,"x":3,"y":8,"layers":{"base":0,"middle":14}},{"id":164,"x":4,"y":8,"layers":{"base":0,"middle":0}},{"id":165,"x":5,"y":8,"layers":{"base":0,"middle":0}},{"id":166,"x":6,"y":8,"layers":{"base":0,"middle":1}},{"id":167,"x":7,"y":8,"layers":{"base":0,"middle":8}},{"id":168,"x":8,"y":8,"layers":{"base":0,"middle":9}},{"id":169,"x":9,"y":8,"layers":{"base":0,"middle":3}},{"id":170,"x":10,"y":8,"layers":{"base":0,"middle":13}},{"id":171,"x":11,"y":8,"layers":{"base":0,"middle":9}},{"id":172,"x":12,"y":8,"layers":{"base":0,"middle":0}},{"id":173,"x":13,"y":8,"layers":{"base":0,"middle":0}},{"id":174,"x":14,"y":8,"layers":{"base":0,"middle":0}},{"id":175,"x":15,"y":8,"layers":{"base":0,"middle":0}},{"id":176,"x":16,"y":8,"layers":{"base":0,"middle":11}},{"id":177,"x":17,"y":8,"layers":{"base":0,"middle":16}},{"id":178,"x":18,"y":8,"layers":{"base":0,"middle":2}},{"id":179,"x":19,"y":8,"layers":{"base":0,"middle":2}},{"id":180,"x":0,"y":9,"layers":{"base":0,"middle":0}},{"id":181,"x":1,"y":9,"layers":{"base":0,"middle":0}},{"id":182,"x":2,"y":9,"layers":{"base":0,"middle":13}},{"id":183,"x":3,"y":9,"layers":{"base":0,"middle":4}},{"id":184,"x":4,"y":9,"layers":{"base":0,"middle":9}},{"id":185,"x":5,"y":9,"layers":{"base":0,"middle":8}},{"id":186,"x":6,"y":9,"layers":{"base":0,"middle":19}},{"id":187,"x":7,"y":9,"layers":{"base":0,"middle":14}},{"id":188,"x":8,"y":9,"layers":{"base":0,"middle":13}},{"id":189,"x":9,"y":9,"layers":{"base":0,"middle":14}},{"id":190,"x":10,"y":9,"layers":{"base":0,"middle":0}},{"id":191,"x":11,"y":9,"layers":{"base":0,"middle":13}},{"id":192,"x":12,"y":9,"layers":{"base":0,"middle":4}},{"id":193,"x":13,"y":9,"layers":{"base":0,"middle":20}},{"id":194,"x":14,"y":9,"layers":{"base":0,"middle":9}},{"id":195,"x":15,"y":9,"layers":{"base":0,"middle":0}},{"id":196,"x":16,"y":9,"layers":{"base":0,"middle":0}},{"id":197,"x":17,"y":9,"layers":{"base":0,"middle":1}},{"id":198,"x":18,"y":9,"layers":{"base":0,"middle":0}},{"id":199,"x":19,"y":9,"layers":{"base":0,"middle":0}},{"id":200,"x":0,"y":10,"layers":{"base":0,"middle":0}},{"id":201,"x":1,"y":10,"layers":{"base":0,"middle":0}},{"id":202,"x":2,"y":10,"layers":{"base":0,"middle":0}},{"id":203,"x":3,"y":10,"layers":{"base":0,"middle":0}},{"id":204,"x":4,"y":10,"layers":{"base":0,"middle":13}},{"id":205,"x":5,"y":10,"layers":{"base":0,"middle":14}},{"id":206,"x":6,"y":10,"layers":{"base":0,"middle":1}},{"id":207,"x":7,"y":10,"layers":{"base":0,"middle":0}},{"id":208,"x":8,"y":10,"layers":{"base":0,"middle":0}},{"id":209,"x":9,"y":10,"layers":{"base":0,"middle":0}},{"id":210,"x":10,"y":10,"layers":{"base":0,"middle":0}},{"id":211,"x":11,"y":10,"layers":{"base":0,"middle":0}},{"id":212,"x":12,"y":10,"layers":{"base":0,"middle":0}},{"id":213,"x":13,"y":10,"layers":{"base":0,"middle":0}},{"id":214,"x":14,"y":10,"layers":{"base":0,"middle":3}},{"id":215,"x":15,"y":10,"layers":{"base":0,"middle":0}},{"id":216,"x":16,"y":10,"layers":{"base":0,"middle":0}},{"id":217,"x":17,"y":10,"layers":{"base":0,"middle":1}},{"id":218,"x":18,"y":10,"layers":{"base":0,"middle":0}},{"id":219,"x":19,"y":10,"layers":{"base":0,"middle":0}},{"id":220,"x":0,"y":11,"layers":{"base":0,"middle":0}},{"id":221,"x":1,"y":11,"layers":{"base":0,"middle":0}},{"id":222,"x":2,"y":11,"layers":{"base":0,"middle":0}},{"id":223,"x":3,"y":11,"layers":{"base":0,"middle":0}},{"id":224,"x":4,"y":11,"layers":{"base":0,"middle":0}},{"id":225,"x":5,"y":11,"layers":{"base":0,"middle":0}},{"id":226,"x":6,"y":11,"layers":{"base":0,"middle":1}},{"id":227,"x":7,"y":11,"layers":{"base":0,"middle":0}},{"id":228,"x":8,"y":11,"layers":{"base":0,"middle":0}},{"id":229,"x":9,"y":11,"layers":{"base":0,"middle":0}},{"id":230,"x":10,"y":11,"layers":{"base":0,"middle":0}},{"id":231,"x":11,"y":11,"layers":{"base":0,"middle":0}},{"id":232,"x":12,"y":11,"layers":{"base":0,"middle":0}},{"id":233,"x":13,"y":11,"layers":{"base":0,"middle":0}},{"id":234,"x":14,"y":11,"layers":{"base":0,"middle":13}},{"id":235,"x":15,"y":11,"layers":{"base":0,"middle":9}},{"id":236,"x":16,"y":11,"layers":{"base":0,"middle":8}},{"id":237,"x":17,"y":11,"layers":{"base":0,"middle":19}},{"id":238,"x":18,"y":11,"layers":{"base":0,"middle":9}},{"id":239,"x":19,"y":11,"layers":{"base":0,"middle":0}},{"id":240,"x":0,"y":12,"layers":{"base":0,"middle":0}},{"id":241,"x":1,"y":12,"layers":{"base":0,"middle":0}},{"id":242,"x":2,"y":12,"layers":{"base":0,"middle":0}},{"id":243,"x":3,"y":12,"layers":{"base":0,"middle":0}},{"id":244,"x":4,"y":12,"layers":{"base":0,"middle":0}},{"id":245,"x":5,"y":12,"layers":{"base":0,"middle":0}},{"id":246,"x":6,"y":12,"layers":{"base":0,"middle":21}},{"id":247,"x":7,"y":12,"layers":{"base":0,"middle":10}},{"id":248,"x":8,"y":12,"layers":{"base":0,"middle":2}},{"id":249,"x":9,"y":12,"layers":{"base":0,"middle":0}},{"id":250,"x":10,"y":12,"layers":{"base":0,"middle":0}},{"id":251,"x":11,"y":12,"layers":{"base":0,"middle":0}},{"id":252,"x":12,"y":12,"layers":{"base":0,"middle":0}},{"id":253,"x":13,"y":12,"layers":{"base":0,"middle":0}},{"id":254,"x":14,"y":12,"layers":{"base":0,"middle":0}},{"id":255,"x":15,"y":12,"layers":{"base":0,"middle":13}},{"id":256,"x":16,"y":12,"layers":{"base":0,"middle":14}},{"id":257,"x":17,"y":12,"layers":{"base":0,"middle":1}},{"id":258,"x":18,"y":12,"layers":{"base":0,"middle":13}},{"id":259,"x":19,"y":12,"layers":{"base":0,"middle":4}},{"id":260,"x":0,"y":13,"layers":{"base":0,"middle":0}},{"id":261,"x":1,"y":13,"layers":{"base":0,"middle":0}},{"id":262,"x":2,"y":13,"layers":{"base":0,"middle":0}},{"id":263,"x":3,"y":13,"layers":{"base":0,"middle":0}},{"id":264,"x":4,"y":13,"layers":{"base":0,"middle":0}},{"id":265,"x":5,"y":13,"layers":{"base":0,"middle":0}},{"id":266,"x":6,"y":13,"layers":{"base":0,"middle":1}},{"id":267,"x":7,"y":13,"layers":{"base":0,"middle":0}},{"id":268,"x":8,"y":13,"layers":{"base":0,"middle":0}},{"id":269,"x":9,"y":13,"layers":{"base":0,"middle":0}},{"id":270,"x":10,"y":13,"layers":{"base":0,"middle":0}},{"id":271,"x":11,"y":13,"layers":{"base":0,"middle":0}},{"id":272,"x":12,"y":13,"layers":{"base":0,"middle":0}},{"id":273,"x":13,"y":13,"layers":{"base":0,"middle":0}},{"id":274,"x":14,"y":13,"layers":{"base":0,"middle":0}},{"id":275,"x":15,"y":13,"layers":{"base":0,"middle":0}},{"id":276,"x":16,"y":13,"layers":{"base":0,"middle":0}},{"id":277,"x":17,"y":13,"layers":{"base":0,"middle":1}},{"id":278,"x":18,"y":13,"layers":{"base":0,"middle":0}},{"id":279,"x":19,"y":13,"layers":{"base":0,"middle":0}},{"id":280,"x":0,"y":14,"layers":{"base":0,"middle":0}},{"id":281,"x":1,"y":14,"layers":{"base":0,"middle":0}},{"id":282,"x":2,"y":14,"layers":{"base":0,"middle":0}},{"id":283,"x":3,"y":14,"layers":{"base":0,"middle":0}},{"id":284,"x":4,"y":14,"layers":{"base":0,"middle":0}},{"id":285,"x":5,"y":14,"layers":{"base":0,"middle":2}},{"id":286,"x":6,"y":14,"layers":{"base":0,"middle":17}},{"id":287,"x":7,"y":14,"layers":{"base":0,"middle":0}},{"id":288,"x":8,"y":14,"layers":{"base":0,"middle":0}},{"id":289,"x":9,"y":14,"layers":{"base":0,"middle":0}},{"id":290,"x":10,"y":14,"layers":{"base":0,"middle":0}},{"id":291,"x":11,"y":14,"layers":{"base":0,"middle":0}},{"id":292,"x":12,"y":14,"layers":{"base":0,"middle":0}},{"id":293,"x":13,"y":14,"layers":{"base":0,"middle":0}},{"id":294,"x":14,"y":14,"layers":{"base":0,"middle":0}},{"id":295,"x":15,"y":14,"layers":{"base":0,"middle":0}},{"id":296,"x":16,"y":14,"layers":{"base":0,"middle":0}},{"id":297,"x":17,"y":14,"layers":{"base":0,"middle":1}},{"id":298,"x":18,"y":14,"layers":{"base":0,"middle":0}},{"id":299,"x":19,"y":14,"layers":{"base":0,"middle":0}},{"id":300,"x":0,"y":15,"layers":{"base":0,"middle":0}},{"id":301,"x":1,"y":15,"layers":{"base":0,"middle":0}},{"id":302,"x":2,"y":15,"layers":{"base":0,"middle":0}},{"id":303,"x":3,"y":15,"layers":{"base":0,"middle":0}},{"id":304,"x":4,"y":15,"layers":{"base":0,"middle":0}},{"id":305,"x":5,"y":15,"layers":{"base":0,"middle":0}},{"id":306,"x":6,"y":15,"layers":{"base":0,"middle":1}},{"id":307,"x":7,"y":15,"layers":{"base":0,"middle":0}},{"id":308,"x":8,"y":15,"layers":{"base":0,"middle":0}},{"id":309,"x":9,"y":15,"layers":{"base":0,"middle":0}},{"id":310,"x":10,"y":15,"layers":{"base":0,"middle":0}},{"id":311,"x":11,"y":15,"layers":{"base":0,"middle":0}},{"id":312,"x":12,"y":15,"layers":{"base":0,"middle":0}},{"id":313,"x":13,"y":15,"layers":{"base":0,"middle":0}},{"id":314,"x":14,"y":15,"layers":{"base":0,"middle":0}},{"id":315,"x":15,"y":15,"layers":{"base":0,"middle":0}},{"id":316,"x":16,"y":15,"layers":{"base":0,"middle":0}},{"id":317,"x":17,"y":15,"layers":{"base":0,"middle":1}},{"id":318,"x":18,"y":15,"layers":{"base":0,"middle":0}},{"id":319,"x":19,"y":15,"layers":{"base":0,"middle":0}},{"id":320,"x":0,"y":16,"layers":{"base":0,"middle":0}},{"id":321,"x":1,"y":16,"layers":{"base":0,"middle":0}},{"id":322,"x":2,"y":16,"layers":{"base":0,"middle":0}},{"id":323,"x":3,"y":16,"layers":{"base":0,"middle":0}},{"id":324,"x":4,"y":16,"layers":{"base":0,"middle":0}},{"id":325,"x":5,"y":16,"layers":{"base":0,"middle":0}},{"id":326,"x":6,"y":16,"layers":{"base":0,"middle":0}},{"id":327,"x":7,"y":16,"layers":{"base":0,"middle":0}},{"id":328,"x":8,"y":16,"layers":{"base":0,"middle":0}},{"id":329,"x":9,"y":16,"layers":{"base":0,"middle":0}},{"id":330,"x":10,"y":16,"layers":{"base":0,"middle":0}},{"id":331,"x":11,"y":16,"layers":{"base":0,"middle":0}},{"id":332,"x":12,"y":16,"layers":{"base":0,"middle":0}},{"id":333,"x":13,"y":16,"layers":{"base":0,"middle":0}},{"id":334,"x":14,"y":16,"layers":{"base":0,"middle":0}},{"id":335,"x":15,"y":16,"layers":{"base":0,"middle":2}},{"id":336,"x":16,"y":16,"layers":{"base":0,"middle":2}},{"id":337,"x":17,"y":16,"layers":{"base":0,"middle":23}},{"id":338,"x":18,"y":16,"layers":{"base":0,"middle":2}},{"id":339,"x":19,"y":16,"layers":{"base":0,"middle":0}},{"id":340,"x":0,"y":17,"layers":{"base":0,"middle":0}},{"id":341,"x":1,"y":17,"layers":{"base":0,"middle":0}},{"id":342,"x":2,"y":17,"layers":{"base":0,"middle":0}},{"id":343,"x":3,"y":17,"layers":{"base":0,"middle":0}},{"id":344,"x":4,"y":17,"layers":{"base":0,"middle":0}},{"id":345,"x":5,"y":17,"layers":{"base":0,"middle":0}},{"id":346,"x":6,"y":17,"layers":{"base":0,"middle":0}},{"id":347,"x":7,"y":17,"layers":{"base":0,"middle":0}},{"id":348,"x":8,"y":17,"layers":{"base":0,"middle":0}},{"id":349,"x":9,"y":17,"layers":{"base":0,"middle":0}},{"id":350,"x":10,"y":17,"layers":{"base":0,"middle":0}},{"id":351,"x":11,"y":17,"layers":{"base":0,"middle":0}},{"id":352,"x":12,"y":17,"layers":{"base":0,"middle":0}},{"id":353,"x":13,"y":17,"layers":{"base":0,"middle":0}},{"id":354,"x":14,"y":17,"layers":{"base":0,"middle":0}},{"id":355,"x":15,"y":17,"layers":{"base":0,"middle":0}},{"id":356,"x":16,"y":17,"layers":{"base":0,"middle":0}},{"id":357,"x":17,"y":17,"layers":{"base":0,"middle":1}},{"id":358,"x":18,"y":17,"layers":{"base":0,"middle":0}},{"id":359,"x":19,"y":17,"layers":{"base":0,"middle":0}},{"id":360,"x":0,"y":18,"layers":{"base":0,"middle":0}},{"id":361,"x":1,"y":18,"layers":{"base":0,"middle":0}},{"id":362,"x":2,"y":18,"layers":{"base":0,"middle":0}},{"id":363,"x":3,"y":18,"layers":{"base":0,"middle":0}},{"id":364,"x":4,"y":18,"layers":{"base":0,"middle":0}},{"id":365,"x":5,"y":18,"layers":{"base":0,"middle":0}},{"id":366,"x":6,"y":18,"layers":{"base":0,"middle":0}},{"id":367,"x":7,"y":18,"layers":{"base":0,"middle":0}},{"id":368,"x":8,"y":18,"layers":{"base":0,"middle":0}},{"id":369,"x":9,"y":18,"layers":{"base":0,"middle":0}},{"id":370,"x":10,"y":18,"layers":{"base":0,"middle":0}},{"id":371,"x":11,"y":18,"layers":{"base":0,"middle":0}},{"id":372,"x":12,"y":18,"layers":{"base":0,"middle":0}},{"id":373,"x":13,"y":18,"layers":{"base":0,"middle":0}},{"id":374,"x":14,"y":18,"layers":{"base":0,"middle":0}},{"id":375,"x":15,"y":18,"layers":{"base":0,"middle":0}},{"id":376,"x":16,"y":18,"layers":{"base":0,"middle":0}},{"id":377,"x":17,"y":18,"layers":{"base":0,"middle":1}},{"id":378,"x":18,"y":18,"layers":{"base":0,"middle":0}},{"id":379,"x":19,"y":18,"layers":{"base":0,"middle":0}},{"id":380,"x":0,"y":19,"layers":{"base":0,"middle":0}},{"id":381,"x":1,"y":19,"layers":{"base":0,"middle":0}},{"id":382,"x":2,"y":19,"layers":{"base":0,"middle":0}},{"id":383,"x":3,"y":19,"layers":{"base":0,"middle":0}},{"id":384,"x":4,"y":19,"layers":{"base":0,"middle":0}},{"id":385,"x":5,"y":19,"layers":{"base":0,"middle":0}},{"id":386,"x":6,"y":19,"layers":{"base":0,"middle":0}},{"id":387,"x":7,"y":19,"layers":{"base":0,"middle":0}},{"id":388,"x":8,"y":19,"layers":{"base":0,"middle":0}},{"id":389,"x":9,"y":19,"layers":{"base":0,"middle":0}},{"id":390,"x":10,"y":19,"layers":{"base":0,"middle":0}},{"id":391,"x":11,"y":19,"layers":{"base":0,"middle":0}},{"id":392,"x":12,"y":19,"layers":{"base":0,"middle":0}},{"id":393,"x":13,"y":19,"layers":{"base":0,"middle":0}},{"id":394,"x":14,"y":19,"layers":{"base":0,"middle":0}},{"id":395,"x":15,"y":19,"layers":{"base":0,"middle":0}},{"id":396,"x":16,"y":19,"layers":{"base":0,"middle":0}},{"id":397,"x":17,"y":19,"layers":{"base":0,"middle":0}},{"id":398,"x":18,"y":19,"layers":{"base":0,"middle":0}},{"id":399,"x":19,"y":19,"layers":{"base":0,"middle":0}}]
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addLayer = exports.click = exports.makeTestTiles = exports.makeSrcTiles = undefined;
+
+var _utils = __webpack_require__(11);
+
+// Initial state setup
+
+function makeSrcTiles() {
+  var array = [];
+  for (var y = 0; y < 11; y++) {
+    for (var x = 0; x < 5; x++) {
+      array.push({ x: x, y: y });
+    }
+  }
+  return array;
+}
+
+function makeTestTiles() {
+  var array = [];
+  for (var y = 0; y < 20; y++) {
+    for (var x = 0; x < 20; x++) {
+      var id = y * 20 + x;
+      // make in node using tiled data
+      array.push({ id: id, x: x, y: y, layers: { base: 0, middle: layer2[id] === 0 ? 0 : layer2[id] - 1 } });
+    }
+  }
+  return array;
+}
+
+// Helper functions
+
+function screenToTile(state, action) {
+  return state.mapTiles.find(function (tile) {
+    return tile.x === Math.floor(action.payload.x / state.mapTileSize) && tile.y === Math.floor(action.payload.y / state.mapTileSize);
+  });
+}
+
+function findTile(tiles, x, y) {
+  return tiles.find(function (tile) {
+    return tile.x === x && tile.y === y;
+  });
+}
+
+function isPlayer(tile, x, y) {
+  return tile.x === x && tile.y === y;
+}
+
+function isAdjacent(tile, x, y) {
+  var vertical = tile.x === x && (tile.y === y + 1 || tile.y === y - 1);
+  var horizontal = tile.y === y && (tile.x === x + 1 || tile.x === x - 1);
+  return vertical || horizontal;
+}
+
+function getDirLayer(tile, x, y) {
+  var xDir = tile.x - x;
+  var yDir = tile.y - y;
+  if (xDir === -1) return { top: 25 };
+  if (yDir === 1) return { top: 26 };
+  if (yDir === -1) return { top: 27 };
+  if (xDir === 1) return { top: 28 };
+}
+
+// Reducer functions
+
+function click(state, action) {
+  var tile = screenToTile(state, action);
+  var partyX = state.partyX,
+      partyY = state.partyY;
+
+  if (tile) {
+    if (isPlayer(tile, partyX, partyY)) {
+      console.log("player");
+    } else {
+      console.log("visible");
+    }
+    return state;
+  } else {
+    console.log("hidden");
+    return state;
+  }
+}
+
+function addLayer(state, action) {
+  var tile = screenToTile(state, action);
+  var partyX = state.partyX,
+      party = state.party;
+
+  if (tile && isAdjacent(tile, partyX, partyY)) {
+    return (0, _utils.updateObject)(state, {
+      mapTiles: (0, _utils.updateItemInArray)(state.mapTiles, tile.id, function (item) {
+        return (0, _utils.updateObject)(item, {
+          layers: (0, _utils.updateObject)(item.layers, getDirLayer(tile, partyX, partyY))
+        });
+      })
+    });
+  } else {
+    return state;
+  }
+}
+
+exports.makeSrcTiles = makeSrcTiles;
+exports.makeTestTiles = makeTestTiles;
+exports.click = click;
+exports.addLayer = addLayer;
 
 /***/ })
 /******/ ]);

@@ -1,5 +1,3 @@
-import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
-
 import {
   KEYDOWN,
   KEYUP,
@@ -19,82 +17,10 @@ import {
   LOAD_TILES_SUCCESS,
   LOAD_TILES_FAILURE
 } from '../actions/actions';
-import { MODE, VEHICLE } from '../../game/constants';
-import story from '../../../events/story.json';
-import menus from '../../../events/menus.json';
-import party from '../../../events/party.json';
-import buttons from '../../../events/buttons.json';
-import tiles from '../../../../tilesets/tiles.json';
-import { makeSrcTiles, addLayer } from '../utils/map';
+import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
-
-var initialState = {
-  // UI
-  mode: MODE.MENU,
-  focusX: 2,
-  focusY: 2,
-  activeMenu: "main",
-  story: story,
-  menus: menus,
-  buttons: buttons,
-
-  // map
-  srcTileSize: 32,
-  srcTiles: makeSrcTiles(),
-  mapTileSize: 96,
-  mapTiles: tiles,
-
-  // player
-  camp: {},
-  position: {
-    x: null,
-    y: null
-  },
-  sight: 2,
-  moves: null,
-  party: party,
-  modifiers: {},
-  inventory: {},
-  vehicle: {
-    type: VEHICLE.JEEP,
-    icon: 31,
-    repair: 5,
-  },
-
-  // input
-  offsetX: 0,
-  offsetY: 0,
-  xDragging: null,
-  yDragging: null,
-  xClick: null,
-  yClick: null,
-  keys: {
-    "ArrowUp": false,
-    "ArrowDown": false,
-    "ArrowRight": false,
-    "ArrowLeft": false,
-    "Enter": false,
-    "Backspace": false,
-    "Delete": false,
-    "Escape": false,
-    "0": false,
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-    "6": false,
-    "7": false,
-    "8": false,
-    "9": false,
-  },
-
-  // connection
-  connected: false,
-  sending: false,
-  error: null
-};
+import { initialState } from './initialState';
 
 export default function reducer(state, action) {
   if (typeof state === 'undefined') {
