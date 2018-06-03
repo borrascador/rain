@@ -1,6 +1,18 @@
+import { SEND } from 'redux-websocket-bridge';
 import fetch from 'cross-fetch';
 
 const URL = 'https://www.jsonstore.io/9d84dcf7d61861f8e2993f268a4e2f34a53b63f3cec297b778dfd2432f9dcba2';
+
+export function register() {
+  return {
+    type: `@@websocket/${ SEND }`,
+    payload: JSON.stringify({
+      message_type: 'register',
+      name: 'Alice',
+      player_class: 'TRIBE'
+    })
+  };
+}
 
 export const KEYDOWN = 'KEYDOWN';
 export const keyDown = (key) => ({

@@ -1,7 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
 import src from '../../../images/tileset-ui.png';
-import {getPosition, postMoveAndGetPosition} from '../../store/actions/actions';
+import {getPosition, postMoveAndGetPosition, register} from '../../store/actions/actions';
 import {CAMERA_SPEED, LAYER} from '../constants'
 import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 
@@ -51,6 +51,7 @@ export default class Camera {
           x: tile.x,
           y: tile.y
         }));
+        this.store.dispatch(register());
       }
     }
   }
