@@ -15,6 +15,17 @@ export const register = (name) => {
   };
 }
 
+export const POSITION_REQUEST = 'POSITION_REQUEST';
+export const position = (id) => {
+  return {
+    type: POSITION_REQUEST,
+    meta: { send: true },
+    payload: {
+
+    }
+  };
+}
+
 export const KEYDOWN = 'KEYDOWN';
 export const keyDown = (key) => ({
   type: KEYDOWN,
