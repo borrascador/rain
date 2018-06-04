@@ -45,6 +45,7 @@ export default class Camera {
           x: tile.x,
           y: tile.y
         }));
+        this.store.dispatch(register());
       }
     }
   }

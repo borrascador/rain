@@ -1,3 +1,5 @@
+import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
+
 import {
   KEYDOWN,
   KEYUP,
@@ -89,6 +91,7 @@ var initialState = {
   },
 
   // network
+  connected: false,
   loading: false,
   sending: false,
   error: null
@@ -161,6 +164,16 @@ export default function reducer(state, action) {
       return Object.assign({}, state, {
         loading: false,
         error: action.error
+      });
+
+    case `@@websocket/${ OPEN }`:
+      return Object.assign({}, state, {
+        connected: true
+      });
+
+    case `@@websocket/${ CLOSE }`:
+      return Object.assign({}, state, {
+        connected: false
       });
 
     default:
