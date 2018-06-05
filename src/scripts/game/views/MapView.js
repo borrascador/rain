@@ -4,14 +4,15 @@ import Overlay from '../components/Overlay';
 import {clicked} from '../../store/actions/actions';
 
 export default class MapView {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, atlas) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.atlas = atlas;
 
     this.connect = new Connect(this.store);
-    this.camera = new Camera(this.store, this.canvas, this.ctx);
-    this.overlay = new Overlay(this.store, this.canvas, this.ctx);
+    this.camera = new Camera(this.store, this.canvas, this.ctx, this.atlas);
+    this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.atlas);
   }
 
   update(delta) {

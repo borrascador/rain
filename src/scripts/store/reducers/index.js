@@ -90,8 +90,9 @@ var initialState = {
     "9": false,
   },
 
-  // connection
+  // network
   connected: false,
+  loading: false,
   sending: false,
   error: null
 };
