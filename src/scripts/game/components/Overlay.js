@@ -2,7 +2,7 @@ import {MODE} from '../constants';
 import {changeMode} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
 import Loader from '../utils/Loader';
-import src from '../../../images/tileset-ui.png';
+import src from '../../../images/tileset-small.png';
 import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 import Party from './Party';
 import Vehicle from './Vehicle';
