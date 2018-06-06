@@ -30,16 +30,18 @@ function makeTestTiles() {
   ];
 }
 
-function makeTestTiles() {
-  let array = [];
-  for (let y=0; y<20; y++) {
-    for (let x=0; x<20; x++) {
-      let id = y*20 + x;
-      // make in node using tiled data
-      array.push({ id, x, y, layers: {base: 0, middle: layer2[id] === 0 ? 0 : layer2[id] - 1}});
+function buildMap(map) {
+  let mapArray = [];
+  for (let y = 0; y < map.height; y++) {
+    for (let x = 0; x < map.width; x++) {
+      let id = y * map.width + x;
+      mapArray.push({ id, x, y, layers: {
+        base: 0,
+        middle: map.layers[1].data[id] === 0 ? 0 : map.layers[1].data[id] - 1
+      }});
     }
   }
-  return array;
+  return mapArray;
 }
 
 // Helper functions
@@ -110,4 +112,4 @@ function addLayer(state, action) {
   }
 }
 
-export { makeSrcTiles, makeTestTiles, click, addLayer };
+export { makeSrcTiles, makeTestTiles, buildMap, click, addLayer };

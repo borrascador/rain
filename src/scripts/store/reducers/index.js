@@ -24,8 +24,8 @@ import story from '../../../events/story.json';
 import menus from '../../../events/menus.json';
 import party from '../../../events/party.json';
 import buttons from '../../../events/buttons.json';
-import tiles from '../../../../tilesets/tiles.json';
-import { makeSrcTiles, addLayer } from '../utils/map';
+import map from '../../../../tilesets/map.json';
+import { makeSrcTiles, addLayer, buildMap } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
 
@@ -43,7 +43,7 @@ var initialState = {
   srcTileSize: 32,
   srcTiles: makeSrcTiles(),
   mapTileSize: 96,
-  mapTiles: tiles,
+  mapTiles: buildMap(map),
 
   // player
   camp: {},

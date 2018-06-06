@@ -100,11 +100,11 @@ export default class Camera {
         if (mapTile) {
           [BASE, MIDDLE, TOP].forEach(layer => {
             let id;
-            if (pos.x === col && pos.y === row && layer === TOP) {
-              id = this.playerIcon; // Player Icon
-            } else {
+            // if (pos.x === col && pos.y === row && layer === TOP) {
+            //   id = this.playerIcon; // Player Icon
+            // } else {
               id = mapTile.layers[layer];
-            }
+            // }
             typeof id === "number" && this.ctx.drawImage(
               this.atlas,
               srcTiles[id].x * srcTileSize,
