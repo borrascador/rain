@@ -12,24 +12,6 @@ function makeSrcTiles() {
   return array;
 }
 
-function makeTestTiles() {
-  return [
-    { id: 1, x: 0, y: 2, layers: { base: 0 } },
-    { id: 2, x: 1, y: 1, layers: { base: 0 } },
-    { id: 3, x: 1, y: 2, layers: { base: 0 } },
-    { id: 4, x: 1, y: 3, layers: { base: 0 } },
-    { id: 5, x: 2, y: 0, layers: { base: 0 } },
-    { id: 6, x: 2, y: 1, layers: { base: 0 } },
-    { id: 7, x: 2, y: 2, layers: { base: 0 } },
-    { id: 8, x: 2, y: 3, layers: { base: 0 } },
-    { id: 9, x: 2, y: 4, layers: { base: 0 } },
-    { id: 10, x: 3, y: 1, layers: { base: 0, middle: 3 } },
-    { id: 11, x: 3, y: 2, layers: { base: 0, middle: 3 } },
-    { id: 12, x: 3, y: 3, layers: { base: 0, middle: 3 } },
-    { id: 13, x: 4, y: 2, layers: { base: 0 } },
-  ];
-}
-
 function buildMap(map) {
   let mapArray = [];
   for (let y = 0; y < map.height; y++) {
@@ -112,4 +94,4 @@ function addLayer(state, action) {
   }
 }
 
-export { makeSrcTiles, makeTestTiles, buildMap, click, addLayer };
+export { makeSrcTiles, buildMap, click, addLayer };

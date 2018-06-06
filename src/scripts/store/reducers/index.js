@@ -20,11 +20,12 @@ import {
   LOAD_TILES_FAILURE
 } from '../actions/actions';
 import { MODE, VEHICLE } from '../../game/constants';
-import story from '../../../events/story.json';
-import menus from '../../../events/menus.json';
-import party from '../../../events/party.json';
-import buttons from '../../../events/buttons.json';
-import map from '../../../../tilesets/map.json';
+import map from '../../../data/map.json';
+import keys from '../../../data/keys.json';
+import story from '../../../data/story.json';
+import menus from '../../../data/menus.json';
+import party from '../../../data/party.json';
+import buttons from '../../../data/buttons.json';
 import { makeSrcTiles, addLayer, buildMap } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
@@ -69,26 +70,7 @@ var initialState = {
   yDragging: null,
   xClick: null,
   yClick: null,
-  keys: {
-    "ArrowUp": false,
-    "ArrowDown": false,
-    "ArrowRight": false,
-    "ArrowLeft": false,
-    "Enter": false,
-    "Backspace": false,
-    "Delete": false,
-    "Escape": false,
-    "0": false,
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-    "6": false,
-    "7": false,
-    "8": false,
-    "9": false,
-  },
+  keys: keys,
 
   // network
   connected: false,
