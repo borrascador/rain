@@ -1,7 +1,12 @@
 import addInputListeners from './utils/addInputListeners';
 import Connect from '../store/reducers/Connect';
 import Loader from './utils/Loader';
-import src from '../../images/atlas.png';
+import atlasImage from '../../images/atlas.png';
+import iconsImage from '../../images/icons.png';
+import iconsXlImage from '../../images/icons-xl.png';
+import atlasTileset from '../../data/atlas.json';
+import iconsTileset from '../../data/icons.json';
+import iconsXlTileset from '../../data/icons-xl.json';
 import MapView from './views/MapView';
 import MenuView from './views/MenuView';
 import StoryView from './views/StoryView';
@@ -22,14 +27,18 @@ export default class RainGame {
   init () {
 		addInputListeners(this.store.dispatch, this.canvas);
 		this.loader = new Loader();
-    Promise.resolve(this.loader.setImage('tiles', src))
+    Promise.all([
+			this.loader.setImage('atlas', atlasImage, atlasTileset),
+			this.loader.setImage('icons', iconsImage, iconsTileset),
+			this.loader.setImage('icons-xl', iconsXlImage, iconsXlTileset)
+		])
     .then(loaded => {
-      this.atlas = this.loader.getImage('tiles');
-			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.atlas);
+			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
 			this.menuView = new MenuView(this.store, this.canvas, this.ctx);
 			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
-    });
-		window.requestAnimationFrame(this.tick);
+    }).then(() => {
+			window.requestAnimationFrame(this.tick);
+		})
   }
 
 	tick (elapsed) {

@@ -2,16 +2,6 @@ import { updateObject, updateItemInArray } from './utils';
 
 // Initial state setup
 
-function makeSrcTiles() {
-  let array = [];
-  for (let y=0; y<11; y++) {
-    for (let x=0; x<5; x++) {
-      array.push({ x, y, });
-    }
-  }
-  return array;
-}
-
 function buildMap(map) {
   let mapArray = [];
   for (let y = 0; y < map.height; y++) {
@@ -94,4 +84,4 @@ function addLayer(state, action) {
   }
 }
 
-export { makeSrcTiles, buildMap, click, addLayer };
+export { buildMap, click, addLayer };

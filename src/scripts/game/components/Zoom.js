@@ -1,54 +1,23 @@
 import Connect from '../../store/reducers/Connect';
+import { drawByName } from '../utils/draw';
 
 export default class Zoom {
-  constructor (store, canvas, ctx, atlas) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.atlas = atlas;
+    this.iconsXl = loader.getImage('icons-xl');
 
     this.connect = new Connect(this.store);
   }
 
-  renderZoom(srcTileSize, srcTiles) {
-    this.ctx.drawImage(
-      this.atlas,
-      srcTiles[36].x * srcTileSize,
-      srcTiles[36].y * srcTileSize,
-      srcTileSize,
-      srcTileSize,
-      960 - 64,
-      0,
-      64,
-      64
-    );
-    this.ctx.drawImage(
-      this.atlas,
-      srcTiles[37].x * srcTileSize,
-      srcTiles[37].y * srcTileSize,
-      srcTileSize,
-      srcTileSize,
-      960 - 64 * 2,
-      0,
-      64,
-      64
-    );
-    this.ctx.drawImage(
-      this.atlas,
-      srcTiles[35].x * srcTileSize,
-      srcTiles[35].y * srcTileSize,
-      srcTileSize,
-      srcTileSize,
-      960 - 64 * 3,
-      0,
-      64,
-      64
-    );
+  update(delta, xClick, yClick) {
+
   }
 
   render() {
-    const {srcTileSize, srcTiles} = this.connect.map;
-
-    this.renderZoom(srcTileSize, srcTiles);
+    drawByName(this.ctx, this.iconsXl, 'glass', 2, 960 - 64, 0);
+    drawByName(this.ctx, this.iconsXl, 'zoom-out', 2, 960 - 64 * 2, 0);
+    drawByName(this.ctx, this.iconsXl, 'zoom-in', 2, 960 - 64 * 3, 0);
   }
 }

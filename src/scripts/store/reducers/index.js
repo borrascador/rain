@@ -26,7 +26,7 @@ import story from '../../../data/story.json';
 import menus from '../../../data/menus.json';
 import party from '../../../data/party.json';
 import buttons from '../../../data/buttons.json';
-import { makeSrcTiles, addLayer, buildMap } from '../utils/map';
+import { addLayer, buildMap } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
 
@@ -41,9 +41,7 @@ var initialState = {
   buttons: buttons,
 
   // map
-  srcTileSize: 32,
-  srcTiles: makeSrcTiles(),
-  mapTileSize: 96,
+  zoom: 3,
   mapTiles: buildMap(map),
 
   // player
@@ -59,7 +57,7 @@ var initialState = {
   inventory: {},
   vehicle: {
     type: VEHICLE.JEEP,
-    icon: 31,
+    icon: 15,
     repair: 5,
   },
 
