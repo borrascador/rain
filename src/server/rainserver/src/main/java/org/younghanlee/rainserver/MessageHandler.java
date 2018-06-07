@@ -1,23 +1,34 @@
 package org.younghanlee.rainserver;
 import org.json.JSONObject;
+import org.java_websocket.WebSocket;
 
 public class MessageHandler {
 
-	public static void handle (String message){
+	public static void handle (String message, WebSocket connection){
 		System.out.println(message);
 		JSONObject jo = new JSONObject(message);
-		if (!jo.has("message_type")){
+		if (!jo.has("type")){
 			System.out.println("No message type");
 			return;
 		} 
 		
-		String message_type = jo.getString("message_type");
+		String message_type = jo.getString("type");
 		switch (message_type) {
-			case "register":
-				World.addPlayer(jo.getString("name"), jo.getString("player_class"));
+			case "REGISTER_REQUEST":
+				World.addPlayer(jo.getString("name"), "TRIBE");
+				
+				// Build Response
+				JSONObject response = new JSONObject();
+				response.accumulate("type", "REGISTER_RESPONSE");
+				JSONObject payload = new JSONObject();
+				payload.accumulate("ok", true);
+				response.accumulate("payload", payload);
+				
+				connection.send(response.toString());
 				break;
 				
-			case "move":
+			case "LOGIN_REQUEST":
+				Player p = World.getPlayer(jo.getString("name"));
 				break;
 				
 			case "request_position":
