@@ -1,3 +1,5 @@
+import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
+
 import {
   KEYDOWN,
   KEYUP,
@@ -18,12 +20,13 @@ import {
   LOAD_TILES_FAILURE
 } from '../actions/actions';
 import { MODE, VEHICLE } from '../../game/constants';
-import story from '../../../events/story.json';
-import menus from '../../../events/menus.json';
-import party from '../../../events/party.json';
-import buttons from '../../../events/buttons.json';
-import tiles from '../../../../tilesets/tiles.json';
-import { makeSrcTiles, addLayer } from '../utils/map';
+import map from '../../../data/map.json';
+import keys from '../../../data/keys.json';
+import story from '../../../data/story.json';
+import menus from '../../../data/menus.json';
+import party from '../../../data/party.json';
+import buttons from '../../../data/buttons.json';
+import { addLayer, buildMap } from '../utils/map';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
 
@@ -38,10 +41,8 @@ var initialState = {
   buttons: buttons,
 
   // map
-  srcTileSize: 32,
-  srcTiles: makeSrcTiles(),
-  mapTileSize: 96,
-  mapTiles: tiles,
+  zoom: 3,
+  mapTiles: buildMap(map),
 
   // player
   camp: {},
@@ -56,7 +57,7 @@ var initialState = {
   inventory: {},
   vehicle: {
     type: VEHICLE.JEEP,
-    icon: 31,
+    icon: 15,
     repair: 5,
   },
 
@@ -67,30 +68,13 @@ var initialState = {
   yDragging: null,
   xClick: null,
   yClick: null,
-  keys: {
-    "ArrowUp": false,
-    "ArrowDown": false,
-    "ArrowRight": false,
-    "ArrowLeft": false,
-    "Enter": false,
-    "Backspace": false,
-    "Delete": false,
-    "Escape": false,
-    "0": false,
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-    "6": false,
-    "7": false,
-    "8": false,
-    "9": false,
+  keys: keys,
 
-    // foo
-    sending: false,
-    error: null
-  },
+  // network
+  connected: false,
+  loading: false,
+  sending: false,
+  error: null
 };
 
 export default function reducer(state, action) {
@@ -160,6 +144,16 @@ export default function reducer(state, action) {
       return Object.assign({}, state, {
         loading: false,
         error: action.error
+      });
+
+    case `@@websocket/${ OPEN }`:
+      return Object.assign({}, state, {
+        connected: true
+      });
+
+    case `@@websocket/${ CLOSE }`:
+      return Object.assign({}, state, {
+        connected: false
       });
 
     default:

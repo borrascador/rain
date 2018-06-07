@@ -2,44 +2,18 @@ import { updateObject, updateItemInArray } from './utils';
 
 // Initial state setup
 
-function makeSrcTiles() {
-  let array = [];
-  for (let y=0; y<11; y++) {
-    for (let x=0; x<5; x++) {
-      array.push({ x, y, });
+function buildMap(map) {
+  let mapArray = [];
+  for (let y = 0; y < map.height; y++) {
+    for (let x = 0; x < map.width; x++) {
+      let id = y * map.width + x;
+      mapArray.push({ id, x, y, layers: {
+        base: 0,
+        middle: map.layers[1].data[id] === 0 ? 0 : map.layers[1].data[id] - 1
+      }});
     }
   }
-  return array;
-}
-
-function makeTestTiles() {
-  return [
-    { id: 1, x: 0, y: 2, layers: { base: 0 } },
-    { id: 2, x: 1, y: 1, layers: { base: 0 } },
-    { id: 3, x: 1, y: 2, layers: { base: 0 } },
-    { id: 4, x: 1, y: 3, layers: { base: 0 } },
-    { id: 5, x: 2, y: 0, layers: { base: 0 } },
-    { id: 6, x: 2, y: 1, layers: { base: 0 } },
-    { id: 7, x: 2, y: 2, layers: { base: 0 } },
-    { id: 8, x: 2, y: 3, layers: { base: 0 } },
-    { id: 9, x: 2, y: 4, layers: { base: 0 } },
-    { id: 10, x: 3, y: 1, layers: { base: 0, middle: 3 } },
-    { id: 11, x: 3, y: 2, layers: { base: 0, middle: 3 } },
-    { id: 12, x: 3, y: 3, layers: { base: 0, middle: 3 } },
-    { id: 13, x: 4, y: 2, layers: { base: 0 } },
-  ];
-}
-
-function makeTestTiles() {
-  let array = [];
-  for (let y=0; y<20; y++) {
-    for (let x=0; x<20; x++) {
-      let id = y*20 + x;
-      // make in node using tiled data
-      array.push({ id, x, y, layers: {base: 0, middle: layer2[id] === 0 ? 0 : layer2[id] - 1}});
-    }
-  }
-  return array;
+  return mapArray;
 }
 
 // Helper functions
@@ -110,4 +84,4 @@ function addLayer(state, action) {
   }
 }
 
-export { makeSrcTiles, makeTestTiles, click, addLayer };
+export { buildMap, click, addLayer };

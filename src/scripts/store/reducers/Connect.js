@@ -25,8 +25,8 @@ export default class Connect {
   }
 
   get map() {
-    const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.store.getState();
-    return {srcTileSize, srcTiles, mapTileSize, mapTiles,};
+    const {zoom, mapTiles} = this.store.getState();
+    return {zoom, mapTiles,};
   }
 
   get click() {
