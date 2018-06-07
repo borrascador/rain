@@ -1835,7 +1835,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function configureStore() {
 	var loggerMiddleware = (0, _reduxLogger.createLogger)();
-	return (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxWebsocketBridge2.default)('ws://localhost:8887/')
+	return (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxWebsocketBridge2.default)('wss://localhost:8887/')
 	// loggerMiddleware
 	));
 }
