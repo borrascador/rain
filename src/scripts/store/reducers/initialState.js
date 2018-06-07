@@ -19,7 +19,7 @@ const uiState = {
 
 const mapState = {
   zoom: 3,
-  mapTiles: tiles
+  mapTiles: buildMap(map)
 };
 
 const playerState = {

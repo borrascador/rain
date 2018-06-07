@@ -4549,7 +4549,7 @@ var uiState = {
 
 var mapState = {
   zoom: 3,
-  mapTiles: tiles
+  mapTiles: (0, _map3.buildMap)(_map2.default)
 };
 
 var playerState = {
