@@ -1,27 +1,19 @@
 import Connect from '../../store/reducers/Connect';
-import Loader from '../utils/Loader';
-import src from '../../../images/tileset-ui.png';
-import {getPosition, postMoveAndGetPosition} from '../../store/actions/actions';
-import {CAMERA_SPEED, LAYER} from '../constants'
-import {addButtonCoords, screenToButtonId, getItemById} from './utils';
+import { getPosition, postMoveAndGetPosition } from '../../store/actions/actions';
+import { CAMERA_SPEED, LAYER } from '../constants'
+import { addButtonCoords, screenToButtonId, getItemById } from './utils';
+import { drawById, drawByName } from '../utils/draw';
 
 export default class Camera {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-
-    this.playerIcon = 29;
-    this.second = 0;
+    this.atlas = loader.getImage('atlas');
 
     this.store.dispatch(getPosition());
 
     this.connect = new Connect(this.store);
-    this.loader = new Loader();
-    Promise.resolve(this.loader.setImage('tiles', src))
-    .then(loaded => {
-      this.atlas = this.loader.getImage('tiles');
-    });
   }
 
   findTile(tiles, x, y) {
@@ -33,8 +25,8 @@ export default class Camera {
   getOffsetOrigin(size, x, y) {
     // move camera
     return {
-      x: x * size - Math.floor(this.canvas.width / 2) + size / 2,
-      y: y * size - Math.floor(this.canvas.height / 2) + size / 2
+      x: Math.round(x * size - Math.floor(this.canvas.width / 2) + size / 2),
+      y: Math.round(y * size - Math.floor(this.canvas.height / 2) + size / 2)
     };
     // clamp values
     // this.x = Math.max(0, Math.min(this.x, this.maxX));
@@ -55,23 +47,17 @@ export default class Camera {
     }
   }
 
-  switchIcon() {
-    this.playerIcon = this.playerIcon === 29 ? 28 : 29;
-  }
-
   update(delta, x, y) {
-    this.second += delta;
-    if (this.second > 1) {
-      this.switchIcon();
-      this.second = 0;
-    }
     this.updateClick(x, y);
   }
 
   render() {
     const pos = this.connect.position;
     const {sight} = this.connect.sight;
-    const {srcTileSize, srcTiles, mapTileSize, mapTiles} = this.connect.map;
+    const {zoom, mapTiles} = this.connect.map;
+    const mapTileSize = this.atlas.tileset.tilewidth * zoom;
+    const gridZoom = (mapTileSize - 1) / (mapTileSize / zoom)
+
     const {BASE, MIDDLE, TOP} = LAYER;
 
     this.ctx.fillStyle = 'black';
@@ -93,10 +79,7 @@ export default class Camera {
         const mapTile = this.findTile(mapTiles, col, row);
         if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
           visibleTiles.push(Object.assign({}, mapTile, {
-            xPos: Math.round(x),
-            yPos: Math.round(y),
-            width: mapTileSize,
-            height: mapTileSize,
+            xPos: x, yPos: y, width: mapTileSize, height: mapTileSize
           }));
           dim = false;
         } else {
@@ -104,33 +87,13 @@ export default class Camera {
         }
         if (mapTile) {
           [BASE, MIDDLE, TOP].forEach(layer => {
-            let id;
-            if (pos.x === col && pos.y === row && layer === TOP) {
-              id = this.playerIcon; // Player Icon
-            } else {
-              id = mapTile.layers[layer];
-            }
-            typeof id === "number" && this.ctx.drawImage(
-              this.atlas,
-              srcTiles[id].x * srcTileSize,
-              srcTiles[id].y * srcTileSize,
-              srcTileSize,
-              srcTileSize,
-              Math.round(x),
-              Math.round(y),
-              mapTileSize - 1,
-              mapTileSize - 1
-            );
+            let id = mapTile.layers[layer];
+            typeof id === "number" && drawById(this.ctx, this.atlas, id, gridZoom, x, y);
           });
-        }
-        if (dim) {
-          this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-          this.ctx.fillRect(
-            Math.round(x),
-            Math.round(y),
-            mapTileSize -1 ,
-            mapTileSize -1
-          );
+          if (dim) {
+            this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+            this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
+          }
         }
       }
     }

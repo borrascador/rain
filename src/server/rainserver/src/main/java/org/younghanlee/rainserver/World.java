@@ -44,6 +44,14 @@ public class World {
 		}
 	}
 	
+	public static void onlineInc() {
+		online++;
+	}
+	
+	public static void onlineDec() {
+		online--;
+	}
+	
 	public static void dump() {
 		System.out.println("Registered users:" + numPlayers);
 		System.out.println("Players online:" + online);
@@ -65,7 +73,6 @@ public class World {
 			if (player_class.equals(Constants.PLAYER_CLASSES[i])){
 				players.put(name, new Player(name, player_class));
 				numPlayers++;
-				online++;
 				return;
 			}
 		}

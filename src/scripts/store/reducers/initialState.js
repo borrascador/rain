@@ -1,10 +1,11 @@
 import { MODE, VEHICLE } from '../../game/constants';
-import story from '../../../events/story.json';
-import menus from '../../../events/menus.json';
-import party from '../../../events/party.json';
-import buttons from '../../../events/buttons.json';
-import tiles from '../../../../tilesets/tiles.json';
-import { makeSrcTiles } from '../utils/map';
+import map from '../../../data/map.json';
+import keys from '../../../data/keys.json';
+import story from '../../../data/story.json';
+import menus from '../../../data/menus.json';
+import party from '../../../data/party.json';
+import buttons from '../../../data/buttons.json';
+import { buildMap } from '../utils/map';
 
 const uiState = {
   mode: MODE.MENU,
@@ -17,9 +18,7 @@ const uiState = {
 };
 
 const mapState = {
-  srcTileSize: 32,
-  srcTiles: makeSrcTiles(),
-  mapTileSize: 96,
+  zoom: 3,
   mapTiles: tiles
 };
 

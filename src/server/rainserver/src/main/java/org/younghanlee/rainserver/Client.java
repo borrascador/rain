@@ -23,8 +23,8 @@ public class Client extends WebSocketClient {
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
 		System.out.println("new connection opened");
-		sendRegister("Dan", "MINER");
-		sendRegister("Jan", "LOGGER");
+		sendRegister("Dan", "hunter2");
+		sendRegister("Jan", "hunter3");
 	}
 
 	@Override
@@ -47,23 +47,11 @@ public class Client extends WebSocketClient {
 		System.err.println("an error occurred:" + ex);
 	}
 	
-	public void sendRegister(String name, String playerClass){
+	public void sendRegister(String name, String password){
 		JSONObject jo = new JSONObject();
-		JSONObject payload = new JSONObject();
-		
-		payload.accumulate("name", name);
-		payload.accumulate("playerClass", playerClass);
-		
 		jo.accumulate("type", "REGISTER_REQUEST");
-		jo.accumulate("payload", payload);
-		
-		send(jo.toString());
-	}
-	
-	public void sendRequestPosition(String name){
-		JSONObject jo = new JSONObject();
-		jo.accumulate("type", "request_position");
 		jo.accumulate("name", name);
+		jo.accumulate("password", password);
 		send(jo.toString());
 	}
 	

@@ -2,10 +2,11 @@ package org.younghanlee.rainserver;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.java_websocket.WebSocket;
 
 public class MessageHandler {
 
-	public static void handle (String message){
+	public static void handle (String message, WebSocket connection){
 		System.out.println(message);
 		JSONObject jo = new JSONObject(message);
 		if (!jo.has("type")){
@@ -14,13 +15,22 @@ public class MessageHandler {
 		} 
 		
 		String type = jo.getString("type");
-		JSONObject payload = jo.getJSONObject("payload");
 		switch (type) {
 			case "REGISTER_REQUEST":
-				World.addPlayer(payload.getString("name"), payload.getString("playerClass"));
+				World.addPlayer(jo.getString("name"), "TRIBE");
+				
+				// Build Response
+				JSONObject response = new JSONObject();
+				response.accumulate("type", "REGISTER_RESPONSE");
+				JSONObject payload = new JSONObject();
+				payload.accumulate("ok", true);
+				response.accumulate("payload", payload);
+				
+				connection.send(response.toString());
 				break;
 				
-			case "move":
+			case "LOGIN_REQUEST":
+				Player p = World.getPlayer(jo.getString("name"));
 				break;
 				
 			case "request_position":	

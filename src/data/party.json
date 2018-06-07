@@ -1,31 +1,31 @@
 [
     {
         "name": "J. Cruz",
-        "icon": 32,
+        "icon": 0,
         "health": 5,
         "jeito": 3
     },
     {
         "name": "H. Villa",
-        "icon": 33,
+        "icon": 1,
         "health": 1,
         "jeito": 2
     },
     {
         "name": "F. Boa",
-        "icon": 34,
+        "icon": 2,
         "health": 2,
         "jeito": 4
     },
     {
         "name": "R. Stone",
-        "icon": 32,
+        "icon": 0,
         "health": 1,
         "jeito": 1
     },
     {
         "name": "D. Lee",
-        "icon": 33,
+        "icon": 2,
         "health": 3,
         "jeito": 5
     }
