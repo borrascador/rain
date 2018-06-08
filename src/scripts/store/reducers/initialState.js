@@ -6,6 +6,7 @@ import menus from '../../../data/menus.json';
 import party from '../../../data/party.json';
 import buttons from '../../../data/buttons.json';
 import { buildMap } from '../utils/map';
+import { makeKeys } from '../utils/input';
 
 const uiState = {
   mode: MODE.MENU,
@@ -47,26 +48,7 @@ const inputState = {
   yDragging: null,
   xClick: null,
   yClick: null,
-  keys: {
-    "ArrowUp": false,
-    "ArrowDown": false,
-    "ArrowRight": false,
-    "ArrowLeft": false,
-    "Enter": false,
-    "Backspace": false,
-    "Delete": false,
-    "Escape": false,
-    "0": false,
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-    "6": false,
-    "7": false,
-    "8": false,
-    "9": false,
-  }
+  keys: makeKeys()
 };
 
 const connectionState = {

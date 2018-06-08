@@ -1,30 +1,6 @@
-import { SEND } from 'redux-websocket-bridge';
 import fetch from 'cross-fetch';
 
 const URL = 'https://www.jsonstore.io/9d84dcf7d61861f8e2993f268a4e2f34a53b63f3cec297b778dfd2432f9dcba2';
-
-export const REGISTER_REQUEST = 'REGISTER_REQUEST';
-export const register = (name) => {
-  return {
-    type: REGISTER_REQUEST,
-    meta: { send: true },
-    payload: {
-      name: name,
-      playerClass: 'TRIBE'
-    }
-  };
-}
-
-export const POSITION_REQUEST = 'POSITION_REQUEST';
-export const position = (id) => {
-  return {
-    type: POSITION_REQUEST,
-    meta: { send: true },
-    payload: {
-
-    }
-  };
-}
 
 export const KEYDOWN = 'KEYDOWN';
 export const keyDown = (key) => ({

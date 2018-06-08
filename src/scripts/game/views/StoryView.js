@@ -1,11 +1,10 @@
 import Story from '../components/Story';
 
 export default class StoryView {
-  constructor (store, canvas, ctx, atlas) {
+  constructor (store, canvas, ctx) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.atlas = atlas;
 
     this.story = new Story(this.store, this.canvas, this.ctx);
   }
