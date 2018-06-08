@@ -36,13 +36,10 @@ export default class Camera {
   updateClick(x, y) {
     const clickId = x && y && screenToButtonId(x, y, this.visibleTiles);
     if (clickId) {
-      const pos = this.connect.position;
+      const pos = this.connect.positionCoords;
       const tile = getItemById(this.visibleTiles, clickId);
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-        this.store.dispatch(postMoveAndGetPosition({
-          x: tile.x,
-          y: tile.y
-        }));
+        this.store.dispatch(postMoveAndGetPosition(clickId));
       }
     }
   }
@@ -52,7 +49,7 @@ export default class Camera {
   }
 
   render() {
-    const pos = this.connect.position;
+    const pos = this.connect.positionCoords;
     const {sight} = this.connect.sight;
     const {zoom, mapTiles} = this.connect.map;
     const mapTileSize = this.atlas.tileset.tilewidth * zoom;

@@ -7,10 +7,10 @@ function buildMap(map) {
   for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       let id = y * map.width + x;
-      mapArray.push({ id, x, y, layers: {
+      mapArray[id] = { id, x, y, layers: {
         base: 0,
         middle: map.layers[1].data[id] === 0 ? 0 : map.layers[1].data[id] - 1
-      }});
+      }};
     }
   }
   return mapArray;

@@ -20,15 +20,14 @@ const uiState = {
 
 const mapState = {
   zoom: 3,
+  mapHeight: map.height,
+  mapWidth: map.width,
   mapTiles: buildMap(map)
 };
 
 const playerState = {
   camp: {},
-  position: {
-    x: null,
-    y: null
-  },
+  position: null,
   sight: 2,
   moves: null,
   party: party,
