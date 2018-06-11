@@ -23,8 +23,11 @@ public class Client extends WebSocketClient {
 	@Override
 	public void onOpen(ServerHandshake handshakedata) {
 		System.out.println("new connection opened");
-		sendRegister("Dan", "hunter2");
-		sendRegister("Jan", "hunter3");
+		send(Message.REGISTER_REQUEST("Dan", "dan@gmail.com", "hunter2").toString());
+		send(Message.REGISTER_REQUEST("Jan", "jan@gmail.com", "hunter2").toString());
+		send(Message.LOGIN_REQUEST("Dan", "hunter2").toString());
+		send(Message.LOGIN_REQUEST("Jan", "hunter2").toString());
+		send(Message.LOGIN_REQUEST("Dan", "hunter2").toString());
 	}
 
 	@Override

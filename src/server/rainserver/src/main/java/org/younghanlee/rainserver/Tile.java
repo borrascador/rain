@@ -35,8 +35,21 @@ public class Tile {
 		
 	}
 	
-	public void claim(Player p) {
+	public JSONObject toJSONObject() {
+		JSONObject jo = new JSONObject();
+		jo.accumulate("id", id);
+		jo.accumulate("x", x);
+		jo.accumulate("y", y);
 		
+		JSONObject layers = new JSONObject();
+		layers.accumulate("base", base);
+		layers.accumulate("middle", middle);
+		layers.accumulate("top", top);
+		jo.accumulate("layers", layers);
+		
+		jo.accumulate("visitors", visitors);
+		
+		return jo;
 	}
 	
 	// Return whether or not move is allowed
