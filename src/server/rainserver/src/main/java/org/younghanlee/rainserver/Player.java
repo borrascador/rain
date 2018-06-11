@@ -42,6 +42,14 @@ public class Player {
 		
 	}
 	
+	public boolean isOnline() {
+		return online;
+	}
+	
+	public int getPosition() {
+		return position;
+	}
+	
 	public String toString() {
 		return name + " " + player_class + " " + online + " "  + position;
 	}

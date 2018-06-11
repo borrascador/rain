@@ -1,6 +1,5 @@
 package org.younghanlee.rainserver;
-import java.util.Map;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.java_websocket.WebSocket;
 
@@ -14,30 +13,45 @@ public class MessageHandler {
 			return;
 		} 
 		
-		String type = jo.getString("type");
-		switch (type) {
+		String message_type = jo.getString("type");
+		
+		// Declare these so we don't get scope error in switch expression
+		JSONObject response;
+		JSONObject payload;
+		
+		switch (message_type) {
 			case "REGISTER_REQUEST":
-				World.addPlayer(jo.getString("name"), "TRIBE");
+				payload = jo.getJSONObject("payload");
+				World.addPlayer(payload.getString("user"), "TRIBE");
 				
-				// Build Response
-				JSONObject response = new JSONObject();
-				response.accumulate("type", "REGISTER_RESPONSE");
-				JSONObject payload = new JSONObject();
-				payload.accumulate("ok", true);
-				response.accumulate("payload", payload);
-				
+				// Send response
+				response = Message.REGISTER_RESPONSE();
 				connection.send(response.toString());
 				break;
 				
 			case "LOGIN_REQUEST":
-				Player p = World.getPlayer(jo.getString("name"));
+				payload = jo.getJSONObject("payload");
+				Player p = World.getPlayer(payload.getString("user"));
+				if (!p.isOnline()) {
+					p.login(connection);
+					
+					// Send response
+					int position = p.getPosition();
+					JSONArray tiles = new JSONArray();
+					JSONObject tile = World.getTile(position).toJSONObject();
+					tiles.put(tile);
+					
+					response = Message.LOGIN_RESPONSE(position, tiles);
+					connection.send(response.toString());
+					
+				}
 				break;
 				
-			case "request_position":	
+			case "request_position":
 				break;
 				
 			default:
-				System.out.println("Unrecognized message type:" + type);
+				System.out.println("Unrecognized message type:" + message_type);
 				
 		}
 	}
