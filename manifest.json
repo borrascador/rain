@@ -1,0 +1,14 @@
+{
+  "short_name": "Rain",
+  "name": "Rainforest Trail",
+  "icons": [
+    {
+      "src": "launch.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "https://borracador.github.io/rain",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}

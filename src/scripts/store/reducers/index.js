@@ -1,5 +1,3 @@
-import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
-
 import {
   KEYDOWN,
   KEYUP,
@@ -9,73 +7,20 @@ import {
   CLICKED,
   FOCUS_MENU,
   FOCUS_TILE,
-  SEND_MOVE_REQUEST,
-  SEND_MOVE_SUCCESS,
-  SEND_MOVE_FAILURE,
-  LOAD_POSITION_REQUEST,
-  LOAD_POSITION_SUCCESS,
-  LOAD_POSITION_FAILURE,
-  LOAD_TILES_REQUEST,
-  LOAD_TILES_SUCCESS,
-  LOAD_TILES_FAILURE
+  SEND_MOVE_REQUEST, SEND_MOVE_SUCCESS, SEND_MOVE_FAILURE,
+  LOAD_POSITION_REQUEST, LOAD_POSITION_SUCCESS, LOAD_POSITION_FAILURE,
+  LOAD_TILES_REQUEST, LOAD_TILES_SUCCESS, LOAD_TILES_FAILURE
 } from '../actions/actions';
-import { MODE, VEHICLE } from '../../game/constants';
-import map from '../../../data/map.json';
-import keys from '../../../data/keys.json';
-import story from '../../../data/story.json';
-import menus from '../../../data/menus.json';
-import party from '../../../data/party.json';
-import buttons from '../../../data/buttons.json';
-import { addLayer, buildMap } from '../utils/map';
+import {
+  REGISTER_REQUEST, REGISTER_RESPONSE,
+  LOGIN_REQUEST, LOGIN_RESPONSE,
+  POSITION_REQUEST, POSITION_RESPONSE
+} from '../actions/requests';
+import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
-
-var initialState = {
-  // UI
-  mode: MODE.MENU,
-  focusX: 2,
-  focusY: 2,
-  activeMenu: "main",
-  story: story,
-  menus: menus,
-  buttons: buttons,
-
-  // map
-  zoom: 3,
-  mapTiles: buildMap(map),
-
-  // player
-  camp: {},
-  position: {
-    x: null,
-    y: null
-  },
-  sight: 2,
-  moves: null,
-  party: party,
-  modifiers: {},
-  inventory: {},
-  vehicle: {
-    type: VEHICLE.JEEP,
-    icon: 15,
-    repair: 5,
-  },
-
-  // input
-  offsetX: 0,
-  offsetY: 0,
-  xDragging: null,
-  yDragging: null,
-  xClick: null,
-  yClick: null,
-  keys: keys,
-
-  // network
-  connected: false,
-  loading: false,
-  sending: false,
-  error: null
-};
+import { updateMapTiles } from '../utils/map';
+import { initialState } from './initialState';
 
 export default function reducer(state, action) {
   if (typeof state === 'undefined') {
@@ -98,6 +43,37 @@ export default function reducer(state, action) {
       return focusMenu(state, action);
     case FOCUS_TILE:
       return focusTile(state, action);
+
+    case REGISTER_REQUEST:
+    case LOGIN_REQUEST:
+    case POSITION_REQUEST:
+      return Object.assign({}, state, {
+        sending: true,
+        error: null
+      });
+
+    case REGISTER_RESPONSE:
+      return Object.assign({}, state, {
+        sending: false,
+        error: null
+      });
+
+    case LOGIN_RESPONSE:
+      return Object.assign({}, state, {
+        sending: false,
+        loggedIn: true,
+        position: action.payload.position,
+        mapTiles: action.payload.tiles,
+        error: null
+      });
+
+    case POSITION_RESPONSE:
+      return Object.assign({}, state, {
+        sending: false,
+        position: action.payload.position,
+        mapTiles: updateMapTiles(state, action),
+        error: null
+      })
 
     case SEND_MOVE_REQUEST:
       return Object.assign({}, state, {
@@ -153,7 +129,8 @@ export default function reducer(state, action) {
 
     case `@@websocket/${ CLOSE }`:
       return Object.assign({}, state, {
-        connected: false
+        connected: false,
+        loggedIn: false
       });
 
     default:
