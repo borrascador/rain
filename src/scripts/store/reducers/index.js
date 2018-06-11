@@ -19,6 +19,7 @@ import {
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { focusMenu, focusTile } from '../utils/ui';
+import { updateMapTiles } from '../utils/map';
 import { initialState } from './initialState';
 
 export default function reducer(state, action) {
@@ -70,7 +71,7 @@ export default function reducer(state, action) {
       return Object.assign({}, state, {
         sending: false,
         position: action.payload.position,
-        mapTiles: action.payload.tiles,
+        mapTiles: updateMapTiles(state, action),
         error: null
       })
 
