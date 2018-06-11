@@ -81,4 +81,4 @@ function updateMapTiles(state, action) {
   });
 }
 
-export { buildMap, click, addLayer };
+export { buildMap, updateMapTiles, addLayer };
