@@ -1,4 +1,6 @@
 package org.younghanlee.rainserver;
+import java.util.Map;
+
 import org.json.JSONObject;
 import org.java_websocket.WebSocket;
 
@@ -12,8 +14,8 @@ public class MessageHandler {
 			return;
 		} 
 		
-		String message_type = jo.getString("type");
-		switch (message_type) {
+		String type = jo.getString("type");
+		switch (type) {
 			case "REGISTER_REQUEST":
 				World.addPlayer(jo.getString("name"), "TRIBE");
 				
@@ -31,11 +33,11 @@ public class MessageHandler {
 				Player p = World.getPlayer(jo.getString("name"));
 				break;
 				
-			case "request_position":
+			case "request_position":	
 				break;
 				
 			default:
-				System.out.println("Unrecognized message type:" + message_type);
+				System.out.println("Unrecognized message type:" + type);
 				
 		}
 	}

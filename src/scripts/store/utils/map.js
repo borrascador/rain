@@ -7,10 +7,10 @@ function buildMap(map) {
   for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       let id = y * map.width + x;
-      mapArray.push({ id, x, y, layers: {
+      mapArray[id] = { id, x, y, layers: {
         base: 0,
         middle: map.layers[1].data[id] === 0 ? 0 : map.layers[1].data[id] - 1
-      }});
+      }};
     }
   }
   return mapArray;
@@ -52,22 +52,6 @@ function getDirLayer(tile, x, y) {
 
 // Reducer functions
 
-function click(state, action) {
-  const tile = screenToTile(state, action);
-  const {partyX, partyY} = state;
-  if (tile) {
-    if (isPlayer(tile, partyX, partyY)) {
-      console.log("player");
-    } else {
-      console.log("visible");
-    }
-    return state;
-  } else {
-    console.log("hidden");
-    return state;
-  }
-}
-
 function addLayer(state, action) {
   const tile = screenToTile(state, action);
   const {partyX, party} = state;
@@ -82,6 +66,19 @@ function addLayer(state, action) {
   } else {
     return state;
   }
+}
+
+function updateMapTiles(state, action) {
+  return state.mapTiles.map((tile) => {
+    let newTile = action.payload.tiles[tile.id];
+    if (newTile) {
+      return Object.assign({}, tile, newTile, {
+        layers: Object.assign({}, tile.layers, newTile.layers)
+      });
+    } else {
+      return tile;
+    }
+  });
 }
 
 export { buildMap, click, addLayer };

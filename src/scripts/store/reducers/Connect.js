@@ -47,9 +47,16 @@ export default class Connect {
     return {offsetX, offsetY,};
   }
 
-  get position() {
-    const {x, y} = this.store.getState().position;
-    return {x, y};
+  get positionId() {
+    return this.store.getState().position;
+  }
+
+  get positionCoords() {
+    const { mapWidth, mapHeight, position } = this.store.getState();
+    return {
+      x: position % mapWidth,
+      y: Math.floor(position / mapHeight)
+    };
   }
 
   get party() {
