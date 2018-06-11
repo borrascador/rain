@@ -2,3 +2,8 @@
 (https://fontstruct.com/fontstructions/show/306689) by “codeman38” is
 licensed under a Creative Commons Attribution Share Alike license
 (http://creativecommons.org/licenses/by-sa/3.0/).
+
+Edited on 6/11/2018 by "borrascador" in order to extend existing
+asterisk glyph to additional character codes. No other changes were
+made and the license remains a Creative Commons Attribution Share
+Alike license (http://creativecommons.org/licenses/by-sa/3.0/).
