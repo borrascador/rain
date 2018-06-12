@@ -44,6 +44,10 @@ public class World {
 		}
 	}
 	
+	public static Tile getTile(int id) {
+		return map[id];
+	}
+	
 	public static void onlineInc() {
 		online++;
 	}
