@@ -37,7 +37,7 @@ export default class RainGame {
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
 			this.menuView = new MenuView(this.store, this.canvas, this.ctx);
 			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
-			this.titleView = new TitleView(this.canvas, this.ctx);
+			this.titleView = new TitleView(this.store, this.canvas, this.ctx);
     }).then(() => {
 			window.requestAnimationFrame(this.tick);
 		})

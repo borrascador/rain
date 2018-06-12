@@ -30,14 +30,6 @@ html, body {
   text-align: center;
 }
 
-#login {
-  /* height: 150px; */
-}
-
-#register {
-  height: 350px;
-}
-
 .overlay .content {
   padding: 8px;
 }
@@ -53,7 +45,12 @@ html, body {
 .input-line {
 }
 
+.label-container, .input-container {
+  display: inline-block;
+}
+
 .label {
+  width: 130px;
   margin-right: 8px;
 }
 
@@ -78,6 +75,5 @@ button {
 }
 
 .submit {
-
   margin-right: 50px;
 }

@@ -1,11 +1,44 @@
+import { makeTextButton } from '../utils/draw';
+import { showLogin, showRegister } from '../utils/dialogs';
+import { addButtonCoords, screenToTextId } from '../components/utils';
+import Connect from '../../store/reducers/Connect';
+import {clicked} from '../../store/actions/actions';
+
 export default class TitleView {
-  constructor (canvas, ctx) {
+  constructor (store, canvas, ctx) {
+    this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+
+    this.connect = new Connect(this.store);
+
+    this.selected = null;
+
+    this.buttons = [
+      { id: 1, text: 'LOGIN', onClick: showLogin },
+      { id: 2, text: 'REGISTER', onClick: showRegister }
+    ];
   }
 
   update(delta) {
+    const {xClick, yClick} = this.connect.click;
+    if (xClick && yClick) {
+      this.store.dispatch(clicked());
+      const clickId = screenToTextId(xClick, yClick, this.buttons);
+      if (this.selectedId && this.selectedId === clickId) {
+        this.buttons.find((button) =>
+          this.selectedId === button.id
+        ).onClick(this.store, this.undim.bind(this));
+        this.selectedId = null;
+        this.dim = true;
+      } else {
+        this.selectedId = clickId;
+      }
+    }
+  }
 
+  undim() {
+    this.dim = false;
   }
 
   render() {
@@ -28,8 +61,21 @@ export default class TitleView {
     this.ctx.font = fontSize + 'px MECC';
 
     linePos = 7;
-    this.ctx.fillText('LOGIN', this.canvas.width / 2, linePos++ * lineSize);
-    this.ctx.fillText('REGISTER', this.canvas.width / 2, linePos++ * lineSize);
-    this.ctx.fillText('ABOUT', this.canvas.width / 2, linePos++ * lineSize);
+    this.buttons.map((button, idx) => {
+      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
+      this.ctx.fillText(button.text, this.canvas.width / 2, linePos * lineSize);
+      addButtonCoords(button, {
+        xPos: this.canvas.width / 2,
+        yPos: linePos * lineSize,
+        width: this.ctx.measureText(button.text).width,
+        height: fontSize
+      });
+      linePos++;
+    });
+
+    if (this.dim) {
+      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   }
 }
