@@ -9,7 +9,7 @@ import { buildMap } from '../utils/map';
 import { makeKeys } from '../utils/input';
 
 const uiState = {
-  mode: MODE.MENU,
+  mode: MODE.TITLE,
   focusX: 2,
   focusY: 2,
   activeMenu: "main",

@@ -22,4 +22,4 @@ function focusTile(state, action) {
   });
 }
 
-export { focusMenu, focusTile };
+export { changeMode, focusMenu, focusTile };

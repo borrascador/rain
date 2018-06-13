@@ -5,6 +5,7 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
+  CHANGE_MODE,
   FOCUS_MENU,
   FOCUS_TILE,
   SEND_MOVE_REQUEST, SEND_MOVE_SUCCESS, SEND_MOVE_FAILURE,
@@ -18,7 +19,7 @@ import {
 } from '../actions/requests';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
-import { focusMenu, focusTile } from '../utils/ui';
+import { changeMode, focusMenu, focusTile } from '../utils/ui';
 import { updateMapTiles } from '../utils/map';
 import { initialState } from './initialState';
 
@@ -39,6 +40,8 @@ export default function reducer(state, action) {
       return mouseUp(state, action);
     case CLICKED:
       return clicked(state);
+    case CHANGE_MODE:
+      return changeMode(state, action);
     case FOCUS_MENU:
       return focusMenu(state, action);
     case FOCUS_TILE:
@@ -59,11 +62,12 @@ export default function reducer(state, action) {
       });
 
     case LOGIN_RESPONSE:
+      console.log(action);
       return Object.assign({}, state, {
         sending: false,
         loggedIn: true,
         position: action.payload.position,
-        mapTiles: action.payload.tiles,
+        mapTiles: action.payload.tiles[0],
         error: null
       });
 

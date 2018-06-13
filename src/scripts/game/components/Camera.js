@@ -1,5 +1,5 @@
 import Connect from '../../store/reducers/Connect';
-import { getPosition, postMoveAndGetPosition } from '../../store/actions/actions';
+// import { getPosition, postMoveAndGetPosition } from '../../store/actions/actions';
 import { CAMERA_SPEED, LAYER } from '../constants'
 import { addButtonCoords, screenToButtonId, getItemById } from './utils';
 import { drawById, drawByName } from '../utils/draw';
@@ -11,7 +11,7 @@ export default class Camera {
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
 
-    this.store.dispatch(getPosition());
+    // this.store.dispatch(getPosition());
 
     this.connect = new Connect(this.store);
   }
@@ -39,7 +39,7 @@ export default class Camera {
       const pos = this.connect.positionCoords;
       const tile = getItemById(this.visibleTiles, clickId);
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-        this.store.dispatch(postMoveAndGetPosition(clickId));
+        // this.store.dispatch(postMoveAndGetPosition(clickId));
       }
     }
   }

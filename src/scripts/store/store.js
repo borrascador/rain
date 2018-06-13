@@ -10,8 +10,8 @@ export default function configureStore () {
 		reducer,
 		applyMiddleware(
 			thunkMiddleware,
-			ReduxWebSocketBridge('wss://localhost:8887/'),
-			// loggerMiddleware
+			ReduxWebSocketBridge('ws://localhost:8887/'),
+			loggerMiddleware
 		)
 	)
 }
