@@ -1,4 +1,6 @@
 import { login, register } from '../../store/actions/requests';
+import { changeMode } from '../../store/actions/actions';
+import { MODE } from '../constants';
 
 function create(tag, className, id) {
   const elt = document.createElement(tag);
@@ -43,8 +45,13 @@ export function showLogin(store, dimCallback) {
   const { buttons, submit, cancel } = makeButtons();
 
   submit.onclick = () => {
+    const usernameText = username.input.value.slice(0);
+    const passwordText = password.input.value.slice(0);
     store.dispatch(
-      login(username.input.value, password.input.value)
+      login(usernameText, passwordText)
+    );
+    store.dispatch(
+      changeMode(MODE.MAP)
     );
     dimCallback();
     container.removeChild(loginPopup);
@@ -73,9 +80,12 @@ export function showRegister(store, dimCallback) {
   const { buttons, submit, cancel } = makeButtons();
 
   submit.onclick = () => {
+    const usernameText = username.input.value.slice(0);
+    const emailText = email.input.value.slice(0);
+    const passwordText = password1.input.value.slice(0);
     store.dispatch(
-      register(username.input.value, email.input.value, password1.input.value)
-    );
+      register(usernameText, emailText, passwordText)
+    )
     dimCallback();
     container.removeChild(registerPopup);
   }

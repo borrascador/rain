@@ -65,7 +65,7 @@ export default class TitleView {
       this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
       this.ctx.fillText(button.text, this.canvas.width / 2, linePos * lineSize);
       addButtonCoords(button, {
-        xPos: this.canvas.width / 2,
+        xPos: this.canvas.width / 2 - this.ctx.measureText(button.text).width / 2,
         yPos: linePos * lineSize,
         width: this.ctx.measureText(button.text).width,
         height: fontSize

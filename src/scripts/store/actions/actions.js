@@ -37,7 +37,6 @@ export const clicked = () => ({
   type: CLICKED
 });
 
-// TODO: Unused
 export const CHANGE_MODE = 'CHANGE_MODE';
 export const changeMode = (mode) => ({
   type: CHANGE_MODE,
@@ -96,65 +95,65 @@ const loadTilesFailure = error => ({
   payload: { error }
 });
 
-function postMove(move) {
-  return (dispatch, getState) => {
-    dispatch(sendMoveRequest())
-    return fetch(URL + '/position/', {
-      headers: { 'Content-type': 'application/json' },
-      method: 'POST',
-      body: JSON.stringify(move),
-    })
-      .then(
-        response => dispatch(sendMoveSuccess()),
-        error => dispatch(sendMoveFailure(error))
-      )
-  }
-}
-
-export function getPosition() {
-  return (dispatch) => {
-    dispatch(loadPositionRequest())
-    return fetch(URL + '/position/')
-      .then(
-        response => response.json(),
-        error => dispatch(loadPositionFailure(error))
-      )
-      .then(json =>
-        dispatch(loadPositionSuccess(json))
-      )
-  }
-}
-
-export function postMoveAndGetPosition(move) {
-  return (dispatch, getState) => {
-    return dispatch(postMove(move))
-      .then(() => {
-        return dispatch(getPosition())
-      })
-  }
-}
-
-// TODO: implement tiles
-export function getTiles() {
-  return (dispatch) => {
-    dispatch(loadTilesRequest())
-    return fetch(URL + '/tiles/')
-      .then(
-        response => response.json(),
-        error => dispatch(loadTilesFailure(error))
-      )
-      .then(json =>
-        dispatch(loadTilesSuccess(json))
-      )
-  }
-}
-
-// TODO: implement tiles
-export function postMoveAndGetTiles(move) {
-  return (dispatch, getState) => {
-    return dispatch(postMove(move))
-      .then(() => {
-        return dispatch(getTiles())
-      })
-  }
-}
+// function postMove(move) {
+//   return (dispatch, getState) => {
+//     dispatch(sendMoveRequest())
+//     return fetch(URL + '/position/', {
+//       headers: { 'Content-type': 'application/json' },
+//       method: 'POST',
+//       body: JSON.stringify(move),
+//     })
+//       .then(
+//         response => dispatch(sendMoveSuccess()),
+//         error => dispatch(sendMoveFailure(error))
+//       )
+//   }
+// }
+//
+// export function getPosition() {
+//   return (dispatch) => {
+//     dispatch(loadPositionRequest())
+//     return fetch(URL + '/position/')
+//       .then(
+//         response => response.json(),
+//         error => dispatch(loadPositionFailure(error))
+//       )
+//       .then(json =>
+//         dispatch(loadPositionSuccess(json))
+//       )
+//   }
+// }
+//
+// export function postMoveAndGetPosition(move) {
+//   return (dispatch, getState) => {
+//     return dispatch(postMove(move))
+//       .then(() => {
+//         return dispatch(getPosition())
+//       })
+//   }
+// }
+//
+// // TODO: implement tiles
+// export function getTiles() {
+//   return (dispatch) => {
+//     dispatch(loadTilesRequest())
+//     return fetch(URL + '/tiles/')
+//       .then(
+//         response => response.json(),
+//         error => dispatch(loadTilesFailure(error))
+//       )
+//       .then(json =>
+//         dispatch(loadTilesSuccess(json))
+//       )
+//   }
+// }
+//
+// // TODO: implement tiles
+// export function postMoveAndGetTiles(move) {
+//   return (dispatch, getState) => {
+//     return dispatch(postMove(move))
+//       .then(() => {
+//         return dispatch(getTiles())
+//       })
+//   }
+// }
