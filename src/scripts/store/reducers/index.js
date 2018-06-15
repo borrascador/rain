@@ -8,15 +8,10 @@ import {
   CHANGE_MODE,
   FOCUS_MENU,
   FOCUS_TILE,
-  SEND_MOVE_REQUEST, SEND_MOVE_SUCCESS, SEND_MOVE_FAILURE,
-  LOAD_POSITION_REQUEST, LOAD_POSITION_SUCCESS, LOAD_POSITION_FAILURE,
-  LOAD_TILES_REQUEST, LOAD_TILES_SUCCESS, LOAD_TILES_FAILURE
+  REGISTER_REQUEST, REGISTER_RESPONSE, REGISTER_ERROR,
+  LOGIN_REQUEST, LOGIN_RESPONSE, LOGIN_ERROR,
+  POSITION_REQUEST, POSITION_RESPONSE, POSITION_ERROR
 } from '../actions/actions';
-import {
-  REGISTER_REQUEST, REGISTER_RESPONSE,
-  LOGIN_REQUEST, LOGIN_RESPONSE,
-  POSITION_REQUEST, POSITION_RESPONSE
-} from '../actions/requests';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { changeMode, focusMenu, focusTile } from '../utils/ui';
@@ -55,6 +50,14 @@ export default function reducer(state, action) {
         error: null
       });
 
+    case REGISTER_ERROR:
+    case LOGIN_ERROR:
+    case POSITION_ERROR:
+      return Object.assign({}, state, {
+        sending: false,
+        error: action.payload.code
+      });
+
     case REGISTER_RESPONSE:
       return Object.assign({}, state, {
         sending: false,
@@ -62,7 +65,6 @@ export default function reducer(state, action) {
       });
 
     case LOGIN_RESPONSE:
-      console.log(action);
       return Object.assign({}, state, {
         sending: false,
         loggedIn: true,
@@ -78,53 +80,6 @@ export default function reducer(state, action) {
         mapTiles: updateMapTiles(state, action),
         error: null
       })
-
-    case SEND_MOVE_REQUEST:
-      return Object.assign({}, state, {
-        sending: true,
-        error: null
-      });
-    case SEND_MOVE_SUCCESS:
-      return Object.assign({}, state, {
-        sending: false
-      });
-    case SEND_MOVE_FAILURE:
-      return Object.assign({}, state, {
-        sending: false,
-        error: action.error
-      });
-
-    case LOAD_POSITION_REQUEST:
-      return Object.assign({}, state, {
-        loading: true,
-        error: null
-      });
-    case LOAD_POSITION_SUCCESS:
-      return Object.assign({}, state, {
-        loading: false,
-        position: action.payload.position.result
-      });
-    case LOAD_POSITION_FAILURE:
-      return Object.assign({}, state, {
-        loading: false,
-        error: action.error
-      });
-
-    case LOAD_TILES_REQUEST:
-      return Object.assign({}, state, {
-        loading: true,
-        error: null
-      });
-    case LOAD_TILES_SUCCESS:
-      return Object.assign({}, state, {
-        loading: false,
-        tiles: Object.values(action.payload.tiles.result || {})
-      });
-    case LOAD_TILES_FAILURE:
-      return Object.assign({}, state, {
-        loading: false,
-        error: action.error
-      });
 
     case `@@websocket/${ OPEN }`:
       return Object.assign({}, state, {

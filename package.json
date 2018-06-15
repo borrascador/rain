@@ -27,6 +27,7 @@
     "express": "^4.16.3",
     "jquery": "^3.3.1",
     "redux": "^3.7.2",
+    "redux-subscriber": "^1.1.0",
     "redux-thunk": "^2.3.0",
     "redux-websocket-bridge": "^0.3.0-0",
     "socket.io": "^2.1.1",

@@ -3,8 +3,9 @@ import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers/index.js';
 import ReduxWebSocketBridge from 'redux-websocket-bridge';
+import initSubscriber from 'redux-subscriber';
 
-export default function configureStore () {
+function configureStore () {
 	const loggerMiddleware = createLogger();
 	return createStore(
 		reducer,
@@ -15,3 +16,6 @@ export default function configureStore () {
 		)
 	)
 }
+
+export const store = configureStore();
+export const subscribe = initSubscriber(store);
