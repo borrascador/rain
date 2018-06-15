@@ -22,17 +22,13 @@ const mapState = {
   zoom: 3,
   mapHeight: map.height,
   mapWidth: map.width,
-  mapTiles: buildMap(map)
+  mapTiles: []
 };
 
 const playerState = {
-  camp: {},
   position: null,
   sight: 2,
-  moves: null,
   party: party,
-  modifiers: {},
-  inventory: {},
   vehicle: {
     type: VEHICLE.JEEP,
     icon: 31,

@@ -1,6 +1,5 @@
 import { login, register } from '../../store/actions/requests';
 import { changeMode } from '../../store/actions/actions';
-import { MODE } from '../constants';
 
 function create(tag, className, id) {
   const elt = document.createElement(tag);
@@ -44,22 +43,18 @@ export function showLogin(store, dimCallback) {
   const password = makeInputLine('password');
   const { buttons, submit, cancel } = makeButtons();
 
+  const exitDialog = () => {
+    dimCallback();
+    container.removeChild(loginPopup);
+  };
+
   submit.onclick = () => {
     const usernameText = username.input.value.slice(0);
     const passwordText = password.input.value.slice(0);
-    store.dispatch(
-      login(usernameText, passwordText)
-    );
-    store.dispatch(
-      changeMode(MODE.MAP)
-    );
-    dimCallback();
-    container.removeChild(loginPopup);
+    store.dispatch(login(usernameText, passwordText, exitDialog));
   }
-  cancel.onclick = () => {
-    dimCallback();
-    container.removeChild(loginPopup);
-  }
+
+  cancel.onclick = exitDialog;
 
   const content = create('div', 'content');
   content.append(title, username.line, password.line, buttons);
@@ -79,20 +74,19 @@ export function showRegister(store, dimCallback) {
   const password2 = makeInputLine('password2');
   const { buttons, submit, cancel } = makeButtons();
 
+  const exitDialog = () => {
+    dimCallback();
+    container.removeChild(registerPopup);
+  };
+
   submit.onclick = () => {
     const usernameText = username.input.value.slice(0);
     const emailText = email.input.value.slice(0);
     const passwordText = password1.input.value.slice(0);
-    store.dispatch(
-      register(usernameText, emailText, passwordText)
-    )
-    dimCallback();
-    container.removeChild(registerPopup);
+    store.dispatch(register(usernameText, emailText, passwordText, exitDialog));
   }
-  cancel.onclick = () => {
-    dimCallback();
-    container.removeChild(registerPopup);
-  }
+
+  cancel.onclick = exitDialog;
 
   const content = create('div', 'content');
   content.append(
