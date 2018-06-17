@@ -4227,6 +4227,8 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _requests = __webpack_require__(15);
+
 var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -4247,7 +4249,11 @@ var Zoom = function () {
 
   _createClass(Zoom, [{
     key: 'update',
-    value: function update(delta, xClick, yClick) {}
+    value: function update(delta, xClick, yClick) {
+      if (xClick > 896 && xClick < 960 && yClick > 0 && yClick < 64) {
+        this.store.dispatch((0, _requests.logout)('foo'));
+      }
+    }
   }, {
     key: 'render',
     value: function render() {

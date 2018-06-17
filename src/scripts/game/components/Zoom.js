@@ -1,4 +1,5 @@
 import Connect from '../../store/reducers/Connect';
+import { logout } from '../../store/actions/requests';
 import { drawByName } from '../utils/draw';
 
 export default class Zoom {
@@ -12,7 +13,9 @@ export default class Zoom {
   }
 
   update(delta, xClick, yClick) {
-
+    if (xClick > 896 && xClick < 960 && yClick > 0 && yClick < 64) {
+      this.store.dispatch(logout('foo'));
+    }
   }
 
   render() {
