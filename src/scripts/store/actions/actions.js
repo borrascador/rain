@@ -73,6 +73,21 @@ export const loginError = (code) => ({
   payload: { code }
 });
 
+export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
+export const LOGOUT_RESPONSE = 'LOGOUT_RESPONSE';
+export const LOGOUT_ERROR = 'LOGOUT_ERROR';
+
+export const logoutRequest = (user) => ({
+  type: LOGOUT_REQUEST,
+  meta: { send: true },
+  payload: { user }
+});
+
+export const logoutError = (code) => ({
+  type: LOGOUT_ERROR,
+  payload: { code }
+});
+
 export const POSITION_REQUEST = 'POSITION_REQUEST';
 export const POSITION_RESPONSE = 'POSITION_RESPONSE';
 export const POSITION_ERROR = 'POSITION_ERROR';

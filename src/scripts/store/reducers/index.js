@@ -10,6 +10,7 @@ import {
   FOCUS_TILE,
   REGISTER_REQUEST, REGISTER_RESPONSE, REGISTER_ERROR,
   LOGIN_REQUEST, LOGIN_RESPONSE, LOGIN_ERROR,
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, LOGOUT_ERROR,
   POSITION_REQUEST, POSITION_RESPONSE, POSITION_ERROR
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
@@ -44,6 +45,7 @@ export default function reducer(state, action) {
 
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
     case POSITION_REQUEST:
       return Object.assign({}, state, {
         sending: true,
@@ -52,6 +54,7 @@ export default function reducer(state, action) {
 
     case REGISTER_ERROR:
     case LOGIN_ERROR:
+    case LOGOUT_ERROR:
     case POSITION_ERROR:
       return Object.assign({}, state, {
         sending: false,
@@ -72,6 +75,13 @@ export default function reducer(state, action) {
         mapTiles: action.payload.tiles,
         error: null
       });
+
+    case LOGOUT_RESPONSE:
+      return Object.assign({}, state, {
+        sending: false,
+        loggedIn: false,
+        error: null
+      })
 
     case POSITION_RESPONSE:
       return Object.assign({}, state, {
