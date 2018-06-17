@@ -1,5 +1,8 @@
 package org.younghanlee.rainserver;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Tile {
@@ -52,8 +55,45 @@ public class Tile {
 		return jo;
 	}
 	
+	public int getID(int x, int y) {
+		return x * Constants.MAPWIDTH + y;
+	}
+	
+	public JSONArray inSight(int sight) {
+		JSONArray tiles = new JSONArray();
+		System.out.println("Center:" + x + "," + y);
+		
+		int ymin = y - sight;
+		int ymax = y + sight;
+		if (ymin < 0) {
+			ymin = 0;
+		}
+		if (ymax > Constants.MAPHEIGHT) {
+			ymax = Constants.MAPHEIGHT;
+		}
+		
+		for (int i = ymin; i<= ymax; i++) {
+			int yabs = Math.abs(i-y);
+			
+			int xmin = x-(sight-yabs);
+			int xmax = x + sight - yabs;
+			if (xmin < 0) {
+				xmin = 0;
+			}
+			if (xmax > Constants.MAPWIDTH) {
+				xmax = Constants.MAPWIDTH;
+			}
+			for (int j = xmin; j <= xmax; j++) {
+				System.out.println(i + "," + j);
+				Tile t = World.getTile(getID(i,j));
+				tiles.put(t.toJSONObject());
+			}
+		}
+		return tiles;
+	}
+	
 	// Return whether or not move is allowed
-	public boolean legalMove (int newTile) {
+	public boolean legalMove (int newTile, int range) {
 		return true; 
 	}
 	
