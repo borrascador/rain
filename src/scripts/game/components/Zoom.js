@@ -16,7 +16,7 @@ export default class Zoom {
   }
 
   render() {
-    drawByName(this.ctx, this.iconsXl, 'glass', 2, 960 - 64, 0);
+    drawByName(this.ctx, this.iconsXl, 'settings', 2, 960 - 64, 0);
     drawByName(this.ctx, this.iconsXl, 'zoom-out', 2, 960 - 64 * 2, 0);
     drawByName(this.ctx, this.iconsXl, 'zoom-in', 2, 960 - 64 * 3, 0);
   }
