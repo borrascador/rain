@@ -1286,6 +1286,7 @@ function logout(user, callback) {
       unsubscribe();
       callback && callback();
       clearTimeout(timer);
+      dispatch((0, _actions.changeMode)(_constants.MODE.TITLE));
     });
     var timer = setTimeout(function () {
       unsubscribe();

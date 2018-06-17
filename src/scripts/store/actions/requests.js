@@ -51,6 +51,7 @@ export function logout(user, callback) {
       unsubscribe();
       callback && callback();
       clearTimeout(timer);
+      dispatch(changeMode(MODE.TITLE));
     });
     const timer = setTimeout(() => {
       unsubscribe();
