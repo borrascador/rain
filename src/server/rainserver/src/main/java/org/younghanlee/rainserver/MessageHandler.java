@@ -37,9 +37,7 @@ public class MessageHandler {
 					
 					// Send response
 					int position = p.getPosition();
-					JSONArray tiles = new JSONArray();
-					JSONObject tile = World.getTile(position).toJSONObject();
-					tiles.put(tile);
+					JSONArray tiles = World.getTile(position).inSight(p.getSight());
 					
 					response = Message.LOGIN_RESPONSE(position, tiles);
 					connection.send(response.toString());

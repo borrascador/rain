@@ -50,23 +50,6 @@ public class Client extends WebSocketClient {
 		System.err.println("an error occurred:" + ex);
 	}
 	
-	public void sendRegister(String name, String password){
-		JSONObject jo = new JSONObject();
-		jo.accumulate("type", "REGISTER_REQUEST");
-		jo.accumulate("name", name);
-		jo.accumulate("password", password);
-		send(jo.toString());
-	}
-	
-	public void sendMove(String name, int x, int y){
-		JSONObject jo = new JSONObject();
-		jo.accumulate("type", "move");
-		jo.accumulate("name", name);
-		jo.accumulate("x", x);
-		jo.accumulate("y", y);
-		send(jo.toString());
-	}
-	
 	public static void main(String[] args) throws URISyntaxException {		
 		Client client = new Client(new URI("ws://localhost:8887"));
 		client.connect();

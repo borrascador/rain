@@ -8,6 +8,8 @@ public class Player {
 	private String player_class;
 	private boolean online;
 	private int position;
+	private int sight;
+	
 	private WebSocket connection;
 	
 	public int randomInt(int max) {
@@ -17,6 +19,7 @@ public class Player {
 	public Player(String name, String player_class) {
 		this.name = name;
 		this.player_class = player_class;
+		this.sight = 2;
 		
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
@@ -49,6 +52,11 @@ public class Player {
 	public int getPosition() {
 		return position;
 	}
+	
+	public int getSight() {
+		return sight;
+	}
+	
 	
 	public String toString() {
 		return name + " " + player_class + " " + online + " "  + position;

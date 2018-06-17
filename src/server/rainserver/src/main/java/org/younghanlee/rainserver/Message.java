@@ -40,8 +40,8 @@ public class Message {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "LOGIN_RESPONSE");
 		JSONObject payload = new JSONObject();
-		payload.accumulate("position", position);
-		payload.accumulate("tiles", tiles);
+		payload.put("position", position);
+		payload.put("tiles", tiles);
 		jo.accumulate("payload", payload);
 		return jo;
 	}
