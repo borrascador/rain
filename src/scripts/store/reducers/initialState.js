@@ -5,7 +5,6 @@ import story from '../../../data/story.json';
 import menus from '../../../data/menus.json';
 import party from '../../../data/party.json';
 import buttons from '../../../data/buttons.json';
-import { buildMap } from '../utils/map';
 import { makeKeys } from '../utils/input';
 
 const uiState = {

@@ -69,7 +69,7 @@ export default function reducer(state, action) {
         sending: false,
         loggedIn: true,
         position: action.payload.position,
-        mapTiles: action.payload.tiles[0],
+        mapTiles: action.payload.tiles,
         error: null
       });
 
