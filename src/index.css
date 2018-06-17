@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'MECC';
-  src: url('./meccfont/mecc.ttf') format('truetype');
+  src: url('./meccfont/Here-Lies-MECC.ttf') format('truetype');
 }
 
 html, body {
@@ -10,9 +10,70 @@ html, body {
 	font-family: 'MECC', Courier, sans-serif;
 }
 
-#flex-container {
+#container {
+  position: relative;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#container canvas, .overlay {
+  position: absolute;
+}
+
+.overlay {
+  border: 4px solid white;
+  /* width: 600px; */
+  color: white;
+  background-color: black;
+  text-align: center;
+}
+
+.overlay .content {
+  padding: 8px;
+}
+
+.content div {
+  padding: 8px;
+}
+
+.title {
+  font-size: 28px;
+}
+
+.input-line {
+}
+
+.label-container, .input-container {
+  display: inline-block;
+}
+
+.label {
+  width: 130px;
+  margin-right: 8px;
+}
+
+input, button {
+  border: 4px solid white;
+  font-family: inherit;
+}
+
+input {
+  color: black;
+}
+
+input #password {
+  -webkit-text-security: square;
+}
+
+button {
+  width: 120px;
+  padding: 4px;
+  color: white;
+  background-color: black;
+}
+
+.submit {
+  margin-right: 50px;
 }

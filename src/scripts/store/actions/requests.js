@@ -1,23 +1,61 @@
-export const REGISTER_REQUEST = 'REGISTER_REQUEST';
-export const REGISTER_RESPONSE = 'REGISTER_RESPONSE';
-export const register = (user, email, password) => ({
-  type: REGISTER_REQUEST,
-  meta: { send: true },
-  payload: { user, email, password }
-});
+import {
+  changeMode,
+  registerRequest, registerError,
+  loginRequest, loginError,
+  positionRequest, positionError,
+} from './actions';
+import { subscribe } from '../store';
+import { MODE } from '../../game/constants';
 
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export const LOGIN_RESPONSE = 'LOGIN_RESPONSE';
-export const login = (user, password) => ({
-  type: LOGIN_REQUEST,
-  meta: { send: true },
-  payload: { user, password }
-});
+export function register(user, email, password, callback) {
+  return (dispatch, getState) => {
+    dispatch(registerRequest(user, email, password));
+    const state = getState();
+    const unsubscribe = subscribe('sending', state => {
+      unsubscribe();
+      callback();
+      clearTimeout(timer);
+    });
+    const timer = setTimeout(() => {
+      unsubscribe();
+      callback();
+      getState().sending && dispatch(registerError('0201')); // Timeout error
+    }, 2000);
+  }
+}
 
-export const POSITION_REQUEST = 'POSITION_REQUEST';
-export const POSITION_RESPONSE = 'POSITION_RESPONSE';
-export const position = (id) => ({
-  type: POSITION_REQUEST,
-  meta: { send: true },
-  payload: { id }
-});
+export function login(user, password, callback) {
+  console.log(callback);
+  return (dispatch, getState) => {
+    dispatch(loginRequest(user, password));
+    const state = getState();
+    const unsubscribe = subscribe('sending', state => {
+      unsubscribe();
+      callback();
+      clearTimeout(timer);
+      dispatch(changeMode(MODE.MAP));
+    });
+    const timer = setTimeout(() => {
+      unsubscribe();
+      callback();
+      getState().sending && dispatch(loginError('0201')); // Timeout error
+    }, 2000);
+  }
+}
+
+export function position(position, callback) {
+  return (dispatch, getState) => {
+    dispatch(positionRequest(position));
+    const state = getState();
+    const unsubscribe = subscribe('sending', state => {
+      unsubscribe();
+      callback && callback();
+      clearTimeout(timer);
+    });
+    const timer = setTimeout(() => {
+      unsubscribe();
+      callback && callback();
+      getState().sending && dispatch(positionError('0201')); // Timeout error
+    }, 2000);
+  }
+}
