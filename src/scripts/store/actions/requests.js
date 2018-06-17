@@ -2,6 +2,7 @@ import {
   changeMode,
   registerRequest, registerError,
   loginRequest, loginError,
+  logoutRequest, logoutError,
   positionRequest, positionError,
 } from './actions';
 import { subscribe } from '../store';
@@ -25,7 +26,6 @@ export function register(user, email, password, callback) {
 }
 
 export function login(user, password, callback) {
-  console.log(callback);
   return (dispatch, getState) => {
     dispatch(loginRequest(user, password));
     const state = getState();
@@ -42,6 +42,25 @@ export function login(user, password, callback) {
     }, 2000);
   }
 }
+
+export function logout(user, callback) {
+  return (dispatch, getState) => {
+    dispatch(logoutRequest(user));
+    const state = getState();
+    const unsubscribe = subscribe('sending', state => {
+      unsubscribe();
+      callback && callback();
+      clearTimeout(timer);
+      dispatch(changeMode(MODE.TITLE));
+    });
+    const timer = setTimeout(() => {
+      unsubscribe();
+      callback && callback();
+      getState().sending && dispatch(logoutError('0201')); // Timeout error
+    }, 2000);
+  }
+}
+
 
 export function position(position, callback) {
   return (dispatch, getState) => {
