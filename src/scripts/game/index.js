@@ -53,11 +53,12 @@ export default class RainGame {
 		delta = Math.min(delta, 0.250); // maximum delta of 250 ms
 		this._previousElapsed = elapsed;
 
-		if (this.connect.mode !== MODE.TITLE && this.connect.connected === false || this.connect.loggedIn === false) {
+		this.mode = this.connect.mode;
+
+		if (this.mode !== MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
 			this.store.dispatch(changeMode(MODE.TITLE));
 		}
 
-		this.mode = this.connect.mode;
 		this.update(delta);
 		this.render();
 	}
