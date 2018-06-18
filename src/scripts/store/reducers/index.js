@@ -5,6 +5,8 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
+  ZOOM_IN,
+  ZOOM_OUT,
   CHANGE_MODE,
   FOCUS_MENU,
   FOCUS_TILE,
@@ -15,7 +17,7 @@ import {
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
-import { changeMode, focusMenu, focusTile } from '../utils/ui';
+import { zoomIn, zoomOut, changeMode, focusMenu, focusTile } from '../utils/ui';
 import { updateMapTiles } from '../utils/map';
 import { initialState } from './initialState';
 
@@ -36,6 +38,10 @@ export default function reducer(state, action) {
       return mouseUp(state, action);
     case CLICKED:
       return clicked(state);
+    case ZOOM_IN:
+      return zoomIn(state);
+    case ZOOM_OUT:
+      return zoomOut(state);
     case CHANGE_MODE:
       return changeMode(state, action);
     case FOCUS_MENU:

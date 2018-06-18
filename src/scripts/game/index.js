@@ -11,6 +11,7 @@ import MapView from './views/MapView';
 import MenuView from './views/MenuView';
 import StoryView from './views/StoryView';
 import TitleView from './views/TitleView';
+import {changeMode} from '../store/actions/actions';
 import {MODE} from './constants.js'
 
 export default class RainGame {
@@ -51,6 +52,10 @@ export default class RainGame {
 		let delta = (elapsed - this._previousElapsed) / 1000.0;
 		delta = Math.min(delta, 0.250); // maximum delta of 250 ms
 		this._previousElapsed = elapsed;
+
+		if (this.connect.mode !== MODE.TITLE && this.connect.connected === false || this.connect.loggedIn === false) {
+			this.store.dispatch(changeMode(MODE.TITLE));
+		}
 
 		this.mode = this.connect.mode;
 		this.update(delta);
