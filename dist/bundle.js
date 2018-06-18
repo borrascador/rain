@@ -96,6 +96,21 @@ var Connect = function () {
       return Object.assign({}, menu, { buttons: buttons });
     }
   }, {
+    key: "connected",
+    get: function get() {
+      return this.store.getState().connected;
+    }
+  }, {
+    key: "loggedIn",
+    get: function get() {
+      return this.store.getState().loggedIn;
+    }
+  }, {
+    key: "error",
+    get: function get() {
+      return this.store.getState().error;
+    }
+  }, {
     key: "mode",
     get: function get() {
       return this.store.getState().mode;
@@ -255,6 +270,20 @@ var clicked = exports.clicked = function clicked() {
   };
 };
 
+var ZOOM_IN = exports.ZOOM_IN = 'ZOOM_IN';
+var zoomIn = exports.zoomIn = function zoomIn() {
+  return {
+    type: ZOOM_IN
+  };
+};
+
+var ZOOM_OUT = exports.ZOOM_OUT = 'ZOOM_OUT';
+var zoomOut = exports.zoomOut = function zoomOut() {
+  return {
+    type: ZOOM_OUT
+  };
+};
+
 var CHANGE_MODE = exports.CHANGE_MODE = 'CHANGE_MODE';
 var changeMode = exports.changeMode = function changeMode(mode) {
   return {
@@ -404,7 +433,7 @@ function drawByName(ctx, img, name, zoom, x, y) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var addButtonCoords = function addButtonCoords(option, buttonCoords) {
+var addButtonCoords = exports.addButtonCoords = function addButtonCoords(option, buttonCoords) {
   var props = ['xPos', 'yPos', 'width', 'height'];
   if (!props.every(function (prop) {
     return Object.keys(option).includes(prop);
@@ -413,30 +442,32 @@ var addButtonCoords = function addButtonCoords(option, buttonCoords) {
   }
 };
 
-var screenToTextId = function screenToTextId(x, y, list) {
+var screenToTextId = exports.screenToTextId = function screenToTextId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
   });
   return selectedButton && selectedButton.id || null;
 };
 
-var screenToButtonId = function screenToButtonId(x, y, list) {
+var screenToButtonId = exports.screenToButtonId = function screenToButtonId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
   });
   return selectedButton && selectedButton.id || null;
 };
 
-var getItemById = function getItemById(array, id) {
+var screenToButtonName = exports.screenToButtonName = function screenToButtonName(x, y, list) {
+  var selectedButton = list.find(function (button) {
+    return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
+  });
+  return selectedButton && selectedButton.name || null;
+};
+
+var getItemById = exports.getItemById = function getItemById(array, id) {
   return array.find(function (x) {
     return x.id === id;
   });
 };
-
-exports.addButtonCoords = addButtonCoords;
-exports.screenToTextId = screenToTextId;
-exports.screenToButtonId = screenToButtonId;
-exports.getItemById = getItemById;
 
 /***/ }),
 /* 5 */
@@ -1365,7 +1396,7 @@ exports = module.exports = __webpack_require__(20)(false);
 
 
 // module
-exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(21)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .overlay {\n  position: absolute;\n}\n\n.overlay {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.overlay .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\ninput #password {\n  -webkit-text-security: square;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.submit {\n  margin-right: 50px;\n}\n", ""]);
+exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(21)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\ninput #password {\n  -webkit-text-security: square;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.submit {\n  margin-right: 50px;\n}\n", ""]);
 
 // exports
 
@@ -2656,6 +2687,10 @@ function reducer(state, action) {
       return (0, _input.mouseUp)(state, action);
     case _actions.CLICKED:
       return (0, _input.clicked)(state);
+    case _actions.ZOOM_IN:
+      return (0, _ui.zoomIn)(state);
+    case _actions.ZOOM_OUT:
+      return (0, _ui.zoomOut)(state);
     case _actions.CHANGE_MODE:
       return (0, _ui.changeMode)(state, action);
     case _actions.FOCUS_MENU:
@@ -2781,11 +2816,31 @@ module.exports = function isFSA(action) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.focusTile = exports.focusMenu = exports.changeMode = undefined;
+exports.focusTile = exports.focusMenu = exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
 
 var _utils = __webpack_require__(6);
 
 var _constants = __webpack_require__(2);
+
+function zoomIn(state) {
+  if (state.zoom < 5) {
+    return (0, _utils.updateObject)(state, {
+      zoom: state.zoom + 1
+    });
+  } else {
+    return state;
+  }
+}
+
+function zoomOut(state) {
+  if (state.zoom > 1) {
+    return (0, _utils.updateObject)(state, {
+      zoom: state.zoom - 1
+    });
+  } else {
+    return state;
+  }
+}
 
 function changeMode(state, action) {
   return (0, _utils.updateObject)(state, {
@@ -2808,6 +2863,8 @@ function focusTile(state, action) {
   });
 }
 
+exports.zoomIn = zoomIn;
+exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
 exports.focusMenu = focusMenu;
 exports.focusTile = focusTile;
@@ -2822,7 +2879,7 @@ exports.focusTile = focusTile;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addLayer = exports.updateMapTiles = exports.buildMap = undefined;
+exports.updateMapTiles = exports.addLayer = exports.buildMap = undefined;
 
 var _utils = __webpack_require__(6);
 
@@ -2840,39 +2897,6 @@ function buildMap(map) {
     }
   }
   return mapArray;
-}
-
-// Helper functions
-
-function screenToTile(state, action) {
-  return state.mapTiles.find(function (tile) {
-    return tile.x === Math.floor(action.payload.x / state.mapTileSize) && tile.y === Math.floor(action.payload.y / state.mapTileSize);
-  });
-}
-
-function findTile(tiles, x, y) {
-  return tiles.find(function (tile) {
-    return tile.x === x && tile.y === y;
-  });
-}
-
-function isPlayer(tile, x, y) {
-  return tile.x === x && tile.y === y;
-}
-
-function isAdjacent(tile, x, y) {
-  var vertical = tile.x === x && (tile.y === y + 1 || tile.y === y - 1);
-  var horizontal = tile.y === y && (tile.x === x + 1 || tile.x === x - 1);
-  return vertical || horizontal;
-}
-
-function getDirLayer(tile, x, y) {
-  var xDir = tile.x - x;
-  var yDir = tile.y - y;
-  if (xDir === -1) return { top: 25 };
-  if (yDir === 1) return { top: 26 };
-  if (yDir === -1) return { top: 27 };
-  if (xDir === 1) return { top: 28 };
 }
 
 // Reducer functions
@@ -2909,8 +2933,8 @@ function updateMapTiles(state, action) {
 }
 
 exports.buildMap = buildMap;
-exports.updateMapTiles = updateMapTiles;
 exports.addLayer = addLayer;
+exports.updateMapTiles = updateMapTiles;
 
 /***/ }),
 /* 48 */
@@ -2977,7 +3001,7 @@ var playerState = {
   party: _party2.default,
   vehicle: {
     type: _constants.VEHICLE.JEEP,
-    icon: 31,
+    icon: 15,
     repair: 5
   }
 };
@@ -2994,6 +3018,7 @@ var inputState = {
 
 var connectionState = {
   connected: false,
+  loggedIn: false,
   sending: false,
   error: null
 };
@@ -3453,6 +3478,8 @@ var _TitleView = __webpack_require__(78);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
+var _actions = __webpack_require__(1);
+
 var _constants = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -3499,6 +3526,10 @@ var RainGame = function () {
 			var delta = (elapsed - this._previousElapsed) / 1000.0;
 			delta = Math.min(delta, 0.250); // maximum delta of 250 ms
 			this._previousElapsed = elapsed;
+
+			if (this.connect.mode !== _constants.MODE.TITLE && this.connect.connected === false || this.connect.loggedIn === false) {
+				this.store.dispatch((0, _actions.changeMode)(_constants.MODE.TITLE));
+			}
 
 			this.mode = this.connect.mode;
 			this.update(delta);
@@ -3918,8 +3949,6 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(4);
-
 var _Party = __webpack_require__(69);
 
 var _Party2 = _interopRequireDefault(_Party);
@@ -3995,6 +4024,8 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _utils = __webpack_require__(4);
+
 var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -4014,11 +4045,33 @@ var Party = function () {
     this.iconsXl = loader.getImage('icons-xl');
 
     this.connect = new _Connect2.default(this.store);
+
+    var party = this.connect.party.party;
+
+    this.scale = 2;
+    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, party);
   }
 
   _createClass(Party, [{
+    key: 'makeButtons',
+    value: function makeButtons(canvas, image, scale, party) {
+      var size = image.tileset.tilewidth * scale;
+      return party.map(function (member, index) {
+        return {
+          name: member.name,
+          xPos: 0,
+          yPos: index * size,
+          width: size,
+          height: size
+        };
+      });
+    }
+  }, {
     key: 'update',
-    value: function update(delta, xClick, yClick) {}
+    value: function update(delta, x, y) {
+      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
+      clickName && console.log(clickName);
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -4026,9 +4079,10 @@ var Party = function () {
 
       var party = this.connect.party.party;
 
+      var size = this.iconsXl.tileset.tilewidth * this.scale;
 
       party.map(function (member, idx) {
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, 2, 0, idx * 64);
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, 0, idx * size);
         [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
           (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, 64 + i * 24, (idx * 2 + 0.4) * 32);
         });
@@ -4061,6 +4115,8 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _utils = __webpack_require__(4);
+
 var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -4080,11 +4136,31 @@ var Vehicle = function () {
     this.iconsXl = loader.getImage('icons-xl');
 
     this.connect = new _Connect2.default(this.store);
+
+    var vehicle = this.connect.vehicle.vehicle;
+
+    this.scale = 2;
+    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, vehicle);
   }
 
   _createClass(Vehicle, [{
+    key: 'makeButtons',
+    value: function makeButtons(canvas, image, scale, vehicle) {
+      var size = image.tileset.tilewidth * scale;
+      return [{
+        name: vehicle.type,
+        xPos: 0,
+        yPos: canvas.height - size,
+        width: size,
+        height: size
+      }];
+    }
+  }, {
     key: 'update',
-    value: function update(delta, xClick, yClick) {}
+    value: function update(delta, x, y) {
+      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
+      clickName && console.log(clickName);
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -4092,8 +4168,9 @@ var Vehicle = function () {
 
       var vehicle = this.connect.vehicle.vehicle;
 
+      var size = this.iconsXl.tileset.tilewidth * this.scale;
 
-      (0, _draw.drawById)(this.ctx, this.iconsXl, vehicle.icon, 2, 0, 416);
+      (0, _draw.drawById)(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - size);
       [].concat(_toConsumableArray(Array(vehicle.repair))).map(function (_, i) {
         (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, 64 + i * 24, 440);
       });
@@ -4126,6 +4203,8 @@ var _Animation = __webpack_require__(72);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
+var _utils = __webpack_require__(4);
+
 var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -4143,20 +4222,42 @@ var Inventory = function () {
 
     this.animate = new _Animation2.default(2, 0.5);
     this.connect = new _Connect2.default(this.store);
+
+    this.scale = 4;
+    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, ['pack-big']);
   }
 
   _createClass(Inventory, [{
+    key: 'makeButtons',
+    value: function makeButtons(canvas, image, scale, names) {
+      var _this = this;
+
+      var size = image.tileset.tilewidth * scale;
+      return names.map(function (name, index) {
+        return {
+          name: name,
+          xPos: canvas.width - size,
+          yPos: canvas.height / 2 - size / 2 + _this.animate.getValue(),
+          width: size,
+          height: size
+        };
+      });
+    }
+  }, {
     key: 'update',
-    value: function update(delta, xClick, yClick) {
+    value: function update(delta, x, y) {
       this.animate.update(delta);
+      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
+      clickName && console.log(clickName);
     }
   }, {
     key: 'render',
     value: function render() {
-      // now find a cleaner way to position the tile on screen!
-      var x = 960 - 64 * 2;
-      var y = 64 * 2.75 + this.animate.getValue();
-      (0, _draw.drawByName)(this.ctx, this.iconsXl, 'pack-big', 4, x, y);
+      var _this2 = this;
+
+      this.buttons.map(function (button) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.iconsXl, button.name, _this2.scale, button.xPos, button.yPos + _this2.animate.getValue());
+      });
     }
   }]);
 
@@ -4230,6 +4331,10 @@ var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(15);
 
+var _actions = __webpack_require__(1);
+
+var _utils = __webpack_require__(4);
+
 var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -4246,21 +4351,46 @@ var Zoom = function () {
     this.iconsXl = loader.getImage('icons-xl');
 
     this.connect = new _Connect2.default(this.store);
+
+    this.scale = 2;
+    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, ['settings', 'zoom-out', 'zoom-in']);
   }
 
   _createClass(Zoom, [{
+    key: 'makeButtons',
+    value: function makeButtons(canvas, image, scale, names) {
+      var size = image.tileset.tilewidth * scale;
+      return names.map(function (name, index) {
+        return {
+          name: name,
+          xPos: canvas.width - size * (index + 1),
+          yPos: 0,
+          width: size,
+          height: size
+        };
+      });
+    }
+  }, {
     key: 'update',
-    value: function update(delta, xClick, yClick) {
-      if (xClick > 896 && xClick < 960 && yClick > 0 && yClick < 64) {
-        this.store.dispatch((0, _requests.logout)('foo'));
+    value: function update(delta, x, y) {
+      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
+      switch (clickName) {
+        case 'settings':
+          return this.store.dispatch((0, _requests.logout)('foo'));
+        case 'zoom-out':
+          return this.store.dispatch((0, _actions.zoomOut)());
+        case 'zoom-in':
+          return this.store.dispatch((0, _actions.zoomIn)());
       }
     }
   }, {
     key: 'render',
     value: function render() {
-      (0, _draw.drawByName)(this.ctx, this.iconsXl, 'settings', 2, 960 - 64, 0);
-      (0, _draw.drawByName)(this.ctx, this.iconsXl, 'zoom-out', 2, 960 - 64 * 2, 0);
-      (0, _draw.drawByName)(this.ctx, this.iconsXl, 'zoom-in', 2, 960 - 64 * 3, 0);
+      var _this = this;
+
+      this.buttons.forEach(function (button) {
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, button.xPos, button.yPos);
+      });
     }
   }]);
 
@@ -4811,8 +4941,8 @@ function makeButtons() {
 
 function showLogin(store, dimCallback) {
   var container = document.getElementById('container');
-  var loginPopup = create('div', 'overlay', 'login');
-  container.append(loginPopup);
+  var dialog = create('div', 'dialog', 'login');
+  container.append(dialog);
 
   var title = create('div', 'title');
   title.innerHTML = 'LOGIN';
@@ -4826,7 +4956,7 @@ function showLogin(store, dimCallback) {
 
   var exitDialog = function exitDialog() {
     dimCallback();
-    container.removeChild(loginPopup);
+    container.removeChild(dialog);
   };
 
   submit.onclick = function () {
@@ -4839,13 +4969,13 @@ function showLogin(store, dimCallback) {
 
   var content = create('div', 'content');
   content.append(title, username.line, password.line, buttons);
-  loginPopup.append(content);
+  dialog.append(content);
 }
 
 function showRegister(store, dimCallback) {
   var container = document.getElementById('container');
-  var registerPopup = create('div', 'overlay', 'register');
-  container.append(registerPopup);
+  var dialog = create('div', 'dialog', 'register');
+  container.append(dialog);
 
   var title = create('div', 'title');
   title.innerHTML = 'REGISTER';
@@ -4861,7 +4991,7 @@ function showRegister(store, dimCallback) {
 
   var exitDialog = function exitDialog() {
     dimCallback();
-    container.removeChild(registerPopup);
+    container.removeChild(dialog);
   };
 
   submit.onclick = function () {
@@ -4875,7 +5005,7 @@ function showRegister(store, dimCallback) {
 
   var content = create('div', 'content');
   content.append(title, username.line, email.line, password1.line, password2.line, buttons);
-  registerPopup.append(content);
+  dialog.append(content);
 }
 
 /***/ })

@@ -34,8 +34,8 @@ function makeButtons() {
 
 export function showLogin(store, dimCallback) {
   const container = document.getElementById('container');
-  const loginPopup = create('div', 'overlay', 'login');
-  container.append(loginPopup);
+  const dialog = create('div', 'dialog', 'login');
+  container.append(dialog);
 
   const title = create('div', 'title');
   title.innerHTML = 'LOGIN';
@@ -45,7 +45,7 @@ export function showLogin(store, dimCallback) {
 
   const exitDialog = () => {
     dimCallback();
-    container.removeChild(loginPopup);
+    container.removeChild(dialog);
   };
 
   submit.onclick = () => {
@@ -58,13 +58,13 @@ export function showLogin(store, dimCallback) {
 
   const content = create('div', 'content');
   content.append(title, username.line, password.line, buttons);
-  loginPopup.append(content);
+  dialog.append(content);
 }
 
 export function showRegister(store, dimCallback) {
   const container = document.getElementById('container');
-  const registerPopup = create('div', 'overlay', 'register');
-  container.append(registerPopup);
+  const dialog = create('div', 'dialog', 'register');
+  container.append(dialog);
 
   const title = create('div', 'title');
   title.innerHTML = 'REGISTER';
@@ -76,7 +76,7 @@ export function showRegister(store, dimCallback) {
 
   const exitDialog = () => {
     dimCallback();
-    container.removeChild(registerPopup);
+    container.removeChild(dialog);
   };
 
   submit.onclick = () => {
@@ -92,5 +92,5 @@ export function showRegister(store, dimCallback) {
   content.append(
     title, username.line, email.line, password1.line, password2.line, buttons
   );
-  registerPopup.append(content);
+  dialog.append(content);
 }

@@ -35,6 +35,16 @@ export const clicked = () => ({
   type: CLICKED
 });
 
+export const ZOOM_IN = 'ZOOM_IN';
+export const zoomIn = () => ({
+  type: ZOOM_IN
+});
+
+export const ZOOM_OUT = 'ZOOM_OUT';
+export const zoomOut = () => ({
+  type: ZOOM_OUT
+});
+
 export const CHANGE_MODE = 'CHANGE_MODE';
 export const changeMode = (mode) => ({
   type: CHANGE_MODE,
