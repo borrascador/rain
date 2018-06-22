@@ -543,71 +543,79 @@ var _constants = __webpack_require__(2);
 
 function register(user, email, password, callback) {
   return function (dispatch, getState) {
-    dispatch((0, _actions.registerRequest)(user, email, password));
     var state = getState();
-    var unsubscribe = (0, _store.subscribe)('sending', function (state) {
-      unsubscribe();
-      callback();
-      clearTimeout(timer);
-    });
-    var timer = setTimeout(function () {
-      unsubscribe();
-      callback();
-      getState().sending && dispatch((0, _actions.registerError)('0201')); // Timeout error
-    }, 2000);
+    if (state.sending === false) {
+      dispatch((0, _actions.registerRequest)(user, email, password));
+      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
+        unsubscribe();
+        callback();
+        clearTimeout(timer);
+      });
+      var timer = setTimeout(function () {
+        unsubscribe();
+        callback();
+        getState().sending && dispatch((0, _actions.registerError)('0201')); // Timeout error
+      }, 2000);
+    }
   };
 }
 
 function login(user, password, callback) {
   return function (dispatch, getState) {
-    dispatch((0, _actions.loginRequest)(user, password));
     var state = getState();
-    var unsubscribe = (0, _store.subscribe)('sending', function (state) {
-      unsubscribe();
-      callback();
-      clearTimeout(timer);
-      dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
-    });
-    var timer = setTimeout(function () {
-      unsubscribe();
-      callback();
-      getState().sending && dispatch((0, _actions.loginError)('0201')); // Timeout error
-    }, 2000);
+    if (state.sending === false) {
+      dispatch((0, _actions.loginRequest)(user, password));
+      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
+        unsubscribe();
+        callback();
+        clearTimeout(timer);
+        dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+      });
+      var timer = setTimeout(function () {
+        unsubscribe();
+        callback();
+        getState().sending && dispatch((0, _actions.loginError)('0201')); // Timeout error
+      }, 2000);
+    }
   };
 }
 
 function logout(user, callback) {
   return function (dispatch, getState) {
-    dispatch((0, _actions.logoutRequest)(user));
     var state = getState();
-    var unsubscribe = (0, _store.subscribe)('sending', function (state) {
-      unsubscribe();
-      callback && callback();
-      clearTimeout(timer);
-      dispatch((0, _actions.changeMode)(_constants.MODE.TITLE));
-    });
-    var timer = setTimeout(function () {
-      unsubscribe();
-      callback && callback();
-      getState().sending && dispatch((0, _actions.logoutError)('0201')); // Timeout error
-    }, 2000);
+    if (state.sending === false) {
+      dispatch((0, _actions.logoutRequest)());
+      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
+        unsubscribe();
+        callback && callback();
+        clearTimeout(timer);
+        dispatch((0, _actions.changeMode)(_constants.MODE.TITLE));
+      });
+      var timer = setTimeout(function () {
+        unsubscribe();
+        callback && callback();
+        getState().sending && dispatch((0, _actions.logoutError)('0201')); // Timeout error
+      }, 2000);
+    }
   };
 }
 
 function position(position, callback) {
   return function (dispatch, getState) {
-    dispatch((0, _actions.positionRequest)(position));
     var state = getState();
-    var unsubscribe = (0, _store.subscribe)('sending', function (state) {
-      unsubscribe();
-      callback && callback();
-      clearTimeout(timer);
-    });
-    var timer = setTimeout(function () {
-      unsubscribe();
-      callback && callback();
-      getState().sending && dispatch((0, _actions.positionError)('0201')); // Timeout error
-    }, 2000);
+    if (state.sending === false) {
+      dispatch((0, _actions.positionRequest)(position));
+      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
+        unsubscribe();
+        callback && callback();
+        clearTimeout(timer);
+      });
+      var timer = setTimeout(function () {
+        unsubscribe();
+        callback && callback();
+        getState().sending && dispatch((0, _actions.positionError)('0201')); // Timeout error
+      }, 2000);
+    }
   };
 }
 
@@ -4957,7 +4965,7 @@ function showLogin(store, dimCallback) {
 
   var exitDialog = function exitDialog() {
     dimCallback();
-    container.removeChild(dialog);
+    container.contains(dialog) && container.removeChild(dialog);
   };
 
   submit.onclick = function () {
@@ -4992,7 +5000,7 @@ function showRegister(store, dimCallback) {
 
   var exitDialog = function exitDialog() {
     dimCallback();
-    container.removeChild(dialog);
+    container.contains(dialog) && container.removeChild(dialog);
   };
 
   submit.onclick = function () {
