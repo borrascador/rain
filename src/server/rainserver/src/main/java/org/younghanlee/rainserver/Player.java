@@ -1,22 +1,22 @@
 package org.younghanlee.rainserver;
 
 import org.java_websocket.WebSocket;
+import org.json.JSONObject;
 
 public class Player {
 	
 	private String name;
+	private String email;
 	private String player_class;
 	private boolean online;
 	private int position;
 	private int sight;
 	
-	private WebSocket connection;
-	
 	public int randomInt(int max) {
 		return (int)(Math.random() * (max + 1));
 	}
 	
-	public Player(String name, String player_class) {
+	public Player(String name, String email, String player_class) {
 		this.name = name;
 		this.player_class = player_class;
 		this.sight = 2;
@@ -29,16 +29,17 @@ public class Player {
 		this.position = Constants.MAPWIDTH * y + x;	
 	}
 	
-	public void login(WebSocket connection) {
+	public void login(Connection connection) {
 		this.online = true;
 		World.onlineInc();
-		this.connection = connection;
+		connection.setPlayer(this);
 	}
 	
-	public void logoff() {
+	public JSONObject logoff(Connection connection) {
 		this.online = false;
 		World.onlineDec();
-		this.connection = null;
+		connection.setPlayer(null);
+		return Message.LOGOUT_RESPONSE();
 	}
 	
 	public void move(int newTile) {
@@ -47,6 +48,10 @@ public class Player {
 	
 	public boolean isOnline() {
 		return online;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public int getPosition() {

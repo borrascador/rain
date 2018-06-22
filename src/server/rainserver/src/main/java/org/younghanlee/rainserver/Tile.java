@@ -68,8 +68,8 @@ public class Tile {
 		if (ymin < 0) {
 			ymin = 0;
 		}
-		if (ymax > Constants.MAPHEIGHT) {
-			ymax = Constants.MAPHEIGHT;
+		if (ymax >= Constants.MAPHEIGHT) {
+			ymax = Constants.MAPHEIGHT - 1;
 		}
 		
 		for (int i = ymin; i<= ymax; i++) {
@@ -80,8 +80,8 @@ public class Tile {
 			if (xmin < 0) {
 				xmin = 0;
 			}
-			if (xmax > Constants.MAPWIDTH) {
-				xmax = Constants.MAPWIDTH;
+			if (xmax >= Constants.MAPWIDTH) {
+				xmax = Constants.MAPWIDTH - 1;
 			}
 			for (int j = xmin; j <= xmax; j++) {
 				System.out.println(i + "," + j);

@@ -5,8 +5,15 @@ import org.java_websocket.WebSocket;
 
 public class MessageHandler {
 
-	public static void handle (String message, WebSocket connection){
-		System.out.println(message);
+	public static void handle (String message, Connection connection){
+		String from = "";
+		String username = "";
+		if (connection.getPlayer() != null) {
+			username = connection.getPlayer().getName();
+			from = " FROM USER " + username;
+		}
+		System.out.println(message + from);
+		
 		JSONObject jo = new JSONObject(message);
 		if (!jo.has("type")){
 			System.out.println("No message type");
@@ -22,30 +29,50 @@ public class MessageHandler {
 		switch (message_type) {
 			case "REGISTER_REQUEST":
 				payload = jo.getJSONObject("payload");
-				World.addPlayer(payload.getString("user"), "TRIBE");
+				String user = payload.getString("user");
+				String email = payload.getString("email");
 				
-				// Send response
-				response = Message.REGISTER_RESPONSE();
+				System.out.println("Attempting to add " + user + " " + email);
+				
+				response = World.addPlayer(user, email, "TRIBE");
 				connection.send(response.toString());
 				break;
 				
 			case "LOGIN_REQUEST":
 				payload = jo.getJSONObject("payload");
 				Player p = World.getPlayer(payload.getString("user"));
-				if (!p.isOnline()) {
-					p.login(connection);
-					
-					// Send response
-					int position = p.getPosition();
-					JSONArray tiles = World.getTile(position).inSight(p.getSight());
-					
-					response = Message.LOGIN_RESPONSE(position, tiles);
+				
+				// Check if there is already a login on this connection
+				if (connection.getPlayer() != null) {
+					response = Message.LOGIN_ERROR("0105");
 					connection.send(response.toString());
-					
+					break;
+				} 
+				
+				// Check if player is online
+				if (p.isOnline()) {
+					response = Message.LOGIN_ERROR("0102");
+					connection.send(response.toString());
+					break;
 				}
+				
+				p.login(connection);
+					
+				// Send ordinary response
+				int position = p.getPosition();
+				JSONArray tiles = World.getTile(position).inSight(p.getSight());
+				response = Message.LOGIN_RESPONSE(position, tiles);
+				connection.send(response.toString());
 				break;
 				
-			case "request_position":
+			case "LOGOUT_REQUEST":
+				// Check if there is any user logged in on this connection
+				if (username == "") {
+					response = Message.LOGOUT_ERROR("0401");
+				} else {
+					response = World.getPlayer(username).logoff(connection);
+				}
+				connection.send(response.toString());
 				break;
 				
 			default:

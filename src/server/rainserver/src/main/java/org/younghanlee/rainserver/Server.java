@@ -31,7 +31,8 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onMessage(WebSocket conn, String message) {
-		MessageHandler.handle(message, conn);
+		Connection connection = (Connection) conn;
+		MessageHandler.handle(message, connection);
 		dump();
 		// System.out.println("received message from "	+ conn.getRemoteSocketAddress() + ": " + message);
 	}
@@ -60,6 +61,7 @@ public class Server extends WebSocketServer {
 		int port = 8887;
 
 		WebSocketServer server = new Server(new InetSocketAddress(host, port));
+		server.setWebSocketFactory(new WebSocketFactory());
 		server.run();
 		
 	}
