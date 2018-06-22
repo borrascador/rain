@@ -18,11 +18,11 @@ html, body {
   align-items: center;
 }
 
-#container canvas, .overlay {
+#container canvas, .dialog {
   position: absolute;
 }
 
-.overlay {
+.dialog {
   border: 4px solid white;
   /* width: 600px; */
   color: white;
@@ -30,7 +30,7 @@ html, body {
   text-align: center;
 }
 
-.overlay .content {
+.dialog .content {
   padding: 8px;
 }
 

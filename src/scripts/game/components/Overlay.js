@@ -1,7 +1,6 @@
 import {MODE} from '../constants';
 import {changeMode} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import {addButtonCoords, screenToButtonId, getItemById} from './utils';
 import Party from './Party';
 import Vehicle from './Vehicle';
 import Inventory from './Inventory';

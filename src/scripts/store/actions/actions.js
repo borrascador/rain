@@ -35,6 +35,16 @@ export const clicked = () => ({
   type: CLICKED
 });
 
+export const ZOOM_IN = 'ZOOM_IN';
+export const zoomIn = () => ({
+  type: ZOOM_IN
+});
+
+export const ZOOM_OUT = 'ZOOM_OUT';
+export const zoomOut = () => ({
+  type: ZOOM_OUT
+});
+
 export const CHANGE_MODE = 'CHANGE_MODE';
 export const changeMode = (mode) => ({
   type: CHANGE_MODE,
@@ -70,6 +80,21 @@ export const loginRequest = (user, password) => ({
 
 export const loginError = (code) => ({
   type: LOGIN_ERROR,
+  payload: { code }
+});
+
+export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
+export const LOGOUT_RESPONSE = 'LOGOUT_RESPONSE';
+export const LOGOUT_ERROR = 'LOGOUT_ERROR';
+
+export const logoutRequest = (user) => ({
+  type: LOGOUT_REQUEST,
+  meta: { send: true },
+  payload: { user }
+});
+
+export const logoutError = (code) => ({
+  type: LOGOUT_ERROR,
   payload: { code }
 });
 

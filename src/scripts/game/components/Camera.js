@@ -81,9 +81,9 @@ export default class Camera {
           dim = true;
         }
         if (mapTile) {
-          [BASE, MIDDLE, TOP].forEach(layer => {
+          [BASE, MIDDLE].forEach(layer => {
             let id = mapTile.layers[layer];
-            typeof id === "number" && drawById(this.ctx, this.atlas, id, gridZoom, x, y);
+            drawById(this.ctx, this.atlas, id, gridZoom, x, y);
           });
           if (dim) {
             this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";

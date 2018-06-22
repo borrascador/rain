@@ -11,6 +11,7 @@ import MapView from './views/MapView';
 import MenuView from './views/MenuView';
 import StoryView from './views/StoryView';
 import TitleView from './views/TitleView';
+import {changeMode} from '../store/actions/actions';
 import {MODE} from './constants.js'
 
 export default class RainGame {
@@ -53,6 +54,11 @@ export default class RainGame {
 		this._previousElapsed = elapsed;
 
 		this.mode = this.connect.mode;
+
+		if (this.mode !== MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
+			this.store.dispatch(changeMode(MODE.TITLE));
+		}
+
 		this.update(delta);
 		this.render();
 	}

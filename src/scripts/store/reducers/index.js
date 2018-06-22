@@ -5,16 +5,19 @@ import {
   DRAG,
   MOUSEUP,
   CLICKED,
+  ZOOM_IN,
+  ZOOM_OUT,
   CHANGE_MODE,
   FOCUS_MENU,
   FOCUS_TILE,
   REGISTER_REQUEST, REGISTER_RESPONSE, REGISTER_ERROR,
   LOGIN_REQUEST, LOGIN_RESPONSE, LOGIN_ERROR,
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, LOGOUT_ERROR,
   POSITION_REQUEST, POSITION_RESPONSE, POSITION_ERROR
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
-import { changeMode, focusMenu, focusTile } from '../utils/ui';
+import { zoomIn, zoomOut, changeMode, focusMenu, focusTile } from '../utils/ui';
 import { updateMapTiles } from '../utils/map';
 import { initialState } from './initialState';
 
@@ -35,6 +38,10 @@ export default function reducer(state, action) {
       return mouseUp(state, action);
     case CLICKED:
       return clicked(state);
+    case ZOOM_IN:
+      return zoomIn(state);
+    case ZOOM_OUT:
+      return zoomOut(state);
     case CHANGE_MODE:
       return changeMode(state, action);
     case FOCUS_MENU:
@@ -44,6 +51,7 @@ export default function reducer(state, action) {
 
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
     case POSITION_REQUEST:
       return Object.assign({}, state, {
         sending: true,
@@ -52,6 +60,7 @@ export default function reducer(state, action) {
 
     case REGISTER_ERROR:
     case LOGIN_ERROR:
+    case LOGOUT_ERROR:
     case POSITION_ERROR:
       return Object.assign({}, state, {
         sending: false,
@@ -69,9 +78,16 @@ export default function reducer(state, action) {
         sending: false,
         loggedIn: true,
         position: action.payload.position,
-        mapTiles: action.payload.tiles[0],
+        mapTiles: action.payload.tiles,
         error: null
       });
+
+    case LOGOUT_RESPONSE:
+      return Object.assign({}, state, {
+        sending: false,
+        loggedIn: false,
+        error: null
+      })
 
     case POSITION_RESPONSE:
       return Object.assign({}, state, {

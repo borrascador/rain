@@ -3,6 +3,18 @@ export default class Connect {
     this.store = store;
   }
 
+  get connected() {
+    return this.store.getState().connected;
+  }
+
+  get loggedIn() {
+    return this.store.getState().loggedIn;
+  }
+
+  get error() {
+    return this.store.getState().error;
+  }
+
   get mode() {
     return this.store.getState().mode;
   }

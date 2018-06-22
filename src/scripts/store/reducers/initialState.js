@@ -5,7 +5,6 @@ import story from '../../../data/story.json';
 import menus from '../../../data/menus.json';
 import party from '../../../data/party.json';
 import buttons from '../../../data/buttons.json';
-import { buildMap } from '../utils/map';
 import { makeKeys } from '../utils/input';
 
 const uiState = {
@@ -31,7 +30,7 @@ const playerState = {
   party: party,
   vehicle: {
     type: VEHICLE.JEEP,
-    icon: 31,
+    icon: 15,
     repair: 5,
   }
 };
@@ -48,6 +47,7 @@ const inputState = {
 
 const connectionState = {
   connected: false,
+  loggedIn: false,
   sending: false,
   error: null
 };
