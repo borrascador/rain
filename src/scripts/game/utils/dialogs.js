@@ -45,7 +45,7 @@ export function showLogin(store, dimCallback) {
 
   const exitDialog = () => {
     dimCallback();
-    container.removeChild(dialog);
+    container.contains(dialog) && container.removeChild(dialog);
   };
 
   submit.onclick = () => {
@@ -76,7 +76,7 @@ export function showRegister(store, dimCallback) {
 
   const exitDialog = () => {
     dimCallback();
-    container.removeChild(dialog);
+    container.contains(dialog) && container.removeChild(dialog);
   };
 
   submit.onclick = () => {
