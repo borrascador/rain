@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,6 +16,7 @@ public class World {
 	private static int online;
 	
 	private static HashMap<String, Player> players;
+	private static HashMap<String, String> emails;
 	
 	private static int mapWidth;
 	private static int mapHeight;
@@ -31,6 +33,8 @@ public class World {
 		}
 		
 		players = new HashMap<String, Player>();
+		emails = new HashMap<String, String>();
+		
 		numPlayers = 0;
 		online = 0;
 		mapWidth = Constants.MAPWIDTH;
@@ -72,13 +76,28 @@ public class World {
 		return players.get(name);
 	}
 	
-	public static void addPlayer(String name, String player_class) {
-		for (int i=0; i<Constants.PLAYER_CLASSES.length; i++) {
-			if (player_class.equals(Constants.PLAYER_CLASSES[i])){
-				players.put(name, new Player(name, player_class));
-				numPlayers++;
-				return;
+	public static JSONObject addPlayer(String user, String email, String player_class) {
+		
+		// Check if username is taken
+		if (players.containsKey(user)) {
+			return Message.REGISTER_ERROR("0001");
+		} 
+
+		// Check if email is taken
+		if (emails.containsKey(email)) {
+			return Message.REGISTER_ERROR("0002");
+		} 
+		// Otherwise add player
+		else {
+			for (int i=0; i<Constants.PLAYER_CLASSES.length; i++) {
+				if (player_class.equals(Constants.PLAYER_CLASSES[i])){
+					players.put(user, new Player(user, email, player_class));
+					emails.put(email, user);
+					numPlayers++;
+					return Message.REGISTER_RESPONSE();
+				}
 			}
+			return Message.REGISTER_ERROR("0000");
 		}
 	}
 	

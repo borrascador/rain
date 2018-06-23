@@ -25,9 +25,17 @@ public class Client extends WebSocketClient {
 		System.out.println("new connection opened");
 		send(Message.REGISTER_REQUEST("Dan", "dan@gmail.com", "hunter2").toString());
 		send(Message.REGISTER_REQUEST("Jan", "jan@gmail.com", "hunter2").toString());
+		send(Message.REGISTER_REQUEST("Dan", "dan@gmail.com", "hunter2").toString());
+		send(Message.REGISTER_REQUEST("Man", "dan@gmail.com", "hunter2").toString());
 		send(Message.LOGIN_REQUEST("Dan", "hunter2").toString());
 		send(Message.LOGIN_REQUEST("Jan", "hunter2").toString());
 		send(Message.LOGIN_REQUEST("Dan", "hunter2").toString());
+		send(Message.LOGOUT_REQUEST().toString());
+		send(Message.LOGOUT_REQUEST().toString());
+		send(Message.LOGIN_REQUEST("Jan", "hunter2").toString());
+		send(Message.LOGOUT_REQUEST().toString());
+		send(Message.LOGIN_REQUEST("Jan", "hunter2").toString());
+		send(Message.LOGOUT_REQUEST().toString());
 	}
 
 	@Override
