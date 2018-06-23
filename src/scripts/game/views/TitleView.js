@@ -1,5 +1,6 @@
 import { makeTextButton } from '../utils/draw';
-import { showLogin, showRegister } from '../utils/dialogs';
+import { showRegister } from '../dialogs/register';
+import { showLogin } from '../dialogs/login';
 import { addButtonCoords, screenToTextId } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
 import {clicked} from '../../store/actions/actions';

@@ -74,6 +74,6 @@ button {
   background-color: black;
 }
 
-.submit {
-  margin-right: 50px;
+.cancel {
+  margin-left: 50px;
 }

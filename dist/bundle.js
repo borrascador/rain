@@ -1404,7 +1404,7 @@ exports = module.exports = __webpack_require__(20)(false);
 
 
 // module
-exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(21)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\ninput #password {\n  -webkit-text-security: square;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.submit {\n  margin-right: 50px;\n}\n", ""]);
+exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(21)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\ninput #password {\n  -webkit-text-security: square;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.cancel {\n  margin-left: 50px;\n}\n", ""]);
 
 // exports
 
@@ -4795,7 +4795,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(4);
 
-var _dialogs = __webpack_require__(79);
+var _register = __webpack_require__(81);
+
+var _login = __webpack_require__(82);
 
 var _utils = __webpack_require__(3);
 
@@ -4821,7 +4823,7 @@ var TitleView = function () {
 
     this.selected = null;
 
-    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _dialogs.showLogin }, { id: 2, text: 'REGISTER', onClick: _dialogs.showRegister }];
+    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.showLogin }, { id: 2, text: 'REGISTER', onClick: _register.showRegister }];
   }
 
   _createClass(TitleView, [{
@@ -4901,7 +4903,8 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 79 */
+/* 79 */,
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4910,13 +4913,9 @@ exports.default = TitleView;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.showLogin = showLogin;
-exports.showRegister = showRegister;
-
-var _requests = __webpack_require__(7);
-
-var _actions = __webpack_require__(0);
-
+exports.create = create;
+exports.makeInputLine = makeInputLine;
+exports.makeButtons = makeButtons;
 function create(tag, className, id) {
   var elt = document.createElement(tag);
   if (className) elt.className = className;
@@ -4948,17 +4947,85 @@ function makeButtons() {
   return { buttons: buttons, submit: submit, cancel: cancel };
 }
 
-function showLogin(store, dimCallback) {
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.showRegister = showRegister;
+
+var _utils = __webpack_require__(80);
+
+var _requests = __webpack_require__(7);
+
+function showRegister(store, dimCallback) {
   var container = document.getElementById('container');
-  var dialog = create('div', 'dialog', 'login');
+  var dialog = (0, _utils.create)('div', 'dialog', 'register');
   container.append(dialog);
 
-  var title = create('div', 'title');
-  title.innerHTML = 'LOGIN';
-  var username = makeInputLine('username');
-  var password = makeInputLine('password');
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'REGISTER';
+  var username = (0, _utils.makeInputLine)('username');
+  var email = (0, _utils.makeInputLine)('email');
+  var password1 = (0, _utils.makeInputLine)('password1');
+  var password2 = (0, _utils.makeInputLine)('password2');
 
-  var _makeButtons = makeButtons(),
+  var _makeButtons = (0, _utils.makeButtons)(),
+      buttons = _makeButtons.buttons,
+      submit = _makeButtons.submit,
+      cancel = _makeButtons.cancel;
+
+  var exitDialog = function exitDialog() {
+    dimCallback();
+    container.contains(dialog) && container.removeChild(dialog);
+  };
+
+  submit.onclick = function () {
+    var usernameText = username.input.value.slice(0);
+    var emailText = email.input.value.slice(0);
+    var passwordText = password1.input.value.slice(0);
+    store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, exitDialog));
+  };
+
+  cancel.onclick = exitDialog;
+
+  var content = (0, _utils.create)('div', 'content');
+  content.append(title, username.line, email.line, password1.line, password2.line, buttons);
+  dialog.append(content);
+}
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.showLogin = showLogin;
+
+var _utils = __webpack_require__(80);
+
+var _requests = __webpack_require__(7);
+
+function showLogin(store, dimCallback) {
+  var container = document.getElementById('container');
+  var dialog = (0, _utils.create)('div', 'dialog', 'login');
+  container.append(dialog);
+
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'LOGIN';
+  var username = (0, _utils.makeInputLine)('username');
+  var password = (0, _utils.makeInputLine)('password');
+
+  var _makeButtons = (0, _utils.makeButtons)(),
       buttons = _makeButtons.buttons,
       submit = _makeButtons.submit,
       cancel = _makeButtons.cancel;
@@ -4976,44 +5043,8 @@ function showLogin(store, dimCallback) {
 
   cancel.onclick = exitDialog;
 
-  var content = create('div', 'content');
+  var content = (0, _utils.create)('div', 'content');
   content.append(title, username.line, password.line, buttons);
-  dialog.append(content);
-}
-
-function showRegister(store, dimCallback) {
-  var container = document.getElementById('container');
-  var dialog = create('div', 'dialog', 'register');
-  container.append(dialog);
-
-  var title = create('div', 'title');
-  title.innerHTML = 'REGISTER';
-  var username = makeInputLine('username');
-  var email = makeInputLine('email');
-  var password1 = makeInputLine('password1');
-  var password2 = makeInputLine('password2');
-
-  var _makeButtons2 = makeButtons(),
-      buttons = _makeButtons2.buttons,
-      submit = _makeButtons2.submit,
-      cancel = _makeButtons2.cancel;
-
-  var exitDialog = function exitDialog() {
-    dimCallback();
-    container.contains(dialog) && container.removeChild(dialog);
-  };
-
-  submit.onclick = function () {
-    var usernameText = username.input.value.slice(0);
-    var emailText = email.input.value.slice(0);
-    var passwordText = password1.input.value.slice(0);
-    store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, exitDialog));
-  };
-
-  cancel.onclick = exitDialog;
-
-  var content = create('div', 'content');
-  content.append(title, username.line, email.line, password1.line, password2.line, buttons);
   dialog.append(content);
 }
 
