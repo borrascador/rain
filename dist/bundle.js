@@ -3828,6 +3828,9 @@ var Camera = function () {
     this.canvas = canvas;
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
+    this.icons = loader.getImage('icons');
+
+    console.log(this.icons);
 
     this.connect = new _Connect2.default(this.store);
   }
@@ -3871,8 +3874,6 @@ var Camera = function () {
   }, {
     key: 'render',
     value: function render() {
-      var _this = this;
-
       var pos = this.connect.positionCoords;
       var sight = this.connect.sight.sight;
       var _connect$map = this.connect.map,
@@ -3900,10 +3901,10 @@ var Camera = function () {
       var visibleTiles = [];
       var dim = false;
       for (var col = startCol; col <= endCol; col++) {
-        var _loop = function _loop(row) {
+        for (var row = startRow; row <= endRow; row++) {
           var x = (col - startCol) * mapTileSize + offsetX;
           var y = (row - startRow) * mapTileSize + offsetY;
-          var mapTile = _this.findTile(mapTiles, col, row);
+          var mapTile = this.findTile(mapTiles, col, row);
           if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
             visibleTiles.push(Object.assign({}, mapTile, {
               xPos: x, yPos: y, width: mapTileSize, height: mapTileSize
@@ -3913,19 +3914,23 @@ var Camera = function () {
             dim = true;
           }
           if (mapTile) {
-            [BASE, MIDDLE].forEach(function (layer) {
-              var id = mapTile.layers[layer];
-              (0, _draw.drawById)(_this.ctx, _this.atlas, id, gridZoom, x, y);
-            });
+            var baseId = mapTile.layers[BASE];
+            (0, _draw.drawById)(this.ctx, this.atlas, baseId, gridZoom, x, y);
+            var middleId = mapTile.layers[MIDDLE];
+            (0, _draw.drawById)(this.ctx, this.atlas, middleId, gridZoom, x, y);
+
+            if (mapTile.visitors && mapTile.visitors.length > 0 && !dim) {
+              var iconZoom = 2;
+              var iconX = x + (mapTileSize - this.icons.tileset.tilewidth * iconZoom) / 2;
+              var iconY = y + (mapTileSize - this.icons.tileset.tileheight * iconZoom) / 2;
+              (0, _draw.drawByName)(this.ctx, this.icons, 'user', iconZoom, iconX, iconY);
+            }
+
             if (dim) {
-              _this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-              _this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
+              this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+              this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
             }
           }
-        };
-
-        for (var row = startRow; row <= endRow; row++) {
-          _loop(row);
         }
       }
       this.visibleTiles = visibleTiles;

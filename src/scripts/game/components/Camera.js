@@ -10,6 +10,9 @@ export default class Camera {
     this.canvas = canvas;
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
+    this.icons = loader.getImage('icons');
+
+    console.log(this.icons);
 
     this.connect = new Connect(this.store);
   }
@@ -81,10 +84,18 @@ export default class Camera {
           dim = true;
         }
         if (mapTile) {
-          [BASE, MIDDLE].forEach(layer => {
-            let id = mapTile.layers[layer];
-            drawById(this.ctx, this.atlas, id, gridZoom, x, y);
-          });
+          const baseId = mapTile.layers[BASE];
+          drawById(this.ctx, this.atlas, baseId, gridZoom, x, y);
+          const middleId = mapTile.layers[MIDDLE];
+          drawById(this.ctx, this.atlas, middleId, gridZoom, x, y);
+          
+          if (mapTile.visitors && mapTile.visitors.length > 0 && !dim) {
+            const iconZoom = 2;
+            const iconX = x + (mapTileSize - this.icons.tileset.tilewidth * iconZoom) / 2;
+            const iconY = y + (mapTileSize - this.icons.tileset.tileheight * iconZoom) / 2;
+            drawByName(this.ctx, this.icons, 'user', iconZoom, iconX, iconY);
+          }
+
           if (dim) {
             this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
             this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
