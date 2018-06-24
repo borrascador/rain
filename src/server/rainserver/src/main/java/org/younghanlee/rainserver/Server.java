@@ -55,6 +55,8 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onStart() {
 		System.out.println("server started successfully");
+		World.addPlayer("a", "test1@test.com", "TRIBE");
+		World.addPlayer("b", "test2@test.com", "TRIBE");
 		dump();
 	}
 
