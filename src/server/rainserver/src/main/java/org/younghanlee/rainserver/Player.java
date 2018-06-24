@@ -10,6 +10,8 @@ public class Player {
 	private String player_class;
 	private boolean online;
 	private int position;
+	private int x;
+	private int y;
 	private int sight;
 	
 	public int randomInt(int max) {
@@ -24,8 +26,8 @@ public class Player {
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
 		
-		int x = randomInt(Constants.MAPWIDTH/2);
-		int y = randomInt(Constants.MAPHEIGHT - 1);
+		this.x = randomInt(Constants.MAPWIDTH/2);
+		this.y = randomInt(Constants.MAPHEIGHT - 1);
 		this.position = Constants.MAPWIDTH * y + x;	
 	}
 	
@@ -42,8 +44,24 @@ public class Player {
 		return Message.LOGOUT_RESPONSE();
 	}
 	
-	public void move(int newTile) {
-		
+	public boolean legalMove(int range, int x, int y) {
+		boolean xl = x > 0;
+		boolean xu = x < Constants.MAPWIDTH;
+		boolean yl = y > 0;
+		boolean yu = x < Constants.MAPHEIGHT;
+		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
+		return xl && xu && yl && yu && dist <= range && dist > 0;
+	}
+	
+	public boolean move(int range, int destination) {
+		int x = destination % Constants.MAPWIDTH;
+		int y = (destination - x)/Constants.MAPWIDTH;
+		if (legalMove(range, x, y)) {
+			this.x = x;
+			this.y = y;
+			this.position = destination;	
+			return true;
+		} else return false;
 	}
 	
 	public boolean isOnline() {

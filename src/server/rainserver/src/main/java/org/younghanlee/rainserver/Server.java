@@ -27,6 +27,11 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		System.out.println("closed " + conn.getRemoteSocketAddress() + " with exit code " + code + " additional info: " + reason);
+		Connection connection = (Connection) conn;
+		if (connection.getPlayer() != null) {
+			connection.getPlayer().logoff(connection);
+		}
+		dump();
 	}
 
 	@Override

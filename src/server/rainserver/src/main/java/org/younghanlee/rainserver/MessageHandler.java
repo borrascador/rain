@@ -25,6 +25,8 @@ public class MessageHandler {
 		// Declare these so we don't get scope error in switch expression
 		JSONObject response;
 		JSONObject payload;
+		Player p;
+		JSONArray tiles;
 		
 		switch (message_type) {
 			case "REGISTER_REQUEST":
@@ -40,7 +42,7 @@ public class MessageHandler {
 				
 			case "LOGIN_REQUEST":
 				payload = jo.getJSONObject("payload");
-				Player p = World.getPlayer(payload.getString("user"));
+				p = World.getPlayer(payload.getString("user"));
 				
 				// Check if there is already a login on this connection
 				if (connection.getPlayer() != null) {
@@ -60,7 +62,7 @@ public class MessageHandler {
 					
 				// Send ordinary response
 				int position = p.getPosition();
-				JSONArray tiles = World.getTile(position).inSight(p.getSight());
+				tiles = World.getTile(position).inSight(p.getSight());
 				response = Message.LOGIN_RESPONSE(position, tiles);
 				connection.send(response.toString());
 				break;
@@ -71,6 +73,27 @@ public class MessageHandler {
 					response = Message.LOGOUT_ERROR("0401");
 				} else {
 					response = World.getPlayer(username).logoff(connection);
+				}
+				connection.send(response.toString());
+				break;
+				
+			case "POSITION_REQUEST":
+				// Check if logged in 
+				if (username == "") {
+					response = Message.POSITION_ERROR("0303");
+					connection.send(response.toString());
+				} 
+				
+				payload = jo.getJSONObject("payload");
+				int destination = payload.getInt("position");
+				p = World.getPlayer(username);
+				int range = 1;
+				
+				if (p.move(range, destination)) {
+					tiles = World.getTile(destination).inSight(p.getSight());
+					response = Message.POSITION_RESPONSE(destination, tiles);
+				} else {
+					response = Message.POSITION_ERROR("0301");
 				}
 				connection.send(response.toString());
 				break;
