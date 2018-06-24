@@ -492,46 +492,61 @@ var _constants = __webpack_require__(2);
 
 var _loading = __webpack_require__(69);
 
-function register(user, email, password, parentDim, exitRegister) {
+var _success = __webpack_require__(84);
+
+var _failure = __webpack_require__(85);
+
+function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
     var state = getState();
     if (state.sending === false) {
       dispatch((0, _actions.registerRequest)(user, email, password));
-      var exitLoading = (0, _loading.loadingDialog)(parentDim);
+      var exitLoading = (0, _loading.loadingDialog)(dimCallback);
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
         exitRegister();
         exitLoading();
         clearTimeout(timer);
+        if (!getState().error) {
+          (0, _success.successDialog)(dimCallback);
+        } else {
+          (0, _failure.failureDialog)(dimCallback);
+        }
       });
       var timer = setTimeout(function () {
         unsubscribe();
         exitRegister();
         exitLoading();
         getState().sending && dispatch((0, _actions.registerError)('0201')); // Timeout error
+        (0, _failure.failureDialog)(dimCallback);
       }, 2000);
     }
   };
 }
 
-function login(user, password, exitLogin) {
+function login(user, password, dimCallback, exitLogin) {
   return function (dispatch, getState) {
     var state = getState();
     if (state.sending === false) {
       dispatch((0, _actions.loginRequest)(user, password));
-      var exitLoading = (0, _loading.loadingDialog)();
+      var exitLoading = (0, _loading.loadingDialog)(dimCallback);
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
         exitLogin();
         exitLoading();
         clearTimeout(timer);
-        dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+        if (!getState().error) {
+          dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+        } else {
+          (0, _failure.failureDialog)(dimCallback);
+        }
       });
       var timer = setTimeout(function () {
         unsubscribe();
         exitLogin();
         exitLoading();
         getState().sending && dispatch((0, _actions.loginError)('0201')); // Timeout error
+        (0, _failure.failureDialog)(dimCallback);
       }, 2000);
     }
   };
@@ -4003,7 +4018,7 @@ exports.loadingDialog = loadingDialog;
 
 var _utils = __webpack_require__(8);
 
-function loadingDialog(parentDim) {
+function loadingDialog(dimCallback) {
   var container = document.getElementById('container');
   var dialog = (0, _utils.create)('div', 'dialog', 'loading');
   container.append(dialog);
@@ -4015,10 +4030,10 @@ function loadingDialog(parentDim) {
   content.append(title);
   dialog.append(content);
 
-  parentDim(true);
+  dimCallback(true);
 
   var exitDialog = function exitDialog() {
-    parentDim(false);
+    dimCallback(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
   return exitDialog;
@@ -4906,11 +4921,16 @@ var TitleView = function () {
     this.canvas = canvas;
     this.ctx = ctx;
 
+    this.registerDialog = new _register.RegisterDialog(this.store, this.setDim);
+    // this.registerDialog.show();
+
     this.connect = new _Connect2.default(this.store);
     this.selected = null;
     this.setDim(false);
 
-    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.showLogin }, { id: 2, text: 'REGISTER', onClick: _register.showRegister }];
+    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.showLogin }, { id: 2, text: 'REGISTER', onClick: this.registerDialog.show }];
+
+    this.setDim = this.setDim.bind(this);
   }
 
   _createClass(TitleView, [{
@@ -4928,7 +4948,7 @@ var TitleView = function () {
         if (this.selectedId && this.selectedId === clickId) {
           this.buttons.find(function (button) {
             return _this.selectedId === button.id;
-          }).onClick(this.store, this.setDim.bind(this));
+          }).onClick(this.store, this.setDim);
           this.selectedId = null;
           this.setDim(true);
         } else {
@@ -4999,11 +5019,93 @@ exports.default = TitleView;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.RegisterDialog = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 exports.showRegister = showRegister;
 
 var _utils = __webpack_require__(8);
 
 var _requests = __webpack_require__(5);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var RegisterDialog = exports.RegisterDialog = function () {
+  function RegisterDialog(store, setDim) {
+    _classCallCheck(this, RegisterDialog);
+
+    this.store = store;
+    this.setDim = setDim;
+
+    this.dimCallback = this.dimCallback.bind(this);
+    this.exitDialog = this.exitDialog.bind(this);
+
+    this.container = document.getElementById('container');
+    this.dialog = (0, _utils.create)('div', 'dialog', 'register');
+    this.container.append(this.dialog);
+
+    var title = (0, _utils.create)('div', 'title');
+    title.innerHTML = 'REGISTER';
+    var username = (0, _utils.makeInputLine)('username');
+    var email = (0, _utils.makeInputLine)('email');
+    var password1 = (0, _utils.makeInputLine)('password1');
+    var password2 = (0, _utils.makeInputLine)('password2');
+
+    var _makeButtons = (0, _utils.makeButtons)(),
+        buttons = _makeButtons.buttons,
+        submit = _makeButtons.submit,
+        cancel = _makeButtons.cancel;
+
+    submit.onclick = this.submit;
+    cancel.onclick = this.exitDialog;
+
+    var content = (0, _utils.create)('div', 'content');
+    content.append(title, username.line, email.line, password1.line, password2.line, buttons);
+    this.dialog.append(content);
+
+    this.hide();
+  }
+
+  _createClass(RegisterDialog, [{
+    key: 'show',
+    value: function show() {
+      this.dialog.style.display = 'block';
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      this.dialog.style.display = 'none';
+    }
+  }, {
+    key: 'dimCallback',
+    value: function dimCallback(dim) {
+      this.setDim(dim);
+      this.dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
+    }
+  }, {
+    key: 'exitDialog',
+    value: function exitDialog() {
+      this.setDim(false);
+      this.hide();
+    }
+  }, {
+    key: 'copyValue',
+    value: function copyValue(element) {
+      return element.input.value.slice(0);
+    }
+  }, {
+    key: 'submit',
+    value: function submit() {
+      var usernameText = this.copyValue(username);
+      var emailText = this.copyValue(email);
+      var passwordText = this.copyValue(password1);
+      this.store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, this.dimCallback, this.exitDialog));
+    }
+  }]);
+
+  return RegisterDialog;
+}();
 
 function showRegister(store, setDim) {
   var container = document.getElementById('container');
@@ -5017,17 +5119,18 @@ function showRegister(store, setDim) {
   var password1 = (0, _utils.makeInputLine)('password1');
   var password2 = (0, _utils.makeInputLine)('password2');
 
-  var _makeButtons = (0, _utils.makeButtons)(),
-      buttons = _makeButtons.buttons,
-      submit = _makeButtons.submit,
-      cancel = _makeButtons.cancel;
+  var _makeButtons2 = (0, _utils.makeButtons)(),
+      buttons = _makeButtons2.buttons,
+      submit = _makeButtons2.submit,
+      cancel = _makeButtons2.cancel;
 
-  var parentDim = function parentDim(dim) {
+  var dimCallback = function dimCallback(dim) {
+    setDim(dim);
     dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
   };
 
   var exitDialog = function exitDialog() {
-    setDim(false);
+    container.children.length === 2 && setDim(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
 
@@ -5035,7 +5138,7 @@ function showRegister(store, setDim) {
     var usernameText = username.input.value.slice(0);
     var emailText = email.input.value.slice(0);
     var passwordText = password1.input.value.slice(0);
-    store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, parentDim, exitDialog));
+    store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, dimCallback, exitDialog));
   };
 
   cancel.onclick = exitDialog;
@@ -5076,21 +5179,103 @@ function showLogin(store, setDim) {
       submit = _makeButtons.submit,
       cancel = _makeButtons.cancel;
 
+  var dimCallback = function dimCallback(dim) {
+    setDim(dim);
+    dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
+  };
+
   var exitDialog = function exitDialog() {
-    setDim(false);
+    container.children.length === 2 && setDim(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
 
   submit.onclick = function () {
     var usernameText = username.input.value.slice(0);
     var passwordText = password.input.value.slice(0);
-    store.dispatch((0, _requests.login)(usernameText, passwordText, exitDialog));
+    store.dispatch((0, _requests.login)(usernameText, passwordText, dimCallback, exitDialog));
   };
 
   cancel.onclick = exitDialog;
 
   var content = (0, _utils.create)('div', 'content');
   content.append(title, username.line, password.line, buttons);
+  dialog.append(content);
+}
+
+/***/ }),
+/* 83 */,
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.successDialog = successDialog;
+
+var _utils = __webpack_require__(8);
+
+function successDialog(dimCallback) {
+  var container = document.getElementById('container');
+  var dialog = (0, _utils.create)('div', 'dialog', 'success');
+  container.append(dialog);
+
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'SUCCESS';
+  var submit = (0, _utils.create)('button', 'submit');
+  submit.innerHTML = 'OK';
+  var buttons = (0, _utils.create)('div', 'buttons');
+  buttons.append(submit);
+
+  dimCallback(true);
+
+  submit.onclick = function () {
+    dimCallback(false);
+    container.contains(dialog) && container.removeChild(dialog);
+  };
+
+  var content = (0, _utils.create)('div', 'content');
+  content.append(title, buttons);
+  dialog.append(content);
+}
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.failureDialog = failureDialog;
+
+var _utils = __webpack_require__(8);
+
+function failureDialog(dimCallback) {
+  var container = document.getElementById('container');
+  var dialog = (0, _utils.create)('div', 'dialog', 'failure');
+  container.append(dialog);
+
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'FAILURE';
+  var submit = (0, _utils.create)('button', 'submit');
+  submit.innerHTML = 'OK';
+  var buttons = (0, _utils.create)('div', 'buttons');
+  buttons.append(submit);
+
+  dimCallback(true);
+
+  submit.onclick = function () {
+    dimCallback(false);
+    container.contains(dialog) && container.removeChild(dialog);
+  };
+
+  var content = (0, _utils.create)('div', 'content');
+  content.append(title, buttons);
   dialog.append(content);
 }
 

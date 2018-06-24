@@ -1,6 +1,6 @@
 import { create } from './utils';
 
-export function loadingDialog(parentDim) {
+export function loadingDialog(dimCallback) {
   const container = document.getElementById('container');
   const dialog = create('div', 'dialog', 'loading');
   container.append(dialog);
@@ -12,10 +12,10 @@ export function loadingDialog(parentDim) {
   content.append(title);
   dialog.append(content);
 
-  parentDim(true);
+  dimCallback(true);
 
   const exitDialog = () => {
-    parentDim(false);
+    dimCallback(false);
     container.contains(dialog) && container.removeChild(dialog);
   }
   return exitDialog;

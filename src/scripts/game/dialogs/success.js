@@ -1,6 +1,6 @@
 import { create } from './utils';
 
-export function showSuccess(dimCallback) {
+export function successDialog(dimCallback) {
   const container = document.getElementById('container');
   const dialog = create('div', 'dialog', 'success');
   container.append(dialog);
@@ -12,8 +12,10 @@ export function showSuccess(dimCallback) {
   const buttons = create('div', 'buttons');
   buttons.append(submit);
 
+  dimCallback(true);
+
   submit.onclick = () => {
-    dimCallback();
+    dimCallback(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
 

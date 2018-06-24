@@ -12,15 +12,20 @@ export function showLogin(store, setDim) {
   const password = makeInputLine('password');
   const { buttons, submit, cancel } = makeButtons();
 
+  const dimCallback = (dim) => {
+    setDim(dim);
+    dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
+  };
+
   const exitDialog = () => {
-    setDim(false);
+    container.children.length === 2 && setDim(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
 
   submit.onclick = () => {
     const usernameText = username.input.value.slice(0);
     const passwordText = password.input.value.slice(0);
-    store.dispatch(login(usernameText, passwordText, exitDialog));
+    store.dispatch(login(usernameText, passwordText, dimCallback, exitDialog));
   }
 
   cancel.onclick = exitDialog;

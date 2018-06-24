@@ -1,5 +1,5 @@
 import { makeTextButton } from '../utils/draw';
-import { showRegister } from '../dialogs/register';
+import { RegisterDialog, showRegister } from '../dialogs/register';
 import { showLogin } from '../dialogs/login';
 import { addButtonCoords, screenToTextId } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
@@ -11,14 +11,19 @@ export default class TitleView {
     this.canvas = canvas;
     this.ctx = ctx;
 
+    this.registerDialog = new RegisterDialog(this.store, this.setDim);
+    // this.registerDialog.show();
+
     this.connect = new Connect(this.store);
     this.selected = null;
     this.setDim(false);
 
     this.buttons = [
       { id: 1, text: 'LOGIN', onClick: showLogin },
-      { id: 2, text: 'REGISTER', onClick: showRegister }
+      { id: 2, text: 'REGISTER', onClick: this.registerDialog.show }
     ];
+
+    this.setDim = this.setDim.bind(this);
   }
 
   update(delta) {
@@ -29,7 +34,7 @@ export default class TitleView {
       if (this.selectedId && this.selectedId === clickId) {
         this.buttons.find((button) =>
           this.selectedId === button.id
-        ).onClick(this.store, this.setDim.bind(this));
+        ).onClick(this.store, this.setDim);
         this.selectedId = null;
         this.setDim(true);
       } else {
