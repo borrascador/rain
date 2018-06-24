@@ -12,8 +12,8 @@ export default class TitleView {
     this.ctx = ctx;
 
     this.connect = new Connect(this.store);
-
     this.selected = null;
+    this.setDim(false);
 
     this.buttons = [
       { id: 1, text: 'LOGIN', onClick: showLogin },
@@ -29,17 +29,17 @@ export default class TitleView {
       if (this.selectedId && this.selectedId === clickId) {
         this.buttons.find((button) =>
           this.selectedId === button.id
-        ).onClick(this.store, this.undim.bind(this));
+        ).onClick(this.store, this.setDim.bind(this));
         this.selectedId = null;
-        this.dim = true;
+        this.setDim(true);
       } else {
         this.selectedId = clickId;
       }
     }
   }
 
-  undim() {
-    this.dim = false;
+  setDim(dim) {
+    this.dim = dim;
   }
 
   render() {

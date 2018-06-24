@@ -7,40 +7,47 @@ import {
 } from './actions';
 import { subscribe } from '../store';
 import { MODE } from '../../game/constants';
+import { loadingDialog } from '../../game/dialogs/loading';
 
-export function register(user, email, password, callback) {
+export function register(user, email, password, parentDim, exitRegister) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.sending === false) {
       dispatch(registerRequest(user, email, password));
+      const exitLoading = loadingDialog(parentDim);
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
-        callback();
+        exitRegister();
+        exitLoading();
         clearTimeout(timer);
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        callback();
+        exitRegister();
+        exitLoading();
         getState().sending && dispatch(registerError('0201')); // Timeout error
       }, 2000);
     }
   }
 }
 
-export function login(user, password, callback) {
+export function login(user, password, exitLogin) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.sending === false) {
       dispatch(loginRequest(user, password));
+      const exitLoading = loadingDialog();
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
-        callback();
+        exitLogin();
+        exitLoading();
         clearTimeout(timer);
         dispatch(changeMode(MODE.MAP));
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        callback();
+        exitLogin();
+        exitLoading();
         getState().sending && dispatch(loginError('0201')); // Timeout error
       }, 2000);
     }

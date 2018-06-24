@@ -1,7 +1,7 @@
 import { create, makeInputLine, makeButtons } from './utils';
 import { login } from '../../store/actions/requests';
 
-export function showLogin(store, dimCallback) {
+export function showLogin(store, setDim) {
   const container = document.getElementById('container');
   const dialog = create('div', 'dialog', 'login');
   container.append(dialog);
@@ -13,7 +13,7 @@ export function showLogin(store, dimCallback) {
   const { buttons, submit, cancel } = makeButtons();
 
   const exitDialog = () => {
-    dimCallback();
+    setDim(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
 

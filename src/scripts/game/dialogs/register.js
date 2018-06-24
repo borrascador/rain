@@ -1,7 +1,7 @@
 import { create, makeInputLine, makeButtons } from './utils';
 import { register } from '../../store/actions/requests';
 
-export function showRegister(store, dimCallback) {
+export function showRegister(store, setDim) {
   const container = document.getElementById('container');
   const dialog = create('div', 'dialog', 'register');
   container.append(dialog);
@@ -14,8 +14,12 @@ export function showRegister(store, dimCallback) {
   const password2 = makeInputLine('password2');
   const { buttons, submit, cancel } = makeButtons();
 
+  const parentDim = (dim) => {
+    dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
+  };
+
   const exitDialog = () => {
-    dimCallback();
+    setDim(false);
     container.contains(dialog) && container.removeChild(dialog);
   };
 
@@ -23,7 +27,7 @@ export function showRegister(store, dimCallback) {
     const usernameText = username.input.value.slice(0);
     const emailText = email.input.value.slice(0);
     const passwordText = password1.input.value.slice(0);
-    store.dispatch(register(usernameText, emailText, passwordText, exitDialog));
+    store.dispatch(register(usernameText, emailText, passwordText, parentDim, exitDialog));
   }
 
   cancel.onclick = exitDialog;
