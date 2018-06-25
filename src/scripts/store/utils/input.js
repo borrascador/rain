@@ -75,6 +75,8 @@ function mouseUp(state, action) {
       xClick: action.payload.x,
       yClick: action.payload.y,
     });
+  } else {
+    return state;
   }
 }
 
@@ -84,6 +86,8 @@ function clicked(state) {
       xClick: null,
       yClick: null,
     });
+  } else {
+    return state;
   }
 }
 

@@ -1,6 +1,6 @@
 import { makeTextButton } from '../utils/draw';
-import { RegisterDialog, showRegister } from '../dialogs/register';
-import { showLogin } from '../dialogs/login';
+import { registerDialog } from '../dialogs/register';
+import { loginDialog } from '../dialogs/login';
 import { addButtonCoords, screenToTextId } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
 import {clicked} from '../../store/actions/actions';
@@ -11,16 +11,13 @@ export default class TitleView {
     this.canvas = canvas;
     this.ctx = ctx;
 
-    this.registerDialog = new RegisterDialog(this.store, this.setDim);
-    // this.registerDialog.show();
-
     this.connect = new Connect(this.store);
     this.selected = null;
     this.setDim(false);
 
     this.buttons = [
-      { id: 1, text: 'LOGIN', onClick: showLogin },
-      { id: 2, text: 'REGISTER', onClick: this.registerDialog.show }
+      { id: 1, text: 'LOGIN', onClick: loginDialog },
+      { id: 2, text: 'REGISTER', onClick: registerDialog }
     ];
 
     this.setDim = this.setDim.bind(this);

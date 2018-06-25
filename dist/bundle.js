@@ -479,6 +479,50 @@ function drawByName(ctx, img, name, zoom, x, y) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.create = create;
+exports.makeInputLine = makeInputLine;
+exports.makeButtons = makeButtons;
+function create(tag, className, id) {
+  var elt = document.createElement(tag);
+  if (className) elt.className = className;
+  if (id) elt.id = id;
+  return elt;
+}
+
+function makeInputLine(id) {
+  var line = create('div', 'input-line');
+  var labelContainer = create('span', 'label-container');
+  var label = create('div', 'label');
+  label.innerHTML = id.substring(0, 8) === 'password' ? 'password' : id;
+  var inputContainer = create('span', 'input-container');
+  var input = create('input', 'input', id);
+  if (id.substring(0, 8) === 'password') input.type = 'password';
+  labelContainer.append(label);
+  inputContainer.append(input);
+  line.append(labelContainer, inputContainer);
+  return { line: line, input: input };
+}
+
+function makeButtons() {
+  var submit = create('button', 'submit');
+  submit.innerHTML = 'OK';
+  var cancel = create('button', 'cancel');
+  cancel.innerHTML = 'CANCEL';
+  var buttons = create('div', 'buttons');
+  buttons.append(submit, cancel);
+  return { buttons: buttons, submit: submit, cancel: cancel };
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.register = register;
 exports.login = login;
 exports.logout = logout;
@@ -492,9 +536,9 @@ var _constants = __webpack_require__(2);
 
 var _loading = __webpack_require__(69);
 
-var _success = __webpack_require__(84);
+var _success = __webpack_require__(70);
 
-var _failure = __webpack_require__(85);
+var _failure = __webpack_require__(71);
 
 function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
@@ -592,7 +636,7 @@ function position(position, callback) {
 }
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 var g;
@@ -619,7 +663,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -641,50 +685,6 @@ function updateItemInArray(array, itemId, updateItemCallback) {
 
 exports.updateObject = updateObject;
 exports.updateItemInArray = updateItemInArray;
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.create = create;
-exports.makeInputLine = makeInputLine;
-exports.makeButtons = makeButtons;
-function create(tag, className, id) {
-  var elt = document.createElement(tag);
-  if (className) elt.className = className;
-  if (id) elt.id = id;
-  return elt;
-}
-
-function makeInputLine(id) {
-  var line = create('div', 'input-line');
-  var labelContainer = create('span', 'label-container');
-  var label = create('div', 'label');
-  label.innerHTML = id.substring(0, 8) === 'password' ? 'password' : id;
-  var inputContainer = create('span', 'input-container');
-  var input = create('input', 'input', id);
-  if (id.substring(0, 8) === 'password') input.type = 'password';
-  labelContainer.append(label);
-  inputContainer.append(input);
-  line.append(labelContainer, inputContainer);
-  return { line: line, input: input };
-}
-
-function makeButtons() {
-  var submit = create('button', 'submit');
-  submit.innerHTML = 'OK';
-  var cancel = create('button', 'cancel');
-  cancel.innerHTML = 'CANCEL';
-  var buttons = create('div', 'buttons');
-  buttons.append(submit, cancel);
-  return { buttons: buttons, submit: submit, cancel: cancel };
-}
 
 /***/ }),
 /* 9 */
@@ -1324,7 +1324,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.clicked = exports.mouseUp = exports.drag = exports.mouseDown = exports.keyUp = exports.keyDown = exports.makeKeys = undefined;
 
-var _utils = __webpack_require__(7);
+var _utils = __webpack_require__(8);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1399,6 +1399,8 @@ function mouseUp(state, action) {
       xClick: action.payload.x,
       yClick: action.payload.y
     });
+  } else {
+    return state;
   }
 }
 
@@ -1408,6 +1410,8 @@ function clicked(state) {
       xClick: null,
       yClick: null
     });
+  } else {
+    return state;
   }
 }
 
@@ -2111,7 +2115,7 @@ thunk.withExtraArgument = createThunkMiddleware;
 
 /* WEBPACK VAR INJECTION */(function(global) {!function(e,t){ true?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(e.reduxLogger=e.reduxLogger||{})}(this,function(e){"use strict";function t(e,t){e.super_=t,e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}})}function r(e,t){Object.defineProperty(this,"kind",{value:e,enumerable:!0}),t&&t.length&&Object.defineProperty(this,"path",{value:t,enumerable:!0})}function n(e,t,r){n.super_.call(this,"E",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0}),Object.defineProperty(this,"rhs",{value:r,enumerable:!0})}function o(e,t){o.super_.call(this,"N",e),Object.defineProperty(this,"rhs",{value:t,enumerable:!0})}function i(e,t){i.super_.call(this,"D",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0})}function a(e,t,r){a.super_.call(this,"A",e),Object.defineProperty(this,"index",{value:t,enumerable:!0}),Object.defineProperty(this,"item",{value:r,enumerable:!0})}function f(e,t,r){var n=e.slice((r||t)+1||e.length);return e.length=t<0?e.length+t:t,e.push.apply(e,n),e}function u(e){var t="undefined"==typeof e?"undefined":N(e);return"object"!==t?t:e===Math?"math":null===e?"null":Array.isArray(e)?"array":"[object Date]"===Object.prototype.toString.call(e)?"date":"function"==typeof e.toString&&/^\/.*\//.test(e.toString())?"regexp":"object"}function l(e,t,r,c,s,d,p){s=s||[],p=p||[];var g=s.slice(0);if("undefined"!=typeof d){if(c){if("function"==typeof c&&c(g,d))return;if("object"===("undefined"==typeof c?"undefined":N(c))){if(c.prefilter&&c.prefilter(g,d))return;if(c.normalize){var h=c.normalize(g,d,e,t);h&&(e=h[0],t=h[1])}}}g.push(d)}"regexp"===u(e)&&"regexp"===u(t)&&(e=e.toString(),t=t.toString());var y="undefined"==typeof e?"undefined":N(e),v="undefined"==typeof t?"undefined":N(t),b="undefined"!==y||p&&p[p.length-1].lhs&&p[p.length-1].lhs.hasOwnProperty(d),m="undefined"!==v||p&&p[p.length-1].rhs&&p[p.length-1].rhs.hasOwnProperty(d);if(!b&&m)r(new o(g,t));else if(!m&&b)r(new i(g,e));else if(u(e)!==u(t))r(new n(g,e,t));else if("date"===u(e)&&e-t!==0)r(new n(g,e,t));else if("object"===y&&null!==e&&null!==t)if(p.filter(function(t){return t.lhs===e}).length)e!==t&&r(new n(g,e,t));else{if(p.push({lhs:e,rhs:t}),Array.isArray(e)){var w;e.length;for(w=0;w<e.length;w++)w>=t.length?r(new a(g,w,new i(void 0,e[w]))):l(e[w],t[w],r,c,g,w,p);for(;w<t.length;)r(new a(g,w,new o(void 0,t[w++])))}else{var x=Object.keys(e),S=Object.keys(t);x.forEach(function(n,o){var i=S.indexOf(n);i>=0?(l(e[n],t[n],r,c,g,n,p),S=f(S,i)):l(e[n],void 0,r,c,g,n,p)}),S.forEach(function(e){l(void 0,t[e],r,c,g,e,p)})}p.length=p.length-1}else e!==t&&("number"===y&&isNaN(e)&&isNaN(t)||r(new n(g,e,t)))}function c(e,t,r,n){return n=n||[],l(e,t,function(e){e&&n.push(e)},r),n.length?n:void 0}function s(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":s(o[r.path[n]],r.index,r.item);break;case"D":delete o[r.path[n]];break;case"E":case"N":o[r.path[n]]=r.rhs}}else switch(r.kind){case"A":s(e[t],r.index,r.item);break;case"D":e=f(e,t);break;case"E":case"N":e[t]=r.rhs}return e}function d(e,t,r){if(e&&t&&r&&r.kind){for(var n=e,o=-1,i=r.path?r.path.length-1:0;++o<i;)"undefined"==typeof n[r.path[o]]&&(n[r.path[o]]="number"==typeof r.path[o]?[]:{}),n=n[r.path[o]];switch(r.kind){case"A":s(r.path?n[r.path[o]]:n,r.index,r.item);break;case"D":delete n[r.path[o]];break;case"E":case"N":n[r.path[o]]=r.rhs}}}function p(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":p(o[r.path[n]],r.index,r.item);break;case"D":o[r.path[n]]=r.lhs;break;case"E":o[r.path[n]]=r.lhs;break;case"N":delete o[r.path[n]]}}else switch(r.kind){case"A":p(e[t],r.index,r.item);break;case"D":e[t]=r.lhs;break;case"E":e[t]=r.lhs;break;case"N":e=f(e,t)}return e}function g(e,t,r){if(e&&t&&r&&r.kind){var n,o,i=e;for(o=r.path.length-1,n=0;n<o;n++)"undefined"==typeof i[r.path[n]]&&(i[r.path[n]]={}),i=i[r.path[n]];switch(r.kind){case"A":p(i[r.path[n]],r.index,r.item);break;case"D":i[r.path[n]]=r.lhs;break;case"E":i[r.path[n]]=r.lhs;break;case"N":delete i[r.path[n]]}}}function h(e,t,r){if(e&&t){var n=function(n){r&&!r(e,t,n)||d(e,t,n)};l(e,t,n)}}function y(e){return"color: "+F[e].color+"; font-weight: bold"}function v(e){var t=e.kind,r=e.path,n=e.lhs,o=e.rhs,i=e.index,a=e.item;switch(t){case"E":return[r.join("."),n,"→",o];case"N":return[r.join("."),o];case"D":return[r.join(".")];case"A":return[r.join(".")+"["+i+"]",a];default:return[]}}function b(e,t,r,n){var o=c(e,t);try{n?r.groupCollapsed("diff"):r.group("diff")}catch(e){r.log("diff")}o?o.forEach(function(e){var t=e.kind,n=v(e);r.log.apply(r,["%c "+F[t].text,y(t)].concat(P(n)))}):r.log("—— no diff ——");try{r.groupEnd()}catch(e){r.log("—— diff end —— ")}}function m(e,t,r,n){switch("undefined"==typeof e?"undefined":N(e)){case"object":return"function"==typeof e[n]?e[n].apply(e,P(r)):e[n];case"function":return e(t);default:return e}}function w(e){var t=e.timestamp,r=e.duration;return function(e,n,o){var i=["action"];return i.push("%c"+String(e.type)),t&&i.push("%c@ "+n),r&&i.push("%c(in "+o.toFixed(2)+" ms)"),i.join(" ")}}function x(e,t){var r=t.logger,n=t.actionTransformer,o=t.titleFormatter,i=void 0===o?w(t):o,a=t.collapsed,f=t.colors,u=t.level,l=t.diff,c="undefined"==typeof t.titleFormatter;e.forEach(function(o,s){var d=o.started,p=o.startedTime,g=o.action,h=o.prevState,y=o.error,v=o.took,w=o.nextState,x=e[s+1];x&&(w=x.prevState,v=x.started-d);var S=n(g),k="function"==typeof a?a(function(){return w},g,o):a,j=D(p),E=f.title?"color: "+f.title(S)+";":"",A=["color: gray; font-weight: lighter;"];A.push(E),t.timestamp&&A.push("color: gray; font-weight: lighter;"),t.duration&&A.push("color: gray; font-weight: lighter;");var O=i(S,j,v);try{k?f.title&&c?r.groupCollapsed.apply(r,["%c "+O].concat(A)):r.groupCollapsed(O):f.title&&c?r.group.apply(r,["%c "+O].concat(A)):r.group(O)}catch(e){r.log(O)}var N=m(u,S,[h],"prevState"),P=m(u,S,[S],"action"),C=m(u,S,[y,h],"error"),F=m(u,S,[w],"nextState");if(N)if(f.prevState){var L="color: "+f.prevState(h)+"; font-weight: bold";r[N]("%c prev state",L,h)}else r[N]("prev state",h);if(P)if(f.action){var T="color: "+f.action(S)+"; font-weight: bold";r[P]("%c action    ",T,S)}else r[P]("action    ",S);if(y&&C)if(f.error){var M="color: "+f.error(y,h)+"; font-weight: bold;";r[C]("%c error     ",M,y)}else r[C]("error     ",y);if(F)if(f.nextState){var _="color: "+f.nextState(w)+"; font-weight: bold";r[F]("%c next state",_,w)}else r[F]("next state",w);l&&b(h,w,r,k);try{r.groupEnd()}catch(e){r.log("—— log end ——")}})}function S(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=Object.assign({},L,e),r=t.logger,n=t.stateTransformer,o=t.errorTransformer,i=t.predicate,a=t.logErrors,f=t.diffPredicate;if("undefined"==typeof r)return function(){return function(e){return function(t){return e(t)}}};if(e.getState&&e.dispatch)return console.error("[redux-logger] redux-logger not installed. Make sure to pass logger instance as middleware:\n// Logger with default options\nimport { logger } from 'redux-logger'\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n// Or you can create your own logger with custom options http://bit.ly/redux-logger-options\nimport createLogger from 'redux-logger'\nconst logger = createLogger({\n  // ...options\n});\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n"),function(){return function(e){return function(t){return e(t)}}};var u=[];return function(e){var r=e.getState;return function(e){return function(l){if("function"==typeof i&&!i(r,l))return e(l);var c={};u.push(c),c.started=O.now(),c.startedTime=new Date,c.prevState=n(r()),c.action=l;var s=void 0;if(a)try{s=e(l)}catch(e){c.error=o(e)}else s=e(l);c.took=O.now()-c.started,c.nextState=n(r());var d=t.diff&&"function"==typeof f?f(r,l):t.diff;if(x(u,Object.assign({},t,{diff:d})),u.length=0,c.error)throw c.error;return s}}}}var k,j,E=function(e,t){return new Array(t+1).join(e)},A=function(e,t){return E("0",t-e.toString().length)+e},D=function(e){return A(e.getHours(),2)+":"+A(e.getMinutes(),2)+":"+A(e.getSeconds(),2)+"."+A(e.getMilliseconds(),3)},O="undefined"!=typeof performance&&null!==performance&&"function"==typeof performance.now?performance:Date,N="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},P=function(e){if(Array.isArray(e)){for(var t=0,r=Array(e.length);t<e.length;t++)r[t]=e[t];return r}return Array.from(e)},C=[];k="object"===("undefined"==typeof global?"undefined":N(global))&&global?global:"undefined"!=typeof window?window:{},j=k.DeepDiff,j&&C.push(function(){"undefined"!=typeof j&&k.DeepDiff===c&&(k.DeepDiff=j,j=void 0)}),t(n,r),t(o,r),t(i,r),t(a,r),Object.defineProperties(c,{diff:{value:c,enumerable:!0},observableDiff:{value:l,enumerable:!0},applyDiff:{value:h,enumerable:!0},applyChange:{value:d,enumerable:!0},revertChange:{value:g,enumerable:!0},isConflict:{value:function(){return"undefined"!=typeof j},enumerable:!0},noConflict:{value:function(){return C&&(C.forEach(function(e){e()}),C=null),c},enumerable:!0}});var F={E:{color:"#2196F3",text:"CHANGED:"},N:{color:"#4CAF50",text:"ADDED:"},D:{color:"#F44336",text:"DELETED:"},A:{color:"#2196F3",text:"ARRAY:"}},L={level:"log",logger:console,logErrors:!0,collapsed:void 0,predicate:void 0,duration:!1,timestamp:!0,stateTransformer:function(e){return e},actionTransformer:function(e){return e},errorTransformer:function(e){return e},colors:{title:function(){return"inherit"},prevState:function(){return"#9E9E9E"},action:function(){return"#03A9F4"},nextState:function(){return"#4CAF50"},error:function(){return"#F20404"}},diff:!1,diffPredicate:void 0,transformer:void 0},T=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=e.dispatch,r=e.getState;return"function"==typeof t||"function"==typeof r?S()({dispatch:t,getState:r}):void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n")};e.defaults=L,e.createLogger=S,e.logger=T,e.default=T,Object.defineProperty(e,"__esModule",{value:!0})});
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 28 */
@@ -2214,7 +2218,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = (freeGlobal);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
 
 /***/ }),
 /* 32 */
@@ -2412,7 +2416,7 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(39)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(39)(module)))
 
 /***/ }),
 /* 39 */
@@ -2893,7 +2897,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.focusTile = exports.focusMenu = exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
 
-var _utils = __webpack_require__(7);
+var _utils = __webpack_require__(8);
 
 var _constants = __webpack_require__(2);
 
@@ -2956,7 +2960,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateMapTiles = exports.addLayer = exports.buildMap = undefined;
 
-var _utils = __webpack_require__(7);
+var _utils = __webpack_require__(8);
 
 // Initial state setup
 
@@ -3541,15 +3545,15 @@ var _MapView = __webpack_require__(67);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _MenuView = __webpack_require__(76);
+var _MenuView = __webpack_require__(78);
 
 var _MenuView2 = _interopRequireDefault(_MenuView);
 
-var _StoryView = __webpack_require__(78);
+var _StoryView = __webpack_require__(80);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(80);
+var _TitleView = __webpack_require__(82);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -3810,7 +3814,7 @@ var _Camera = __webpack_require__(68);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _Overlay = __webpack_require__(70);
+var _Overlay = __webpack_require__(72);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
@@ -3875,7 +3879,7 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _requests = __webpack_require__(5);
+var _requests = __webpack_require__(6);
 
 var _constants = __webpack_require__(2);
 
@@ -4016,7 +4020,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.loadingDialog = loadingDialog;
 
-var _utils = __webpack_require__(8);
+var _utils = __webpack_require__(5);
 
 function loadingDialog(dimCallback) {
   var container = document.getElementById('container');
@@ -4049,6 +4053,82 @@ function loadingDialog(dimCallback) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.successDialog = successDialog;
+
+var _utils = __webpack_require__(5);
+
+function successDialog(dimCallback) {
+  var container = document.getElementById('container');
+  var dialog = (0, _utils.create)('div', 'dialog', 'success');
+  container.append(dialog);
+
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'SUCCESS';
+  var submit = (0, _utils.create)('button', 'submit');
+  submit.innerHTML = 'OK';
+  var buttons = (0, _utils.create)('div', 'buttons');
+  buttons.append(submit);
+
+  dimCallback(true);
+
+  submit.onclick = function () {
+    dimCallback(false);
+    container.contains(dialog) && container.removeChild(dialog);
+  };
+
+  var content = (0, _utils.create)('div', 'content');
+  content.append(title, buttons);
+  dialog.append(content);
+}
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.failureDialog = failureDialog;
+
+var _utils = __webpack_require__(5);
+
+function failureDialog(dimCallback) {
+  var container = document.getElementById('container');
+  var dialog = (0, _utils.create)('div', 'dialog', 'failure');
+  container.append(dialog);
+
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'FAILURE';
+  var submit = (0, _utils.create)('button', 'submit');
+  submit.innerHTML = 'OK';
+  var buttons = (0, _utils.create)('div', 'buttons');
+  buttons.append(submit);
+
+  dimCallback(true);
+
+  submit.onclick = function () {
+    dimCallback(false);
+    container.contains(dialog) && container.removeChild(dialog);
+  };
+
+  var content = (0, _utils.create)('div', 'content');
+  content.append(title, buttons);
+  dialog.append(content);
+}
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -4060,19 +4140,19 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Party = __webpack_require__(71);
+var _Party = __webpack_require__(73);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(72);
+var _Vehicle = __webpack_require__(74);
 
 var _Vehicle2 = _interopRequireDefault(_Vehicle);
 
-var _Inventory = __webpack_require__(73);
+var _Inventory = __webpack_require__(75);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
-var _Zoom = __webpack_require__(75);
+var _Zoom = __webpack_require__(77);
 
 var _Zoom2 = _interopRequireDefault(_Zoom);
 
@@ -4119,7 +4199,7 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4210,7 +4290,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4294,7 +4374,7 @@ var Vehicle = function () {
 exports.default = Vehicle;
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4310,7 +4390,7 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(74);
+var _Animation = __webpack_require__(76);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -4378,7 +4458,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4424,7 +4504,7 @@ var Animation = function () {
 exports.default = Animation;
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4440,7 +4520,7 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _requests = __webpack_require__(5);
+var _requests = __webpack_require__(6);
 
 var _actions = __webpack_require__(1);
 
@@ -4511,7 +4591,7 @@ var Zoom = function () {
 exports.default = Zoom;
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4523,7 +4603,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Menu = __webpack_require__(77);
+var _Menu = __webpack_require__(79);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -4560,7 +4640,7 @@ var MenuView = function () {
 exports.default = MenuView;
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4697,7 +4777,7 @@ var Menu = function () {
 exports.default = Menu;
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4709,7 +4789,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(79);
+var _Story = __webpack_require__(81);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -4746,7 +4826,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4883,7 +4963,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4897,9 +4977,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(4);
 
-var _register = __webpack_require__(81);
+var _register = __webpack_require__(83);
 
-var _login = __webpack_require__(82);
+var _login = __webpack_require__(84);
 
 var _utils = __webpack_require__(3);
 
@@ -4921,14 +5001,11 @@ var TitleView = function () {
     this.canvas = canvas;
     this.ctx = ctx;
 
-    this.registerDialog = new _register.RegisterDialog(this.store, this.setDim);
-    // this.registerDialog.show();
-
     this.connect = new _Connect2.default(this.store);
     this.selected = null;
     this.setDim(false);
 
-    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.showLogin }, { id: 2, text: 'REGISTER', onClick: this.registerDialog.show }];
+    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.loginDialog }, { id: 2, text: 'REGISTER', onClick: _register.registerDialog }];
 
     this.setDim = this.setDim.bind(this);
   }
@@ -5010,7 +5087,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5019,95 +5096,13 @@ exports.default = TitleView;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RegisterDialog = undefined;
+exports.registerDialog = registerDialog;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _utils = __webpack_require__(5);
 
-exports.showRegister = showRegister;
+var _requests = __webpack_require__(6);
 
-var _utils = __webpack_require__(8);
-
-var _requests = __webpack_require__(5);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var RegisterDialog = exports.RegisterDialog = function () {
-  function RegisterDialog(store, setDim) {
-    _classCallCheck(this, RegisterDialog);
-
-    this.store = store;
-    this.setDim = setDim;
-
-    this.dimCallback = this.dimCallback.bind(this);
-    this.exitDialog = this.exitDialog.bind(this);
-
-    this.container = document.getElementById('container');
-    this.dialog = (0, _utils.create)('div', 'dialog', 'register');
-    this.container.append(this.dialog);
-
-    var title = (0, _utils.create)('div', 'title');
-    title.innerHTML = 'REGISTER';
-    var username = (0, _utils.makeInputLine)('username');
-    var email = (0, _utils.makeInputLine)('email');
-    var password1 = (0, _utils.makeInputLine)('password1');
-    var password2 = (0, _utils.makeInputLine)('password2');
-
-    var _makeButtons = (0, _utils.makeButtons)(),
-        buttons = _makeButtons.buttons,
-        submit = _makeButtons.submit,
-        cancel = _makeButtons.cancel;
-
-    submit.onclick = this.submit;
-    cancel.onclick = this.exitDialog;
-
-    var content = (0, _utils.create)('div', 'content');
-    content.append(title, username.line, email.line, password1.line, password2.line, buttons);
-    this.dialog.append(content);
-
-    this.hide();
-  }
-
-  _createClass(RegisterDialog, [{
-    key: 'show',
-    value: function show() {
-      this.dialog.style.display = 'block';
-    }
-  }, {
-    key: 'hide',
-    value: function hide() {
-      this.dialog.style.display = 'none';
-    }
-  }, {
-    key: 'dimCallback',
-    value: function dimCallback(dim) {
-      this.setDim(dim);
-      this.dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
-    }
-  }, {
-    key: 'exitDialog',
-    value: function exitDialog() {
-      this.setDim(false);
-      this.hide();
-    }
-  }, {
-    key: 'copyValue',
-    value: function copyValue(element) {
-      return element.input.value.slice(0);
-    }
-  }, {
-    key: 'submit',
-    value: function submit() {
-      var usernameText = this.copyValue(username);
-      var emailText = this.copyValue(email);
-      var passwordText = this.copyValue(password1);
-      this.store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, this.dimCallback, this.exitDialog));
-    }
-  }]);
-
-  return RegisterDialog;
-}();
-
-function showRegister(store, setDim) {
+function registerDialog(store, setDim) {
   var container = document.getElementById('container');
   var dialog = (0, _utils.create)('div', 'dialog', 'register');
   container.append(dialog);
@@ -5119,10 +5114,10 @@ function showRegister(store, setDim) {
   var password1 = (0, _utils.makeInputLine)('password1');
   var password2 = (0, _utils.makeInputLine)('password2');
 
-  var _makeButtons2 = (0, _utils.makeButtons)(),
-      buttons = _makeButtons2.buttons,
-      submit = _makeButtons2.submit,
-      cancel = _makeButtons2.cancel;
+  var _makeButtons = (0, _utils.makeButtons)(),
+      buttons = _makeButtons.buttons,
+      submit = _makeButtons.submit,
+      cancel = _makeButtons.cancel;
 
   var dimCallback = function dimCallback(dim) {
     setDim(dim);
@@ -5149,7 +5144,7 @@ function showRegister(store, setDim) {
 }
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5158,13 +5153,13 @@ function showRegister(store, setDim) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.showLogin = showLogin;
+exports.loginDialog = loginDialog;
 
-var _utils = __webpack_require__(8);
+var _utils = __webpack_require__(5);
 
-var _requests = __webpack_require__(5);
+var _requests = __webpack_require__(6);
 
-function showLogin(store, setDim) {
+function loginDialog(store, setDim) {
   var container = document.getElementById('container');
   var dialog = (0, _utils.create)('div', 'dialog', 'login');
   container.append(dialog);
@@ -5199,83 +5194,6 @@ function showLogin(store, setDim) {
 
   var content = (0, _utils.create)('div', 'content');
   content.append(title, username.line, password.line, buttons);
-  dialog.append(content);
-}
-
-/***/ }),
-/* 83 */,
-/* 84 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.successDialog = successDialog;
-
-var _utils = __webpack_require__(8);
-
-function successDialog(dimCallback) {
-  var container = document.getElementById('container');
-  var dialog = (0, _utils.create)('div', 'dialog', 'success');
-  container.append(dialog);
-
-  var title = (0, _utils.create)('div', 'title');
-  title.innerHTML = 'SUCCESS';
-  var submit = (0, _utils.create)('button', 'submit');
-  submit.innerHTML = 'OK';
-  var buttons = (0, _utils.create)('div', 'buttons');
-  buttons.append(submit);
-
-  dimCallback(true);
-
-  submit.onclick = function () {
-    dimCallback(false);
-    container.contains(dialog) && container.removeChild(dialog);
-  };
-
-  var content = (0, _utils.create)('div', 'content');
-  content.append(title, buttons);
-  dialog.append(content);
-}
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.failureDialog = failureDialog;
-
-var _utils = __webpack_require__(8);
-
-function failureDialog(dimCallback) {
-  var container = document.getElementById('container');
-  var dialog = (0, _utils.create)('div', 'dialog', 'failure');
-  container.append(dialog);
-
-  var title = (0, _utils.create)('div', 'title');
-  title.innerHTML = 'FAILURE';
-  var submit = (0, _utils.create)('button', 'submit');
-  submit.innerHTML = 'OK';
-  var buttons = (0, _utils.create)('div', 'buttons');
-  buttons.append(submit);
-
-  dimCallback(true);
-
-  submit.onclick = function () {
-    dimCallback(false);
-    container.contains(dialog) && container.removeChild(dialog);
-  };
-
-  var content = (0, _utils.create)('div', 'content');
-  content.append(title, buttons);
   dialog.append(content);
 }
 

@@ -1,7 +1,7 @@
 import { create, makeInputLine, makeButtons } from './utils';
 import { login } from '../../store/actions/requests';
 
-export function showLogin(store, setDim) {
+export function loginDialog(store, setDim) {
   const container = document.getElementById('container');
   const dialog = create('div', 'dialog', 'login');
   container.append(dialog);
