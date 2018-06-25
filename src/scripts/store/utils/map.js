@@ -35,16 +35,7 @@ function addLayer(state, action) {
 }
 
 function updateMapTiles(state, action) {
-  return state.mapTiles.map((tile) => {
-    let newTile = action.payload.tiles[tile.id];
-    if (newTile) {
-      return Object.assign({}, tile, newTile, {
-        layers: Object.assign({}, tile.layers, newTile.layers),
-      });
-    } else {
-      return tile;
-    }
-  });
+  return state.mapTiles.concat(action.payload.tiles);
 }
 
 export { buildMap, addLayer, updateMapTiles };
