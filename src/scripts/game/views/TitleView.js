@@ -4,12 +4,14 @@ import { loginDialog } from '../dialogs/login';
 import { addButtonCoords, screenToTextId } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
 import {clicked} from '../../store/actions/actions';
+import { drawById, drawByName } from '../utils/draw';
 
 export default class TitleView {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.water = loader.getImage('water');
 
     this.connect = new Connect(this.store);
     this.selected = null;
@@ -44,9 +46,26 @@ export default class TitleView {
     this.dim = dim;
   }
 
+  renderBackground() {
+    const id = 0;
+    const zoom = 4;
+    const size = this.water.tileset.tilewidth * zoom;
+
+    const endCol = Math.ceil((this.canvas.width / size) + 1);
+    const endRow = Math.ceil((this.canvas.height / size) + 1);
+    for (let col = 0; col <= endCol; col++) {
+      for (let row = 0; row <= endRow; row++) {
+        const x = col * size;
+        const y = row * size;
+        drawById(this.ctx, this.water, id, zoom, x, y);
+      }
+    }
+    // this.ctx.fillStyle = 'black';
+    // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   render() {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.renderBackground();
 
     let fontSize = 60;
     let lineSize = fontSize + 4;

@@ -534,11 +534,11 @@ var _store = __webpack_require__(9);
 
 var _constants = __webpack_require__(2);
 
-var _loading = __webpack_require__(69);
+var _loading = __webpack_require__(71);
 
-var _success = __webpack_require__(70);
+var _success = __webpack_require__(72);
 
-var _failure = __webpack_require__(71);
+var _failure = __webpack_require__(73);
 
 function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
@@ -3520,31 +3520,39 @@ var _iconsXl = __webpack_require__(63);
 
 var _iconsXl2 = _interopRequireDefault(_iconsXl);
 
-var _atlas3 = __webpack_require__(64);
+var _water = __webpack_require__(64);
+
+var _water2 = _interopRequireDefault(_water);
+
+var _atlas3 = __webpack_require__(65);
 
 var _atlas4 = _interopRequireDefault(_atlas3);
 
-var _icons3 = __webpack_require__(65);
+var _icons3 = __webpack_require__(66);
 
 var _icons4 = _interopRequireDefault(_icons3);
 
-var _iconsXl3 = __webpack_require__(66);
+var _iconsXl3 = __webpack_require__(67);
 
 var _iconsXl4 = _interopRequireDefault(_iconsXl3);
 
-var _MapView = __webpack_require__(67);
+var _water3 = __webpack_require__(68);
+
+var _water4 = _interopRequireDefault(_water3);
+
+var _MapView = __webpack_require__(69);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _MenuView = __webpack_require__(78);
+var _MenuView = __webpack_require__(80);
 
 var _MenuView2 = _interopRequireDefault(_MenuView);
 
-var _StoryView = __webpack_require__(80);
+var _StoryView = __webpack_require__(82);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(82);
+var _TitleView = __webpack_require__(84);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -3577,11 +3585,11 @@ var RainGame = function () {
 
 			(0, _addInputListeners2.default)(this.store.dispatch, this.canvas);
 			this.loader = new _Loader2.default();
-			Promise.all([this.loader.setImage('atlas', _atlas2.default, _atlas4.default), this.loader.setImage('icons', _icons2.default, _icons4.default), this.loader.setImage('icons-xl', _iconsXl2.default, _iconsXl4.default)]).then(function (loaded) {
+			Promise.all([this.loader.setImage('atlas', _atlas2.default, _atlas4.default), this.loader.setImage('icons', _icons2.default, _icons4.default), this.loader.setImage('icons-xl', _iconsXl2.default, _iconsXl4.default), this.loader.setImage('water', _water2.default, _water4.default)]).then(function (loaded) {
 				_this.mapView = new _MapView2.default(_this.store, _this.canvas, _this.ctx, _this.loader);
 				_this.menuView = new _MenuView2.default(_this.store, _this.canvas, _this.ctx);
 				_this.storyView = new _StoryView2.default(_this.store, _this.canvas, _this.ctx);
-				_this.titleView = new _TitleView2.default(_this.store, _this.canvas, _this.ctx);
+				_this.titleView = new _TitleView2.default(_this.store, _this.canvas, _this.ctx, _this.loader);
 			}).then(function () {
 				window.requestAnimationFrame(_this.tick);
 			});
@@ -3770,22 +3778,34 @@ module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACACAYAAACM
 /* 64 */
 /***/ (function(module, exports) {
 
-module.exports = {"columns":5,"image":"../images/atlas.png","imageheight":256,"imagewidth":160,"margin":0,"name":"atlas","spacing":0,"tilecount":40,"tileheight":32,"tileproperties":{"0":{"name":"forest"},"1":{"name":"waste"},"2":{"name":"log-camp"},"3":{"name":"science-camp"},"4":{"name":"village"},"5":{"name":"river-up-down"},"6":{"name":"river-down-right"},"7":{"name":"river-down-left"},"8":{"name":"river-down-left-right"},"9":{"name":"river-up-down-left"},"10":{"name":"river-left-right"},"11":{"name":"river-up-right"},"12":{"name":"river-up-left"},"13":{"name":"river-up-down-right"},"14":{"name":"river-up-left-right"},"15":{"name":"road-up-down"},"16":{"name":"road-down-right"},"17":{"name":"road-left-down"},"18":{"name":"road-down-left-right"},"19":{"name":"road-up-down-left"},"20":{"name":"road-left-right"},"21":{"name":"road-up-right"},"22":{"name":"road-up-left"},"23":{"name":"road-up-down-right"},"24":{"name":"road-up-left-right"},"25":{"name":"road-up-down-left-right"},"26":{"name":"road-right"},"27":{"name":"road-down"},"28":{"name":"road-up"},"29":{"name":"road-left"},"30":{"name":"bridge-up-down"},"31":{"name":"bridge-left-right"}},"tilepropertytypes":{"0":{"name":"string"},"1":{"name":"string"},"2":{"name":"string"},"3":{"name":"string"},"4":{"name":"string"},"5":{"name":"string"},"6":{"name":"string"},"7":{"name":"string"},"8":{"name":"string"},"9":{"name":"string"},"10":{"name":"string"},"11":{"name":"string"},"12":{"name":"string"},"13":{"name":"string"},"14":{"name":"string"},"15":{"name":"string"},"16":{"name":"string"},"17":{"name":"string"},"18":{"name":"string"},"19":{"name":"string"},"20":{"name":"string"},"21":{"name":"string"},"22":{"name":"string"},"23":{"name":"string"},"24":{"name":"string"},"25":{"name":"string"},"26":{"name":"string"},"27":{"name":"string"},"28":{"name":"string"},"29":{"name":"string"},"30":{"name":"string"},"31":{"name":"string"}},"tiles":{"0":{"probability":20,"type":"terrain"},"1":{"type":"terrain"},"2":{"probability":0.100000001490116,"type":"settlement"},"3":{"probability":0.100000001490116,"type":"settlement"},"4":{"probability":0.100000001490116,"type":"settlement"},"5":{"probability":2,"type":"river"},"6":{"probability":30,"type":"river"},"7":{"probability":3,"type":"river"},"8":{"probability":10,"type":"river"},"9":{"probability":10,"type":"river"},"10":{"probability":2,"type":"river"},"11":{"probability":3,"type":"river"},"12":{"probability":3,"type":"river"},"13":{"probability":10,"type":"river"},"14":{"probability":10,"type":"river"},"15":{"probability":2,"type":"road"},"16":{"type":"road"},"17":{"type":"road"},"18":{"type":"road"},"19":{"type":"road"},"20":{"probability":2,"type":"road"},"21":{"type":"road"},"22":{"type":"road"},"23":{"type":"road"},"24":{"type":"road"},"25":{"type":"road"},"26":{"type":"road"},"27":{"type":"road"},"28":{"type":"road"},"29":{"type":"road"},"30":{"type":"bridge"},"31":{"type":"bridge"}},"tilewidth":32,"type":"tileset","wangsets":[{"cornercolors":[],"edgecolors":[{"color":"#ff0000","name":"Road","probability":1,"tile":-1},{"color":"#00ff00","name":"Forest","probability":10,"tile":-1},{"color":"#0000ff","name":"River","probability":1,"tile":-1}],"name":"Wang Atlas","tile":-1,"wangtiles":[{"dflip":false,"hflip":false,"tileid":0,"vflip":false,"wangid":[2,0,2,0,2,0,2,0]},{"dflip":false,"hflip":false,"tileid":2,"vflip":false,"wangid":[2,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":3,"vflip":false,"wangid":[2,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":4,"vflip":false,"wangid":[2,0,3,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":5,"vflip":false,"wangid":[3,0,2,0,3,0,2,0]},{"dflip":false,"hflip":false,"tileid":6,"vflip":false,"wangid":[2,0,3,0,3,0,2,0]},{"dflip":false,"hflip":false,"tileid":7,"vflip":false,"wangid":[2,0,2,0,3,0,3,0]},{"dflip":false,"hflip":false,"tileid":8,"vflip":false,"wangid":[2,0,3,0,3,0,3,0]},{"dflip":false,"hflip":false,"tileid":9,"vflip":false,"wangid":[3,0,2,0,3,0,3,0]},{"dflip":false,"hflip":false,"tileid":10,"vflip":false,"wangid":[2,0,3,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":11,"vflip":false,"wangid":[3,0,3,0,2,0,2,0]},{"dflip":false,"hflip":false,"tileid":12,"vflip":false,"wangid":[3,0,2,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":13,"vflip":false,"wangid":[3,0,3,0,3,0,2,0]},{"dflip":false,"hflip":false,"tileid":14,"vflip":false,"wangid":[3,0,3,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":15,"vflip":false,"wangid":[1,0,2,0,1,0,2,0]},{"dflip":false,"hflip":false,"tileid":16,"vflip":false,"wangid":[2,0,1,0,1,0,2,0]},{"dflip":false,"hflip":false,"tileid":17,"vflip":false,"wangid":[2,0,2,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":18,"vflip":false,"wangid":[2,0,1,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":19,"vflip":false,"wangid":[1,0,2,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":20,"vflip":false,"wangid":[2,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":21,"vflip":false,"wangid":[1,0,1,0,2,0,2,0]},{"dflip":false,"hflip":false,"tileid":22,"vflip":false,"wangid":[1,0,2,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":23,"vflip":false,"wangid":[1,0,1,0,1,0,2,0]},{"dflip":false,"hflip":false,"tileid":24,"vflip":false,"wangid":[1,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":25,"vflip":false,"wangid":[1,0,1,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":30,"vflip":false,"wangid":[1,0,3,0,1,0,3,0]},{"dflip":false,"hflip":false,"tileid":31,"vflip":false,"wangid":[3,0,1,0,3,0,1,0]}]}]}
+module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH4gYaERYpZHK2jgAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAACAASURBVGgFAUAwv88BUqzDAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGBgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAYKxgAAAAAAADo1egAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAGCsYAAAAAAAA6NXoGCsYAAAA6NXoGCsY6NXoAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAABgrGAAAAOjV6AAAAOjV6BgrGOjV6AAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAFSrMMAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAYKxgAAADo1egAAAAAAAABUqzDAAAAAAAAGCsYAAAA6NXoAAAAAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAABBgrGOjV6BgrGOjV6BgrGBgrGAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAOjV6AAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAATo1egYKxjo1egAAADo1egAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAYKxgYKxjo1egAAAAAAAAAAAAAAAAYKxgAAADo1egAAADo1egAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXo6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6BgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAQYKxgAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAYKxgYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAADo1egAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAABUqzDGCsYAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAGCsYAAAA6NXoAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAABAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAOjV6AAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGBgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAFSrMMAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAYKxgAAAAAAADo1egYKxgAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAEAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXo6NXoAAAAGCsYGCsYAAAA6NXoAAAAAAAAGCsYAAAA6NXoAAAAAAAAAVKswwAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAIAAAAAAAAAAADo1ejo1egYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1ejo1egAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUqzDAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAA6NXoAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAGCsY6NXoAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoGCsYAAAA6NXoAWrX2+jV6AAAAAAAABgrGAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAABgrGOjV6AAAABgrGOjV6AAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAABgrGOjV6AAAAAAAABgrGAAAAAFSrMMYKxjo1egYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAACAAAA6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXo6NXo6NXoAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1ejo1egYKxgYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAGCsY6NXoAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAABgrGBgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6BgrGBgrGAAAAAAAAOjV6AFSrMMAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAYKxgAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxgBatfb6NXoGCsYAAAA6NXoAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAA6NXoGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKswxgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAOjV6BgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAQAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAADo1egAAAAYKxjo1egAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAA6NXo6NXoAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAQYKxjo1egAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAEAAAAGCsYAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAGCsYGCsYAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABOjV6AAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAYKxgYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1ejo1ejo1egAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUqzDAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAOjV6BgrGAAAABgrGAAAAAAAAAAAAOjV6AAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAFSrMMAAAAAAAAAAAAYKxgAAAAAAAAAAADo1egAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAYKxgAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egBatfbAAAAAAAAAAAAAAAA6NXoGCsYAAAA6NXoAAAAAAAAAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAVKswwAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAYKxgYKxgAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAGCsYGCsY6NXoAAAA9NfDtwAAEEtJREFUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAOjV6AAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSrMMAAAAAAAAAAAAAAAAYKxgAAADo1egYKxgAAADo1egAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAEAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAA6NXoGCsYGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAGCsYGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAABAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAIAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1ejo1egYKxgYKxgYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAEAAAAGCsY6NXoAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsY6NXoAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAWrX2+jV6AAAAAAAAAAAAAAAABgrGAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6BgrGAAAAOjV6AAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6AAAAAFSrMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsY6NXoAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABatfbAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsY6NXoAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAGCsYAAAA6NXoAAAAAAAAAVKswwAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAAAAAOjV6BgrGAAAAAAAAAAAAAQAAAAAAAAAAAAAAADo1egAAAAYKxgAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAYKxjo1egAAAAAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAADo1egYKxgYKxgAAADo1egAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAYKxjo1egAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAGCsY6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAABgrGBgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOjV6BgrGAAAAOjV6AAAAAAAAAAAABgrGAAAAAAAAAAAAAAAAAAAAAAAAAFq19vo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAAAAAAYKxgAAADo1egAAAAAAAAYKxgAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAYKxjo1egAAAAYKxgAAADo1egAAAAAAAABatfbAAAAAAAA6NXoAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGCsYAAAA6NXoAAAAAAAAAAAAAAAAGCsYAAAAAAAAAVKswwAAAAAAABgrGAAAAAAAAAAAAAAAAOjV6AAAAAAAAAAAABgrGAAAAAAAAAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgrGAAAAOjV6AAAAAAAAAAAABgrGAAAAAAAAOjV6AAAABgrGOjV6AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAADo1egYKxjo1egAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAYKxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo1egYKxgYKxgAAAAAAAAAAADo1egAAAAAAAAAAAAAAAAAAAAYKxjo1egAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXoGCsYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6NXo6NXoAAAA6NXo6NXoAAAAAAAAAAAAAAAAAAAA6NXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAoeXHsfN6xssAAAAASUVORK5CYII="
 
 /***/ }),
 /* 65 */
 /***/ (function(module, exports) {
 
-module.exports = {"columns":10,"image":"../images/icons.png","imageheight":64,"imagewidth":160,"margin":0,"name":"icons","spacing":0,"tilecount":40,"tileheight":16,"tileproperties":{"0":{"name":"heart"},"1":{"name":"bolt"},"2":{"name":"wrench"},"3":{"name":"up"},"4":{"name":"down"},"5":{"name":"left"},"6":{"name":"right"},"7":{"name":"player-red"},"8":{"name":"player-dark"},"10":{"name":"gold"},"11":{"name":"wood"},"12":{"name":"cow"},"13":{"name":"crop"},"14":{"name":"tree"},"15":{"name":"leaf"},"16":{"name":"wrench-round"},"17":{"name":"tree-small"},"20":{"name":"question"},"21":{"name":"skull"},"22":{"name":"dna"},"23":{"name":"mind"},"24":{"name":"red-cross-large"},"25":{"name":"fish"},"26":{"name":"bird"},"27":{"name":"red-cross-small"}},"tilepropertytypes":{"0":{"name":"string"},"1":{"name":"string"},"2":{"name":"string"},"3":{"name":"string"},"4":{"name":"string"},"5":{"name":"string"},"6":{"name":"string"},"7":{"name":"string"},"8":{"name":"string"},"10":{"name":"string"},"11":{"name":"string"},"12":{"name":"string"},"13":{"name":"string"},"14":{"name":"string"},"15":{"name":"string"},"16":{"name":"string"},"17":{"name":"string"},"20":{"name":"string"},"21":{"name":"string"},"22":{"name":"string"},"23":{"name":"string"},"24":{"name":"string"},"25":{"name":"string"},"26":{"name":"string"},"27":{"name":"string"}},"tilewidth":16,"type":"tileset"}
+module.exports = {"columns":5,"image":"../images/atlas.png","imageheight":256,"imagewidth":160,"margin":0,"name":"atlas","spacing":0,"tilecount":40,"tileheight":32,"tileproperties":{"0":{"name":"forest"},"1":{"name":"waste"},"2":{"name":"log-camp"},"3":{"name":"science-camp"},"4":{"name":"village"},"5":{"name":"river-up-down"},"6":{"name":"river-down-right"},"7":{"name":"river-down-left"},"8":{"name":"river-down-left-right"},"9":{"name":"river-up-down-left"},"10":{"name":"river-left-right"},"11":{"name":"river-up-right"},"12":{"name":"river-up-left"},"13":{"name":"river-up-down-right"},"14":{"name":"river-up-left-right"},"15":{"name":"road-up-down"},"16":{"name":"road-down-right"},"17":{"name":"road-left-down"},"18":{"name":"road-down-left-right"},"19":{"name":"road-up-down-left"},"20":{"name":"road-left-right"},"21":{"name":"road-up-right"},"22":{"name":"road-up-left"},"23":{"name":"road-up-down-right"},"24":{"name":"road-up-left-right"},"25":{"name":"road-up-down-left-right"},"26":{"name":"road-right"},"27":{"name":"road-down"},"28":{"name":"road-up"},"29":{"name":"road-left"},"30":{"name":"bridge-up-down"},"31":{"name":"bridge-left-right"}},"tilepropertytypes":{"0":{"name":"string"},"1":{"name":"string"},"2":{"name":"string"},"3":{"name":"string"},"4":{"name":"string"},"5":{"name":"string"},"6":{"name":"string"},"7":{"name":"string"},"8":{"name":"string"},"9":{"name":"string"},"10":{"name":"string"},"11":{"name":"string"},"12":{"name":"string"},"13":{"name":"string"},"14":{"name":"string"},"15":{"name":"string"},"16":{"name":"string"},"17":{"name":"string"},"18":{"name":"string"},"19":{"name":"string"},"20":{"name":"string"},"21":{"name":"string"},"22":{"name":"string"},"23":{"name":"string"},"24":{"name":"string"},"25":{"name":"string"},"26":{"name":"string"},"27":{"name":"string"},"28":{"name":"string"},"29":{"name":"string"},"30":{"name":"string"},"31":{"name":"string"}},"tiles":{"0":{"probability":20,"type":"terrain"},"1":{"type":"terrain"},"2":{"probability":0.100000001490116,"type":"settlement"},"3":{"probability":0.100000001490116,"type":"settlement"},"4":{"probability":0.100000001490116,"type":"settlement"},"5":{"probability":2,"type":"river"},"6":{"probability":30,"type":"river"},"7":{"probability":3,"type":"river"},"8":{"probability":10,"type":"river"},"9":{"probability":10,"type":"river"},"10":{"probability":2,"type":"river"},"11":{"probability":3,"type":"river"},"12":{"probability":3,"type":"river"},"13":{"probability":10,"type":"river"},"14":{"probability":10,"type":"river"},"15":{"probability":2,"type":"road"},"16":{"type":"road"},"17":{"type":"road"},"18":{"type":"road"},"19":{"type":"road"},"20":{"probability":2,"type":"road"},"21":{"type":"road"},"22":{"type":"road"},"23":{"type":"road"},"24":{"type":"road"},"25":{"type":"road"},"26":{"type":"road"},"27":{"type":"road"},"28":{"type":"road"},"29":{"type":"road"},"30":{"type":"bridge"},"31":{"type":"bridge"}},"tilewidth":32,"type":"tileset","wangsets":[{"cornercolors":[],"edgecolors":[{"color":"#ff0000","name":"Road","probability":1,"tile":-1},{"color":"#00ff00","name":"Forest","probability":10,"tile":-1},{"color":"#0000ff","name":"River","probability":1,"tile":-1}],"name":"Wang Atlas","tile":-1,"wangtiles":[{"dflip":false,"hflip":false,"tileid":0,"vflip":false,"wangid":[2,0,2,0,2,0,2,0]},{"dflip":false,"hflip":false,"tileid":2,"vflip":false,"wangid":[2,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":3,"vflip":false,"wangid":[2,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":4,"vflip":false,"wangid":[2,0,3,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":5,"vflip":false,"wangid":[3,0,2,0,3,0,2,0]},{"dflip":false,"hflip":false,"tileid":6,"vflip":false,"wangid":[2,0,3,0,3,0,2,0]},{"dflip":false,"hflip":false,"tileid":7,"vflip":false,"wangid":[2,0,2,0,3,0,3,0]},{"dflip":false,"hflip":false,"tileid":8,"vflip":false,"wangid":[2,0,3,0,3,0,3,0]},{"dflip":false,"hflip":false,"tileid":9,"vflip":false,"wangid":[3,0,2,0,3,0,3,0]},{"dflip":false,"hflip":false,"tileid":10,"vflip":false,"wangid":[2,0,3,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":11,"vflip":false,"wangid":[3,0,3,0,2,0,2,0]},{"dflip":false,"hflip":false,"tileid":12,"vflip":false,"wangid":[3,0,2,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":13,"vflip":false,"wangid":[3,0,3,0,3,0,2,0]},{"dflip":false,"hflip":false,"tileid":14,"vflip":false,"wangid":[3,0,3,0,2,0,3,0]},{"dflip":false,"hflip":false,"tileid":15,"vflip":false,"wangid":[1,0,2,0,1,0,2,0]},{"dflip":false,"hflip":false,"tileid":16,"vflip":false,"wangid":[2,0,1,0,1,0,2,0]},{"dflip":false,"hflip":false,"tileid":17,"vflip":false,"wangid":[2,0,2,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":18,"vflip":false,"wangid":[2,0,1,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":19,"vflip":false,"wangid":[1,0,2,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":20,"vflip":false,"wangid":[2,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":21,"vflip":false,"wangid":[1,0,1,0,2,0,2,0]},{"dflip":false,"hflip":false,"tileid":22,"vflip":false,"wangid":[1,0,2,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":23,"vflip":false,"wangid":[1,0,1,0,1,0,2,0]},{"dflip":false,"hflip":false,"tileid":24,"vflip":false,"wangid":[1,0,1,0,2,0,1,0]},{"dflip":false,"hflip":false,"tileid":25,"vflip":false,"wangid":[1,0,1,0,1,0,1,0]},{"dflip":false,"hflip":false,"tileid":30,"vflip":false,"wangid":[1,0,3,0,1,0,3,0]},{"dflip":false,"hflip":false,"tileid":31,"vflip":false,"wangid":[3,0,1,0,3,0,1,0]}]}]}
 
 /***/ }),
 /* 66 */
 /***/ (function(module, exports) {
 
-module.exports = {"columns":5,"image":"../images/icons-xl.png","imageheight":128,"imagewidth":160,"margin":0,"name":"icons-xl","spacing":0,"tilecount":20,"tileheight":32,"tileproperties":{"0":{"name":"party1"},"1":{"name":"party2"},"2":{"name":"party3"},"5":{"name":"zoom-out"},"6":{"name":"zoom-in"},"7":{"name":"glass"},"8":{"name":"pack-big"},"9":{"name":"pack-small"},"10":{"name":"jeep-blue"},"11":{"name":"canoe"},"12":{"name":"motor-boat"},"13":{"name":"no-boat"},"15":{"name":"jeep-red"},"16":{"name":"settings"}},"tilepropertytypes":{"0":{"name":"string"},"1":{"name":"string"},"2":{"name":"string"},"5":{"name":"string"},"6":{"name":"string"},"7":{"name":"string"},"8":{"name":"string"},"9":{"name":"string"},"10":{"name":"string"},"11":{"name":"string"},"12":{"name":"string"},"13":{"name":"string"},"15":{"name":"string"},"16":{"name":"string"}},"tilewidth":32,"type":"tileset"}
+module.exports = {"columns":10,"image":"../images/icons.png","imageheight":64,"imagewidth":160,"margin":0,"name":"icons","spacing":0,"tilecount":40,"tileheight":16,"tileproperties":{"0":{"name":"heart"},"1":{"name":"bolt"},"2":{"name":"wrench"},"3":{"name":"up"},"4":{"name":"down"},"5":{"name":"left"},"6":{"name":"right"},"7":{"name":"player-red"},"8":{"name":"player-dark"},"10":{"name":"gold"},"11":{"name":"wood"},"12":{"name":"cow"},"13":{"name":"crop"},"14":{"name":"tree"},"15":{"name":"leaf"},"16":{"name":"wrench-round"},"17":{"name":"tree-small"},"20":{"name":"question"},"21":{"name":"skull"},"22":{"name":"dna"},"23":{"name":"mind"},"24":{"name":"red-cross-large"},"25":{"name":"fish"},"26":{"name":"bird"},"27":{"name":"red-cross-small"}},"tilepropertytypes":{"0":{"name":"string"},"1":{"name":"string"},"2":{"name":"string"},"3":{"name":"string"},"4":{"name":"string"},"5":{"name":"string"},"6":{"name":"string"},"7":{"name":"string"},"8":{"name":"string"},"10":{"name":"string"},"11":{"name":"string"},"12":{"name":"string"},"13":{"name":"string"},"14":{"name":"string"},"15":{"name":"string"},"16":{"name":"string"},"17":{"name":"string"},"20":{"name":"string"},"21":{"name":"string"},"22":{"name":"string"},"23":{"name":"string"},"24":{"name":"string"},"25":{"name":"string"},"26":{"name":"string"},"27":{"name":"string"}},"tilewidth":16,"type":"tileset"}
 
 /***/ }),
 /* 67 */
+/***/ (function(module, exports) {
+
+module.exports = {"columns":5,"image":"../images/icons-xl.png","imageheight":128,"imagewidth":160,"margin":0,"name":"icons-xl","spacing":0,"tilecount":20,"tileheight":32,"tileproperties":{"0":{"name":"party1"},"1":{"name":"party2"},"2":{"name":"party3"},"5":{"name":"zoom-out"},"6":{"name":"zoom-in"},"7":{"name":"glass"},"8":{"name":"pack-big"},"9":{"name":"pack-small"},"10":{"name":"jeep-blue"},"11":{"name":"canoe"},"12":{"name":"motor-boat"},"13":{"name":"no-boat"},"15":{"name":"jeep-red"},"16":{"name":"settings"}},"tilepropertytypes":{"0":{"name":"string"},"1":{"name":"string"},"2":{"name":"string"},"5":{"name":"string"},"6":{"name":"string"},"7":{"name":"string"},"8":{"name":"string"},"9":{"name":"string"},"10":{"name":"string"},"11":{"name":"string"},"12":{"name":"string"},"13":{"name":"string"},"15":{"name":"string"},"16":{"name":"string"}},"tilewidth":32,"type":"tileset"}
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports) {
+
+module.exports = {"columns":1,"image":"../images/water.png","imageheight":64,"imagewidth":64,"margin":0,"name":"water","spacing":0,"tilecount":1,"tileheight":64,"tileproperties":{"0":{"name":"water0"}},"tilepropertytypes":{"0":{"name":"string"}},"tilewidth":64,"type":"tileset"}
+
+/***/ }),
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3801,11 +3821,11 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Camera = __webpack_require__(68);
+var _Camera = __webpack_require__(70);
 
 var _Camera2 = _interopRequireDefault(_Camera);
 
-var _Overlay = __webpack_require__(72);
+var _Overlay = __webpack_require__(74);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
@@ -3854,7 +3874,7 @@ var MapView = function () {
 exports.default = MapView;
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4000,7 +4020,7 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4035,7 +4055,7 @@ function loadingDialog(dimCallback) {
 }
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4073,7 +4093,7 @@ function successDialog(dimCallback) {
 }
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4111,7 +4131,7 @@ function failureDialog(dimCallback) {
 }
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4131,19 +4151,19 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Party = __webpack_require__(73);
+var _Party = __webpack_require__(75);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(74);
+var _Vehicle = __webpack_require__(76);
 
 var _Vehicle2 = _interopRequireDefault(_Vehicle);
 
-var _Inventory = __webpack_require__(75);
+var _Inventory = __webpack_require__(77);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
-var _Zoom = __webpack_require__(77);
+var _Zoom = __webpack_require__(79);
 
 var _Zoom2 = _interopRequireDefault(_Zoom);
 
@@ -4190,7 +4210,7 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4281,7 +4301,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4365,7 +4385,7 @@ var Vehicle = function () {
 exports.default = Vehicle;
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4381,7 +4401,7 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(76);
+var _Animation = __webpack_require__(78);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -4449,7 +4469,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4495,7 +4515,7 @@ var Animation = function () {
 exports.default = Animation;
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4582,7 +4602,7 @@ var Zoom = function () {
 exports.default = Zoom;
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4594,7 +4614,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Menu = __webpack_require__(79);
+var _Menu = __webpack_require__(81);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -4631,7 +4651,7 @@ var MenuView = function () {
 exports.default = MenuView;
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4768,7 +4788,7 @@ var Menu = function () {
 exports.default = Menu;
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4780,7 +4800,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(81);
+var _Story = __webpack_require__(83);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -4817,7 +4837,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4954,7 +4974,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4968,9 +4988,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(4);
 
-var _register = __webpack_require__(83);
+var _register = __webpack_require__(85);
 
-var _login = __webpack_require__(84);
+var _login = __webpack_require__(86);
 
 var _utils = __webpack_require__(3);
 
@@ -4985,12 +5005,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TitleView = function () {
-  function TitleView(store, canvas, ctx) {
+  function TitleView(store, canvas, ctx, loader) {
     _classCallCheck(this, TitleView);
 
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.water = loader.getImage('water');
 
     this.connect = new _Connect2.default(this.store);
     this.selected = null;
@@ -5030,12 +5051,30 @@ var TitleView = function () {
       this.dim = dim;
     }
   }, {
+    key: 'renderBackground',
+    value: function renderBackground() {
+      var id = 0;
+      var zoom = 4;
+      var size = this.water.tileset.tilewidth * zoom;
+
+      var endCol = Math.ceil(this.canvas.width / size + 1);
+      var endRow = Math.ceil(this.canvas.height / size + 1);
+      for (var col = 0; col <= endCol; col++) {
+        for (var row = 0; row <= endRow; row++) {
+          var x = col * size;
+          var y = row * size;
+          (0, _draw.drawById)(this.ctx, this.water, id, zoom, x, y);
+        }
+      }
+      // this.ctx.fillStyle = 'black';
+      // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.renderBackground();
 
       var fontSize = 60;
       var lineSize = fontSize + 4;
@@ -5078,7 +5117,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5135,7 +5174,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
