@@ -1,22 +1,30 @@
 { "columns":1,
  "image":"..\/images\/water.png",
- "imageheight":64,
+ "imageheight":128,
  "imagewidth":64,
  "margin":0,
  "name":"water",
  "spacing":0,
- "tilecount":1,
+ "tilecount":2,
  "tileheight":64,
  "tileproperties":
     {
      "0":
         {
-         "name":"water0"
+         "name":"top"
+        },
+     "1":
+        {
+         "name":"bottom"
         }
     },
  "tilepropertytypes":
     {
      "0":
+        {
+         "name":"string"
+        },
+     "1":
         {
          "name":"string"
         }

@@ -3,6 +3,7 @@ import { registerDialog } from '../dialogs/register';
 import { loginDialog } from '../dialogs/login';
 import { addButtonCoords, screenToTextId } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
+import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
 import { drawById, drawByName } from '../utils/draw';
 
@@ -12,6 +13,11 @@ export default class TitleView {
     this.canvas = canvas;
     this.ctx = ctx;
     this.water = loader.getImage('water');
+
+    this.zoom = 4;
+    this.size = this.water.tileset.tilewidth * this.zoom;
+    this.animateBottom = new Animation(this.size, this.zoom, 0.25);
+    this.animateTop = new Animation(this.size, this.zoom, 1);
 
     this.connect = new Connect(this.store);
     this.selected = null;
@@ -25,7 +31,16 @@ export default class TitleView {
     this.setDim = this.setDim.bind(this);
   }
 
-  update(delta) {
+  setDim(dim) {
+    this.dim = dim;
+  }
+
+  updateAnimation(delta) {
+    this.animateBottom.update(delta);
+    this.animateTop.update(delta);
+  }
+
+  handleClick() {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
       this.store.dispatch(clicked());
@@ -42,31 +57,34 @@ export default class TitleView {
     }
   }
 
-  setDim(dim) {
-    this.dim = dim;
+  update(delta) {
+    this.updateAnimation(delta);
+    this.handleClick();
   }
 
   renderBackground() {
-    const id = 0;
-    const zoom = 4;
-    const size = this.water.tileset.tilewidth * zoom;
+    const endCol = Math.ceil((this.canvas.width / this.size) + 1);
+    const endRow = Math.ceil((this.canvas.height / this.size) + 1);
+    const deltaX = this.animateBottom.getValue();
+    const deltaY = this.animateTop.getValue();
 
-    const endCol = Math.ceil((this.canvas.width / size) + 1);
-    const endRow = Math.ceil((this.canvas.height / size) + 1);
-    for (let col = 0; col <= endCol; col++) {
-      for (let row = 0; row <= endRow; row++) {
-        const x = col * size;
-        const y = row * size;
-        drawById(this.ctx, this.water, id, zoom, x, y);
+    for (let col = -1; col <= endCol + 1; col++) {
+      for (let row = -1; row <= endRow + 1; row++) {
+        const x = col * this.size;
+        const y = row * this.size;
+        drawByName(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
       }
     }
-    // this.ctx.fillStyle = 'black';
-    // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    for (let col = -1; col <= endCol + 1; col++) {
+      for (let row = -1; row <= endRow + 1; row++) {
+        const x = col * this.size;
+        const y = row * this.size;
+        drawByName(this.ctx, this.water, 'top', this.zoom, x, y + deltaY);
+      }
+    }
   }
 
-  render() {
-    this.renderBackground();
-
+  renderText() {
     let fontSize = 60;
     let lineSize = fontSize + 4;
     this.ctx.font = fontSize + 'px MECC';
@@ -94,7 +112,11 @@ export default class TitleView {
       });
       linePos++;
     });
+  }
 
+  render() {
+    this.renderBackground();
+    this.renderText();
     if (this.dim) {
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
