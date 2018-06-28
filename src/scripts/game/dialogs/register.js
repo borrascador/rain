@@ -1,6 +1,7 @@
 import { create, makeInputLine, makeButtons } from './utils';
 import { register } from '../../store/actions/requests';
-
+import { registerError } from '../../store/actions/actions';
+import { failureDialog } from './failure';
 
 export function registerDialog(store, setDim) {
   const container = document.getElementById('container');
@@ -28,8 +29,14 @@ export function registerDialog(store, setDim) {
   submit.onclick = () => {
     const usernameText = username.input.value.slice(0);
     const emailText = email.input.value.slice(0);
-    const passwordText = password1.input.value.slice(0);
-    store.dispatch(register(usernameText, emailText, passwordText, dimCallback, exitDialog));
+    const passwordText1 = password1.input.value.slice(0);
+    const passwordText2 = password2.input.value.slice(0);
+    if (passwordText1 === passwordText2) {
+      store.dispatch(register(usernameText, emailText, passwordText1, dimCallback, exitDialog));
+    } else {
+      store.dispatch(registerError('0003')); // Password matching error
+      failureDialog(store.getState().errorMessage, dimCallback);
+    }
   }
 
   cancel.onclick = exitDialog;

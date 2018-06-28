@@ -64,7 +64,8 @@ export default function reducer(state, action) {
     case POSITION_ERROR:
       return Object.assign({}, state, {
         sending: false,
-        error: action.payload.code
+        error: action.payload.code,
+        errorMessage: action.payload.message
       });
 
     case REGISTER_RESPONSE:

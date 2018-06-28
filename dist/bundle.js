@@ -554,7 +554,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         if (!getState().error) {
           (0, _success.successDialog)(dimCallback);
         } else {
-          (0, _failure.failureDialog)(dimCallback);
+          (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
         }
       });
       var timer = setTimeout(function () {
@@ -562,7 +562,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         exitRegister();
         exitLoading();
         getState().sending && dispatch((0, _actions.registerError)('0201')); // Timeout error
-        (0, _failure.failureDialog)(dimCallback);
+        (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
       }, 2000);
     }
   };
@@ -582,7 +582,7 @@ function login(user, password, dimCallback, exitLogin) {
         if (!getState().error) {
           dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
         } else {
-          (0, _failure.failureDialog)(dimCallback);
+          (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
         }
       });
       var timer = setTimeout(function () {
@@ -590,7 +590,7 @@ function login(user, password, dimCallback, exitLogin) {
         exitLogin();
         exitLoading();
         getState().sending && dispatch((0, _actions.loginError)('0201')); // Timeout error
-        (0, _failure.failureDialog)(dimCallback);
+        (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
       }, 2000);
     }
   };
@@ -718,11 +718,15 @@ var _reduxSubscriber = __webpack_require__(57);
 
 var _reduxSubscriber2 = _interopRequireDefault(_reduxSubscriber);
 
+var _errors = __webpack_require__(88);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function configureStore() {
 	var loggerMiddleware = (0, _reduxLogger.createLogger)();
-	return (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxWebsocketBridge2.default)('ws://localhost:8887/'), loggerMiddleware));
+	return (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxWebsocketBridge2.default)('ws://localhost:8887/'), _errors.errorLogger
+	// loggerMiddleware
+	));
 }
 
 var store = exports.store = configureStore();
@@ -2839,7 +2843,8 @@ function reducer(state, action) {
     case _actions.POSITION_ERROR:
       return Object.assign({}, state, {
         sending: false,
-        error: action.payload.code
+        error: action.payload.code,
+        errorMessage: action.payload.message
       });
 
     case _actions.REGISTER_RESPONSE:
@@ -4153,13 +4158,15 @@ exports.failureDialog = failureDialog;
 
 var _utils = __webpack_require__(5);
 
-function failureDialog(dimCallback) {
+function failureDialog(message, dimCallback) {
   var container = document.getElementById('container');
   var dialog = (0, _utils.create)('div', 'dialog', 'failure');
   container.append(dialog);
 
   var title = (0, _utils.create)('div', 'title');
   title.innerHTML = 'FAILURE';
+  var text = (0, _utils.create)('div', 'text');
+  text.innerHTML = message;
   var submit = (0, _utils.create)('button', 'submit');
   submit.innerHTML = 'OK';
   var buttons = (0, _utils.create)('div', 'buttons');
@@ -4173,7 +4180,7 @@ function failureDialog(dimCallback) {
   };
 
   var content = (0, _utils.create)('div', 'content');
-  content.append(title, buttons);
+  content.append(title, text, buttons);
   dialog.append(content);
 }
 
@@ -5161,6 +5168,10 @@ var _utils = __webpack_require__(5);
 
 var _requests = __webpack_require__(6);
 
+var _actions = __webpack_require__(1);
+
+var _failure = __webpack_require__(74);
+
 function registerDialog(store, setDim) {
   var container = document.getElementById('container');
   var dialog = (0, _utils.create)('div', 'dialog', 'register');
@@ -5191,8 +5202,14 @@ function registerDialog(store, setDim) {
   submit.onclick = function () {
     var usernameText = username.input.value.slice(0);
     var emailText = email.input.value.slice(0);
-    var passwordText = password1.input.value.slice(0);
-    store.dispatch((0, _requests.register)(usernameText, emailText, passwordText, dimCallback, exitDialog));
+    var passwordText1 = password1.input.value.slice(0);
+    var passwordText2 = password2.input.value.slice(0);
+    if (passwordText1 === passwordText2) {
+      store.dispatch((0, _requests.register)(usernameText, emailText, passwordText1, dimCallback, exitDialog));
+    } else {
+      store.dispatch((0, _actions.registerError)('0003')); // Password matching error
+      (0, _failure.failureDialog)(store.getState().errorMessage, dimCallback);
+    }
   };
 
   cancel.onclick = exitDialog;
@@ -5255,6 +5272,79 @@ function loginDialog(store, setDim) {
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
 }
+
+/***/ }),
+/* 87 */,
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var errorMessages = {
+  // Register
+  '0000': 'Message syntax error',
+  '0001': 'Username taken',
+  '0002': 'Email taken',
+  '0003': 'Passwords do not match',
+
+  // Login
+  '0100': 'Message syntax error',
+  '0101': 'Username or password incorrect',
+  '0102': 'User already online',
+  '0103': 'Too many login attempts',
+  '0104': 'Account suspended',
+  '0105': 'Client instance already logged in',
+
+  // Connection
+  '0201': 'Response timeout',
+  '0202': 'Websocket closed unexpectedly',
+  '0203': 'Request type not recognized',
+  '0204': 'Response type not recognized',
+
+  // Move
+  '0300': 'Message syntax error',
+  '0301': 'Illegal move',
+  '0302': 'Exceeded move limit',
+  '0303': 'Not logged in',
+
+  // Logout
+  '0401': 'Account already logged out'
+};
+
+var errorTypes = {
+  '00': 'Register',
+  '01': 'Login',
+  '02': 'Connection',
+  '03': 'Move',
+  '04': 'Logout'
+};
+
+function getErrorType(id) {
+  return errorTypes[id.substring(0, 2)];
+}
+
+function logError(id) {
+  var type = getErrorType(id);
+  var message = errorMessages[id];
+  type && message ? console.error(type + 'Error #' + id + ': ' + message) : console.error('Error code not recognized');
+  return message;
+}
+
+var errorLogger = exports.errorLogger = function errorLogger(store) {
+  return function (next) {
+    return function (action) {
+      // TODO: Check if action type is a non-empty string
+      if (action.type.substring(action.type.length - 5, action.type.length) === 'ERROR') {
+        action.payload.message = action.payload && action.payload.code && logError(action.payload.code) || 'Unknown Error';
+      }
+      next(action);
+    };
+  };
+};
 
 /***/ })
 /******/ ]);

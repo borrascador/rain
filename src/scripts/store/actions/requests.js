@@ -25,7 +25,7 @@ export function register(user, email, password, dimCallback, exitRegister) {
         if (!getState().error) {
           successDialog(dimCallback);
         } else {
-          failureDialog(dimCallback);
+          failureDialog(getState().errorMessage, dimCallback);
         }
       });
       const timer = setTimeout(() => {
@@ -33,7 +33,7 @@ export function register(user, email, password, dimCallback, exitRegister) {
         exitRegister();
         exitLoading();
         getState().sending && dispatch(registerError('0201')); // Timeout error
-        failureDialog(dimCallback);
+        failureDialog(getState().errorMessage, dimCallback);
       }, 2000);
     }
   }
@@ -53,7 +53,7 @@ export function login(user, password, dimCallback, exitLogin) {
         if (!getState().error) {
           dispatch(changeMode(MODE.MAP));
         } else {
-          failureDialog(dimCallback);
+          failureDialog(getState().errorMessage, dimCallback);
         }
       });
       const timer = setTimeout(() => {
@@ -61,7 +61,7 @@ export function login(user, password, dimCallback, exitLogin) {
         exitLogin();
         exitLoading();
         getState().sending && dispatch(loginError('0201')); // Timeout error
-        failureDialog(dimCallback);
+        failureDialog(getState().errorMessage, dimCallback);
       }, 2000);
     }
   }

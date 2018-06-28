@@ -3,6 +3,7 @@ const errorMessages = {
   '0000': 'Message syntax error',
   '0001': 'Username taken',
   '0002': 'Email taken',
+  '0003': 'Passwords do not match',
 
   // Login
   '0100': 'Message syntax error',
@@ -40,8 +41,19 @@ function getErrorType(id) {
   return errorTypes[id.substring(0,2)];
 }
 
-export function logError(id) {
+function logError(id) {
   const type = getErrorType(id);
   const message = errorMessages[id];
-  console.error(`${type}Error #${id}: ${message}`);
+  (type && message)
+    ? console.error(`${type}Error #${id}: ${message}`)
+    : console.error(`Error code not recognized`);
+  return message;
+}
+
+export const errorLogger = store => next => action => {
+  // TODO: Check if action type is a non-empty string
+	if (action.type.substring(action.type.length - 5, action.type.length) === 'ERROR') {
+		action.payload.message = action.payload && action.payload.code && logError(action.payload.code) || 'Unknown Error';
+	}
+	next(action);
 }
