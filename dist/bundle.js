@@ -2166,6 +2166,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 window.onload = function () {
   var canvas = document.getElementById('game');
   var ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled = false;
 
   var rainGame = new _index2.default(_store.store, canvas, ctx);
@@ -4496,11 +4499,12 @@ var Vehicle = function () {
 
       var vehicle = this.connect.vehicle.vehicle;
 
-      var size = this.iconsXl.tileset.tilewidth * this.scale;
+      var vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
+      var wrenchSize = this.icons.tileset.tilewidth;
 
-      (0, _draw.drawById)(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - size);
+      (0, _draw.drawById)(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - vehicleSize);
       [].concat(_toConsumableArray(Array(vehicle.repair))).map(function (_, i) {
-        (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, 64 + i * 24, 440);
+        (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, vehicleSize + i * (wrenchSize + 8), _this.canvas.height - (wrenchSize + vehicleSize) / 2);
       });
     }
   }]);
@@ -5148,6 +5152,11 @@ var TitleView = function () {
   }, {
     key: 'update',
     value: function update(delta) {
+      if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.ctx.imageSmoothingEnabled = false;
+      }
       this.updateAnimation(delta);
       this.handleClick();
     }
@@ -5186,7 +5195,8 @@ var TitleView = function () {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'alphabetic';
 
-      var linePos = 2;
+      var linePos = this.canvas.height * (1 / 4) / lineSize;
+      console.log('big', linePos);
       this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
       this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
 
@@ -5194,7 +5204,8 @@ var TitleView = function () {
       lineSize = fontSize + 16;
       this.ctx.font = fontSize + 'px MECC';
 
-      linePos = 7;
+      linePos = this.canvas.height * (3 / 4) / lineSize;
+      console.log('small', linePos);
       this.buttons.map(function (button, idx) {
         _this2.ctx.fillStyle = _this2.selectedId === button.id ? '#FF0' : '#FFF';
         _this2.ctx.fillText(button.text, _this2.canvas.width / 2, linePos * lineSize);

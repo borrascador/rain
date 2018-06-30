@@ -58,6 +58,11 @@ export default class TitleView {
   }
 
   update(delta) {
+    if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.ctx.imageSmoothingEnabled = false;
+    }
     this.updateAnimation(delta);
     this.handleClick();
   }
@@ -92,7 +97,8 @@ export default class TitleView {
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'alphabetic';
 
-    let linePos = 2;
+    let linePos = (this.canvas.height * (1/4)) / lineSize;
+    console.log('big', linePos);
     this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
     this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
 
@@ -100,7 +106,8 @@ export default class TitleView {
     lineSize = fontSize + 16;
     this.ctx.font = fontSize + 'px MECC';
 
-    linePos = 7;
+    linePos = (this.canvas.height * (3/4)) / lineSize;
+    console.log('small', linePos);
     this.buttons.map((button, idx) => {
       this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
       this.ctx.fillText(button.text, this.canvas.width / 2, linePos * lineSize);
