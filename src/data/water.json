@@ -1,19 +1,31 @@
-{ "columns":1,
+{ "columns":4,
  "image":"..\/images\/water.png",
  "imageheight":128,
- "imagewidth":64,
+ "imagewidth":256,
  "margin":0,
  "name":"water",
  "spacing":0,
- "tilecount":2,
+ "tilecount":8,
  "tileheight":64,
  "tileproperties":
     {
      "0":
         {
-         "name":"top"
+         "name":"top0"
         },
      "1":
+        {
+         "name":"top1"
+        },
+     "2":
+        {
+         "name":"top2"
+        },
+     "3":
+        {
+         "name":"top3"
+        },
+     "4":
         {
          "name":"bottom"
         }
@@ -25,6 +37,18 @@
          "name":"string"
         },
      "1":
+        {
+         "name":"string"
+        },
+     "2":
+        {
+         "name":"string"
+        },
+     "3":
+        {
+         "name":"string"
+        },
+     "4":
         {
          "name":"string"
         }

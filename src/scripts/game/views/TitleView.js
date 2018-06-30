@@ -16,8 +16,8 @@ export default class TitleView {
 
     this.zoom = 4;
     this.size = this.water.tileset.tilewidth * this.zoom;
-    this.animateBottom = new Animation(this.size, this.zoom, 0.25);
-    this.animateTop = new Animation(this.size, this.zoom, 1);
+    this.animateBottom = new Animation(this.size, this.zoom * 2, 0.5);
+    this.animateTop = new Animation(3, 1, 0.5);
 
     this.connect = new Connect(this.store);
     this.selected = null;
@@ -66,7 +66,7 @@ export default class TitleView {
     const endCol = Math.ceil((this.canvas.width / this.size) + 1);
     const endRow = Math.ceil((this.canvas.height / this.size) + 1);
     const deltaX = this.animateBottom.getValue();
-    const deltaY = this.animateTop.getValue();
+    const deltaTop = this.animateTop.getValue();
 
     for (let col = -1; col <= endCol + 1; col++) {
       for (let row = -1; row <= endRow + 1; row++) {
@@ -79,7 +79,7 @@ export default class TitleView {
       for (let row = -1; row <= endRow + 1; row++) {
         const x = col * this.size;
         const y = row * this.size;
-        drawByName(this.ctx, this.water, 'top', this.zoom, x, y + deltaY);
+        drawById(this.ctx, this.water, deltaTop.toString(), this.zoom, x, y);
       }
     }
   }
