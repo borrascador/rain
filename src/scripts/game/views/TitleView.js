@@ -1,26 +1,46 @@
 import { makeTextButton } from '../utils/draw';
-import { showLogin, showRegister } from '../utils/dialogs';
+import { registerDialog } from '../dialogs/register';
+import { loginDialog } from '../dialogs/login';
 import { addButtonCoords, screenToTextId } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
+import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
+import { drawById, drawByName } from '../utils/draw';
 
 export default class TitleView {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.water = loader.getImage('water');
+
+    this.zoom = 4;
+    this.size = this.water.tileset.tilewidth * this.zoom;
+    this.animateBottom = new Animation(this.size, this.zoom * 2, 0.5);
+    this.animateTop = new Animation(3, 1, 0.5);
 
     this.connect = new Connect(this.store);
-
     this.selected = null;
+    this.setDim(false);
 
     this.buttons = [
-      { id: 1, text: 'LOGIN', onClick: showLogin },
-      { id: 2, text: 'REGISTER', onClick: showRegister }
+      { id: 1, text: 'LOGIN', onClick: loginDialog },
+      { id: 2, text: 'REGISTER', onClick: registerDialog }
     ];
+
+    this.setDim = this.setDim.bind(this);
   }
 
-  update(delta) {
+  setDim(dim) {
+    this.dim = dim;
+  }
+
+  updateAnimation(delta) {
+    this.animateBottom.update(delta);
+    this.animateTop.update(delta);
+  }
+
+  handleClick() {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
       this.store.dispatch(clicked());
@@ -28,23 +48,48 @@ export default class TitleView {
       if (this.selectedId && this.selectedId === clickId) {
         this.buttons.find((button) =>
           this.selectedId === button.id
-        ).onClick(this.store, this.undim.bind(this));
+        ).onClick(this.store, this.setDim);
         this.selectedId = null;
-        this.dim = true;
+        this.setDim(true);
       } else {
         this.selectedId = clickId;
       }
     }
   }
 
-  undim() {
-    this.dim = false;
+  update(delta) {
+    if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+      this.ctx.imageSmoothingEnabled = false;
+    }
+    this.updateAnimation(delta);
+    this.handleClick();
   }
 
-  render() {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  renderBackground() {
+    const endCol = Math.ceil((this.canvas.width / this.size) + 1);
+    const endRow = Math.ceil((this.canvas.height / this.size) + 1);
+    const deltaX = this.animateBottom.getValue();
+    const deltaTop = this.animateTop.getValue();
 
+    for (let col = -1; col <= endCol + 1; col++) {
+      for (let row = -1; row <= endRow + 1; row++) {
+        const x = col * this.size;
+        const y = row * this.size;
+        drawByName(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
+      }
+    }
+    for (let col = -1; col <= endCol + 1; col++) {
+      for (let row = -1; row <= endRow + 1; row++) {
+        const x = col * this.size;
+        const y = row * this.size;
+        drawById(this.ctx, this.water, deltaTop.toString(), this.zoom, x, y);
+      }
+    }
+  }
+
+  renderText() {
     let fontSize = 60;
     let lineSize = fontSize + 4;
     this.ctx.font = fontSize + 'px MECC';
@@ -52,7 +97,8 @@ export default class TitleView {
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'alphabetic';
 
-    let linePos = 2;
+    let linePos = (this.canvas.height * (1/4)) / lineSize;
+    console.log('big', linePos);
     this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
     this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
 
@@ -60,7 +106,8 @@ export default class TitleView {
     lineSize = fontSize + 16;
     this.ctx.font = fontSize + 'px MECC';
 
-    linePos = 7;
+    linePos = (this.canvas.height * (3/4)) / lineSize;
+    console.log('small', linePos);
     this.buttons.map((button, idx) => {
       this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
       this.ctx.fillText(button.text, this.canvas.width / 2, linePos * lineSize);
@@ -72,7 +119,11 @@ export default class TitleView {
       });
       linePos++;
     });
+  }
 
+  render() {
+    this.renderBackground();
+    this.renderText();
     if (this.dim) {
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);

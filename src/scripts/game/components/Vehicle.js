@@ -35,11 +35,15 @@ export default class Vehicle {
 
   render() {
     const {vehicle} = this.connect.vehicle;
-    const size = this.iconsXl.tileset.tilewidth * this.scale;
+    const vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
+    const wrenchSize = this.icons.tileset.tilewidth;
 
-    drawById(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - size);
+    drawById(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - vehicleSize);
     [...Array(vehicle.repair)].map((_, i) => {
-      drawByName(this.ctx, this.icons, 'wrench', 1, 64 + i * 24, 440);
+      drawByName(
+        this.ctx, this.icons, 'wrench', 1, vehicleSize + i * (wrenchSize + 8),
+        this.canvas.height - ((wrenchSize + vehicleSize) / 2)
+      );
     });
   }
 }

@@ -4,6 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducers/index.js';
 import ReduxWebSocketBridge from 'redux-websocket-bridge';
 import initSubscriber from 'redux-subscriber';
+import { errorLogger } from './utils/errors';
 
 function configureStore () {
 	const loggerMiddleware = createLogger();
@@ -12,7 +13,8 @@ function configureStore () {
 		applyMiddleware(
 			thunkMiddleware,
 			ReduxWebSocketBridge('ws://localhost:8887/'),
-			loggerMiddleware
+			errorLogger,
+			// loggerMiddleware
 		)
 	)
 }
