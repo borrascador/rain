@@ -423,6 +423,13 @@ var screenToTextId = exports.screenToTextId = function screenToTextId(x, y, list
   return selectedButton && selectedButton.id || null;
 };
 
+var screenToTextButton = exports.screenToTextButton = function screenToTextButton(x, y, list) {
+  var selectedButton = list.find(function (button) {
+    return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
+  });
+  return selectedButton || null;
+};
+
 var screenToButtonId = exports.screenToButtonId = function screenToButtonId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
@@ -455,6 +462,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.drawById = drawById;
 exports.drawByName = drawByName;
+exports.roundToZoom = roundToZoom;
+exports.centerText = centerText;
 function drawById(ctx, img, id, zoom, x, y) {
   var _img$tileset = img.tileset,
       tileheight = _img$tileset.tileheight,
@@ -467,6 +476,24 @@ function drawById(ctx, img, id, zoom, x, y) {
 function drawByName(ctx, img, name, zoom, x, y) {
   var id = img.tilenames[name];
   drawById(ctx, img, id, zoom, x, y);
+}
+
+function roundToZoom(zoom, value) {
+  return zoom * Math.round(value / zoom);
+}
+
+function centerText(canvas, ctx, zoom, fontSize, lineSize, lines, pos) {
+  return lines.map(function (line, idx) {
+    var x = canvas.width / 2 - ctx.measureText(line.text).width / 2;
+    var y = canvas.height * pos + fontSize - lineSize * lines.length / 2 + lineSize * idx;
+    ctx.fillText(line.text, roundToZoom(zoom, x), roundToZoom(zoom, y));
+    return Object.assign({}, line, {
+      xPos: x,
+      yPos: y,
+      width: ctx.measureText(line.text).width,
+      height: fontSize
+    });
+  });
 }
 
 /***/ }),
@@ -2170,6 +2197,7 @@ window.onload = function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled = false;
+  ctx.textBaseline = 'alphabetic';
 
   var rainGame = new _index2.default(_store.store, canvas, ctx);
 
@@ -5102,17 +5130,18 @@ var TitleView = function () {
     this.water = loader.getImage('water');
 
     this.zoom = 4;
+    this.gutter = 4;
     this.size = this.water.tileset.tilewidth * this.zoom;
     this.animateBottom = new _Animation2.default(this.size, this.zoom * 2, 0.5);
     this.animateTop = new _Animation2.default(3, 1, 0.5);
 
     this.connect = new _Connect2.default(this.store);
-    this.selected = null;
     this.setDim(false);
 
-    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.loginDialog }, { id: 2, text: 'REGISTER', onClick: _register.registerDialog }];
+    this.buttons = [{ text: 'LOGIN', onClick: _login.loginDialog }, { text: 'REGISTER', onClick: _register.registerDialog }];
 
     this.setDim = this.setDim.bind(this);
+    this.centerText = _draw.centerText.bind(null, this.canvas, this.ctx, this.zoom);
   }
 
   _createClass(TitleView, [{
@@ -5129,24 +5158,14 @@ var TitleView = function () {
   }, {
     key: 'handleClick',
     value: function handleClick() {
-      var _this = this;
-
       var _connect$click = this.connect.click,
           xClick = _connect$click.xClick,
           yClick = _connect$click.yClick;
 
       if (xClick && yClick) {
         this.store.dispatch((0, _actions.clicked)());
-        var clickId = (0, _utils.screenToTextId)(xClick, yClick, this.buttons);
-        if (this.selectedId && this.selectedId === clickId) {
-          this.buttons.find(function (button) {
-            return _this.selectedId === button.id;
-          }).onClick(this.store, this.setDim);
-          this.selectedId = null;
-          this.setDim(true);
-        } else {
-          this.selectedId = clickId;
-        }
+        var button = !this.dim && (0, _utils.screenToTextButton)(xClick, yClick, this.buttons);
+        button && button.onClick(this.store, this.setDim);
       }
     }
   }, {
@@ -5186,37 +5205,16 @@ var TitleView = function () {
   }, {
     key: 'renderText',
     value: function renderText() {
-      var _this2 = this;
-
-      var fontSize = 60;
-      var lineSize = fontSize + 4;
+      var fontSize = 64;
+      var lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
       this.ctx.font = fontSize + 'px MECC';
       this.ctx.fillStyle = '#FFF';
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'alphabetic';
+      this.centerText(fontSize, lineSize, [{ text: 'RAINFOREST' }, { text: 'TRAIL' }], 1 / 4);
 
-      var linePos = this.canvas.height * (1 / 4) / lineSize;
-      console.log('big', linePos);
-      this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
-      this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
-
-      fontSize = 28;
-      lineSize = fontSize + 16;
+      fontSize = 32;
+      lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
       this.ctx.font = fontSize + 'px MECC';
-
-      linePos = this.canvas.height * (3 / 4) / lineSize;
-      console.log('small', linePos);
-      this.buttons.map(function (button, idx) {
-        _this2.ctx.fillStyle = _this2.selectedId === button.id ? '#FF0' : '#FFF';
-        _this2.ctx.fillText(button.text, _this2.canvas.width / 2, linePos * lineSize);
-        (0, _utils.addButtonCoords)(button, {
-          xPos: _this2.canvas.width / 2 - _this2.ctx.measureText(button.text).width / 2,
-          yPos: linePos * lineSize,
-          width: _this2.ctx.measureText(button.text).width,
-          height: fontSize
-        });
-        linePos++;
-      });
+      this.buttons = this.centerText(fontSize, lineSize, this.buttons, 3 / 4);
     }
   }, {
     key: 'render',
@@ -5271,6 +5269,8 @@ function registerDialog(store, setDim) {
       buttons = _makeButtons.buttons,
       submit = _makeButtons.submit,
       cancel = _makeButtons.cancel;
+
+  setDim(true);
 
   var dimCallback = function dimCallback(dim) {
     setDim(dim);
@@ -5332,6 +5332,8 @@ function loginDialog(store, setDim) {
       buttons = _makeButtons.buttons,
       submit = _makeButtons.submit,
       cancel = _makeButtons.cancel;
+
+  setDim(true);
 
   var dimCallback = function dimCallback(dim) {
     setDim(dim);

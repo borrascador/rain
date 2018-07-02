@@ -15,6 +15,16 @@ export const screenToTextId = (x, y, list) => {
   return selectedButton && selectedButton.id || null;
 };
 
+export const screenToTextButton = (x, y, list) => {
+  const selectedButton = list.find(button => {
+    return (
+      x >= button.xPos && x <= (button.xPos + button.width) &&
+      y <= button.yPos && y >= (button.yPos - button.height)
+    );
+  });
+  return selectedButton || null;
+};
+
 export const screenToButtonId = (x, y, list) => {
   const selectedButton = list.find(button => {
     return (

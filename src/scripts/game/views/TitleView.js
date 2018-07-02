@@ -1,11 +1,11 @@
 import { makeTextButton } from '../utils/draw';
 import { registerDialog } from '../dialogs/register';
 import { loginDialog } from '../dialogs/login';
-import { addButtonCoords, screenToTextId } from '../components/utils';
+import { addButtonCoords, screenToTextButton } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
 import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
-import { drawById, drawByName } from '../utils/draw';
+import { drawById, drawByName, roundToZoom, centerText } from '../utils/draw';
 
 export default class TitleView {
   constructor (store, canvas, ctx, loader) {
@@ -15,20 +15,21 @@ export default class TitleView {
     this.water = loader.getImage('water');
 
     this.zoom = 4;
+    this.gutter = 4;
     this.size = this.water.tileset.tilewidth * this.zoom;
     this.animateBottom = new Animation(this.size, this.zoom * 2, 0.5);
     this.animateTop = new Animation(3, 1, 0.5);
 
     this.connect = new Connect(this.store);
-    this.selected = null;
     this.setDim(false);
 
     this.buttons = [
-      { id: 1, text: 'LOGIN', onClick: loginDialog },
-      { id: 2, text: 'REGISTER', onClick: registerDialog }
+      { text: 'LOGIN', onClick: loginDialog },
+      { text: 'REGISTER', onClick: registerDialog }
     ];
 
     this.setDim = this.setDim.bind(this);
+    this.centerText = centerText.bind(null, this.canvas, this.ctx, this.zoom);
   }
 
   setDim(dim) {
@@ -44,16 +45,8 @@ export default class TitleView {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
       this.store.dispatch(clicked());
-      const clickId = screenToTextId(xClick, yClick, this.buttons);
-      if (this.selectedId && this.selectedId === clickId) {
-        this.buttons.find((button) =>
-          this.selectedId === button.id
-        ).onClick(this.store, this.setDim);
-        this.selectedId = null;
-        this.setDim(true);
-      } else {
-        this.selectedId = clickId;
-      }
+      const button = !this.dim && screenToTextButton(xClick, yClick, this.buttons);
+      button && button.onClick(this.store, this.setDim)
     }
   }
 
@@ -90,35 +83,16 @@ export default class TitleView {
   }
 
   renderText() {
-    let fontSize = 60;
-    let lineSize = fontSize + 4;
+    let fontSize = 64;
+    let lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
     this.ctx.font = fontSize + 'px MECC';
     this.ctx.fillStyle = '#FFF';
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'alphabetic';
+    this.centerText(fontSize, lineSize, [{text: 'RAINFOREST'}, {text: 'TRAIL'}], 1/4);
 
-    let linePos = (this.canvas.height * (1/4)) / lineSize;
-    console.log('big', linePos);
-    this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
-    this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
-
-    fontSize = 28;
-    lineSize = fontSize + 16;
+    fontSize = 32;
+    lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
     this.ctx.font = fontSize + 'px MECC';
-
-    linePos = (this.canvas.height * (3/4)) / lineSize;
-    console.log('small', linePos);
-    this.buttons.map((button, idx) => {
-      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
-      this.ctx.fillText(button.text, this.canvas.width / 2, linePos * lineSize);
-      addButtonCoords(button, {
-        xPos: this.canvas.width / 2 - this.ctx.measureText(button.text).width / 2,
-        yPos: linePos * lineSize,
-        width: this.ctx.measureText(button.text).width,
-        height: fontSize
-      });
-      linePos++;
-    });
+    this.buttons = this.centerText(fontSize, lineSize, this.buttons, 3/4);
   }
 
   render() {

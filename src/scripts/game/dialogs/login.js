@@ -12,6 +12,8 @@ export function loginDialog(store, setDim) {
   const password = makeInputLine('password');
   const { buttons, submit, cancel } = makeButtons();
 
+  setDim(true);
+
   const dimCallback = (dim) => {
     setDim(dim);
     dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
