@@ -19,15 +19,18 @@ export function roundToZoom(zoom, value) {
   return zoom * Math.round(value / zoom);
 }
 
-export function centerText(canvas, ctx, zoom, fontSize, lineSize, lines, pos) {
+export function centerText(canvas, ctx, zoom, gutter, lines, fontSize, pos) {
+  ctx.font = fontSize + 'px MECC';
+  const lineHeight = fontSize + zoom * gutter - fontSize / 8;
   return lines.map((line, idx) => {
-    let x = canvas.width / 2 - ctx.measureText(line.text).width / 2;
-    let y = canvas.height * pos + fontSize - lineSize * lines.length / 2 + lineSize * idx;
-    ctx.fillText(line.text, roundToZoom(zoom, x), roundToZoom(zoom, y));
+    const lineWidth = ctx.measureText(line.text).width;
+    let x = roundToZoom(zoom, canvas.width / 2 - lineWidth / 2);
+    let y = roundToZoom(zoom, canvas.height * pos + fontSize - lineHeight * lines.length / 2 + lineHeight * idx);
+    ctx.fillText(line.text, x, y);
     return Object.assign({}, line, {
       xPos: x,
       yPos: y,
-      width: ctx.measureText(line.text).width,
+      width: lineWidth,
       height: fontSize
     });
   });

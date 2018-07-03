@@ -5,6 +5,14 @@ export const addButtonCoords = (option, buttonCoords) => {
   }
 };
 
+// TODO: eventually replace above version with this:
+export const addCoords = (button, coords) => {
+  const props = ['xPos', 'yPos', 'width', 'height'];
+  if (!props.every(prop => Object.keys(button).includes(prop))) {
+    return Object.assign({}, button, coords);
+  }
+};
+
 export const screenToTextId = (x, y, list) => {
   const selectedButton = list.find(button => {
     return (

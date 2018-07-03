@@ -23,13 +23,18 @@ export default class TitleView {
     this.connect = new Connect(this.store);
     this.setDim(false);
 
+    this.title = [
+      { text: 'RAINFOREST' },
+      { text: 'TRAIL' }
+    ];
+
     this.buttons = [
       { text: 'LOGIN', onClick: loginDialog },
       { text: 'REGISTER', onClick: registerDialog }
     ];
 
     this.setDim = this.setDim.bind(this);
-    this.centerText = centerText.bind(null, this.canvas, this.ctx, this.zoom);
+    this.centerText = centerText.bind(null, this.canvas, this.ctx, this.zoom, this.gutter);
   }
 
   setDim(dim) {
@@ -61,20 +66,20 @@ export default class TitleView {
   }
 
   renderBackground() {
-    const endCol = Math.ceil((this.canvas.width / this.size) + 1);
-    const endRow = Math.ceil((this.canvas.height / this.size) + 1);
+    const endCol = Math.floor((this.canvas.width / this.size));
+    const endRow = Math.floor((this.canvas.height / this.size));
     const deltaX = this.animateBottom.getValue();
     const deltaTop = this.animateTop.getValue();
 
-    for (let col = -1; col <= endCol + 1; col++) {
-      for (let row = -1; row <= endRow + 1; row++) {
+    for (let col = -1; col <= endCol; col++) {
+      for (let row = 0; row <= endRow; row++) {
         const x = col * this.size;
         const y = row * this.size;
         drawByName(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
       }
     }
-    for (let col = -1; col <= endCol + 1; col++) {
-      for (let row = -1; row <= endRow + 1; row++) {
+    for (let col = 0; col <= endCol; col++) {
+      for (let row = 0; row <= endRow; row++) {
         const x = col * this.size;
         const y = row * this.size;
         drawById(this.ctx, this.water, deltaTop.toString(), this.zoom, x, y);
@@ -83,16 +88,9 @@ export default class TitleView {
   }
 
   renderText() {
-    let fontSize = 64;
-    let lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
-    this.ctx.font = fontSize + 'px MECC';
     this.ctx.fillStyle = '#FFF';
-    this.centerText(fontSize, lineSize, [{text: 'RAINFOREST'}, {text: 'TRAIL'}], 1/4);
-
-    fontSize = 32;
-    lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
-    this.ctx.font = fontSize + 'px MECC';
-    this.buttons = this.centerText(fontSize, lineSize, this.buttons, 3/4);
+    this.title = this.centerText(this.title, 64, 1/4);
+    this.buttons = this.centerText(this.buttons, 32, 3/4);
   }
 
   render() {

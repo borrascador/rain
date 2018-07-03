@@ -416,6 +416,16 @@ var addButtonCoords = exports.addButtonCoords = function addButtonCoords(option,
   }
 };
 
+// TODO: eventually replace above version with this:
+var addCoords = exports.addCoords = function addCoords(button, coords) {
+  var props = ['xPos', 'yPos', 'width', 'height'];
+  if (!props.every(function (prop) {
+    return Object.keys(button).includes(prop);
+  })) {
+    return Object.assign({}, button, coords);
+  }
+};
+
 var screenToTextId = exports.screenToTextId = function screenToTextId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
@@ -482,15 +492,18 @@ function roundToZoom(zoom, value) {
   return zoom * Math.round(value / zoom);
 }
 
-function centerText(canvas, ctx, zoom, fontSize, lineSize, lines, pos) {
+function centerText(canvas, ctx, zoom, gutter, lines, fontSize, pos) {
+  ctx.font = fontSize + 'px MECC';
+  var lineHeight = fontSize + zoom * gutter - fontSize / 8;
   return lines.map(function (line, idx) {
-    var x = canvas.width / 2 - ctx.measureText(line.text).width / 2;
-    var y = canvas.height * pos + fontSize - lineSize * lines.length / 2 + lineSize * idx;
-    ctx.fillText(line.text, roundToZoom(zoom, x), roundToZoom(zoom, y));
+    var lineWidth = ctx.measureText(line.text).width;
+    var x = roundToZoom(zoom, canvas.width / 2 - lineWidth / 2);
+    var y = roundToZoom(zoom, canvas.height * pos + fontSize - lineHeight * lines.length / 2 + lineHeight * idx);
+    ctx.fillText(line.text, x, y);
     return Object.assign({}, line, {
       xPos: x,
       yPos: y,
-      width: ctx.measureText(line.text).width,
+      width: lineWidth,
       height: fontSize
     });
   });
@@ -5138,10 +5151,12 @@ var TitleView = function () {
     this.connect = new _Connect2.default(this.store);
     this.setDim(false);
 
+    this.title = [{ text: 'RAINFOREST' }, { text: 'TRAIL' }];
+
     this.buttons = [{ text: 'LOGIN', onClick: _login.loginDialog }, { text: 'REGISTER', onClick: _register.registerDialog }];
 
     this.setDim = this.setDim.bind(this);
-    this.centerText = _draw.centerText.bind(null, this.canvas, this.ctx, this.zoom);
+    this.centerText = _draw.centerText.bind(null, this.canvas, this.ctx, this.zoom, this.gutter);
   }
 
   _createClass(TitleView, [{
@@ -5182,20 +5197,20 @@ var TitleView = function () {
   }, {
     key: 'renderBackground',
     value: function renderBackground() {
-      var endCol = Math.ceil(this.canvas.width / this.size + 1);
-      var endRow = Math.ceil(this.canvas.height / this.size + 1);
+      var endCol = Math.floor(this.canvas.width / this.size);
+      var endRow = Math.floor(this.canvas.height / this.size);
       var deltaX = this.animateBottom.getValue();
       var deltaTop = this.animateTop.getValue();
 
-      for (var col = -1; col <= endCol + 1; col++) {
-        for (var row = -1; row <= endRow + 1; row++) {
+      for (var col = -1; col <= endCol; col++) {
+        for (var row = 0; row <= endRow; row++) {
           var x = col * this.size;
           var y = row * this.size;
           (0, _draw.drawByName)(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
         }
       }
-      for (var _col = -1; _col <= endCol + 1; _col++) {
-        for (var _row = -1; _row <= endRow + 1; _row++) {
+      for (var _col = 0; _col <= endCol; _col++) {
+        for (var _row = 0; _row <= endRow; _row++) {
           var _x = _col * this.size;
           var _y = _row * this.size;
           (0, _draw.drawById)(this.ctx, this.water, deltaTop.toString(), this.zoom, _x, _y);
@@ -5205,16 +5220,9 @@ var TitleView = function () {
   }, {
     key: 'renderText',
     value: function renderText() {
-      var fontSize = 64;
-      var lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
-      this.ctx.font = fontSize + 'px MECC';
       this.ctx.fillStyle = '#FFF';
-      this.centerText(fontSize, lineSize, [{ text: 'RAINFOREST' }, { text: 'TRAIL' }], 1 / 4);
-
-      fontSize = 32;
-      lineSize = fontSize + this.zoom * this.gutter - fontSize / 8;
-      this.ctx.font = fontSize + 'px MECC';
-      this.buttons = this.centerText(fontSize, lineSize, this.buttons, 3 / 4);
+      this.title = this.centerText(this.title, 64, 1 / 4);
+      this.buttons = this.centerText(this.buttons, 32, 3 / 4);
     }
   }, {
     key: 'render',
