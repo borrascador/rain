@@ -1,5 +1,5 @@
 import Connect from '../../store/reducers/Connect';
-import { screenToButtonName } from './utils';
+import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
 export default class Vehicle {
@@ -12,38 +12,45 @@ export default class Vehicle {
 
     this.connect = new Connect(this.store);
 
-    const {vehicle} = this.connect.vehicle;
     this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, vehicle);
-  }
+    this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.wrenchSize = this.icons.tileset.tilewidth;
 
-  makeButtons(canvas, image, scale, vehicle) {
-    const size = image.tileset.tilewidth * scale;
-    return [{
-      name: vehicle.type,
-      xPos: 0,
-      yPos: canvas.height - size,
-      width: size,
-      height: size
-    }];
+    const {vehicle} = this.connect.vehicle;
+
+    this.buttons = [
+      { id: vehicle.icon, onClick: () => console.log(vehicle.type) }
+    ];
   }
 
   update(delta, x, y) {
-    const clickName = x && y && screenToButtonName(x, y, this.buttons);
-    clickName && console.log(clickName);
+    const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
+    clickedButton && clickedButton.onClick();
   }
 
   render() {
     const {vehicle} = this.connect.vehicle;
-    const vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
-    const wrenchSize = this.icons.tileset.tilewidth;
 
-    drawById(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - vehicleSize);
-    [...Array(vehicle.repair)].map((_, i) => {
-      drawByName(
-        this.ctx, this.icons, 'wrench', 1, vehicleSize + i * (wrenchSize + 8),
-        this.canvas.height - ((wrenchSize + vehicleSize) / 2)
-      );
+    // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
+    // For example see Party.js
+    this.buttons = this.buttons.map((button, index) => {
+      const x = 0;
+      const y = this.canvas.height - this.vehicleSize;
+      drawById(this.ctx, this.iconsXl, vehicle.icon, this.scale, x, y);
+      [...Array(vehicle.repair)].map((_, i) => {
+        drawByName(
+          this.ctx, this.icons, 'wrench', 1,
+          this.vehicleSize + i * (this.wrenchSize + 8),
+          this.canvas.height - (this.wrenchSize + this.vehicleSize) / 2
+        );
+      });
+      return Object.assign({}, button, {
+        id: vehicle.icon,
+        xPos: x,
+        yPos: y,
+        width: this.vehicleSize,
+        height: this.vehicleSize
+      });
     });
   }
 }

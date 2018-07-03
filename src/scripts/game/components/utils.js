@@ -53,6 +53,16 @@ export const screenToButtonName = (x, y, list) => {
   return selectedButton && selectedButton.name || null;
 };
 
+export const screenToImageButton = (x, y, list) => {
+  const selectedButton = list.find(button => {
+    return (
+      x >= button.xPos && x <= (button.xPos + button.width) &&
+      y >= button.yPos && y <= (button.yPos + button.height)
+    );
+  });
+  return selectedButton || null;
+};
+
 export const getItemById = (array, id) => {
   return array.find(x => x.id === id);
 }

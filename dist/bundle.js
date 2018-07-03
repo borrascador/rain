@@ -454,6 +454,13 @@ var screenToButtonName = exports.screenToButtonName = function screenToButtonNam
   return selectedButton && selectedButton.name || null;
 };
 
+var screenToImageButton = exports.screenToImageButton = function screenToImageButton(x, y, list) {
+  var selectedButton = list.find(function (button) {
+    return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
+  });
+  return selectedButton || null;
+};
+
 var getItemById = exports.getItemById = function getItemById(array, id) {
   return array.find(function (x) {
     return x.id === id;
@@ -636,7 +643,7 @@ function login(user, password, dimCallback, exitLogin) {
   };
 }
 
-function logout(user, callback) {
+function logout(callback) {
   return function (dispatch, getState) {
     var state = getState();
     if (state.sending === false) {
@@ -3825,6 +3832,11 @@ var RainGame = function () {
 	}, {
 		key: 'update',
 		value: function update(delta) {
+			if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+				this.canvas.width = window.innerWidth;
+				this.canvas.height = window.innerHeight;
+				this.ctx.imageSmoothingEnabled = false;
+			}
 			if (this.mode === _constants.MODE.MAP) {
 				this.mapView.update(delta);
 			} else if (this.mode === _constants.MODE.MENU) {
@@ -4418,31 +4430,25 @@ var Party = function () {
 
     this.connect = new _Connect2.default(this.store);
 
+    this.scale = 2;
+    this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.statSize = this.icons.tileset.tilewidth;
+
     var party = this.connect.party.party;
 
-    this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, party);
+
+    this.buttons = party.map(function (member) {
+      return { name: member.name, id: member.icon, onClick: function onClick() {
+          return console.log(member.name);
+        } };
+    });
   }
 
   _createClass(Party, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, party) {
-      var size = image.tileset.tilewidth * scale;
-      return party.map(function (member, index) {
-        return {
-          name: member.name,
-          xPos: 0,
-          yPos: index * size,
-          width: size,
-          height: size
-        };
-      });
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      clickName && console.log(clickName);
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && clickedButton.onClick();
     }
   }, {
     key: 'render',
@@ -4451,16 +4457,32 @@ var Party = function () {
 
       var party = this.connect.party.party;
 
-      var size = this.iconsXl.tileset.tilewidth * this.scale;
+      // Makes a NEW set of buttons each time
+      // Allows adding and removing party members
 
-      party.map(function (member, idx) {
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, 0, idx * size);
+      this.buttons = party.map(function (member, index) {
+        var x = 0;
+        var y = index * _this.portraitSize;
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
         [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, 64 + i * 24, (idx * 2 + 0.4) * 32);
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
         });
         [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, 64 + i * 24, (idx * 2 + 1.1) * 32);
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
         });
+        return {
+          name: member.name,
+          id: member.icon,
+          onClick: function onClick() {
+            return console.log(member.name);
+          },
+          xPos: x,
+          yPos: y,
+          width: _this.portraitSize,
+          height: _this.portraitSize
+        };
       });
     }
   }]);
@@ -4509,29 +4531,23 @@ var Vehicle = function () {
 
     this.connect = new _Connect2.default(this.store);
 
+    this.scale = 2;
+    this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.wrenchSize = this.icons.tileset.tilewidth;
+
     var vehicle = this.connect.vehicle.vehicle;
 
-    this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, vehicle);
+
+    this.buttons = [{ id: vehicle.icon, onClick: function onClick() {
+        return console.log(vehicle.type);
+      } }];
   }
 
   _createClass(Vehicle, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, vehicle) {
-      var size = image.tileset.tilewidth * scale;
-      return [{
-        name: vehicle.type,
-        xPos: 0,
-        yPos: canvas.height - size,
-        width: size,
-        height: size
-      }];
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      clickName && console.log(clickName);
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && clickedButton.onClick();
     }
   }, {
     key: 'render',
@@ -4540,12 +4556,23 @@ var Vehicle = function () {
 
       var vehicle = this.connect.vehicle.vehicle;
 
-      var vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
-      var wrenchSize = this.icons.tileset.tilewidth;
+      // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
+      // For example see Party.js
 
-      (0, _draw.drawById)(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - vehicleSize);
-      [].concat(_toConsumableArray(Array(vehicle.repair))).map(function (_, i) {
-        (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, vehicleSize + i * (wrenchSize + 8), _this.canvas.height - (wrenchSize + vehicleSize) / 2);
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = 0;
+        var y = _this.canvas.height - _this.vehicleSize;
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, vehicle.icon, _this.scale, x, y);
+        [].concat(_toConsumableArray(Array(vehicle.repair))).map(function (_, i) {
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, _this.vehicleSize + i * (_this.wrenchSize + 8), _this.canvas.height - (_this.wrenchSize + _this.vehicleSize) / 2);
+        });
+        return Object.assign({}, button, {
+          id: vehicle.icon,
+          xPos: x,
+          yPos: y,
+          width: _this.vehicleSize,
+          height: _this.vehicleSize
+        });
       });
     }
   }]);
@@ -4566,11 +4593,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // import Connect from '../../store/reducers/Connect';
 
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
 
 var _Animation = __webpack_require__(18);
 
@@ -4593,43 +4617,39 @@ var Inventory = function () {
     this.ctx = ctx;
     this.iconsXl = loader.getImage('icons-xl');
 
-    this.animate = new _Animation2.default(2, 0.5);
-    this.connect = new _Connect2.default(this.store);
-
     this.scale = 4;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, ['pack-big']);
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
+
+    // this.connect = new Connect(this.store);
+
+    this.buttons = [{ name: 'pack-big', onClick: function onClick() {
+        return console.log('pack-big');
+      } }];
   }
 
   _createClass(Inventory, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, names) {
-      var _this = this;
-
-      var size = image.tileset.tilewidth * scale;
-      return names.map(function (name, index) {
-        return {
-          name: name,
-          xPos: canvas.width - size,
-          yPos: canvas.height / 2 - size / 2 + _this.animate.getValue(),
-          width: size,
-          height: size
-        };
-      });
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
       this.animate.update(delta);
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      clickName && console.log(clickName);
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && clickedButton.onClick();
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this = this;
 
-      this.buttons.map(function (button) {
-        (0, _draw.drawByName)(_this2.ctx, _this2.iconsXl, button.name, _this2.scale, button.xPos, button.yPos + _this2.animate.getValue());
+      this.buttons = this.buttons.map(function (button) {
+        var x = _this.canvas.width - _this.size;
+        var y = _this.canvas.height / 2 - _this.size / 2;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: y,
+          width: _this.size,
+          height: _this.size
+        });
       });
     }
   }]);
@@ -4680,43 +4700,32 @@ var Zoom = function () {
     this.connect = new _Connect2.default(this.store);
 
     this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, ['settings', 'zoom-out', 'zoom-in']);
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+
+    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
   }
 
   _createClass(Zoom, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, names) {
-      var size = image.tileset.tilewidth * scale;
-      return names.map(function (name, index) {
-        return {
-          name: name,
-          xPos: canvas.width - size * (index + 1),
-          yPos: 0,
-          width: size,
-          height: size
-        };
-      });
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      switch (clickName) {
-        case 'settings':
-          return this.store.dispatch((0, _requests.logout)('foo'));
-        case 'zoom-out':
-          return this.store.dispatch((0, _actions.zoomOut)());
-        case 'zoom-in':
-          return this.store.dispatch((0, _actions.zoomIn)());
-      }
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && this.store.dispatch(clickedButton.onClick());
     }
   }, {
     key: 'render',
     value: function render() {
       var _this = this;
 
-      this.buttons.forEach(function (button) {
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, button.xPos, button.yPos);
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = _this.canvas.width - _this.size * (index + 1);
+        var y = 0;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: y,
+          width: _this.size,
+          height: _this.size
+        });
       });
     }
   }]);
@@ -5186,11 +5195,6 @@ var TitleView = function () {
   }, {
     key: 'update',
     value: function update(delta) {
-      if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.ctx.imageSmoothingEnabled = false;
-      }
       this.updateAnimation(delta);
       this.handleClick();
     }

@@ -67,6 +67,11 @@ export default class RainGame {
 	}
 
 	update (delta) {
+		if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+			this.canvas.width = window.innerWidth;
+			this.canvas.height = window.innerHeight;
+			this.ctx.imageSmoothingEnabled = false;
+		}
 		if (this.mode === MODE.MAP) {
 			this.mapView.update(delta);
 		} else if (this.mode === MODE.MENU) {

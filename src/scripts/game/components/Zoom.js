@@ -1,7 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import { logout } from '../../store/actions/requests';
 import { zoomIn, zoomOut } from '../../store/actions/actions';
-import { screenToButtonName } from './utils';
+import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
 
 export default class Zoom {
@@ -14,34 +14,31 @@ export default class Zoom {
     this.connect = new Connect(this.store);
 
     this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, [
-      'settings', 'zoom-out', 'zoom-in'
-    ]);
-  }
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
 
-  makeButtons(canvas, image, scale, names) {
-    const size = image.tileset.tilewidth * scale;
-    return names.map((name, index) => ({
-      name: name,
-      xPos: canvas.width - (size * (index + 1)),
-      yPos: 0,
-      width: size,
-      height: size
-    }));
+    this.buttons = [
+      { name: 'settings', onClick: logout },
+      { name: 'zoom-out', onClick: zoomOut },
+      { name: 'zoom-in', onClick: zoomIn }
+    ];
   }
 
   update(delta, x, y) {
-    const clickName = x && y && screenToButtonName(x, y, this.buttons);
-    switch (clickName) {
-      case 'settings': return this.store.dispatch(logout('foo'));
-      case 'zoom-out': return this.store.dispatch(zoomOut());
-      case 'zoom-in': return this.store.dispatch(zoomIn());
-    }
+    const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
+    clickedButton && this.store.dispatch(clickedButton.onClick());
   }
 
   render() {
-    this.buttons.forEach(button => {
-      drawByName(this.ctx, this.iconsXl, button.name, this.scale, button.xPos, button.yPos);
+    this.buttons = this.buttons.map((button, index) => {
+      const x = this.canvas.width - (this.size * (index + 1));
+      const y = 0;
+      drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y);
+      return Object.assign({}, button, {
+        xPos: x,
+        yPos: y,
+        width: this.size,
+        height: this.size
+      });
     });
   }
 }

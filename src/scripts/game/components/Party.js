@@ -1,5 +1,5 @@
 import Connect from '../../store/reducers/Connect';
-import { screenToButtonName } from './utils';
+import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
 export default class Party {
@@ -12,39 +12,54 @@ export default class Party {
 
     this.connect = new Connect(this.store);
 
-    const {party} = this.connect.party;
     this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, party);
-  }
+    this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.statSize = this.icons.tileset.tilewidth;
 
-  makeButtons(canvas, image, scale, party) {
-    const size = image.tileset.tilewidth * scale;
-    return party.map((member, index) => ({
-      name: member.name,
-      xPos: 0,
-      yPos: index * size,
-      width: size,
-      height: size
-    }));
+    const {party} = this.connect.party;
+
+    this.buttons = party.map(member => (
+      { name: member.name, id: member.icon, onClick: () => console.log(member.name) }
+    ));
   }
 
   update(delta, x, y) {
-    const clickName = x && y && screenToButtonName(x, y, this.buttons);
-    clickName && console.log(clickName);
+    const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
+    clickedButton && clickedButton.onClick();
   }
 
   render() {
     const {party} = this.connect.party;
-    const size = this.iconsXl.tileset.tilewidth * this.scale;
 
-    party.map((member, idx) => {
-      drawById(this.ctx, this.iconsXl, member.icon, this.scale, 0, idx * size);
+    // Makes a NEW set of buttons each time
+    // Allows adding and removing party members
+    this.buttons = party.map((member, index) => {
+      const x = 0;
+      const y = index * this.portraitSize;
+      drawById(this.ctx, this.iconsXl, member.icon, this.scale, x, y);
       [...Array(member.health)].map((_, i) => {
-        drawByName(this.ctx, this.icons, 'heart', 1, 64 + i * 24, (idx * 2 + 0.4) * 32);
+        drawByName(
+          this.ctx, this.icons, 'heart', 1,
+          this.portraitSize + i * (this.statSize + 8),
+          (index * 2 + 0.4) * this.portraitSize / 2 // TODO: Eliminate hardcoded values
+        );
       });
       [...Array(member.jeito)].map((_, i) => {
-        drawByName(this.ctx, this.icons, 'bolt', 1, 64 + i * 24, (idx * 2 + 1.1) * 32)
+        drawByName(
+          this.ctx, this.icons, 'bolt', 1,
+          this.portraitSize + i * (this.statSize + 8),
+          (index * 2 + 1.1) * this.portraitSize / 2 // TODO: Eliminate hardcoded values
+        );
       });
+      return {
+        name: member.name,
+        id: member.icon,
+        onClick: () => console.log(member.name),
+        xPos: x,
+        yPos: y,
+        width: this.portraitSize,
+        height: this.portraitSize
+      };
     });
   }
 }

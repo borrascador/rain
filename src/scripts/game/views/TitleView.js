@@ -56,11 +56,6 @@ export default class TitleView {
   }
 
   update(delta) {
-    if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
-      this.ctx.imageSmoothingEnabled = false;
-    }
     this.updateAnimation(delta);
     this.handleClick();
   }

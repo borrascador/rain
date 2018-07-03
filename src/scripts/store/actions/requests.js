@@ -67,7 +67,7 @@ export function login(user, password, dimCallback, exitLogin) {
   }
 }
 
-export function logout(user, callback) {
+export function logout(callback) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.sending === false) {
