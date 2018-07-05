@@ -416,11 +416,28 @@ var addButtonCoords = exports.addButtonCoords = function addButtonCoords(option,
   }
 };
 
+// TODO: eventually replace above version with this:
+var addCoords = exports.addCoords = function addCoords(button, coords) {
+  var props = ['xPos', 'yPos', 'width', 'height'];
+  if (!props.every(function (prop) {
+    return Object.keys(button).includes(prop);
+  })) {
+    return Object.assign({}, button, coords);
+  }
+};
+
 var screenToTextId = exports.screenToTextId = function screenToTextId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
   });
   return selectedButton && selectedButton.id || null;
+};
+
+var screenToTextButton = exports.screenToTextButton = function screenToTextButton(x, y, list) {
+  var selectedButton = list.find(function (button) {
+    return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
+  });
+  return selectedButton || null;
 };
 
 var screenToButtonId = exports.screenToButtonId = function screenToButtonId(x, y, list) {
@@ -435,6 +452,13 @@ var screenToButtonName = exports.screenToButtonName = function screenToButtonNam
     return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
   });
   return selectedButton && selectedButton.name || null;
+};
+
+var screenToImageButton = exports.screenToImageButton = function screenToImageButton(x, y, list) {
+  var selectedButton = list.find(function (button) {
+    return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
+  });
+  return selectedButton || null;
 };
 
 var getItemById = exports.getItemById = function getItemById(array, id) {
@@ -455,6 +479,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.drawById = drawById;
 exports.drawByName = drawByName;
+exports.roundToZoom = roundToZoom;
+exports.centerText = centerText;
 function drawById(ctx, img, id, zoom, x, y) {
   var _img$tileset = img.tileset,
       tileheight = _img$tileset.tileheight,
@@ -467,6 +493,27 @@ function drawById(ctx, img, id, zoom, x, y) {
 function drawByName(ctx, img, name, zoom, x, y) {
   var id = img.tilenames[name];
   drawById(ctx, img, id, zoom, x, y);
+}
+
+function roundToZoom(zoom, value) {
+  return zoom * Math.round(value / zoom);
+}
+
+function centerText(canvas, ctx, zoom, gutter, lines, fontSize, pos) {
+  ctx.font = fontSize + 'px MECC';
+  var lineHeight = fontSize + zoom * gutter - fontSize / 8;
+  return lines.map(function (line, idx) {
+    var lineWidth = ctx.measureText(line.text).width;
+    var x = roundToZoom(zoom, canvas.width / 2 - lineWidth / 2);
+    var y = roundToZoom(zoom, canvas.height * pos + fontSize - lineHeight * lines.length / 2 + lineHeight * idx);
+    ctx.fillText(line.text, x, y);
+    return Object.assign({}, line, {
+      xPos: x,
+      yPos: y,
+      width: lineWidth,
+      height: fontSize
+    });
+  });
 }
 
 /***/ }),
@@ -596,7 +643,7 @@ function login(user, password, dimCallback, exitLogin) {
   };
 }
 
-function logout(user, callback) {
+function logout(callback) {
   return function (dispatch, getState) {
     var state = getState();
     if (state.sending === false) {
@@ -2170,6 +2217,7 @@ window.onload = function () {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled = false;
+  ctx.textBaseline = 'alphabetic';
 
   var rainGame = new _index2.default(_store.store, canvas, ctx);
 
@@ -3194,7 +3242,7 @@ var initialState = exports.initialState = Object.assign({}, uiState, mapState, p
 /* 52 */
 /***/ (function(module, exports) {
 
-module.exports = {"height":20,"infinite":false,"layers":[{"data":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"height":20,"name":"BOTTOM","opacity":1,"type":"tilelayer","visible":true,"width":20,"x":0,"y":0},{"data":[0,0,0,7,13,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,11,8,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,13,16,0,0,0,0,0,0,28,0,0,0,0,0,0,8,0,0,0,6,0,16,0,0,0,0,0,27,20,0,0,0,0,0,0,6,0,0,0,12,11,31,8,0,0,0,0,0,24,30,0,0,0,0,0,32,21,21,4,21,21,26,32,21,21,21,18,0,16,0,0,0,0,0,0,12,11,8,0,0,0,16,12,8,0,0,22,21,25,21,18,0,0,0,0,0,0,12,8,0,0,16,0,6,7,8,0,0,0,0,22,18,0,0,0,0,0,7,13,0,0,16,7,10,6,12,8,0,0,0,0,22,19,21,21,0,0,12,11,8,7,31,13,12,13,0,12,11,5,8,0,0,16,0,0,0,0,0,0,14,13,16,0,0,0,0,0,0,0,6,0,0,16,0,0,0,0,0,7,13,0,16,0,0,0,0,0,0,0,12,8,7,31,8,0,0,0,0,12,8,0,24,3,30,0,0,0,0,0,0,12,13,16,12,11,0,0,7,11,13,0,16,0,0,0,0,0,0,0,0,0,0,16,0,0,7,8,12,8,27,21,20,0,0,0,0,0,0,0,0,0,0,16,0,0,6,12,9,13,0,0,16,0,0,0,0,0,0,0,0,0,0,16,0,0,13,0,12,11,11,8,29,0,0,0,0,0,0,0,0,27,21,26,21,30,0,0,0,7,11,13,0,0,0,0,0,0,0,0,0,0,0,16,0,0,0,0,7,13,0,0,0,0,0,0,0,0,0,0,0,0,0,29,0,0,0,7,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"height":20,"name":"MIDDLE","opacity":1,"type":"tilelayer","visible":true,"width":20,"x":0,"y":0}],"nextobjectid":1,"orientation":"orthogonal","renderorder":"right-down","tiledversion":"1.1.5","tileheight":32,"tilesets":[{"firstgid":1,"source":"atlas.json"}],"tilewidth":32,"type":"map","version":1,"width":20}
+module.exports = {"height":20,"infinite":false,"layers":[{"data":[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"height":20,"name":"BOTTOM","opacity":1,"type":"tilelayer","visible":true,"width":20,"x":0,"y":0},{"data":[0,0,0,7,13,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,11,8,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,13,16,0,0,0,0,0,0,28,0,0,0,0,0,0,8,0,0,0,6,0,16,0,0,0,0,0,27,20,0,0,0,0,0,0,6,0,0,0,12,11,31,8,0,0,0,0,0,24,30,0,0,0,0,0,32,21,21,4,21,21,26,32,21,21,21,18,0,16,0,0,0,0,0,0,12,11,8,0,0,0,16,12,8,0,0,22,21,25,21,18,0,0,0,0,0,0,12,8,0,0,16,0,6,7,8,0,0,0,0,22,18,0,0,0,0,0,7,13,0,0,16,7,10,6,12,8,0,0,0,0,22,19,21,21,0,0,12,11,8,7,31,13,12,13,0,12,11,5,8,0,0,16,0,0,0,0,0,0,14,13,16,0,0,0,0,0,0,0,6,0,0,16,0,0,0,0,0,7,13,0,16,0,0,0,0,0,0,0,12,8,7,31,8,0,0,0,0,12,8,0,24,3,30,0,0,0,0,0,0,12,13,16,12,11,0,0,7,11,13,0,16,0,0,0,0,0,0,0,0,0,0,16,0,0,7,8,12,8,27,21,20,0,0,0,0,0,0,0,0,0,0,16,0,0,6,12,9,13,0,0,16,0,0,0,0,0,0,0,0,0,0,16,0,0,13,0,12,11,11,8,29,0,0,0,0,0,0,0,0,27,21,26,21,30,0,0,0,7,11,13,0,0,0,0,0,0,0,0,0,0,0,16,0,0,0,0,7,13,0,0,0,0,0,0,0,0,0,0,0,0,0,29,0,0,0,7,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"height":20,"name":"MIDDLE","opacity":1,"type":"tilelayer","visible":true,"width":20,"x":0,"y":0},{"data":[48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,53,53,53,53,53,53,53,53,48,48,48,48,48,48,48,48,48,48,48,48,53,56,56,56,56,56,56,53,53,48,48,48,48,48,48,48,48,48,48,48,53,56,56,56,56,56,56,53,53,53,48,42,48,42,48,48,48,48,48,48,53,56,56,56,56,56,53,53,53,48,48,42,42,42,42,42,42,46,46,48,53,53,53,53,53,53,53,48,48,48,48,48,48,48,48,42,44,44,48,48,53,53,53,53,53,53,48,48,48,48,48,48,48,48,48,48,46,42,42,42,53,53,53,53,53,48,48,48,48,48,48,48,48,48,48,48,46,42,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,42,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,48,50,50,50,50,50,48,48,48,48,48,48,48,48,48,48,48,48,48,50,50,50,50,50,50,51,48,48,48,48,48,48,48,48,48,48,48,48,48,50,50,50,50,51,51,51,48,48,48,48,48,48,48,48,48,48,48,48,50,50,51,51,51,51,51,51,48,48,48,48,48,48,48,48,48,48,48,48,50,50,51,51,51,51,51,51,48,48,48,48,48,48,48,48,48,48,48,50,50,50,51,51,51,51,51,51,48,48,48,48,48,48,48,48,48,48,50,50,50,50,51,51,51,51,51,51],"height":20,"name":"animals","opacity":1,"type":"tilelayer","visible":false,"width":20,"x":0,"y":0},{"data":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,43,43,43,43,43,43,0,0,0,0,0,0,0,0,0,0,0,0,0,43,43,44,43,43,43,43,43,0,0,0,0,0,0,0,0,42,43,0,0,44,44,44,44,44,44,44,44,44,44,44,44,0,0,0,0,42,42,0,0,43,44,44,44,44,44,44,44,44,44,44,44,44,44,0,0,0,0,0,0,43,44,44,44,44,44,44,44,44,44,50,50,50,50,50,0,0,0,0,0,43,43,43,51,51,51,51,51,51,51,51,51,50,50,50,0,0,0,0,0,0,43,43,43,51,51,51,51,51,51,51,51,51,50,48,48,48,0,0,0,0,0,43,43,51,51,51,51,51,51,51,51,51,51,48,48,48,0,0,0,0,0,43,43,51,51,51,56,56,56,56,56,51,51,48,48,48,0,0,0,0,51,51,51,51,51,56,56,56,56,56,56,51,51,51,48,48,0,0,0,0,51,51,51,51,51,56,56,56,56,56,56,51,51,48,48,46,46,46,0,0,51,51,51,51,51,51,51,56,56,56,51,51,51,51,46,46,46,0,0,0,0,0,51,51,51,51,51,51,51,51,51,51,51,46,46,46,0,0,0,0,0,0,0,0,0,51,51,46,46,51,46,46,46,46,46,0,0,0,0,0,0,0,0,0,0,0,0,0,46,46,46,46,46,46,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"height":20,"name":"plants","opacity":1,"type":"tilelayer","visible":false,"width":20,"x":0,"y":0},{"data":[47,47,47,49,49,47,47,47,47,45,45,45,45,45,45,45,45,45,45,45,48,47,47,51,51,51,47,47,47,47,45,45,44,44,44,44,45,45,45,45,48,48,47,47,51,51,47,47,47,47,47,45,45,44,44,44,44,45,45,45,48,48,48,48,53,47,47,47,47,47,47,45,45,45,44,44,44,45,45,45,49,49,48,48,54,54,56,56,47,45,45,45,45,43,43,43,44,44,45,45,49,49,49,49,48,48,48,56,47,47,47,45,45,45,45,43,43,44,44,45,49,49,49,49,49,48,48,56,54,46,47,45,45,45,42,42,42,43,44,45,49,49,49,49,49,48,48,48,54,53,51,45,45,45,45,42,42,45,45,45,49,49,49,49,49,49,48,53,53,53,51,51,45,45,45,45,45,45,45,45,49,49,49,49,49,51,51,53,53,53,46,49,46,45,45,45,45,45,45,45,49,49,49,49,49,49,48,48,46,46,46,46,46,46,46,46,46,45,45,45,49,49,49,49,49,49,50,50,46,46,46,46,46,46,46,46,46,46,46,46,49,49,49,49,49,50,50,50,50,50,50,50,46,46,46,46,46,46,46,46,52,52,52,52,50,50,50,50,50,50,50,50,50,50,50,50,50,50,46,46,53,53,52,52,52,52,52,50,50,50,50,50,50,50,50,50,50,50,50,50,53,53,53,53,52,52,52,52,50,50,50,50,50,50,50,50,50,50,50,50,54,54,54,53,53,53,52,52,52,50,50,50,50,50,50,50,50,50,50,50,55,55,55,55,54,53,53,52,52,50,50,50,50,50,50,50,50,50,50,50,56,56,56,55,54,54,53,52,52,52,52,50,50,50,50,50,50,50,50,50,56,56,56,55,55,54,53,53,52,52,52,52,50,50,50,50,50,50,50,50],"height":20,"name":"diseases","opacity":1,"type":"tilelayer","visible":false,"width":20,"x":0,"y":0}],"nextobjectid":1,"orientation":"orthogonal","renderorder":"right-down","tiledversion":"1.1.5","tileheight":32,"tilesets":[{"firstgid":1,"source":"atlas.json"},{"firstgid":41,"source":"events.json"}],"tilewidth":32,"type":"map","version":1,"width":20}
 
 /***/ }),
 /* 53 */
@@ -3784,6 +3832,11 @@ var RainGame = function () {
 	}, {
 		key: 'update',
 		value: function update(delta) {
+			if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+				this.canvas.width = window.innerWidth;
+				this.canvas.height = window.innerHeight;
+				this.ctx.imageSmoothingEnabled = false;
+			}
 			if (this.mode === _constants.MODE.MAP) {
 				this.mapView.update(delta);
 			} else if (this.mode === _constants.MODE.MENU) {
@@ -4377,31 +4430,25 @@ var Party = function () {
 
     this.connect = new _Connect2.default(this.store);
 
+    this.scale = 2;
+    this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.statSize = this.icons.tileset.tilewidth;
+
     var party = this.connect.party.party;
 
-    this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, party);
+
+    this.buttons = party.map(function (member) {
+      return { name: member.name, id: member.icon, onClick: function onClick() {
+          return console.log(member.name);
+        } };
+    });
   }
 
   _createClass(Party, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, party) {
-      var size = image.tileset.tilewidth * scale;
-      return party.map(function (member, index) {
-        return {
-          name: member.name,
-          xPos: 0,
-          yPos: index * size,
-          width: size,
-          height: size
-        };
-      });
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      clickName && console.log(clickName);
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && clickedButton.onClick();
     }
   }, {
     key: 'render',
@@ -4410,16 +4457,32 @@ var Party = function () {
 
       var party = this.connect.party.party;
 
-      var size = this.iconsXl.tileset.tilewidth * this.scale;
+      // Makes a NEW set of buttons each time
+      // Allows adding and removing party members
 
-      party.map(function (member, idx) {
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, 0, idx * size);
+      this.buttons = party.map(function (member, index) {
+        var x = 0;
+        var y = index * _this.portraitSize;
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
         [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, 64 + i * 24, (idx * 2 + 0.4) * 32);
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
         });
         [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, 64 + i * 24, (idx * 2 + 1.1) * 32);
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
         });
+        return {
+          name: member.name,
+          id: member.icon,
+          onClick: function onClick() {
+            return console.log(member.name);
+          },
+          xPos: x,
+          yPos: y,
+          width: _this.portraitSize,
+          height: _this.portraitSize
+        };
       });
     }
   }]);
@@ -4468,29 +4531,23 @@ var Vehicle = function () {
 
     this.connect = new _Connect2.default(this.store);
 
+    this.scale = 2;
+    this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.wrenchSize = this.icons.tileset.tilewidth;
+
     var vehicle = this.connect.vehicle.vehicle;
 
-    this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, vehicle);
+
+    this.buttons = [{ id: vehicle.icon, onClick: function onClick() {
+        return console.log(vehicle.type);
+      } }];
   }
 
   _createClass(Vehicle, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, vehicle) {
-      var size = image.tileset.tilewidth * scale;
-      return [{
-        name: vehicle.type,
-        xPos: 0,
-        yPos: canvas.height - size,
-        width: size,
-        height: size
-      }];
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      clickName && console.log(clickName);
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && clickedButton.onClick();
     }
   }, {
     key: 'render',
@@ -4499,12 +4556,23 @@ var Vehicle = function () {
 
       var vehicle = this.connect.vehicle.vehicle;
 
-      var vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
-      var wrenchSize = this.icons.tileset.tilewidth;
+      // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
+      // For example see Party.js
 
-      (0, _draw.drawById)(this.ctx, this.iconsXl, vehicle.icon, this.scale, 0, this.canvas.height - vehicleSize);
-      [].concat(_toConsumableArray(Array(vehicle.repair))).map(function (_, i) {
-        (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, vehicleSize + i * (wrenchSize + 8), _this.canvas.height - (wrenchSize + vehicleSize) / 2);
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = 0;
+        var y = _this.canvas.height - _this.vehicleSize;
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, vehicle.icon, _this.scale, x, y);
+        [].concat(_toConsumableArray(Array(vehicle.repair))).map(function (_, i) {
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, _this.vehicleSize + i * (_this.wrenchSize + 8), _this.canvas.height - (_this.wrenchSize + _this.vehicleSize) / 2);
+        });
+        return Object.assign({}, button, {
+          id: vehicle.icon,
+          xPos: x,
+          yPos: y,
+          width: _this.vehicleSize,
+          height: _this.vehicleSize
+        });
       });
     }
   }]);
@@ -4525,11 +4593,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // import Connect from '../../store/reducers/Connect';
 
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
 
 var _Animation = __webpack_require__(18);
 
@@ -4552,43 +4617,39 @@ var Inventory = function () {
     this.ctx = ctx;
     this.iconsXl = loader.getImage('icons-xl');
 
-    this.animate = new _Animation2.default(2, 0.5);
-    this.connect = new _Connect2.default(this.store);
-
     this.scale = 4;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, ['pack-big']);
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
+
+    // this.connect = new Connect(this.store);
+
+    this.buttons = [{ name: 'pack-big', onClick: function onClick() {
+        return console.log('pack-big');
+      } }];
   }
 
   _createClass(Inventory, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, names) {
-      var _this = this;
-
-      var size = image.tileset.tilewidth * scale;
-      return names.map(function (name, index) {
-        return {
-          name: name,
-          xPos: canvas.width - size,
-          yPos: canvas.height / 2 - size / 2 + _this.animate.getValue(),
-          width: size,
-          height: size
-        };
-      });
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
       this.animate.update(delta);
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      clickName && console.log(clickName);
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && clickedButton.onClick();
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this = this;
 
-      this.buttons.map(function (button) {
-        (0, _draw.drawByName)(_this2.ctx, _this2.iconsXl, button.name, _this2.scale, button.xPos, button.yPos + _this2.animate.getValue());
+      this.buttons = this.buttons.map(function (button) {
+        var x = _this.canvas.width - _this.size;
+        var y = _this.canvas.height / 2 - _this.size / 2;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: y,
+          width: _this.size,
+          height: _this.size
+        });
       });
     }
   }]);
@@ -4639,43 +4700,32 @@ var Zoom = function () {
     this.connect = new _Connect2.default(this.store);
 
     this.scale = 2;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, ['settings', 'zoom-out', 'zoom-in']);
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+
+    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
   }
 
   _createClass(Zoom, [{
-    key: 'makeButtons',
-    value: function makeButtons(canvas, image, scale, names) {
-      var size = image.tileset.tilewidth * scale;
-      return names.map(function (name, index) {
-        return {
-          name: name,
-          xPos: canvas.width - size * (index + 1),
-          yPos: 0,
-          width: size,
-          height: size
-        };
-      });
-    }
-  }, {
     key: 'update',
     value: function update(delta, x, y) {
-      var clickName = x && y && (0, _utils.screenToButtonName)(x, y, this.buttons);
-      switch (clickName) {
-        case 'settings':
-          return this.store.dispatch((0, _requests.logout)('foo'));
-        case 'zoom-out':
-          return this.store.dispatch((0, _actions.zoomOut)());
-        case 'zoom-in':
-          return this.store.dispatch((0, _actions.zoomIn)());
-      }
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && this.store.dispatch(clickedButton.onClick());
     }
   }, {
     key: 'render',
     value: function render() {
       var _this = this;
 
-      this.buttons.forEach(function (button) {
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, button.xPos, button.yPos);
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = _this.canvas.width - _this.size * (index + 1);
+        var y = 0;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: y,
+          width: _this.size,
+          height: _this.size
+        });
       });
     }
   }]);
@@ -5102,17 +5152,20 @@ var TitleView = function () {
     this.water = loader.getImage('water');
 
     this.zoom = 4;
+    this.gutter = 4;
     this.size = this.water.tileset.tilewidth * this.zoom;
     this.animateBottom = new _Animation2.default(this.size, this.zoom * 2, 0.5);
     this.animateTop = new _Animation2.default(3, 1, 0.5);
 
     this.connect = new _Connect2.default(this.store);
-    this.selected = null;
     this.setDim(false);
 
-    this.buttons = [{ id: 1, text: 'LOGIN', onClick: _login.loginDialog }, { id: 2, text: 'REGISTER', onClick: _register.registerDialog }];
+    this.title = [{ text: 'RAINFOREST' }, { text: 'TRAIL' }];
+
+    this.buttons = [{ text: 'LOGIN', onClick: _login.loginDialog }, { text: 'REGISTER', onClick: _register.registerDialog }];
 
     this.setDim = this.setDim.bind(this);
+    this.centerText = _draw.centerText.bind(null, this.canvas, this.ctx, this.zoom, this.gutter);
   }
 
   _createClass(TitleView, [{
@@ -5129,54 +5182,39 @@ var TitleView = function () {
   }, {
     key: 'handleClick',
     value: function handleClick() {
-      var _this = this;
-
       var _connect$click = this.connect.click,
           xClick = _connect$click.xClick,
           yClick = _connect$click.yClick;
 
       if (xClick && yClick) {
         this.store.dispatch((0, _actions.clicked)());
-        var clickId = (0, _utils.screenToTextId)(xClick, yClick, this.buttons);
-        if (this.selectedId && this.selectedId === clickId) {
-          this.buttons.find(function (button) {
-            return _this.selectedId === button.id;
-          }).onClick(this.store, this.setDim);
-          this.selectedId = null;
-          this.setDim(true);
-        } else {
-          this.selectedId = clickId;
-        }
+        var button = !this.dim && (0, _utils.screenToTextButton)(xClick, yClick, this.buttons);
+        button && button.onClick(this.store, this.setDim);
       }
     }
   }, {
     key: 'update',
     value: function update(delta) {
-      if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.ctx.imageSmoothingEnabled = false;
-      }
       this.updateAnimation(delta);
       this.handleClick();
     }
   }, {
     key: 'renderBackground',
     value: function renderBackground() {
-      var endCol = Math.ceil(this.canvas.width / this.size + 1);
-      var endRow = Math.ceil(this.canvas.height / this.size + 1);
+      var endCol = Math.floor(this.canvas.width / this.size);
+      var endRow = Math.floor(this.canvas.height / this.size);
       var deltaX = this.animateBottom.getValue();
       var deltaTop = this.animateTop.getValue();
 
-      for (var col = -1; col <= endCol + 1; col++) {
-        for (var row = -1; row <= endRow + 1; row++) {
+      for (var col = -1; col <= endCol; col++) {
+        for (var row = 0; row <= endRow; row++) {
           var x = col * this.size;
           var y = row * this.size;
           (0, _draw.drawByName)(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
         }
       }
-      for (var _col = -1; _col <= endCol + 1; _col++) {
-        for (var _row = -1; _row <= endRow + 1; _row++) {
+      for (var _col = 0; _col <= endCol; _col++) {
+        for (var _row = 0; _row <= endRow; _row++) {
           var _x = _col * this.size;
           var _y = _row * this.size;
           (0, _draw.drawById)(this.ctx, this.water, deltaTop.toString(), this.zoom, _x, _y);
@@ -5186,37 +5224,9 @@ var TitleView = function () {
   }, {
     key: 'renderText',
     value: function renderText() {
-      var _this2 = this;
-
-      var fontSize = 60;
-      var lineSize = fontSize + 4;
-      this.ctx.font = fontSize + 'px MECC';
       this.ctx.fillStyle = '#FFF';
-      this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'alphabetic';
-
-      var linePos = this.canvas.height * (1 / 4) / lineSize;
-      console.log('big', linePos);
-      this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
-      this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
-
-      fontSize = 28;
-      lineSize = fontSize + 16;
-      this.ctx.font = fontSize + 'px MECC';
-
-      linePos = this.canvas.height * (3 / 4) / lineSize;
-      console.log('small', linePos);
-      this.buttons.map(function (button, idx) {
-        _this2.ctx.fillStyle = _this2.selectedId === button.id ? '#FF0' : '#FFF';
-        _this2.ctx.fillText(button.text, _this2.canvas.width / 2, linePos * lineSize);
-        (0, _utils.addButtonCoords)(button, {
-          xPos: _this2.canvas.width / 2 - _this2.ctx.measureText(button.text).width / 2,
-          yPos: linePos * lineSize,
-          width: _this2.ctx.measureText(button.text).width,
-          height: fontSize
-        });
-        linePos++;
-      });
+      this.title = this.centerText(this.title, 64, 1 / 4);
+      this.buttons = this.centerText(this.buttons, 32, 3 / 4);
     }
   }, {
     key: 'render',
@@ -5271,6 +5281,8 @@ function registerDialog(store, setDim) {
       buttons = _makeButtons.buttons,
       submit = _makeButtons.submit,
       cancel = _makeButtons.cancel;
+
+  setDim(true);
 
   var dimCallback = function dimCallback(dim) {
     setDim(dim);
@@ -5332,6 +5344,8 @@ function loginDialog(store, setDim) {
       buttons = _makeButtons.buttons,
       submit = _makeButtons.submit,
       cancel = _makeButtons.cancel;
+
+  setDim(true);
 
   var dimCallback = function dimCallback(dim) {
     setDim(dim);

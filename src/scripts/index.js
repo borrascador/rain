@@ -8,6 +8,7 @@ window.onload = function() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled = false;
+  ctx.textBaseline = 'alphabetic';
 
   const rainGame = new RainGame(store, canvas, ctx);
 
