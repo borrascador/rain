@@ -55,9 +55,6 @@ export default class Menu {
   }
 
   render() {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
     const fontSize = 28;
     const lineSize = fontSize + 4;
     this.ctx.font = fontSize + 'px MECC';

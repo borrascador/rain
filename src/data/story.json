@@ -1,16 +1,13 @@
 {
     "action": {},
-    "text": [
-        "A wild jaguar creeps from the",
-        "shadows with glowing eyes."
-    ],
+    "text": "A wild jaguar creeps from the shadows with glowing eyes. You are scared, very scared.",
     "buttons": [
         {
             "text": "Run away",
             "ref": "9184"
         },
         {
-            "text": "Stand your ground",
+            "text": "Stand your ground and soak in the fear of the neverending moment",
             "ref": "5622"
         },
         {

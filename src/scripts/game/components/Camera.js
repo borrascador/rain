@@ -55,9 +55,6 @@ export default class Camera {
 
     const {BASE, MIDDLE, TOP} = LAYER;
 
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
     const origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
     const startCol = Math.floor(origin.x / mapTileSize);
     const endCol = startCol + Math.ceil((this.canvas.width / mapTileSize) + 1);

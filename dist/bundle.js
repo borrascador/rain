@@ -481,6 +481,9 @@ exports.drawById = drawById;
 exports.drawByName = drawByName;
 exports.roundToZoom = roundToZoom;
 exports.centerText = centerText;
+exports.storyText = storyText;
+exports.buttonText = buttonText;
+exports.splitIntoLines = splitIntoLines;
 function drawById(ctx, img, id, zoom, x, y) {
   var _img$tileset = img.tileset,
       tileheight = _img$tileset.tileheight,
@@ -514,6 +517,59 @@ function centerText(canvas, ctx, zoom, gutter, lines, fontSize, pos) {
       height: fontSize
     });
   });
+}
+
+function storyText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+  var y = void 0;
+  var lengths = lines.map(function (line, idx) {
+    y = yPos + idx * lineHeight;
+    ctx.fillText(line, xPos, y);
+    return ctx.measureText(line).width;
+  });
+
+  return {
+    xPos: xPos,
+    yPos: y,
+    width: lengths.reduce(function (a, b) {
+      return Math.max(a, b);
+    }),
+    height: lineHeight * lines.length
+  };
+}
+
+function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selectedId) {
+  var x = fontSize * 3;
+  var y = start;
+  return buttons.map(function (button, idx) {
+    ctx.fillStyle = selectedId === button.id ? '#FF0' : '#6F6';
+    ctx.fillText(button.id + '.', fontSize, y);
+    var coords = storyText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
+    y = coords.yPos + lineHeight;
+    return Object.assign({}, button, coords);
+  });
+}
+
+function splitIntoLines(ctx, text, maxWidth) {
+  if (ctx.measureText(text).width < maxWidth) return [text];
+  var words = text.split(" ");
+  var spaceWidth = ctx.measureText(" ").width;
+  var lines = [];
+  var totalWidth = 0;
+  var start = 0;
+  words.forEach(function (word, index) {
+    var wordWidth = ctx.measureText(word).width;
+    if (totalWidth + wordWidth > maxWidth) {
+      lines.push(words.slice(start, index).join(" "));
+      start = index;
+      totalWidth = wordWidth + spaceWidth;
+    } else {
+      totalWidth += wordWidth + spaceWidth;
+    }
+    if (index + 1 === words.length) {
+      lines.push(words.slice(start, words.length).join(" "));
+    }
+  });
+  return lines;
 }
 
 /***/ }),
@@ -577,7 +633,7 @@ exports.position = position;
 
 var _actions = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(10);
 
 var _constants = __webpack_require__(2);
 
@@ -585,7 +641,7 @@ var _loading = __webpack_require__(74);
 
 var _success = __webpack_require__(75);
 
-var _failure = __webpack_require__(17);
+var _failure = __webpack_require__(18);
 
 function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
@@ -741,6 +797,53 @@ exports.updateItemInArray = updateItemInArray;
 
 
 Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Animation = function () {
+  function Animation(max, step, interval) {
+    _classCallCheck(this, Animation);
+
+    this.max = max;
+    this.step = step;
+    this.interval = interval;
+    this.time = 0;
+    this.value = 0;
+  }
+
+  _createClass(Animation, [{
+    key: "update",
+    value: function update(delta) {
+      this.time += delta;
+      if (this.time >= this.interval) {
+        this.time = 0;
+        this.value = this.value < this.max ? this.value + this.step : 0;
+      }
+    }
+  }, {
+    key: "getValue",
+    value: function getValue() {
+      return this.value;
+    }
+  }]);
+
+  return Animation;
+}();
+
+exports.default = Animation;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.subscribe = exports.store = undefined;
@@ -757,7 +860,7 @@ var _index = __webpack_require__(46);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _reduxWebsocketBridge = __webpack_require__(15);
+var _reduxWebsocketBridge = __webpack_require__(16);
 
 var _reduxWebsocketBridge2 = _interopRequireDefault(_reduxWebsocketBridge);
 
@@ -780,13 +883,13 @@ var store = exports.store = configureStore();
 var subscribe = exports.subscribe = (0, _reduxSubscriber2.default)(store);
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_symbol_observable__);
 
@@ -1039,7 +1142,7 @@ var ActionTypes = {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1111,7 +1214,7 @@ function isPlainObject(value) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1125,7 +1228,7 @@ var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["a" /* default */].Symbol;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1153,7 +1256,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1192,7 +1295,7 @@ function compose() {
 }
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1364,7 +1467,7 @@ function trimUndefined(map) {
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1475,7 +1578,7 @@ exports.mouseUp = mouseUp;
 exports.clicked = clicked;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1513,53 +1616,6 @@ function failureDialog(message, dimCallback) {
   content.append(title, text, buttons);
   dialog.append(content);
 }
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Animation = function () {
-  function Animation(max, step, interval) {
-    _classCallCheck(this, Animation);
-
-    this.max = max;
-    this.step = step;
-    this.interval = interval;
-    this.time = 0;
-    this.value = 0;
-  }
-
-  _createClass(Animation, [{
-    key: "update",
-    value: function update(delta) {
-      this.time += delta;
-      if (this.time >= this.interval) {
-        this.time = 0;
-        this.value = this.value < this.max ? this.value + this.step : 0;
-      }
-    }
-  }, {
-    key: "getValue",
-    value: function getValue() {
-      return this.value;
-    }
-  }]);
-
-  return Animation;
-}();
-
-exports.default = Animation;
 
 /***/ }),
 /* 19 */
@@ -2202,7 +2258,7 @@ module.exports = function (css) {
 "use strict";
 
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(10);
 
 var _index = __webpack_require__(61);
 
@@ -2265,12 +2321,12 @@ thunk.withExtraArgument = createThunkMiddleware;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
@@ -2300,7 +2356,7 @@ if (undefined !== 'production' && typeof isCrushed.name === 'string' && isCrushe
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(35);
 
@@ -2367,7 +2423,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(13);
 
 
 /** Used for built-in method references. */
@@ -2623,9 +2679,9 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = combineReducers;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(14);
 
 
 
@@ -2817,7 +2873,7 @@ function bindActionCreators(actionCreators, dispatch) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyMiddleware;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(15);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -2881,9 +2937,9 @@ exports.default = reducer;
 
 var _actions = __webpack_require__(0);
 
-var _reduxWebsocketBridge = __webpack_require__(15);
+var _reduxWebsocketBridge = __webpack_require__(16);
 
-var _input = __webpack_require__(16);
+var _input = __webpack_require__(17);
 
 var _ui = __webpack_require__(49);
 
@@ -3187,7 +3243,7 @@ var _buttons = __webpack_require__(57);
 
 var _buttons2 = _interopRequireDefault(_buttons);
 
-var _input = __webpack_require__(16);
+var _input = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3254,7 +3310,7 @@ module.exports = {"0":"false","1":"false","2":"false","3":"false","4":"false","5
 /* 54 */
 /***/ (function(module, exports) {
 
-module.exports = {"action":{},"text":["A wild jaguar creeps from the","shadows with glowing eyes."],"buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
+module.exports = {"action":{},"text":"A wild jaguar creeps from the shadows with glowing eyes. You are scared, very scared.","buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground and soak in the fear of the neverending moment","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
 
 /***/ }),
 /* 55 */
@@ -4083,6 +4139,9 @@ var MapView = function () {
   }, {
     key: 'render',
     value: function render() {
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
       this.camera.render();
       this.overlay.render();
     }
@@ -4188,9 +4247,6 @@ var Camera = function () {
           MIDDLE = _constants.LAYER.MIDDLE,
           TOP = _constants.LAYER.TOP;
 
-
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
       var origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
       var startCol = Math.floor(origin.x / mapTileSize);
@@ -4596,7 +4652,7 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // import Connect from '../../store/reducers/Connect';
 
 
-var _Animation = __webpack_require__(18);
+var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -4775,6 +4831,9 @@ var MenuView = function () {
   }, {
     key: 'render',
     value: function render() {
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
       this.menu.render();
     }
   }]);
@@ -4879,9 +4938,6 @@ var Menu = function () {
     value: function render() {
       var _this2 = this;
 
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
       var fontSize = 28;
       var lineSize = fontSize + 4;
       this.ctx.font = fontSize + 'px MECC';
@@ -4961,6 +5017,9 @@ var StoryView = function () {
   }, {
     key: 'render',
     value: function render() {
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
       this.story.render();
     }
   }]);
@@ -4993,6 +5052,12 @@ var _Connect2 = _interopRequireDefault(_Connect);
 
 var _utils = __webpack_require__(3);
 
+var _draw = __webpack_require__(4);
+
+var _Animation = __webpack_require__(9);
+
+var _Animation2 = _interopRequireDefault(_Animation);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5005,18 +5070,36 @@ var Story = function () {
     this.canvas = canvas;
     this.ctx = ctx;
 
+    this.blink = new _Animation2.default(1, 1, 1);
+
+    this.fontSize = 32;
+    this.lineHeight = 44;
+    this.ctx.font = this.fontSize + 'px MECC';
+
     this.connect = new _Connect2.default(this.store);
+
+    this.selectedId = null;
     this.setEvent();
+    console.log(this.text, this.buttons);
+
+    this.storyText = _draw.storyText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
   _createClass(Story, [{
     key: 'setEvent',
     value: function setEvent() {
-      // TODO: Is this the right way to do this?
-      this.selectedId = null;
+      var _this = this;
+
       var story = this.connect.story;
-      this.text = story.text;
-      this.buttons = story.buttons;
+      this.maxMainWidth = this.canvas.width - this.fontSize * 2;
+      this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
+      this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
+      this.buttons = story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, {
+          text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth)
+        });
+      });
     }
   }, {
     key: 'chooseButton',
@@ -5027,13 +5110,13 @@ var Story = function () {
   }, {
     key: 'updateKeys',
     value: function updateKeys(delta) {
-      var _this = this;
+      var _this2 = this;
 
       var keys = this.connect.keys;
       keys.map(function (key) {
-        if (key >= "1" && key <= _this.buttons.length.toString()) _this.selectedId = parseInt(key);
-        if (["Escape", "Backspace", "Delete"].includes(key)) _this.selectedId = null;
-        if (_this.selectedId && key === "Enter") _this.chooseButton();
+        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selectedId = parseInt(key);
+        if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selectedId = null;
+        if (_this2.selectedId && key === "Enter") _this2.chooseButton();
       });
     }
   }, {
@@ -5057,48 +5140,31 @@ var Story = function () {
   }, {
     key: 'update',
     value: function update(delta) {
+      this.blink.update(delta);
       this.updateKeys(delta);
       this.updateClick();
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-      var fontSize = 28;
-      var lineSize = fontSize + 4;
-      this.ctx.font = fontSize + 'px MECC';
-      this.ctx.fillStyle = '#6F6';
-      this.ctx.textAlign = 'start';
-      this.ctx.textBaseline = 'alphabetic';
-
-      var linePos = 2;
-      this.text.map(function (line) {
-        _this2.ctx.fillText(line, lineSize, linePos * lineSize);
-        linePos++;
-      });
-      linePos++;
-
-      this.buttons.map(function (button, idx) {
-        _this2.ctx.fillStyle = _this2.selectedId === button.id ? '#FF0' : '#6F6';
-        var buttonText = button.id + '. ' + button.text;
-        _this2.ctx.fillText(buttonText, 2 * lineSize, linePos * lineSize);
-        (0, _utils.addButtonCoords)(button, {
-          xPos: 2 * lineSize,
-          yPos: lineSize * linePos,
-          width: _this2.ctx.measureText(buttonText).width,
-          height: fontSize
-        });
-        linePos++;
-      });
-      linePos++;
+      this.setEvent();
 
       this.ctx.fillStyle = '#6F6';
-      var promptText = 'What is your choice? ' + (this.selectedId || '') + '_';
-      this.ctx.fillText(promptText, lineSize, linePos * lineSize);
+      this.ctx.font = this.fontSize + 'px MECC';
+
+      var linePos = 2 * this.fontSize;
+
+      var _storyText = this.storyText(this.text, this.fontSize, linePos),
+          yPos = _storyText.yPos;
+
+      linePos = yPos + this.lineHeight * 2;
+      this.buttons = this.buttonText(this.buttons, linePos, this.selectedId);
+
+      linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+      var promptText = 'What is your choice? ' + (this.selectedId || '');
+      var cursor = this.blink.getValue() ? '' : '_';
+      this.ctx.fillStyle = '#6F6';
+      this.ctx.fillText(promptText + cursor, this.fontSize, linePos);
     }
   }]);
 
@@ -5132,7 +5198,7 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(18);
+var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -5263,7 +5329,7 @@ var _requests = __webpack_require__(6);
 
 var _actions = __webpack_require__(0);
 
-var _failure = __webpack_require__(17);
+var _failure = __webpack_require__(18);
 
 function registerDialog(store, setDim) {
   var container = document.getElementById('container');

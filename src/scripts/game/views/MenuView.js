@@ -14,6 +14,9 @@ export default class MenuView {
   }
 
   render() {
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
     this.menu.render();
   }
 }
