@@ -6,7 +6,6 @@ export const LAYER = {
 };
 export const MODE = {
   MAP: "map",
-  MENU: "menu",
   STORY: "story",
   TITLE: "title"
 };

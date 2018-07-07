@@ -27,13 +27,6 @@ function changeMode(state, action) {
   });
 }
 
-function focusMenu(state, action) {
-  return updateObject(state, {
-    mode: MODE.MENU,
-    activeMenu: action.payload.ref
-  });
-}
-
 function focusTile(state, action) {
   return updateObject(state, {
     mode: MODE.MAP,
@@ -42,4 +35,4 @@ function focusTile(state, action) {
   });
 }
 
-export { zoomIn, zoomOut, changeMode, focusMenu, focusTile };
+export { zoomIn, zoomOut, changeMode, focusTile };

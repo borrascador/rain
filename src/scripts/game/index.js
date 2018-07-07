@@ -10,7 +10,6 @@ import iconsTileset from '../../data/icons.json';
 import iconsXlTileset from '../../data/icons-xl.json';
 import waterTileset from '../../data/water.json';
 import MapView from './views/MapView';
-import MenuView from './views/MenuView';
 import StoryView from './views/StoryView';
 import TitleView from './views/TitleView';
 import {changeMode} from '../store/actions/actions';
@@ -39,7 +38,6 @@ export default class RainGame {
 		])
     .then(loaded => {
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
-			this.menuView = new MenuView(this.store, this.canvas, this.ctx);
 			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
 			this.titleView = new TitleView(this.store, this.canvas, this.ctx, this.loader);
     }).then(() => {
