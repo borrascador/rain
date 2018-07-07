@@ -62,7 +62,7 @@ public class MessageHandler {
 					
 				// Send ordinary response
 				int position = p.getPosition();
-				tiles = World.getTile(position).inSight(p.getSight());
+				tiles = p.tilesSeenArray();
 				response = Message.LOGIN_RESPONSE(position, tiles);
 				connection.send(response.toString());
 				break;
@@ -90,7 +90,7 @@ public class MessageHandler {
 				int range = 1;
 				
 				if (p.move(range, destination)) {
-					tiles = World.getTile(destination).inSight(p.getSight());
+					tiles = p.inSightArray();
 					response = Message.POSITION_RESPONSE(destination, tiles);
 				} else {
 					response = Message.POSITION_ERROR("0301");
