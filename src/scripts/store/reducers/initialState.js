@@ -6,8 +6,6 @@ import { makeKeys } from '../utils/input';
 
 const uiState = {
   mode: MODE.TITLE,
-  focusX: 2,
-  focusY: 2,
   story: story
 };
 

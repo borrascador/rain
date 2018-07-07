@@ -144,8 +144,6 @@ var changeMode = exports.changeMode = function changeMode(mode) {
   };
 };
 
-var FOCUS_TILE = exports.FOCUS_TILE = 'FOCUS_TILE';
-
 var REGISTER_REQUEST = exports.REGISTER_REQUEST = 'REGISTER_REQUEST';
 var REGISTER_RESPONSE = exports.REGISTER_RESPONSE = 'REGISTER_RESPONSE';
 var REGISTER_ERROR = exports.REGISTER_ERROR = 'REGISTER_ERROR';
@@ -2948,8 +2946,6 @@ function reducer(state, action) {
       return (0, _ui.zoomOut)(state);
     case _actions.CHANGE_MODE:
       return (0, _ui.changeMode)(state, action);
-    case _actions.FOCUS_TILE:
-      return (0, _ui.focusTile)(state, action);
 
     case _actions.REGISTER_REQUEST:
     case _actions.LOGIN_REQUEST:
@@ -3070,7 +3066,7 @@ module.exports = function isFSA(action) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.focusTile = exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
+exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
 
 var _utils = __webpack_require__(8);
 
@@ -3102,18 +3098,9 @@ function changeMode(state, action) {
   });
 }
 
-function focusTile(state, action) {
-  return (0, _utils.updateObject)(state, {
-    mode: _constants.MODE.MAP,
-    focusX: action.payload.x,
-    focusY: action.payload.y
-  });
-}
-
 exports.zoomIn = zoomIn;
 exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
-exports.focusTile = focusTile;
 
 /***/ }),
 /* 50 */
@@ -3205,8 +3192,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var uiState = {
   mode: _constants.MODE.TITLE,
-  focusX: 2,
-  focusY: 2,
   story: _story2.default
 };
 
