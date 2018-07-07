@@ -9,11 +9,17 @@ public class Event {
 	public Event(Connection c, Tile t, String type) {
 		Player p = c.getPlayer();
 		JSONObject response;
+		
 		switch (type) {
 			case "random":
-				response = new RandomEvent(p, t);
+				response = new JSONObject();
+				break;
 			case "persistent":
-				response = new Persistent(p, t);
+				response = new JSONObject();
+				break;
+			default:
+				response = new JSONObject();
+				break;
 		}
 		
 		c.send(response.toString());

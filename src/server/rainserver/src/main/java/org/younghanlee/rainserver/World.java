@@ -24,11 +24,11 @@ public class World {
 	private static Tile[] map;
 	
 	World() {
-		JSONArray a = null;
+		JSONObject m = null;
 		try {
-			a = new JSONArray(new String(Files.readAllBytes(Paths.get("tiles.json"))));
+			m = new JSONObject(new String(Files.readAllBytes(Paths.get("map.json"))));
 		} catch (IOException e) {
-			System.out.println("Map file "+ "tiles.json" + " not found.");
+			System.out.println("Map file "+ "map.json" + " not found.");
 			System.exit(1);
 		}
 		
@@ -41,10 +41,29 @@ public class World {
 		mapHeight = Constants.MAPHEIGHT;
 		numTiles = mapWidth * mapHeight;
 		
+		// Initialize tiles without layers
 		map = new Tile[numTiles];
-		for (int i=0; i< a.length(); i++) {
-			JSONObject jo = a.getJSONObject(i);
-			map[i] = new Tile(jo);
+		for (int i=0; i<numTiles; i++) {
+			map[i] = new Tile(i);
+		}
+		
+		// Add layers
+		JSONArray layers = m.getJSONArray("layers");
+		for (int i=0; i< layers.length(); i++) {
+			JSONObject layer = layers.getJSONObject(i);
+			JSONArray data = layer.getJSONArray("data");
+			String layerName = layer.getString("name");
+			if (layer.getBoolean("visible")) {
+				// Add layer
+				for (int j=0; j<data.length(); j++) {
+					map[j].addLayer(layerName, data.getInt(j)); 
+				}
+			} else {
+				// Add event
+				for (int j=0; j<data.length(); j++) {
+					map[j].addEvent(layerName, data.getInt(j));  
+				}
+			}
 		}
 	}
 	

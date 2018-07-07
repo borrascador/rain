@@ -1,6 +1,8 @@
 package org.younghanlee.rainserver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,31 +13,27 @@ public class Tile {
 	private int x;
 	private int y;
 	
-	// Layers
-	private int base;
-	private int middle;
-	private int top;
+	private HashMap<String, Integer> layers;
+	private HashMap<String, Integer> events;
 	
 	private Player owner;
 	private Player[] visitors;
 	
-	public Tile(JSONObject jo) {
-		this.id = jo.getInt("id");
-		this.x = jo.getInt("x");
-		this.y = jo.getInt("y");
+	public Tile(int id) {
+		this.id = id;
+		this.x = id % Constants.MAPWIDTH;
+		this.y = (id - x)/Constants.MAPWIDTH;
+		this.layers = new HashMap<String, Integer>();
+		this.events = new HashMap<String, Integer>();
 		this.visitors = new Player[0];
-		
-		JSONObject layers = jo.getJSONObject("layers");
-		if (layers.has("base")) {
-			this.base = layers.getInt("base");
-		}
-		if (layers.has("middle")) {
-			this.middle = layers.getInt("middle");
-		}
-		if (layers.has("top")) {
-			this.top = layers.getInt("top");
-		}
-		
+	}
+	
+	public void addLayer(String name, int value) {
+		this.layers.put(name, value);
+	}
+	
+	public void addEvent(String name, int value) {
+		this.events.put(name, value);
 	}
 	
 	public JSONObject toJSONObject() {
@@ -44,10 +42,10 @@ public class Tile {
 		jo.accumulate("x", x);
 		jo.accumulate("y", y);
 		
-		JSONObject layers = new JSONObject();
-		layers.accumulate("base", base);
-		layers.accumulate("middle", middle);
-		layers.accumulate("top", top);
+		JSONObject layersJO = new JSONObject();
+		for (HashMap.Entry<String, Integer> entry : this.layers.entrySet()) {
+			layersJO.accumulate(entry.getKey(), entry.getValue());
+		}
 		jo.accumulate("layers", layers);
 		
 		jo.accumulate("visitors", visitors);
@@ -59,8 +57,8 @@ public class Tile {
 		return x * Constants.MAPWIDTH + y;
 	}
 	
-	public JSONArray inSight(int sight) {
-		JSONArray tiles = new JSONArray();
+	public HashSet<Integer> inSight(int sight) {
+		HashSet<Integer> tiles = new HashSet<Integer>();
 		System.out.println("Center:" + x + "," + y);
 		
 		int ymin = y - sight;
@@ -85,8 +83,7 @@ public class Tile {
 			}
 			for (int j = xmin; j <= xmax; j++) {
 				System.out.println(i + "," + j);
-				Tile t = World.getTile(getID(i,j));
-				tiles.put(t.toJSONObject());
+				tiles.add(getID(i,j));
 			}
 		}
 		return tiles;

@@ -1,6 +1,9 @@
 package org.younghanlee.rainserver;
 
+import java.util.*;
+
 import org.java_websocket.WebSocket;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Player {
@@ -12,7 +15,9 @@ public class Player {
 	private int position;
 	private int x;
 	private int y;
+	
 	private int sight;
+	private HashSet<Integer> tilesSeen;
 	
 	public int randomInt(int max) {
 		return (int)(Math.random() * (max + 1));
@@ -29,6 +34,7 @@ public class Player {
 		this.x = randomInt(Constants.MAPWIDTH/2);
 		this.y = randomInt(Constants.MAPHEIGHT - 1);
 		this.position = Constants.MAPWIDTH * y + x;	
+		this.tilesSeen = World.getTile(position).inSight(sight);	
 	}
 	
 	public void login(Connection connection) {
@@ -60,6 +66,7 @@ public class Player {
 			this.x = x;
 			this.y = y;
 			this.position = destination;	
+			this.tilesSeen.addAll(World.getTile(position).inSight(sight));
 			return true;
 		} else return false;
 	}
@@ -78,6 +85,22 @@ public class Player {
 	
 	public int getSight() {
 		return sight;
+	}
+	
+	public JSONArray tilesSeenArray() {
+		JSONArray ja = new JSONArray();
+		for (int ts: tilesSeen) {
+			ja.put(World.getTile(ts).toJSONObject());
+		}
+		return ja;
+	}
+	
+	public JSONArray inSightArray() {
+		JSONArray ja = new JSONArray();
+		for (int ts: World.getTile(position).inSight(sight)) {
+			ja.put(World.getTile(ts).toJSONObject());
+		}
+		return ja;
 	}
 	
 	
