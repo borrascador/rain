@@ -14,7 +14,7 @@ function configureStore () {
 			thunkMiddleware,
 			ReduxWebSocketBridge('ws://localhost:8887/'),
 			errorLogger,
-			// loggerMiddleware
+			loggerMiddleware
 		)
 	)
 }

@@ -56,12 +56,18 @@ public class World {
 			if (layer.getBoolean("visible")) {
 				// Add layer
 				for (int j=0; j<data.length(); j++) {
-					map[j].addLayer(layerName, data.getInt(j)); 
+					int value = data.getInt(j);
+					if (value != 0) {
+						map[j].addLayer(layerName, value); 
+					}
 				}
 			} else {
 				// Add event
 				for (int j=0; j<data.length(); j++) {
-					map[j].addEvent(layerName, data.getInt(j));  
+					int value = data.getInt(j);
+					if (value != 0) {
+						map[j].addEvent(layerName, value); 
+					}
 				}
 			}
 		}
