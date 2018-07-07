@@ -1,5 +1,4 @@
 import { MODE, VEHICLE } from '../../game/constants';
-import map from '../../../data/map.json';
 import keys from '../../../data/keys.json';
 import story from '../../../data/story.json';
 import party from '../../../data/party.json';
@@ -14,8 +13,6 @@ const uiState = {
 
 const mapState = {
   zoom: 3,
-  mapHeight: map.height,
-  mapWidth: map.width,
   mapTiles: []
 };
 

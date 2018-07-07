@@ -55,11 +55,9 @@ export default class Connect {
   }
 
   get positionCoords() {
-    const { mapWidth, mapHeight, position } = this.store.getState();
-    return {
-      x: position % mapWidth,
-      y: Math.floor(position / mapHeight)
-    };
+    const { mapTiles, position } = this.store.getState();
+    const { x, y } = mapTiles.find(tile => tile.id === position);
+    return { x, y };
   }
 
   get party() {

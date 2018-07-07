@@ -59,7 +59,10 @@ export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, se
     ctx.fillText(`${button.id}.`, fontSize, y);
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
-    return Object.assign({}, button, coords, { xPos: fontSize });
+    return Object.assign({}, button, coords, {
+      xPos: fontSize,
+      width: coords.width + fontSize * 2
+    });
   });
 }
 
