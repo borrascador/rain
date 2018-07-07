@@ -245,16 +245,6 @@ var Connect = function () {
   }
 
   _createClass(Connect, [{
-    key: "getMenuById",
-    value: function getMenuById(id) {
-      var state = this.store.getState();
-      var menu = state.menus.byId[id || state.activeMenu];
-      var buttons = menu.buttons.map(function (button, idx) {
-        return Object.assign({}, state.buttons.byId[button], { id: idx + 1 });
-      });
-      return Object.assign({}, menu, { buttons: buttons });
-    }
-  }, {
     key: "connected",
     get: function get() {
       return this.store.getState().connected;
@@ -388,7 +378,6 @@ var LAYER = exports.LAYER = {
 };
 var MODE = exports.MODE = {
   MAP: "map",
-  MENU: "menu",
   STORY: "story",
   TITLE: "title"
 };
@@ -407,16 +396,7 @@ var VEHICLE = exports.VEHICLE = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var addButtonCoords = exports.addButtonCoords = function addButtonCoords(option, buttonCoords) {
-  var props = ['xPos', 'yPos', 'width', 'height'];
-  if (!props.every(function (prop) {
-    return Object.keys(option).includes(prop);
-  })) {
-    Object.assign(option, buttonCoords);
-  }
-};
-
-// TODO: eventually replace above version with this:
+// TODO: Is it a good idea to start using this?
 var addCoords = exports.addCoords = function addCoords(button, coords) {
   var props = ['xPos', 'yPos', 'width', 'height'];
   if (!props.every(function (prop) {
@@ -426,7 +406,7 @@ var addCoords = exports.addCoords = function addCoords(button, coords) {
   }
 };
 
-var screenToTextId = exports.screenToTextId = function screenToTextId(x, y, list) {
+var screenToTextButtonId = exports.screenToTextButtonId = function screenToTextButtonId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y <= button.yPos && y >= button.yPos - button.height;
   });
@@ -440,18 +420,11 @@ var screenToTextButton = exports.screenToTextButton = function screenToTextButto
   return selectedButton || null;
 };
 
-var screenToButtonId = exports.screenToButtonId = function screenToButtonId(x, y, list) {
+var screenToImageButtonId = exports.screenToImageButtonId = function screenToImageButtonId(x, y, list) {
   var selectedButton = list.find(function (button) {
     return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
   });
   return selectedButton && selectedButton.id || null;
-};
-
-var screenToButtonName = exports.screenToButtonName = function screenToButtonName(x, y, list) {
-  var selectedButton = list.find(function (button) {
-    return x >= button.xPos && x <= button.xPos + button.width && y >= button.yPos && y <= button.yPos + button.height;
-  });
-  return selectedButton && selectedButton.name || null;
 };
 
 var screenToImageButton = exports.screenToImageButton = function screenToImageButton(x, y, list) {
@@ -481,7 +454,7 @@ exports.drawById = drawById;
 exports.drawByName = drawByName;
 exports.roundToZoom = roundToZoom;
 exports.centerText = centerText;
-exports.storyText = storyText;
+exports.mainText = mainText;
 exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
 function drawById(ctx, img, id, zoom, x, y) {
@@ -519,14 +492,13 @@ function centerText(canvas, ctx, zoom, gutter, lines, fontSize, pos) {
   });
 }
 
-function storyText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   var y = void 0;
   var lengths = lines.map(function (line, idx) {
     y = yPos + idx * lineHeight;
     ctx.fillText(line, xPos, y);
     return ctx.measureText(line).width;
   });
-
   return {
     xPos: xPos,
     yPos: y,
@@ -543,31 +515,34 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selectedI
   return buttons.map(function (button, idx) {
     ctx.fillStyle = selectedId === button.id ? '#FF0' : '#6F6';
     ctx.fillText(button.id + '.', fontSize, y);
-    var coords = storyText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
+    var coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
-    return Object.assign({}, button, coords);
+    return Object.assign({}, button, coords, { xPos: fontSize });
   });
 }
 
 function splitIntoLines(ctx, text, maxWidth) {
-  if (ctx.measureText(text).width < maxWidth) return [text];
-  var words = text.split(" ");
+  var blocks = text.split("\n").map(function (block) {
+    return block.split(" ");
+  });
   var spaceWidth = ctx.measureText(" ").width;
   var lines = [];
-  var totalWidth = 0;
-  var start = 0;
-  words.forEach(function (word, index) {
-    var wordWidth = ctx.measureText(word).width;
-    if (totalWidth + wordWidth > maxWidth) {
-      lines.push(words.slice(start, index).join(" "));
-      start = index;
-      totalWidth = wordWidth + spaceWidth;
-    } else {
-      totalWidth += wordWidth + spaceWidth;
-    }
-    if (index + 1 === words.length) {
-      lines.push(words.slice(start, words.length).join(" "));
-    }
+  blocks.forEach(function (block) {
+    var totalWidth = 0;
+    var start = 0;
+    block.forEach(function (word, index) {
+      var wordWidth = ctx.measureText(word).width;
+      if (totalWidth + wordWidth > maxWidth) {
+        lines.push(block.slice(start, index).join(" "));
+        start = index;
+        totalWidth = wordWidth + spaceWidth;
+      } else {
+        totalWidth += wordWidth + spaceWidth;
+      }
+      if (index + 1 === block.length) {
+        lines.push(block.slice(start, block.length).join(" "));
+      }
+    });
   });
   return lines;
 }
@@ -633,7 +608,7 @@ exports.position = position;
 
 var _actions = __webpack_require__(0);
 
-var _store = __webpack_require__(10);
+var _store = __webpack_require__(9);
 
 var _constants = __webpack_require__(2);
 
@@ -641,7 +616,7 @@ var _loading = __webpack_require__(74);
 
 var _success = __webpack_require__(75);
 
-var _failure = __webpack_require__(18);
+var _failure = __webpack_require__(17);
 
 function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
@@ -797,53 +772,6 @@ exports.updateItemInArray = updateItemInArray;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Animation = function () {
-  function Animation(max, step, interval) {
-    _classCallCheck(this, Animation);
-
-    this.max = max;
-    this.step = step;
-    this.interval = interval;
-    this.time = 0;
-    this.value = 0;
-  }
-
-  _createClass(Animation, [{
-    key: "update",
-    value: function update(delta) {
-      this.time += delta;
-      if (this.time >= this.interval) {
-        this.time = 0;
-        this.value = this.value < this.max ? this.value + this.step : 0;
-      }
-    }
-  }, {
-    key: "getValue",
-    value: function getValue() {
-      return this.value;
-    }
-  }]);
-
-  return Animation;
-}();
-
-exports.default = Animation;
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.subscribe = exports.store = undefined;
@@ -860,7 +788,7 @@ var _index = __webpack_require__(46);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _reduxWebsocketBridge = __webpack_require__(16);
+var _reduxWebsocketBridge = __webpack_require__(15);
 
 var _reduxWebsocketBridge2 = _interopRequireDefault(_reduxWebsocketBridge);
 
@@ -883,13 +811,13 @@ var store = exports.store = configureStore();
 var subscribe = exports.subscribe = (0, _reduxSubscriber2.default)(store);
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_symbol_observable__);
 
@@ -1142,7 +1070,7 @@ var ActionTypes = {
 }
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1214,7 +1142,7 @@ function isPlainObject(value) {
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1228,7 +1156,7 @@ var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["a" /* default */].Symbol;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1256,7 +1184,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1295,7 +1223,7 @@ function compose() {
 }
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1467,7 +1395,7 @@ function trimUndefined(map) {
 //# sourceMappingURL=index.js.map
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1578,7 +1506,7 @@ exports.mouseUp = mouseUp;
 exports.clicked = clicked;
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1616,6 +1544,53 @@ function failureDialog(message, dimCallback) {
   content.append(title, text, buttons);
   dialog.append(content);
 }
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Animation = function () {
+  function Animation(max, step, interval) {
+    _classCallCheck(this, Animation);
+
+    this.max = max;
+    this.step = step;
+    this.interval = interval;
+    this.time = 0;
+    this.value = 0;
+  }
+
+  _createClass(Animation, [{
+    key: "update",
+    value: function update(delta) {
+      this.time += delta;
+      if (this.time >= this.interval) {
+        this.time = 0;
+        this.value = this.value < this.max ? this.value + this.step : 0;
+      }
+    }
+  }, {
+    key: "getValue",
+    value: function getValue() {
+      return this.value;
+    }
+  }]);
+
+  return Animation;
+}();
+
+exports.default = Animation;
 
 /***/ }),
 /* 19 */
@@ -2258,7 +2233,7 @@ module.exports = function (css) {
 "use strict";
 
 
-var _store = __webpack_require__(10);
+var _store = __webpack_require__(9);
 
 var _index = __webpack_require__(61);
 
@@ -2321,12 +2296,12 @@ thunk.withExtraArgument = createThunkMiddleware;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(13);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
@@ -2356,7 +2331,7 @@ if (undefined !== 'production' && typeof isCrushed.name === 'string' && isCrushe
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(35);
 
@@ -2423,7 +2398,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(12);
 
 
 /** Used for built-in method references. */
@@ -2679,9 +2654,9 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = combineReducers;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(13);
 
 
 
@@ -2873,7 +2848,7 @@ function bindActionCreators(actionCreators, dispatch) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyMiddleware;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(14);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -2937,9 +2912,9 @@ exports.default = reducer;
 
 var _actions = __webpack_require__(0);
 
-var _reduxWebsocketBridge = __webpack_require__(16);
+var _reduxWebsocketBridge = __webpack_require__(15);
 
-var _input = __webpack_require__(17);
+var _input = __webpack_require__(16);
 
 var _ui = __webpack_require__(49);
 
@@ -2970,8 +2945,6 @@ function reducer(state, action) {
       return (0, _ui.zoomOut)(state);
     case _actions.CHANGE_MODE:
       return (0, _ui.changeMode)(state, action);
-    case _actions.FOCUS_MENU:
-      return (0, _ui.focusMenu)(state, action);
     case _actions.FOCUS_TILE:
       return (0, _ui.focusTile)(state, action);
 
@@ -3094,7 +3067,7 @@ module.exports = function isFSA(action) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.focusTile = exports.focusMenu = exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
+exports.focusTile = exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
 
 var _utils = __webpack_require__(8);
 
@@ -3126,13 +3099,6 @@ function changeMode(state, action) {
   });
 }
 
-function focusMenu(state, action) {
-  return (0, _utils.updateObject)(state, {
-    mode: _constants.MODE.MENU,
-    activeMenu: action.payload.ref
-  });
-}
-
 function focusTile(state, action) {
   return (0, _utils.updateObject)(state, {
     mode: _constants.MODE.MAP,
@@ -3144,7 +3110,6 @@ function focusTile(state, action) {
 exports.zoomIn = zoomIn;
 exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
-exports.focusMenu = focusMenu;
 exports.focusTile = focusTile;
 
 /***/ }),
@@ -3231,19 +3196,11 @@ var _story = __webpack_require__(54);
 
 var _story2 = _interopRequireDefault(_story);
 
-var _menus = __webpack_require__(55);
-
-var _menus2 = _interopRequireDefault(_menus);
-
 var _party = __webpack_require__(56);
 
 var _party2 = _interopRequireDefault(_party);
 
-var _buttons = __webpack_require__(57);
-
-var _buttons2 = _interopRequireDefault(_buttons);
-
-var _input = __webpack_require__(17);
+var _input = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3251,10 +3208,7 @@ var uiState = {
   mode: _constants.MODE.TITLE,
   focusX: 2,
   focusY: 2,
-  activeMenu: "main",
-  story: _story2.default,
-  menus: _menus2.default,
-  buttons: _buttons2.default
+  story: _story2.default
 };
 
 var mapState = {
@@ -3310,27 +3264,17 @@ module.exports = {"0":"false","1":"false","2":"false","3":"false","4":"false","5
 /* 54 */
 /***/ (function(module, exports) {
 
-module.exports = {"action":{},"text":"A wild jaguar creeps from the shadows with glowing eyes. You are scared, very scared.","buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground and soak in the fear of the neverending moment","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
+module.exports = {"text":"A wild jaguar creeps from the shadows with glowing eyes.\n\nYou are scared, very scared.","buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground and soak in the fear of the neverending moment","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
 
 /***/ }),
-/* 55 */
-/***/ (function(module, exports) {
-
-module.exports = {"byId":{"overlay":{"type":"MAP_OVERLAY","buttons":["button1","button1","button1","button1"]},"main":{"type":"TEXT_MENU","text":["Welcome to the Amazon Trail","","You may:"],"buttons":["toMap","newGame","toHighscore"]},"selectClass":{"type":"TEXT_MENU","text":["A world of adventure awaits you.","","Which path will you choose?"],"buttons":["startTribe","startScience","startLogger","toMain"]},"highscore":{"type":"TEXT_MENU","text":["The Amazon Top Ten:","","  1. Darwin: 12414","  2. Gabriel: 9843","  3. Mom: 5634","  4. Dan: 4197","  5. Jan: 1206"],"buttons":["toMain"]}},"allIds":["overlay","main","selectClass","highscore"]}
-
-/***/ }),
+/* 55 */,
 /* 56 */
 /***/ (function(module, exports) {
 
 module.exports = [{"name":"J. Cruz","icon":0,"health":5,"jeito":3},{"name":"H. Villa","icon":1,"health":1,"jeito":2},{"name":"F. Boa","icon":2,"health":2,"jeito":4},{"name":"R. Stone","icon":0,"health":1,"jeito":1},{"name":"D. Lee","icon":2,"health":3,"jeito":5}]
 
 /***/ }),
-/* 57 */
-/***/ (function(module, exports) {
-
-module.exports = {"byId":{"button1":{"text":"MENU","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMain":{"text":"Return to main menu","action":{"type":"FOCUS_MENU","payload":{"ref":"main"}}},"toMap":{"text":"Continue game","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"newGame":{"text":"Start new game","action":{"type":"FOCUS_MENU","payload":{"ref":"selectClass"}}},"toHighscore":{"text":"View high scores","action":{"type":"FOCUS_MENU","payload":{"ref":"highscore"}}},"startTribe":{"text":"The way of the tribe","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startScience":{"text":"The life of a logger","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}},"startLogger":{"text":"The researcher's journey","action":{"type":"FOCUS_TILE","payload":{"x":2,"y":2}}}},"allIds":["button1","toMain","toMap","newGame","toHighscore","startTribe","startScience","startLogger"]}
-
-/***/ }),
+/* 57 */,
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3815,10 +3759,6 @@ var _MapView = __webpack_require__(72);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _MenuView = __webpack_require__(81);
-
-var _MenuView2 = _interopRequireDefault(_MenuView);
-
 var _StoryView = __webpack_require__(83);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
@@ -3858,7 +3798,6 @@ var RainGame = function () {
 			this.loader = new _Loader2.default();
 			Promise.all([this.loader.setImage('atlas', _atlas2.default, _atlas4.default), this.loader.setImage('icons', _icons2.default, _icons4.default), this.loader.setImage('icons-xl', _iconsXl2.default, _iconsXl4.default), this.loader.setImage('water', _water2.default, _water4.default)]).then(function (loaded) {
 				_this.mapView = new _MapView2.default(_this.store, _this.canvas, _this.ctx, _this.loader);
-				_this.menuView = new _MenuView2.default(_this.store, _this.canvas, _this.ctx);
 				_this.storyView = new _StoryView2.default(_this.store, _this.canvas, _this.ctx);
 				_this.titleView = new _TitleView2.default(_this.store, _this.canvas, _this.ctx, _this.loader);
 			}).then(function () {
@@ -4215,7 +4154,7 @@ var Camera = function () {
   }, {
     key: 'updateClick',
     value: function updateClick(x, y) {
-      var clickId = x && y && (0, _utils.screenToButtonId)(x, y, this.visibleTiles);
+      var clickId = x && y && (0, _utils.screenToImageButtonId)(x, y, this.visibleTiles);
       if (clickId) {
         var pos = this.connect.positionCoords;
         var tile = (0, _utils.getItemById)(this.visibleTiles, clickId);
@@ -4652,7 +4591,7 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // import Connect from '../../store/reducers/Connect';
 
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(18);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -4792,192 +4731,8 @@ var Zoom = function () {
 exports.default = Zoom;
 
 /***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Menu = __webpack_require__(82);
-
-var _Menu2 = _interopRequireDefault(_Menu);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var MenuView = function () {
-  function MenuView(store, canvas, ctx) {
-    _classCallCheck(this, MenuView);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-
-    this.menu = new _Menu2.default(this.store, this.canvas, this.ctx);
-  }
-
-  _createClass(MenuView, [{
-    key: 'update',
-    value: function update(delta) {
-      this.menu.update(delta);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-      this.menu.render();
-    }
-  }]);
-
-  return MenuView;
-}();
-
-exports.default = MenuView;
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _constants = __webpack_require__(2);
-
-var _actions = __webpack_require__(0);
-
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Menu = function () {
-  function Menu(store, canvas, ctx) {
-    _classCallCheck(this, Menu);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-
-    this.connect = new _Connect2.default(this.store);
-    this.setMenu();
-  }
-
-  _createClass(Menu, [{
-    key: 'setMenu',
-    value: function setMenu() {
-      this.selectedId = null;
-      var menu = this.connect.getMenuById();
-      this.text = menu.text;
-      this.buttons = menu.buttons;
-    }
-  }, {
-    key: 'chooseButton',
-    value: function chooseButton() {
-      var button = (0, _utils.getItemById)(this.buttons, this.selectedId);
-      this.store.dispatch(button.action);
-      setTimeout(this.setMenu());
-    }
-  }, {
-    key: 'updateKeys',
-    value: function updateKeys() {
-      var _this = this;
-
-      var keys = this.connect.keys;
-      keys.map(function (key) {
-        if (key >= "1" && key <= _this.buttons.length.toString()) _this.selectedId = parseInt(key);
-        if (["Escape", "Backspace", "Delete"].includes(key)) _this.selectedId = null;
-        if (_this.selectedId && key === "Enter") _this.chooseButton();
-      });
-    }
-  }, {
-    key: 'updateClick',
-    value: function updateClick() {
-      var _connect$click = this.connect.click,
-          xClick = _connect$click.xClick,
-          yClick = _connect$click.yClick;
-
-      if (xClick && yClick) {
-        var clickId = (0, _utils.screenToTextId)(xClick, yClick, this.buttons);
-        this.store.dispatch((0, _actions.clicked)());
-        if (this.selectedId && this.selectedId === clickId) {
-          this.selectedId = clickId;
-          this.chooseButton();
-        } else {
-          this.selectedId = clickId;
-        }
-      }
-    }
-  }, {
-    key: 'update',
-    value: function update(delta) {
-      this.updateKeys();
-      this.updateClick();
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var fontSize = 28;
-      var lineSize = fontSize + 4;
-      this.ctx.font = fontSize + 'px MECC';
-      this.ctx.fillStyle = '#FFF';
-      this.ctx.textAlign = 'start';
-      this.ctx.textBaseline = 'alphabetic';
-
-      var linePos = 2;
-      this.text.map(function (line) {
-        _this2.ctx.fillText(line, lineSize, linePos * lineSize);
-        linePos++;
-      });
-      linePos++;
-
-      this.buttons.map(function (button, idx) {
-        _this2.ctx.fillStyle = _this2.selectedId === button.id ? '#FF0' : '#FFF';
-        var buttonText = button.id + '. ' + button.text;
-        _this2.ctx.fillText(buttonText, 2 * lineSize, linePos * lineSize);
-        (0, _utils.addButtonCoords)(button, {
-          xPos: 2 * lineSize,
-          yPos: lineSize * linePos,
-          width: _this2.ctx.measureText(buttonText).width,
-          height: fontSize
-        });
-        linePos++;
-      });
-      linePos++;
-
-      this.ctx.fillStyle = '#FFF';
-      var promptText = 'What is your choice? ' + (this.selectedId || '') + '_';
-      this.ctx.fillText(promptText, lineSize, linePos * lineSize);
-    }
-  }]);
-
-  return Menu;
-}();
-
-exports.default = Menu;
-
-/***/ }),
+/* 81 */,
+/* 82 */,
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5054,7 +4809,7 @@ var _utils = __webpack_require__(3);
 
 var _draw = __webpack_require__(4);
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(18);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -5071,18 +4826,16 @@ var Story = function () {
     this.ctx = ctx;
 
     this.blink = new _Animation2.default(1, 1, 1);
+    this.connect = new _Connect2.default(this.store);
 
     this.fontSize = 32;
     this.lineHeight = 44;
     this.ctx.font = this.fontSize + 'px MECC';
-
-    this.connect = new _Connect2.default(this.store);
-
     this.selectedId = null;
-    this.setEvent();
-    console.log(this.text, this.buttons);
 
-    this.storyText = _draw.storyText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.setEvent();
+
+    this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -5100,6 +4853,9 @@ var Story = function () {
           text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth)
         });
       });
+      var promptText = 'What is your choice? ' + (this.selectedId || '');
+      var cursor = this.blink.getValue() ? '' : '_';
+      this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
     }
   }, {
     key: 'chooseButton',
@@ -5127,7 +4883,7 @@ var Story = function () {
           yClick = _connect$click.yClick;
 
       if (xClick && yClick) {
-        var clickId = (0, _utils.screenToTextId)(xClick, yClick, this.buttons);
+        var clickId = (0, _utils.screenToTextButtonId)(xClick, yClick, this.buttons);
         this.store.dispatch((0, _actions.clicked)());
         if (this.selectedId && this.selectedId === clickId) {
           this.selectedId = clickId;
@@ -5140,31 +4896,26 @@ var Story = function () {
   }, {
     key: 'update',
     value: function update(delta) {
-      this.blink.update(delta);
       this.updateKeys(delta);
       this.updateClick();
+      this.setEvent(); // Comment out to disable live text adjustment on resize
+      this.blink.update(delta);
     }
   }, {
     key: 'render',
     value: function render() {
-      this.setEvent();
-
-      this.ctx.fillStyle = '#6F6';
       this.ctx.font = this.fontSize + 'px MECC';
 
+      this.ctx.fillStyle = '#6F6';
       var linePos = 2 * this.fontSize;
+      var mainCoords = this.mainText(this.text, this.fontSize, linePos);
 
-      var _storyText = this.storyText(this.text, this.fontSize, linePos),
-          yPos = _storyText.yPos;
-
-      linePos = yPos + this.lineHeight * 2;
+      linePos = mainCoords.yPos + this.lineHeight * 2;
       this.buttons = this.buttonText(this.buttons, linePos, this.selectedId);
 
-      linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-      var promptText = 'What is your choice? ' + (this.selectedId || '');
-      var cursor = this.blink.getValue() ? '' : '_';
       this.ctx.fillStyle = '#6F6';
-      this.ctx.fillText(promptText + cursor, this.fontSize, linePos);
+      linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+      var promptCoords = this.mainText(this.prompt, this.fontSize, linePos);
     }
   }]);
 
@@ -5198,7 +4949,7 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(18);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -5329,7 +5080,7 @@ var _requests = __webpack_require__(6);
 
 var _actions = __webpack_require__(0);
 
-var _failure = __webpack_require__(18);
+var _failure = __webpack_require__(17);
 
 function registerDialog(store, setDim) {
   var container = document.getElementById('container');

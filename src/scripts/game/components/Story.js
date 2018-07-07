@@ -1,8 +1,8 @@
-import {MODE} from '../constants';
-import {clicked} from '../../store/actions/actions';
+import { MODE } from '../constants';
+import { clicked } from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import {addButtonCoords, screenToTextId, getItemById} from './utils';
-import { storyText, buttonText, splitIntoLines } from '../utils/draw';
+import { screenToTextButtonId, getItemById } from './utils';
+import { mainText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';
 
 export default class Story {
@@ -12,18 +12,16 @@ export default class Story {
     this.ctx = ctx;
 
     this.blink = new Animation(1, 1, 1);
+    this.connect = new Connect(this.store);
 
     this.fontSize = 32;
     this.lineHeight = 44;
     this.ctx.font = this.fontSize + 'px MECC';
-
-    this.connect = new Connect(this.store);
-
     this.selectedId = null;
-    this.setEvent();
-    console.log(this.text, this.buttons);
 
-    this.storyText = storyText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.setEvent();
+
+    this.mainText = mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -37,6 +35,9 @@ export default class Story {
         text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth)
       });
     });
+    const promptText = `What is your choice? ${this.selectedId || ''}`;
+    const cursor = this.blink.getValue() ? '' : '_';
+    this.prompt = splitIntoLines(this.ctx, promptText + cursor, this.maxMainWidth);
   }
 
   chooseButton() {
@@ -56,7 +57,7 @@ export default class Story {
   updateClick() {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
-      const clickId = screenToTextId(xClick, yClick, this.buttons);
+      const clickId = screenToTextButtonId(xClick, yClick, this.buttons);
       this.store.dispatch(clicked());
       if (this.selectedId && this.selectedId === clickId) {
         this.selectedId = clickId;
@@ -68,27 +69,24 @@ export default class Story {
   }
 
   update(delta) {
-    this.blink.update(delta);
     this.updateKeys(delta);
     this.updateClick();
+    this.setEvent(); // Comment out to disable live text adjustment on resize
+    this.blink.update(delta);
   }
 
   render() {
-    this.setEvent();
-
-    this.ctx.fillStyle = '#6F6';
     this.ctx.font = this.fontSize + 'px MECC';
 
+    this.ctx.fillStyle = '#6F6';
     let linePos = 2 * this.fontSize;
-    const { yPos } = this.storyText(this.text, this.fontSize, linePos);
+    const mainCoords = this.mainText(this.text, this.fontSize, linePos);
 
-    linePos = yPos + this.lineHeight * 2;
+    linePos = mainCoords.yPos + this.lineHeight * 2;
     this.buttons = this.buttonText(this.buttons, linePos, this.selectedId);
 
-    linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-    const promptText = `What is your choice? ${this.selectedId || ''}`;
-    const cursor = this.blink.getValue() ? '' : '_';
     this.ctx.fillStyle = '#6F6';
-    this.ctx.fillText(promptText + cursor, this.fontSize, linePos);
+    linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+    const promptCoords = this.mainText(this.prompt, this.fontSize, linePos);
   };
 }

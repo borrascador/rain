@@ -1,11 +1,11 @@
 import { makeTextButton } from '../utils/draw';
 import { registerDialog } from '../dialogs/register';
 import { loginDialog } from '../dialogs/login';
-import { addButtonCoords, screenToTextButton } from '../components/utils';
+import { screenToTextButton } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
 import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
-import { drawById, drawByName, roundToZoom, centerText } from '../utils/draw';
+import { drawById, drawByName, centerText } from '../utils/draw';
 
 export default class TitleView {
   constructor (store, canvas, ctx, loader) {

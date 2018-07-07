@@ -27,15 +27,6 @@ export default class Connect {
     return Object.assign({}, story, {buttons: buttons});
   }
 
-  getMenuById(id) {
-    const state = this.store.getState();
-    const menu = state.menus.byId[id || state.activeMenu];
-    const buttons = menu.buttons.map((button, idx) =>
-      Object.assign({}, state.buttons.byId[button], {id: idx + 1})
-    );
-    return Object.assign({}, menu, {buttons: buttons});
-  }
-
   get map() {
     const {zoom, mapTiles} = this.store.getState();
     return {zoom, mapTiles,};

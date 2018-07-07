@@ -1,6 +1,5 @@
 {
-    "action": {},
-    "text": "A wild jaguar creeps from the shadows with glowing eyes. You are scared, very scared.",
+    "text": "A wild jaguar creeps from the shadows with glowing eyes.\n\nYou are scared, very scared.",
     "buttons": [
         {
             "text": "Run away",

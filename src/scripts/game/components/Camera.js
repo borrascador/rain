@@ -1,7 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import { position } from '../../store/actions/requests';
-import { CAMERA_SPEED, LAYER } from '../constants'
-import { addButtonCoords, screenToButtonId, getItemById } from './utils';
+import { LAYER } from '../constants'
+import { screenToImageButtonId, getItemById } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
 export default class Camera {
@@ -32,7 +32,7 @@ export default class Camera {
   }
 
   updateClick(x, y) {
-    const clickId = x && y && screenToButtonId(x, y, this.visibleTiles);
+    const clickId = x && y && screenToImageButtonId(x, y, this.visibleTiles);
     if (clickId) {
       const pos = this.connect.positionCoords;
       const tile = getItemById(this.visibleTiles, clickId);
