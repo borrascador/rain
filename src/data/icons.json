@@ -105,6 +105,18 @@
         {
          "name":"plus"
         },
+     "34":
+        {
+         "name":"crop1"
+        },
+     "35":
+        {
+         "name":"crop2"
+        },
+     "36":
+        {
+         "name":"crop3"
+        },
      "4":
         {
          "name":"down"
@@ -221,6 +233,18 @@
          "name":"string"
         },
      "33":
+        {
+         "name":"string"
+        },
+     "34":
+        {
+         "name":"string"
+        },
+     "35":
+        {
+         "name":"string"
+        },
+     "36":
         {
          "name":"string"
         },
