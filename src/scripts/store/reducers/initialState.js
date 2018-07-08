@@ -1,26 +1,16 @@
 import { MODE, VEHICLE } from '../../game/constants';
-import map from '../../../data/map.json';
 import keys from '../../../data/keys.json';
 import story from '../../../data/story.json';
-import menus from '../../../data/menus.json';
 import party from '../../../data/party.json';
-import buttons from '../../../data/buttons.json';
 import { makeKeys } from '../utils/input';
 
 const uiState = {
   mode: MODE.TITLE,
-  focusX: 2,
-  focusY: 2,
-  activeMenu: "main",
-  story: story,
-  menus: menus,
-  buttons: buttons
+  story: story
 };
 
 const mapState = {
   zoom: 3,
-  mapHeight: map.height,
-  mapWidth: map.width,
   mapTiles: []
 };
 

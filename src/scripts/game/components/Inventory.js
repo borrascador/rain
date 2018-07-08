@@ -1,6 +1,6 @@
-import Connect from '../../store/reducers/Connect';
+// import Connect from '../../store/reducers/Connect';
 import Animation from '../utils/Animation';
-import { screenToButtonName } from './utils';
+import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
 
 export default class Inventory {
@@ -10,37 +10,34 @@ export default class Inventory {
     this.ctx = ctx;
     this.iconsXl = loader.getImage('icons-xl');
 
-    this.animate = new Animation(2, 0.5);
-    this.connect = new Connect(this.store);
-
     this.scale = 4;
-    this.buttons = this.makeButtons(this.canvas, this.iconsXl, this.scale, [
-      'pack-big'
-    ]);
-  }
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.animate = new Animation(this.scale, this.scale, 0.5);
 
-  makeButtons(canvas, image, scale, names) {
-    const size = image.tileset.tilewidth * scale;
-    return names.map((name, index) => ({
-      name: name,
-      xPos: canvas.width - size,
-      yPos: canvas.height / 2 - size / 2 + this.animate.getValue(),
-      width: size,
-      height: size
-    }));
+    // this.connect = new Connect(this.store);
+
+    this.buttons = [
+      { name: 'pack-big', onClick: () => console.log('pack-big') }
+    ];
   }
 
   update(delta, x, y) {
     this.animate.update(delta);
-    const clickName = x && y && screenToButtonName(x, y, this.buttons);
-    clickName && console.log(clickName);
+    const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
+    clickedButton && clickedButton.onClick();
   }
 
   render() {
-    this.buttons.map(button => {
-      drawByName(
-        this.ctx, this.iconsXl, button.name, this.scale,
-        button.xPos, button.yPos + this.animate.getValue());
+    this.buttons = this.buttons.map(button => {
+      const x = this.canvas.width - this.size;
+      const y = this.canvas.height / 2 - this.size / 2;
+      drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y + this.animate.getValue());
+      return Object.assign({}, button, {
+        xPos: x,
+        yPos: y,
+        width: this.size,
+        height: this.size
+      });
     });
   }
 }

@@ -4,11 +4,12 @@ import Loader from './utils/Loader';
 import atlasImage from '../../images/atlas.png';
 import iconsImage from '../../images/icons.png';
 import iconsXlImage from '../../images/icons-xl.png';
+import waterImage from '../../images/water.png';
 import atlasTileset from '../../data/atlas.json';
 import iconsTileset from '../../data/icons.json';
 import iconsXlTileset from '../../data/icons-xl.json';
+import waterTileset from '../../data/water.json';
 import MapView from './views/MapView';
-import MenuView from './views/MenuView';
 import StoryView from './views/StoryView';
 import TitleView from './views/TitleView';
 import {changeMode} from '../store/actions/actions';
@@ -32,13 +33,13 @@ export default class RainGame {
     Promise.all([
 			this.loader.setImage('atlas', atlasImage, atlasTileset),
 			this.loader.setImage('icons', iconsImage, iconsTileset),
-			this.loader.setImage('icons-xl', iconsXlImage, iconsXlTileset)
+			this.loader.setImage('icons-xl', iconsXlImage, iconsXlTileset),
+			this.loader.setImage('water', waterImage, waterTileset)
 		])
     .then(loaded => {
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
-			this.menuView = new MenuView(this.store, this.canvas, this.ctx);
 			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
-			this.titleView = new TitleView(this.store, this.canvas, this.ctx);
+			this.titleView = new TitleView(this.store, this.canvas, this.ctx, this.loader);
     }).then(() => {
 			window.requestAnimationFrame(this.tick);
 		})
@@ -64,6 +65,11 @@ export default class RainGame {
 	}
 
 	update (delta) {
+		if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+			this.canvas.width = window.innerWidth;
+			this.canvas.height = window.innerHeight;
+			this.ctx.imageSmoothingEnabled = false;
+		}
 		if (this.mode === MODE.MAP) {
 			this.mapView.update(delta);
 		} else if (this.mode === MODE.MENU) {

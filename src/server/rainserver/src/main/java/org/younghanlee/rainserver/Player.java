@@ -1,6 +1,9 @@
 package org.younghanlee.rainserver;
 
+import java.util.*;
+
 import org.java_websocket.WebSocket;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Player {
@@ -10,7 +13,11 @@ public class Player {
 	private String player_class;
 	private boolean online;
 	private int position;
+	private int x;
+	private int y;
+	
 	private int sight;
+	private HashSet<Integer> tilesSeen;
 	
 	public int randomInt(int max) {
 		return (int)(Math.random() * (max + 1));
@@ -24,9 +31,10 @@ public class Player {
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
 		
-		int x = randomInt(Constants.MAPWIDTH/2);
-		int y = randomInt(Constants.MAPHEIGHT - 1);
+		this.x = randomInt(Constants.MAPWIDTH/2);
+		this.y = randomInt(Constants.MAPHEIGHT - 1);
 		this.position = Constants.MAPWIDTH * y + x;	
+		this.tilesSeen = World.getTile(position).inSight(sight);	
 	}
 	
 	public void login(Connection connection) {
@@ -42,8 +50,25 @@ public class Player {
 		return Message.LOGOUT_RESPONSE();
 	}
 	
-	public void move(int newTile) {
-		
+	public boolean legalMove(int range, int x, int y) {
+		boolean xl = x > 0;
+		boolean xu = x < Constants.MAPWIDTH;
+		boolean yl = y > 0;
+		boolean yu = x < Constants.MAPHEIGHT;
+		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
+		return xl && xu && yl && yu && dist <= range && dist > 0;
+	}
+	
+	public boolean move(int range, int destination) {
+		int x = destination % Constants.MAPWIDTH;
+		int y = (destination - x)/Constants.MAPWIDTH;
+		if (legalMove(range, x, y)) {
+			this.x = x;
+			this.y = y;
+			this.position = destination;	
+			this.tilesSeen.addAll(World.getTile(position).inSight(sight));
+			return true;
+		} else return false;
 	}
 	
 	public boolean isOnline() {
@@ -60,6 +85,22 @@ public class Player {
 	
 	public int getSight() {
 		return sight;
+	}
+	
+	public JSONArray tilesSeenArray() {
+		JSONArray ja = new JSONArray();
+		for (int ts: tilesSeen) {
+			ja.put(World.getTile(ts).toJSONObject());
+		}
+		return ja;
+	}
+	
+	public JSONArray inSightArray() {
+		JSONArray ja = new JSONArray();
+		for (int ts: World.getTile(position).inSight(sight)) {
+			ja.put(World.getTile(ts).toJSONObject());
+		}
+		return ja;
 	}
 	
 	

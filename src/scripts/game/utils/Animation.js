@@ -1,6 +1,7 @@
 export default class Animation {
-  constructor(distance, interval) {
-    this.distance = distance;
+  constructor(max, step, interval) {
+    this.max = max;
+    this.step = step;
     this.interval = interval;
     this.time = 0;
     this.value = 0;
@@ -10,7 +11,7 @@ export default class Animation {
     this.time += delta;
     if (this.time >= this.interval) {
       this.time = 0;
-      this.value = this.value === 0 ? -(this.distance) : 0;
+      this.value = this.value < this.max ? this.value + this.step : 0;      
     }
   }
 

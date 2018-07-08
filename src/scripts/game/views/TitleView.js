@@ -1,78 +1,96 @@
 import { makeTextButton } from '../utils/draw';
-import { showLogin, showRegister } from '../utils/dialogs';
-import { addButtonCoords, screenToTextId } from '../components/utils';
+import { registerDialog } from '../dialogs/register';
+import { loginDialog } from '../dialogs/login';
+import { screenToTextButton } from '../components/utils';
 import Connect from '../../store/reducers/Connect';
+import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
+import { drawById, drawByName, centerText } from '../utils/draw';
 
 export default class TitleView {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.water = loader.getImage('water');
+
+    this.zoom = 4;
+    this.gutter = 4;
+    this.size = this.water.tileset.tilewidth * this.zoom;
+    this.animateBottom = new Animation(this.size, this.zoom * 2, 0.5);
+    this.animateTop = new Animation(3, 1, 0.5);
 
     this.connect = new Connect(this.store);
+    this.setDim(false);
 
-    this.selected = null;
+    this.title = [
+      { text: 'RAINFOREST' },
+      { text: 'TRAIL' }
+    ];
 
     this.buttons = [
-      { id: 1, text: 'LOGIN', onClick: showLogin },
-      { id: 2, text: 'REGISTER', onClick: showRegister }
+      { text: 'LOGIN', onClick: loginDialog },
+      { text: 'REGISTER', onClick: registerDialog }
     ];
+
+    this.setDim = this.setDim.bind(this);
+    this.centerText = centerText.bind(null, this.canvas, this.ctx, this.zoom, this.gutter);
   }
 
-  update(delta) {
+  setDim(dim) {
+    this.dim = dim;
+  }
+
+  updateAnimation(delta) {
+    this.animateBottom.update(delta);
+    this.animateTop.update(delta);
+  }
+
+  handleClick() {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
       this.store.dispatch(clicked());
-      const clickId = screenToTextId(xClick, yClick, this.buttons);
-      if (this.selectedId && this.selectedId === clickId) {
-        this.buttons.find((button) =>
-          this.selectedId === button.id
-        ).onClick(this.store, this.undim.bind(this));
-        this.selectedId = null;
-        this.dim = true;
-      } else {
-        this.selectedId = clickId;
+      const button = !this.dim && screenToTextButton(xClick, yClick, this.buttons);
+      button && button.onClick(this.store, this.setDim)
+    }
+  }
+
+  update(delta) {
+    this.updateAnimation(delta);
+    this.handleClick();
+  }
+
+  renderBackground() {
+    const endCol = Math.floor((this.canvas.width / this.size));
+    const endRow = Math.floor((this.canvas.height / this.size));
+    const deltaX = this.animateBottom.getValue();
+    const deltaTop = this.animateTop.getValue();
+
+    for (let col = -1; col <= endCol; col++) {
+      for (let row = 0; row <= endRow; row++) {
+        const x = col * this.size;
+        const y = row * this.size;
+        drawByName(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
+      }
+    }
+    for (let col = 0; col <= endCol; col++) {
+      for (let row = 0; row <= endRow; row++) {
+        const x = col * this.size;
+        const y = row * this.size;
+        drawById(this.ctx, this.water, deltaTop.toString(), this.zoom, x, y);
       }
     }
   }
 
-  undim() {
-    this.dim = false;
+  renderText() {
+    this.ctx.fillStyle = '#FFF';
+    this.title = this.centerText(this.title, 64, 1/4);
+    this.buttons = this.centerText(this.buttons, 32, 3/4);
   }
 
   render() {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-    let fontSize = 60;
-    let lineSize = fontSize + 4;
-    this.ctx.font = fontSize + 'px MECC';
-    this.ctx.fillStyle = '#FFF';
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'alphabetic';
-
-    let linePos = 2;
-    this.ctx.fillText('RAINFOREST', this.canvas.width / 2, linePos++ * lineSize);
-    this.ctx.fillText('TRAIL', this.canvas.width / 2, linePos++ * lineSize);
-
-    fontSize = 28;
-    lineSize = fontSize + 16;
-    this.ctx.font = fontSize + 'px MECC';
-
-    linePos = 7;
-    this.buttons.map((button, idx) => {
-      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#FFF';
-      this.ctx.fillText(button.text, this.canvas.width / 2, linePos * lineSize);
-      addButtonCoords(button, {
-        xPos: this.canvas.width / 2 - this.ctx.measureText(button.text).width / 2,
-        yPos: linePos * lineSize,
-        width: this.ctx.measureText(button.text).width,
-        height: fontSize
-      });
-      linePos++;
-    });
-
+    this.renderBackground();
+    this.renderText();
     if (this.dim) {
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);

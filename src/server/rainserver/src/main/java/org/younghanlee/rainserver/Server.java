@@ -27,6 +27,11 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		System.out.println("closed " + conn.getRemoteSocketAddress() + " with exit code " + code + " additional info: " + reason);
+		Connection connection = (Connection) conn;
+		if (connection.getPlayer() != null) {
+			connection.getPlayer().logoff(connection);
+		}
+		dump();
 	}
 
 	@Override
@@ -50,6 +55,8 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onStart() {
 		System.out.println("server started successfully");
+		World.addPlayer("a", "test1@test.com", "TRIBE");
+		World.addPlayer("b", "test2@test.com", "TRIBE");
 		dump();
 	}
 

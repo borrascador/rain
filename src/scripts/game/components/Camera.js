@@ -1,7 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import { position } from '../../store/actions/requests';
-import { CAMERA_SPEED, LAYER } from '../constants'
-import { addButtonCoords, screenToButtonId, getItemById } from './utils';
+import { LAYER } from '../constants'
+import { screenToImageButtonId, getItemById } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
 export default class Camera {
@@ -11,8 +11,6 @@ export default class Camera {
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
     this.icons = loader.getImage('icons');
-
-    console.log(this.icons);
 
     this.connect = new Connect(this.store);
   }
@@ -35,7 +33,7 @@ export default class Camera {
   }
 
   updateClick(x, y) {
-    const clickId = x && y && screenToButtonId(x, y, this.visibleTiles);
+    const clickId = x && y && screenToImageButtonId(x, y, this.visibleTiles);
     if (clickId) {
       const pos = this.connect.positionCoords;
       const tile = getItemById(this.visibleTiles, clickId);
@@ -54,12 +52,10 @@ export default class Camera {
     const {sight} = this.connect.sight;
     const {zoom, mapTiles} = this.connect.map;
     const mapTileSize = this.atlas.tileset.tilewidth * zoom;
+    const iconSize = this.icons.tileset.tilewidth * zoom;
     const gridZoom = (mapTileSize - 1) / (mapTileSize / zoom)
 
-    const {BASE, MIDDLE, TOP} = LAYER;
-
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    const {BOTTOM, MIDDLE} = LAYER;
 
     const origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
     const startCol = Math.floor(origin.x / mapTileSize);
@@ -84,16 +80,16 @@ export default class Camera {
           dim = true;
         }
         if (mapTile) {
-          const baseId = mapTile.layers[BASE];
-          drawById(this.ctx, this.atlas, baseId, gridZoom, x, y);
-          const middleId = mapTile.layers[MIDDLE];
-          drawById(this.ctx, this.atlas, middleId, gridZoom, x, y);
-          
-          if (mapTile.visitors && mapTile.visitors.length > 0 && !dim) {
-            const iconZoom = 2;
-            const iconX = x + (mapTileSize - this.icons.tileset.tilewidth * iconZoom) / 2;
-            const iconY = y + (mapTileSize - this.icons.tileset.tileheight * iconZoom) / 2;
-            drawByName(this.ctx, this.icons, 'user', iconZoom, iconX, iconY);
+          [BOTTOM, MIDDLE].forEach(layer => {
+            if (layer in mapTile.layers) {
+              const id = mapTile.layers[layer] - 1;
+              drawById(this.ctx, this.atlas, id, gridZoom, x, y);
+            }
+          });
+
+          if (!dim && 'visitors' in mapTile && mapTile.visitors === true) {
+            const iconOffset = (mapTileSize - iconSize) / 2
+            drawByName(this.ctx, this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
           }
 
           if (dim) {

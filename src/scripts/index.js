@@ -4,7 +4,11 @@ import RainGame from './game/index';
 window.onload = function() {
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled = false;
+  ctx.textBaseline = 'alphabetic';
 
   const rainGame = new RainGame(store, canvas, ctx);
 

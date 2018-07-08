@@ -1,11 +1,12 @@
-export const addButtonCoords = (option, buttonCoords) => {
+// TODO: Is it a good idea to start using this?
+export const addCoords = (button, coords) => {
   const props = ['xPos', 'yPos', 'width', 'height'];
-  if (!props.every(prop => Object.keys(option).includes(prop))) {
-    Object.assign(option, buttonCoords);
+  if (!props.every(prop => Object.keys(button).includes(prop))) {
+    return Object.assign({}, button, coords);
   }
 };
 
-export const screenToTextId = (x, y, list) => {
+export const screenToTextButtonId = (x, y, list) => {
   const selectedButton = list.find(button => {
     return (
       x >= button.xPos && x <= (button.xPos + button.width) &&
@@ -15,7 +16,17 @@ export const screenToTextId = (x, y, list) => {
   return selectedButton && selectedButton.id || null;
 };
 
-export const screenToButtonId = (x, y, list) => {
+export const screenToTextButton = (x, y, list) => {
+  const selectedButton = list.find(button => {
+    return (
+      x >= button.xPos && x <= (button.xPos + button.width) &&
+      y <= button.yPos && y >= (button.yPos - button.height)
+    );
+  });
+  return selectedButton || null;
+};
+
+export const screenToImageButtonId = (x, y, list) => {
   const selectedButton = list.find(button => {
     return (
       x >= button.xPos && x <= (button.xPos + button.width) &&
@@ -25,14 +36,14 @@ export const screenToButtonId = (x, y, list) => {
   return selectedButton && selectedButton.id || null;
 };
 
-export const screenToButtonName = (x, y, list) => {
+export const screenToImageButton = (x, y, list) => {
   const selectedButton = list.find(button => {
     return (
       x >= button.xPos && x <= (button.xPos + button.width) &&
       y >= button.yPos && y <= (button.yPos + button.height)
     );
   });
-  return selectedButton && selectedButton.name || null;
+  return selectedButton || null;
 };
 
 export const getItemById = (array, id) => {

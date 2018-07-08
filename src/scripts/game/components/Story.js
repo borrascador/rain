@@ -1,7 +1,9 @@
-import {MODE} from '../constants';
-import {clicked} from '../../store/actions/actions';
+import { MODE } from '../constants';
+import { clicked } from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import {addButtonCoords, screenToTextId, getItemById} from './utils';
+import { screenToTextButtonId, getItemById } from './utils';
+import { mainText, buttonText, splitIntoLines } from '../utils/draw';
+import Animation from '../utils/Animation';
 
 export default class Story {
   constructor (store, canvas, ctx) {
@@ -9,16 +11,33 @@ export default class Story {
     this.canvas = canvas;
     this.ctx = ctx;
 
+    this.blink = new Animation(1, 1, 1);
     this.connect = new Connect(this.store);
+
+    this.fontSize = 32;
+    this.lineHeight = 44;
+    this.ctx.font = this.fontSize + 'px MECC';
+    this.selectedId = null;
+
     this.setEvent();
+
+    this.mainText = mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.buttonText = buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
   setEvent() {
-    // TODO: Is this the right way to do this?
-    this.selectedId = null;
     const story = this.connect.story;
-    this.text = story.text;
-    this.buttons = story.buttons;
+    this.maxMainWidth = this.canvas.width - this.fontSize * 2;
+    this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
+    this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
+    this.buttons = story.buttons.map((button, idx) => {
+      return Object.assign({}, button, {
+        text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth)
+      });
+    });
+    const promptText = `What is your choice? ${this.selectedId || ''}`;
+    const cursor = this.blink.getValue() ? '' : '_';
+    this.prompt = splitIntoLines(this.ctx, promptText + cursor, this.maxMainWidth);
   }
 
   chooseButton() {
@@ -38,7 +57,7 @@ export default class Story {
   updateClick() {
     const {xClick, yClick} = this.connect.click;
     if (xClick && yClick) {
-      const clickId = screenToTextId(xClick, yClick, this.buttons);
+      const clickId = screenToTextButtonId(xClick, yClick, this.buttons);
       this.store.dispatch(clicked());
       if (this.selectedId && this.selectedId === clickId) {
         this.selectedId = clickId;
@@ -52,42 +71,22 @@ export default class Story {
   update(delta) {
     this.updateKeys(delta);
     this.updateClick();
+    this.setEvent(); // Comment out to disable live text adjustment on resize
+    this.blink.update(delta);
   }
 
   render() {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-    const fontSize = 28;
-    const lineSize = fontSize + 4;
-    this.ctx.font = fontSize + 'px MECC';
-    this.ctx.fillStyle = '#6F6';
-    this.ctx.textAlign = 'start';
-    this.ctx.textBaseline = 'alphabetic';
-
-    let linePos = 2;
-    this.text.map(line => {
-      this.ctx.fillText(line, lineSize, linePos * lineSize);
-      linePos++;
-    });
-    linePos++;
-
-    this.buttons.map((button, idx) => {
-      this.ctx.fillStyle = (this.selectedId === button.id) ? '#FF0' : '#6F6';
-      const buttonText = `${button.id}. ${button.text}`;
-      this.ctx.fillText(buttonText, 2 * lineSize, linePos * lineSize);
-      addButtonCoords(button, {
-        xPos: 2 * lineSize,
-        yPos: lineSize * linePos,
-        width: this.ctx.measureText(buttonText).width,
-        height: fontSize,
-      });
-      linePos++;
-    })
-    linePos++;
+    this.ctx.font = this.fontSize + 'px MECC';
 
     this.ctx.fillStyle = '#6F6';
-    const promptText = `What is your choice? ${this.selectedId || ''}_`;
-    this.ctx.fillText(promptText, lineSize, linePos * lineSize);
+    let linePos = 2 * this.fontSize;
+    const mainCoords = this.mainText(this.text, this.fontSize, linePos);
+
+    linePos = mainCoords.yPos + this.lineHeight * 2;
+    this.buttons = this.buttonText(this.buttons, linePos, this.selectedId);
+
+    this.ctx.fillStyle = '#6F6';
+    linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+    const promptCoords = this.mainText(this.prompt, this.fontSize, linePos);
   };
 }
