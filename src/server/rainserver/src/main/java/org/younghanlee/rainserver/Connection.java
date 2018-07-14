@@ -9,6 +9,10 @@ import org.java_websocket.drafts.Draft;
 public class Connection extends WebSocketImpl {
 	private Player player;
 	
+	public void flushBuffer () {
+		
+	}
+	
 	public Connection(WebSocketListener listener, List<Draft> drafts){
 		super(listener, drafts);
 		this.player = null;

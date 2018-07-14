@@ -17,7 +17,7 @@ public class Tile {
 	private HashMap<String, Integer> events;
 	
 	private Player owner;
-	private Player[] visitors;
+	private HashSet<String> visitors;
 	
 	public Tile(int id) {
 		this.id = id;
@@ -25,7 +25,7 @@ public class Tile {
 		this.y = (id - x)/Constants.MAPWIDTH;
 		this.layers = new HashMap<String, Integer>();
 		this.events = new HashMap<String, Integer>();
-		this.visitors = new Player[0];
+		this.visitors = new HashSet<String>();
 	}
 	
 	public void addLayer(String name, int value) {
@@ -34,6 +34,14 @@ public class Tile {
 	
 	public void addEvent(String name, int value) {
 		this.events.put(name, value);
+	}
+	
+	public void addVisitor(String name) {
+		this.visitors.add(name);
+	}
+	
+	public void removeVisitor(String name) {
+		this.visitors.remove(name);
 	}
 	
 	public JSONObject toJSONObject() {
