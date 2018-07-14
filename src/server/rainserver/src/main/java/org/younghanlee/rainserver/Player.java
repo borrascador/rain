@@ -19,6 +19,8 @@ public class Player {
 	private int sight;
 	private HashSet<Integer> tilesSeen;
 	
+	private ArrayList<Integer> buffer;
+	
 	public int randomInt(int max) {
 		return (int)(Math.random() * (max + 1));
 	}
@@ -34,7 +36,9 @@ public class Player {
 		this.x = randomInt(Constants.MAPWIDTH/2);
 		this.y = randomInt(Constants.MAPHEIGHT - 1);
 		this.position = Constants.MAPWIDTH * y + x;	
-		this.tilesSeen = World.getTile(position).inSight(sight);	
+		Tile t = World.getTile(position);
+		t.addVisitor(name);
+		this.tilesSeen = t.inSight(sight);	
 	}
 	
 	public void login(Connection connection) {
@@ -51,9 +55,9 @@ public class Player {
 	}
 	
 	public boolean legalMove(int range, int x, int y) {
-		boolean xl = x > 0;
+		boolean xl = x >= 0;
 		boolean xu = x < Constants.MAPWIDTH;
-		boolean yl = y > 0;
+		boolean yl = y >= 0;
 		boolean yu = x < Constants.MAPHEIGHT;
 		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
 		return xl && xu && yl && yu && dist <= range && dist > 0;
@@ -66,7 +70,12 @@ public class Player {
 			this.x = x;
 			this.y = y;
 			this.position = destination;	
-			this.tilesSeen.addAll(World.getTile(position).inSight(sight));
+			
+			World.getTile(position).removeVisitor(this.name);
+			Tile dest = World.getTile(destination);
+			dest.addVisitor(this.name);
+			
+			this.tilesSeen.addAll(dest.inSight(sight));
 			return true;
 		} else return false;
 	}
