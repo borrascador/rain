@@ -4311,6 +4311,14 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _Tabs = __webpack_require__(83);
+
+var _Tabs2 = _interopRequireDefault(_Tabs);
+
+var _Zoom = __webpack_require__(77);
+
+var _Zoom2 = _interopRequireDefault(_Zoom);
+
 var _Party = __webpack_require__(74);
 
 var _Party2 = _interopRequireDefault(_Party);
@@ -4322,10 +4330,6 @@ var _Vehicle2 = _interopRequireDefault(_Vehicle);
 var _Inventory = __webpack_require__(76);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
-
-var _Zoom = __webpack_require__(77);
-
-var _Zoom2 = _interopRequireDefault(_Zoom);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4340,26 +4344,29 @@ var Overlay = function () {
     this.ctx = ctx;
     this.loader = loader;
 
+    this.tabs = new _Tabs2.default(this.store, this.canvas, this.ctx, this.loader);
     this.zoom = new _Zoom2.default(this.store, this.canvas, this.ctx, this.loader);
     this.party = new _Party2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.vehicle = new _Vehicle2.default(this.store, this.canvas, this.ctx, this.loader);
+    // this.vehicle = new Vehicle(this.store, this.canvas, this.ctx, this.loader);
     this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
   _createClass(Overlay, [{
     key: 'update',
     value: function update(delta, xClick, yClick) {
+      this.tabs.update(delta, xClick, yClick);
       this.zoom.update(delta, xClick, yClick);
       this.party.update(delta, xClick, yClick);
-      this.vehicle.update(delta, xClick, yClick);
+      // this.vehicle.update(delta, xClick, yClick);
       this.inventory.update(delta, xClick, yClick);
     }
   }, {
     key: 'render',
     value: function render() {
+      this.tabs.render();
       this.zoom.render();
       this.party.render();
-      this.vehicle.render();
+      // this.vehicle.render();
       this.inventory.render();
     }
   }]);
@@ -5167,6 +5174,117 @@ function loginDialog(store, setDim) {
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
 }
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _requests = __webpack_require__(6);
+
+var _actions = __webpack_require__(0);
+
+var _utils = __webpack_require__(3);
+
+var _draw = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Tabs = function () {
+  function Tabs(store, canvas, ctx, loader) {
+    _classCallCheck(this, Tabs);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.connect = new _Connect2.default(this.store);
+
+    this.scale = 4;
+    this.size = 192;
+
+    this.tabs = [{ text: 'info' }, { text: 'food' }, { text: 'users' }];
+
+    this.openTab = this.tabs[0].text;
+  }
+
+  _createClass(Tabs, [{
+    key: 'update',
+    value: function update(delta, x, y) {
+      var clickedButton = x && y && (0, _utils.screenToTextButton)(x, y, this.tabs);
+      // clickedButton && this.store.dispatch(clickedButton.onClick());
+      if (clickedButton) this.openTab = clickedButton.text;
+    }
+  }, {
+    key: 'renderTabs',
+    value: function renderTabs() {
+      var _this = this;
+
+      var x = 0;
+      var y = this.canvas.height - this.size;
+      var fontSize = 32;
+      var lineHeight = 44;
+      this.ctx.font = fontSize + 'px MECC';
+      this.ctx.strokeStyle = '#FFF';
+      this.ctx.lineWidth = 2;
+
+      this.tabs = this.tabs.map(function (tab) {
+        _this.ctx.beginPath();
+        _this.ctx.moveTo(x, y);
+        var lineWidth = _this.ctx.measureText(tab.text).width;
+        _this.ctx.lineTo(x + lineHeight, y - lineHeight);
+        _this.ctx.lineTo(x + lineHeight + lineWidth, y - lineHeight);
+        _this.ctx.lineTo(x + lineHeight * 2 + lineWidth, y);
+        _this.ctx.fillStyle = '#000';
+        _this.ctx.fill();
+        _this.ctx.fillStyle = '#FFF';
+        var xPos = x + lineHeight;
+        var yPos = y - fontSize / 4;
+        _this.ctx.fillText(tab.text, xPos, yPos);
+        x = x + lineHeight * 2 + lineWidth;
+        _this.openTab !== tab.text && _this.ctx.closePath();
+        _this.ctx.stroke();
+        return Object.assign({}, tab, {
+          xPos: xPos,
+          yPos: yPos,
+          width: lineWidth,
+          height: lineHeight
+        });
+      });
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, y);
+      this.ctx.lineTo(this.canvas.width, y);
+      this.ctx.stroke();
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(0, this.canvas.height - this.size, this.canvas.width, this.size);
+
+      this.renderTabs();
+    }
+  }]);
+
+  return Tabs;
+}();
+
+exports.default = Tabs;
 
 /***/ })
 /******/ ]);
