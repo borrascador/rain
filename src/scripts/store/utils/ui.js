@@ -27,12 +27,4 @@ function changeMode(state, action) {
   });
 }
 
-function focusTile(state, action) {
-  return updateObject(state, {
-    mode: MODE.MAP,
-    focusX: action.payload.x,
-    focusY: action.payload.y
-  });
-}
-
-export { zoomIn, zoomOut, changeMode, focusTile };
+export { zoomIn, zoomOut, changeMode };

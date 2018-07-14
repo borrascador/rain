@@ -51,8 +51,6 @@ export const changeMode = (mode) => ({
   payload: { mode }
 });
 
-export const FOCUS_TILE = 'FOCUS_TILE';
-
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 export const REGISTER_RESPONSE = 'REGISTER_RESPONSE';
 export const REGISTER_ERROR = 'REGISTER_ERROR';

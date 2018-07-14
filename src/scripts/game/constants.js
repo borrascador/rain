@@ -1,13 +1,13 @@
 export const CAMERA_SPEED = 500; // pixels per second
 export const LAYER = {
-  BASE: "BASE",
+  BOTTOM: "BOTTOM",
   MIDDLE: "MIDDLE",
   TOP: "TOP",
 };
 export const MODE = {
-  MAP: "map",
-  STORY: "story",
-  TITLE: "title"
+  MAP: "MAP",
+  STORY: "STORY",
+  TITLE: "TITLE"
 };
 export const VEHICLE = {
   JEEP: "jeep",
