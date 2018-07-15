@@ -19,6 +19,10 @@ export default class Connect {
     return this.store.getState().mode;
   }
 
+  get tabs() {
+    return this.store.getState().tabs;
+  }
+
   get story() {
     const {story} = this.store.getState();
     const buttons = story.buttons.map((button, idx) =>

@@ -1,11 +1,13 @@
 import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
+import tabs from '../../../data/tabs.json';
 import story from '../../../data/story.json';
 import party from '../../../data/party.json';
 import { makeKeys } from '../utils/input';
 
 const uiState = {
   mode: MODE.TITLE,
+  tabs: tabs,
   story: story
 };
 

@@ -15,6 +15,16 @@ export function drawByName (ctx, img, name, zoom, x, y) {
   drawById(ctx, img, id, zoom, x, y);
 }
 
+export function trace(ctx, size, x, y) {
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x + size, y);
+  ctx.lineTo(x + size, y + size);
+  ctx.lineTo(x, y + size);
+  ctx.closePath();
+  ctx.stroke();
+}
+
 export function roundToZoom(zoom, value) {
   return zoom * Math.round(value / zoom);
 }
