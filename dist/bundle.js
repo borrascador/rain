@@ -106,31 +106,11 @@ var Connect = function () {
       return this.store.getState().mode;
     }
   }, {
-    key: "story",
-    get: function get() {
-      var _store$getState = this.store.getState(),
-          story = _store$getState.story;
-
-      var buttons = story.buttons.map(function (button, idx) {
-        return Object.assign({}, button, { id: idx + 1 });
-      });
-      return Object.assign({}, story, { buttons: buttons });
-    }
-  }, {
-    key: "map",
-    get: function get() {
-      var _store$getState2 = this.store.getState(),
-          zoom = _store$getState2.zoom,
-          mapTiles = _store$getState2.mapTiles;
-
-      return { zoom: zoom, mapTiles: mapTiles };
-    }
-  }, {
     key: "click",
     get: function get() {
-      var _store$getState3 = this.store.getState(),
-          xClick = _store$getState3.xClick,
-          yClick = _store$getState3.yClick;
+      var _store$getState = this.store.getState(),
+          xClick = _store$getState.xClick,
+          yClick = _store$getState.yClick;
 
       return { xClick: xClick, yClick: yClick };
     }
@@ -146,11 +126,32 @@ var Connect = function () {
   }, {
     key: "offset",
     get: function get() {
-      var _store$getState4 = this.store.getState(),
-          offsetX = _store$getState4.offsetX,
-          offsetY = _store$getState4.offsetY;
+      var _store$getState2 = this.store.getState(),
+          offsetX = _store$getState2.offsetX,
+          offsetY = _store$getState2.offsetY;
 
       return { offsetX: offsetX, offsetY: offsetY };
+    }
+  }, {
+    key: "story",
+    get: function get() {
+      var _store$getState3 = this.store.getState(),
+          story = _store$getState3.story;
+
+      var buttons = story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, { id: idx + 1 });
+      });
+      return Object.assign({}, story, { buttons: buttons });
+    }
+  }, {
+    key: "map",
+    get: function get() {
+      var _store$getState4 = this.store.getState(),
+          tiles = _store$getState4.tiles,
+          sight = _store$getState4.sight,
+          zoom = _store$getState4.zoom;
+
+      return { tiles: tiles, sight: sight, zoom: zoom };
     }
   }, {
     key: "positionId",
@@ -161,40 +162,31 @@ var Connect = function () {
     key: "positionCoords",
     get: function get() {
       var _store$getState5 = this.store.getState(),
-          mapTiles = _store$getState5.mapTiles,
+          tiles = _store$getState5.tiles,
           position = _store$getState5.position;
 
-      var _mapTiles$find = mapTiles.find(function (tile) {
+      var _tiles$find = tiles.find(function (tile) {
         return tile.id === position;
       }),
-          x = _mapTiles$find.x,
-          y = _mapTiles$find.y;
+          x = _tiles$find.x,
+          y = _tiles$find.y;
 
       return { x: x, y: y };
     }
   }, {
+    key: "inventory",
+    get: function get() {
+      return this.store.getState().inventory;
+    }
+  }, {
     key: "party",
     get: function get() {
-      var _store$getState6 = this.store.getState(),
-          party = _store$getState6.party;
-
-      return { party: party };
+      return this.store.getState().party;
     }
   }, {
     key: "vehicle",
     get: function get() {
-      var _store$getState7 = this.store.getState(),
-          vehicle = _store$getState7.vehicle;
-
-      return { vehicle: vehicle };
-    }
-  }, {
-    key: "sight",
-    get: function get() {
-      var _store$getState8 = this.store.getState(),
-          sight = _store$getState8.sight;
-
-      return { sight: sight };
+      return this.store.getState().vehicle;
     }
   }]);
 
@@ -359,6 +351,8 @@ var positionError = exports.positionError = function positionError(code) {
     payload: { code: code }
   };
 };
+
+var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 /***/ }),
 /* 2 */
@@ -753,6 +747,9 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.updateObject = updateObject;
+exports.updateItemInArray = updateItemInArray;
+exports.mergeArrays = mergeArrays;
 function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 };
@@ -764,8 +761,29 @@ function updateItemInArray(array, itemId, updateItemCallback) {
   });
 };
 
-exports.updateObject = updateObject;
-exports.updateItemInArray = updateItemInArray;
+function mergeArrays(oldArray, newArray) {
+  var obj = {};
+
+  oldArray.forEach(function (item) {
+    obj[item.id] = item;
+  });
+
+  newArray.forEach(function (item) {
+    if (obj.hasOwnProperty(item.id)) {
+      obj[item.id] = Object.assign(obj[item.id], item);
+    } else {
+      obj[item.id] = item;
+    }
+  });
+
+  var result = [];
+
+  for (var prop in obj) {
+    if (obj.hasOwnProperty(prop)) result.push(obj[prop]);
+  }
+
+  return result;
+};
 
 /***/ }),
 /* 9 */
@@ -2919,7 +2937,7 @@ var _input = __webpack_require__(17);
 
 var _ui = __webpack_require__(49);
 
-var _map = __webpack_require__(50);
+var _utils = __webpack_require__(8);
 
 var _initialState = __webpack_require__(51);
 
@@ -2977,7 +2995,7 @@ function reducer(state, action) {
         sending: false,
         loggedIn: true,
         position: action.payload.position,
-        mapTiles: action.payload.tiles,
+        tiles: action.payload.tiles,
         error: null
       });
 
@@ -2992,8 +3010,13 @@ function reducer(state, action) {
       return Object.assign({}, state, {
         sending: false,
         position: action.payload.position,
-        mapTiles: (0, _map.updateMapTiles)(state, action),
+        tiles: (0, _utils.mergeArrays)(state.tiles, action.payload.tiles),
         error: null
+      });
+
+    case _actions.TILE_UPDATE:
+      return Object.assign({}, state, {
+        tiles: (0, _utils.mergeArrays)(state.tiles, action.payload.tiles)
       });
 
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
@@ -3103,64 +3126,7 @@ exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.updateMapTiles = exports.addLayer = exports.buildMap = undefined;
-
-var _utils = __webpack_require__(8);
-
-// Initial state setup
-
-function buildMap(map) {
-  var mapArray = [];
-  for (var y = 0; y < map.height; y++) {
-    for (var x = 0; x < map.width; x++) {
-      var id = y * map.width + x;
-      mapArray[id] = { id: id, x: x, y: y, layers: {
-          base: 0,
-          middle: map.layers[1].data[id] === 0 ? 0 : map.layers[1].data[id] - 1
-        } };
-    }
-  }
-  return mapArray;
-}
-
-// Reducer functions
-
-function addLayer(state, action) {
-  var tile = screenToTile(state, action);
-  var partyX = state.partyX,
-      party = state.party;
-
-  if (tile && isAdjacent(tile, partyX, partyY)) {
-    return (0, _utils.updateObject)(state, {
-      mapTiles: (0, _utils.updateItemInArray)(state.mapTiles, tile.id, function (item) {
-        return (0, _utils.updateObject)(item, {
-          layers: (0, _utils.updateObject)(item.layers, getDirLayer(tile, partyX, partyY))
-        });
-      })
-    });
-  } else {
-    return state;
-  }
-}
-
-function updateMapTiles(state, action) {
-  return state.mapTiles.concat(action.payload.tiles);
-}
-
-exports.buildMap = buildMap;
-exports.addLayer = addLayer;
-exports.updateMapTiles = updateMapTiles;
-
-/***/ }),
+/* 50 */,
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3192,18 +3158,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var uiState = {
   mode: _constants.MODE.TITLE,
-  story: _story2.default
+  zoom: 3
 };
 
-var mapState = {
-  zoom: 3,
-  mapTiles: []
-};
-
-var playerState = {
+var gameState = {
+  story: _story2.default,
   position: null,
   sight: 2,
-  party: _party2.default,
+  tiles: [],
+  party: [],
+  inventory: [],
   vehicle: {
     type: _constants.VEHICLE.JEEP,
     icon: 15,
@@ -3228,7 +3192,7 @@ var connectionState = {
   error: null
 };
 
-var initialState = exports.initialState = Object.assign({}, uiState, mapState, playerState, inputState, connectionState);
+var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
 
 /***/ }),
 /* 52 */
@@ -4094,6 +4058,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var BOTTOM = _constants.LAYER.BOTTOM,
+    MIDDLE = _constants.LAYER.MIDDLE;
+
 var Camera = function () {
   function Camera(store, canvas, ctx, loader) {
     _classCallCheck(this, Camera);
@@ -4149,57 +4116,53 @@ var Camera = function () {
       var _this = this;
 
       var pos = this.connect.positionCoords;
-      var sight = this.connect.sight.sight;
       var _connect$map = this.connect.map,
-          zoom = _connect$map.zoom,
-          mapTiles = _connect$map.mapTiles;
+          tiles = _connect$map.tiles,
+          sight = _connect$map.sight,
+          zoom = _connect$map.zoom;
 
-      var mapTileSize = this.atlas.tileset.tilewidth * zoom;
+      var tileSize = this.atlas.tileset.tilewidth * zoom;
       var iconSize = this.icons.tileset.tilewidth * zoom;
-      var gridZoom = (mapTileSize - 1) / (mapTileSize / zoom);
+      var gridZoom = (tileSize - 1) / (tileSize / zoom);
 
-      var BOTTOM = _constants.LAYER.BOTTOM,
-          MIDDLE = _constants.LAYER.MIDDLE;
-
-
-      var origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
-      var startCol = Math.floor(origin.x / mapTileSize);
-      var endCol = startCol + Math.ceil(this.canvas.width / mapTileSize + 1);
-      var startRow = Math.floor(origin.y / mapTileSize);
-      var endRow = startRow + Math.ceil(this.canvas.height / mapTileSize + 1);
-      var offsetX = -origin.x + startCol * mapTileSize;
-      var offsetY = -origin.y + startRow * mapTileSize;
+      var origin = this.getOffsetOrigin(tileSize, pos.x, pos.y);
+      var startCol = Math.floor(origin.x / tileSize);
+      var endCol = startCol + Math.ceil(this.canvas.width / tileSize + 1);
+      var startRow = Math.floor(origin.y / tileSize);
+      var endRow = startRow + Math.ceil(this.canvas.height / tileSize + 1);
+      var offsetX = -origin.x + startCol * tileSize;
+      var offsetY = -origin.y + startRow * tileSize;
       var visibleTiles = [];
       var dim = false;
       for (var col = startCol; col <= endCol; col++) {
         var _loop = function _loop(row) {
-          var x = (col - startCol) * mapTileSize + offsetX;
-          var y = (row - startRow) * mapTileSize + offsetY;
-          var mapTile = _this.findTile(mapTiles, col, row);
-          if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
-            visibleTiles.push(Object.assign({}, mapTile, {
-              xPos: x, yPos: y, width: mapTileSize, height: mapTileSize
+          var x = (col - startCol) * tileSize + offsetX;
+          var y = (row - startRow) * tileSize + offsetY;
+          var tile = _this.findTile(tiles, col, row);
+          if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
+            visibleTiles.push(Object.assign({}, tile, {
+              xPos: x, yPos: y, width: tileSize, height: tileSize
             }));
             dim = false;
           } else {
             dim = true;
           }
-          if (mapTile) {
+          if (tile) {
             [BOTTOM, MIDDLE].forEach(function (layer) {
-              if (layer in mapTile.layers) {
-                var id = mapTile.layers[layer] - 1;
+              if (layer in tile.layers) {
+                var id = tile.layers[layer] - 1;
                 (0, _draw.drawById)(_this.ctx, _this.atlas, id, gridZoom, x, y);
               }
             });
 
-            if (!dim && 'visitors' in mapTile && mapTile.visitors === true) {
-              var iconOffset = (mapTileSize - iconSize) / 2;
+            if (!dim && 'visitors' in tile && tile.visitors === true) {
+              var iconOffset = (tileSize - iconSize) / 2;
               (0, _draw.drawByName)(_this.ctx, _this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
             }
 
             if (dim) {
               _this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-              _this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
+              _this.ctx.fillRect(x, y, tileSize, tileSize);
             }
           }
         };
@@ -4490,8 +4453,7 @@ var Party = function () {
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
 
-    var party = this.connect.party.party;
-
+    var party = this.connect.party;
 
     this.buttons = party.map(function (member) {
       return { name: member.name, id: member.icon, onClick: function onClick() {
@@ -4511,11 +4473,10 @@ var Party = function () {
     value: function render() {
       var _this = this;
 
-      var party = this.connect.party.party;
+      var party = this.connect.party;
 
       // Makes a NEW set of buttons each time
       // Allows adding and removing party members
-
       this.buttons = party.map(function (member, index) {
         var x = 0;
         var y = index * _this.portraitSize;
@@ -4591,8 +4552,7 @@ var Vehicle = function () {
     this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.wrenchSize = this.icons.tileset.tilewidth;
 
-    var vehicle = this.connect.vehicle.vehicle;
-
+    var vehicle = this.connect.vehicle;
 
     this.buttons = [{ id: vehicle.icon, onClick: function onClick() {
         return console.log(vehicle.type);
@@ -4610,11 +4570,10 @@ var Vehicle = function () {
     value: function render() {
       var _this = this;
 
-      var vehicle = this.connect.vehicle.vehicle;
+      var vehicle = this.connect.vehicle;
 
       // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
       // For example see Party.js
-
       this.buttons = this.buttons.map(function (button, index) {
         var x = 0;
         var y = _this.canvas.height - _this.vehicleSize;

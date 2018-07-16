@@ -16,7 +16,7 @@ export default class Vehicle {
     this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.wrenchSize = this.icons.tileset.tilewidth;
 
-    const {vehicle} = this.connect.vehicle;
+    const vehicle = this.connect.vehicle;
 
     this.buttons = [
       { id: vehicle.icon, onClick: () => console.log(vehicle.type) }
@@ -29,7 +29,7 @@ export default class Vehicle {
   }
 
   render() {
-    const {vehicle} = this.connect.vehicle;
+    const vehicle = this.connect.vehicle;
 
     // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
     // For example see Party.js

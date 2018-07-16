@@ -1,22 +1,16 @@
 import {
-  KEYDOWN,
-  KEYUP,
-  MOUSEDOWN,
-  DRAG,
-  MOUSEUP,
-  CLICKED,
-  ZOOM_IN,
-  ZOOM_OUT,
-  CHANGE_MODE,
+  KEYDOWN, KEYUP, MOUSEDOWN, DRAG, MOUSEUP, CLICKED,
+  ZOOM_IN, ZOOM_OUT, CHANGE_MODE,
   REGISTER_REQUEST, REGISTER_RESPONSE, REGISTER_ERROR,
   LOGIN_REQUEST, LOGIN_RESPONSE, LOGIN_ERROR,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, LOGOUT_ERROR,
-  POSITION_REQUEST, POSITION_RESPONSE, POSITION_ERROR
+  POSITION_REQUEST, POSITION_RESPONSE, POSITION_ERROR,
+  TILE_UPDATE
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { zoomIn, zoomOut, changeMode } from '../utils/ui';
-import { updateMapTiles } from '../utils/map';
+import { mergeArrays } from '../utils/utils';
 import { initialState } from './initialState';
 
 export default function reducer(state, action) {
@@ -73,7 +67,7 @@ export default function reducer(state, action) {
         sending: false,
         loggedIn: true,
         position: action.payload.position,
-        mapTiles: action.payload.tiles,
+        tiles: action.payload.tiles,
         error: null
       });
 
@@ -82,15 +76,20 @@ export default function reducer(state, action) {
         sending: false,
         loggedIn: false,
         error: null
-      })
+      });
 
     case POSITION_RESPONSE:
       return Object.assign({}, state, {
         sending: false,
         position: action.payload.position,
-        mapTiles: updateMapTiles(state, action),
+        tiles: mergeArrays(state.tiles, action.payload.tiles),
         error: null
-      })
+      });
+
+    case TILE_UPDATE:
+      return Object.assign({}, state, {
+        tiles: mergeArrays(state.tiles, action.payload.tiles)
+      });
 
     case `@@websocket/${ OPEN }`:
       return Object.assign({}, state, {
