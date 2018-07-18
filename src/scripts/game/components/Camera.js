@@ -4,6 +4,8 @@ import { LAYER } from '../constants'
 import { screenToImageButtonId, getItemById } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
+const {BOTTOM, MIDDLE} = LAYER;
+
 export default class Camera {
   constructor (store, canvas, ctx, loader) {
     this.store = store;
@@ -49,52 +51,49 @@ export default class Camera {
 
   render() {
     const pos = this.connect.positionCoords;
-    const {sight} = this.connect.sight;
-    const {zoom, mapTiles} = this.connect.map;
-    const mapTileSize = this.atlas.tileset.tilewidth * zoom;
+    const { tiles, sight, zoom } = this.connect.map;
+    const tileSize = this.atlas.tileset.tilewidth * zoom;
     const iconSize = this.icons.tileset.tilewidth * zoom;
-    const gridZoom = (mapTileSize - 1) / (mapTileSize / zoom)
+    const gridZoom = (tileSize - 1) / (tileSize / zoom)
 
-    const {BOTTOM, MIDDLE} = LAYER;
-
-    const origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
-    const startCol = Math.floor(origin.x / mapTileSize);
-    const endCol = startCol + Math.ceil((this.canvas.width / mapTileSize) + 1);
-    const startRow = Math.floor(origin.y / mapTileSize);
-    const endRow = startRow + Math.ceil((this.canvas.height / mapTileSize) + 1);
-    const offsetX = -origin.x + startCol * mapTileSize;
-    const offsetY = -origin.y + startRow * mapTileSize;
+    const origin = this.getOffsetOrigin(tileSize, pos.x, pos.y);
+    const startCol = Math.floor(origin.x / tileSize);
+    const endCol = startCol + Math.ceil((this.canvas.width / tileSize) + 1);
+    const startRow = Math.floor(origin.y / tileSize);
+    const endRow = startRow + Math.ceil((this.canvas.height / tileSize) + 1);
+    const offsetX = -origin.x + startCol * tileSize;
+    const offsetY = -origin.y + startRow * tileSize;
     let visibleTiles = [];
     let dim = false;
     for (let col = startCol; col <= endCol; col++) {
       for (let row = startRow; row <= endRow; row++) {
-        const x = (col - startCol) * mapTileSize + offsetX;
-        const y = (row - startRow) * mapTileSize + offsetY;
-        const mapTile = this.findTile(mapTiles, col, row);
-        if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
-          visibleTiles.push(Object.assign({}, mapTile, {
-            xPos: x, yPos: y, width: mapTileSize, height: mapTileSize
+        const x = (col - startCol) * tileSize + offsetX;
+        const y = (row - startRow) * tileSize + offsetY;
+        const tile = this.findTile(tiles, col, row);
+        if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
+          visibleTiles.push(Object.assign({}, tile, {
+            xPos: x, yPos: y, width: tileSize, height: tileSize
           }));
           dim = false;
         } else {
           dim = true;
         }
-        if (mapTile) {
+        if (tile) {
           [BOTTOM, MIDDLE].forEach(layer => {
-            if (layer in mapTile.layers) {
-              const id = mapTile.layers[layer] - 1;
+            if (layer in tile.layers) {
+              const id = tile.layers[layer] - 1;
               drawById(this.ctx, this.atlas, id, gridZoom, x, y);
             }
           });
 
-          if (!dim && 'visitors' in mapTile && mapTile.visitors === true) {
-            const iconOffset = (mapTileSize - iconSize) / 2
+          if (!dim && 'visitors' in tile && tile.visitors === true) {
+            const iconOffset = (tileSize - iconSize) / 2
             drawByName(this.ctx, this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
           }
 
           if (dim) {
             this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-            this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
+            this.ctx.fillRect(x, y, tileSize, tileSize);
           }
         }
       }

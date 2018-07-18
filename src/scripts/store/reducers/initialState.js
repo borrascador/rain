@@ -6,18 +6,16 @@ import { makeKeys } from '../utils/input';
 
 const uiState = {
   mode: MODE.TITLE,
-  story: story
+  zoom: 3
 };
 
-const mapState = {
-  zoom: 3,
-  mapTiles: []
-};
-
-const playerState = {
+const gameState = {
+  story: story,
   position: null,
   sight: 2,
-  party: party,
+  tiles: [],
+  party: [],
+  inventory: [],
   vehicle: {
     type: VEHICLE.JEEP,
     icon: 15,
@@ -44,8 +42,7 @@ const connectionState = {
 
 export const initialState = Object.assign({},
   uiState,
-  mapState,
-  playerState,
+  gameState,
   inputState,
   connectionState
 );

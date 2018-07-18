@@ -73,6 +73,138 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Connect = function () {
+  function Connect(store) {
+    _classCallCheck(this, Connect);
+
+    this.store = store;
+  }
+
+  _createClass(Connect, [{
+    key: "connected",
+    get: function get() {
+      return this.store.getState().connected;
+    }
+  }, {
+    key: "loggedIn",
+    get: function get() {
+      return this.store.getState().loggedIn;
+    }
+  }, {
+    key: "error",
+    get: function get() {
+      return this.store.getState().error;
+    }
+  }, {
+    key: "mode",
+    get: function get() {
+      return this.store.getState().mode;
+    }
+  }, {
+    key: "click",
+    get: function get() {
+      var _store$getState = this.store.getState(),
+          xClick = _store$getState.xClick,
+          yClick = _store$getState.yClick;
+
+      return { xClick: xClick, yClick: yClick };
+    }
+  }, {
+    key: "keys",
+    get: function get() {
+      var allKeys = this.store.getState().keys;
+      var trueKeys = Object.keys(allKeys).filter(function (x) {
+        return allKeys[x] === true;
+      });
+      return trueKeys;
+    }
+  }, {
+    key: "offset",
+    get: function get() {
+      var _store$getState2 = this.store.getState(),
+          offsetX = _store$getState2.offsetX,
+          offsetY = _store$getState2.offsetY;
+
+      return { offsetX: offsetX, offsetY: offsetY };
+    }
+  }, {
+    key: "story",
+    get: function get() {
+      var _store$getState3 = this.store.getState(),
+          story = _store$getState3.story;
+
+      var buttons = story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, { id: idx + 1 });
+      });
+      return Object.assign({}, story, { buttons: buttons });
+    }
+  }, {
+    key: "map",
+    get: function get() {
+      var _store$getState4 = this.store.getState(),
+          tiles = _store$getState4.tiles,
+          sight = _store$getState4.sight,
+          zoom = _store$getState4.zoom;
+
+      return { tiles: tiles, sight: sight, zoom: zoom };
+    }
+  }, {
+    key: "positionId",
+    get: function get() {
+      return this.store.getState().position;
+    }
+  }, {
+    key: "positionCoords",
+    get: function get() {
+      var _store$getState5 = this.store.getState(),
+          tiles = _store$getState5.tiles,
+          position = _store$getState5.position;
+
+      var _tiles$find = tiles.find(function (tile) {
+        return tile.id === position;
+      }),
+          x = _tiles$find.x,
+          y = _tiles$find.y;
+
+      return { x: x, y: y };
+    }
+  }, {
+    key: "inventory",
+    get: function get() {
+      return this.store.getState().inventory;
+    }
+  }, {
+    key: "party",
+    get: function get() {
+      return this.store.getState().party;
+    }
+  }, {
+    key: "vehicle",
+    get: function get() {
+      return this.store.getState().vehicle;
+    }
+  }]);
+
+  return Connect;
+}();
+
+exports.default = Connect;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 // Type and action definitions
 
 var KEYDOWN = exports.KEYDOWN = 'KEYDOWN';
@@ -220,174 +352,10 @@ var positionError = exports.positionError = function positionError(code) {
   };
 };
 
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Connect = function () {
-  function Connect(store) {
-    _classCallCheck(this, Connect);
-
-    this.store = store;
-  }
-
-  _createClass(Connect, [{
-    key: "connected",
-    get: function get() {
-      return this.store.getState().connected;
-    }
-  }, {
-    key: "loggedIn",
-    get: function get() {
-      return this.store.getState().loggedIn;
-    }
-  }, {
-    key: "error",
-    get: function get() {
-      return this.store.getState().error;
-    }
-  }, {
-    key: "mode",
-    get: function get() {
-      return this.store.getState().mode;
-    }
-  }, {
-    key: "story",
-    get: function get() {
-      var _store$getState = this.store.getState(),
-          story = _store$getState.story;
-
-      var buttons = story.buttons.map(function (button, idx) {
-        return Object.assign({}, button, { id: idx + 1 });
-      });
-      return Object.assign({}, story, { buttons: buttons });
-    }
-  }, {
-    key: "map",
-    get: function get() {
-      var _store$getState2 = this.store.getState(),
-          zoom = _store$getState2.zoom,
-          mapTiles = _store$getState2.mapTiles;
-
-      return { zoom: zoom, mapTiles: mapTiles };
-    }
-  }, {
-    key: "click",
-    get: function get() {
-      var _store$getState3 = this.store.getState(),
-          xClick = _store$getState3.xClick,
-          yClick = _store$getState3.yClick;
-
-      return { xClick: xClick, yClick: yClick };
-    }
-  }, {
-    key: "keys",
-    get: function get() {
-      var allKeys = this.store.getState().keys;
-      var trueKeys = Object.keys(allKeys).filter(function (x) {
-        return allKeys[x] === true;
-      });
-      return trueKeys;
-    }
-  }, {
-    key: "offset",
-    get: function get() {
-      var _store$getState4 = this.store.getState(),
-          offsetX = _store$getState4.offsetX,
-          offsetY = _store$getState4.offsetY;
-
-      return { offsetX: offsetX, offsetY: offsetY };
-    }
-  }, {
-    key: "positionId",
-    get: function get() {
-      return this.store.getState().position;
-    }
-  }, {
-    key: "positionCoords",
-    get: function get() {
-      var _store$getState5 = this.store.getState(),
-          mapTiles = _store$getState5.mapTiles,
-          position = _store$getState5.position;
-
-      var _mapTiles$find = mapTiles.find(function (tile) {
-        return tile.id === position;
-      }),
-          x = _mapTiles$find.x,
-          y = _mapTiles$find.y;
-
-      return { x: x, y: y };
-    }
-  }, {
-    key: "party",
-    get: function get() {
-      var _store$getState6 = this.store.getState(),
-          party = _store$getState6.party;
-
-      return { party: party };
-    }
-  }, {
-    key: "vehicle",
-    get: function get() {
-      var _store$getState7 = this.store.getState(),
-          vehicle = _store$getState7.vehicle;
-
-      return { vehicle: vehicle };
-    }
-  }, {
-    key: "sight",
-    get: function get() {
-      var _store$getState8 = this.store.getState(),
-          sight = _store$getState8.sight;
-
-      return { sight: sight };
-    }
-  }]);
-
-  return Connect;
-}();
-
-exports.default = Connect;
+var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
-var LAYER = exports.LAYER = {
-  BOTTOM: "BOTTOM",
-  MIDDLE: "MIDDLE",
-  TOP: "TOP"
-};
-var MODE = exports.MODE = {
-  MAP: "MAP",
-  STORY: "STORY",
-  TITLE: "TITLE"
-};
-var VEHICLE = exports.VEHICLE = {
-  JEEP: "jeep",
-  CANOE: "canoe"
-};
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -441,7 +409,7 @@ var getItemById = exports.getItemById = function getItemById(array, id) {
 };
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -551,6 +519,32 @@ function splitIntoLines(ctx, text, maxWidth) {
 }
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
+var LAYER = exports.LAYER = {
+  BOTTOM: "BOTTOM",
+  MIDDLE: "MIDDLE",
+  TOP: "TOP"
+};
+var MODE = exports.MODE = {
+  MAP: "MAP",
+  STORY: "STORY",
+  TITLE: "TITLE"
+};
+var VEHICLE = exports.VEHICLE = {
+  JEEP: "jeep",
+  CANOE: "canoe"
+};
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -609,11 +603,11 @@ exports.login = login;
 exports.logout = logout;
 exports.position = position;
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _store = __webpack_require__(10);
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
 var _loading = __webpack_require__(71);
 
@@ -753,6 +747,9 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.updateObject = updateObject;
+exports.updateItemInArray = updateItemInArray;
+exports.mergeArrays = mergeArrays;
 function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 };
@@ -764,8 +761,29 @@ function updateItemInArray(array, itemId, updateItemCallback) {
   });
 };
 
-exports.updateObject = updateObject;
-exports.updateItemInArray = updateItemInArray;
+function mergeArrays(oldArray, newArray) {
+  var obj = {};
+
+  oldArray.forEach(function (item) {
+    obj[item.id] = item;
+  });
+
+  newArray.forEach(function (item) {
+    if (obj.hasOwnProperty(item.id)) {
+      obj[item.id] = Object.assign(obj[item.id], item);
+    } else {
+      obj[item.id] = item;
+    }
+  });
+
+  var result = [];
+
+  for (var prop in obj) {
+    if (obj.hasOwnProperty(prop)) result.push(obj[prop]);
+  }
+
+  return result;
+};
 
 /***/ }),
 /* 9 */
@@ -2911,7 +2929,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = reducer;
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _reduxWebsocketBridge = __webpack_require__(16);
 
@@ -2919,7 +2937,7 @@ var _input = __webpack_require__(17);
 
 var _ui = __webpack_require__(49);
 
-var _map = __webpack_require__(50);
+var _utils = __webpack_require__(8);
 
 var _initialState = __webpack_require__(51);
 
@@ -2977,7 +2995,7 @@ function reducer(state, action) {
         sending: false,
         loggedIn: true,
         position: action.payload.position,
-        mapTiles: action.payload.tiles,
+        tiles: action.payload.tiles,
         error: null
       });
 
@@ -2992,8 +3010,13 @@ function reducer(state, action) {
       return Object.assign({}, state, {
         sending: false,
         position: action.payload.position,
-        mapTiles: (0, _map.updateMapTiles)(state, action),
+        tiles: (0, _utils.mergeArrays)(state.tiles, action.payload.tiles),
         error: null
+      });
+
+    case _actions.TILE_UPDATE:
+      return Object.assign({}, state, {
+        tiles: (0, _utils.mergeArrays)(state.tiles, action.payload.tiles)
       });
 
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
@@ -3070,7 +3093,7 @@ exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
 
 var _utils = __webpack_require__(8);
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
 function zoomIn(state) {
   if (state.zoom < 5) {
@@ -3103,64 +3126,7 @@ exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.updateMapTiles = exports.addLayer = exports.buildMap = undefined;
-
-var _utils = __webpack_require__(8);
-
-// Initial state setup
-
-function buildMap(map) {
-  var mapArray = [];
-  for (var y = 0; y < map.height; y++) {
-    for (var x = 0; x < map.width; x++) {
-      var id = y * map.width + x;
-      mapArray[id] = { id: id, x: x, y: y, layers: {
-          base: 0,
-          middle: map.layers[1].data[id] === 0 ? 0 : map.layers[1].data[id] - 1
-        } };
-    }
-  }
-  return mapArray;
-}
-
-// Reducer functions
-
-function addLayer(state, action) {
-  var tile = screenToTile(state, action);
-  var partyX = state.partyX,
-      party = state.party;
-
-  if (tile && isAdjacent(tile, partyX, partyY)) {
-    return (0, _utils.updateObject)(state, {
-      mapTiles: (0, _utils.updateItemInArray)(state.mapTiles, tile.id, function (item) {
-        return (0, _utils.updateObject)(item, {
-          layers: (0, _utils.updateObject)(item.layers, getDirLayer(tile, partyX, partyY))
-        });
-      })
-    });
-  } else {
-    return state;
-  }
-}
-
-function updateMapTiles(state, action) {
-  return state.mapTiles.concat(action.payload.tiles);
-}
-
-exports.buildMap = buildMap;
-exports.addLayer = addLayer;
-exports.updateMapTiles = updateMapTiles;
-
-/***/ }),
+/* 50 */,
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3172,7 +3138,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initialState = undefined;
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
 var _keys = __webpack_require__(52);
 
@@ -3192,18 +3158,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var uiState = {
   mode: _constants.MODE.TITLE,
-  story: _story2.default
+  zoom: 3
 };
 
-var mapState = {
-  zoom: 3,
-  mapTiles: []
-};
-
-var playerState = {
+var gameState = {
+  story: _story2.default,
   position: null,
   sight: 2,
-  party: _party2.default,
+  tiles: [],
+  party: [],
+  inventory: [],
   vehicle: {
     type: _constants.VEHICLE.JEEP,
     icon: 15,
@@ -3228,7 +3192,7 @@ var connectionState = {
   error: null
 };
 
-var initialState = exports.initialState = Object.assign({}, uiState, mapState, playerState, inputState, connectionState);
+var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
 
 /***/ }),
 /* 52 */
@@ -3689,7 +3653,7 @@ var _addInputListeners = __webpack_require__(59);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -3733,17 +3697,17 @@ var _MapView = __webpack_require__(69);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _StoryView = __webpack_require__(78);
+var _StoryView = __webpack_require__(80);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(80);
+var _TitleView = __webpack_require__(82);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3848,7 +3812,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = addInputListeners;
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
@@ -4006,7 +3970,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4018,7 +3982,7 @@ var _Overlay = __webpack_require__(73);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4078,21 +4042,24 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(6);
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(2);
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var BOTTOM = _constants.LAYER.BOTTOM,
+    MIDDLE = _constants.LAYER.MIDDLE;
 
 var Camera = function () {
   function Camera(store, canvas, ctx, loader) {
@@ -4149,57 +4116,53 @@ var Camera = function () {
       var _this = this;
 
       var pos = this.connect.positionCoords;
-      var sight = this.connect.sight.sight;
       var _connect$map = this.connect.map,
-          zoom = _connect$map.zoom,
-          mapTiles = _connect$map.mapTiles;
+          tiles = _connect$map.tiles,
+          sight = _connect$map.sight,
+          zoom = _connect$map.zoom;
 
-      var mapTileSize = this.atlas.tileset.tilewidth * zoom;
+      var tileSize = this.atlas.tileset.tilewidth * zoom;
       var iconSize = this.icons.tileset.tilewidth * zoom;
-      var gridZoom = (mapTileSize - 1) / (mapTileSize / zoom);
+      var gridZoom = (tileSize - 1) / (tileSize / zoom);
 
-      var BOTTOM = _constants.LAYER.BOTTOM,
-          MIDDLE = _constants.LAYER.MIDDLE;
-
-
-      var origin = this.getOffsetOrigin(mapTileSize, pos.x, pos.y);
-      var startCol = Math.floor(origin.x / mapTileSize);
-      var endCol = startCol + Math.ceil(this.canvas.width / mapTileSize + 1);
-      var startRow = Math.floor(origin.y / mapTileSize);
-      var endRow = startRow + Math.ceil(this.canvas.height / mapTileSize + 1);
-      var offsetX = -origin.x + startCol * mapTileSize;
-      var offsetY = -origin.y + startRow * mapTileSize;
+      var origin = this.getOffsetOrigin(tileSize, pos.x, pos.y);
+      var startCol = Math.floor(origin.x / tileSize);
+      var endCol = startCol + Math.ceil(this.canvas.width / tileSize + 1);
+      var startRow = Math.floor(origin.y / tileSize);
+      var endRow = startRow + Math.ceil(this.canvas.height / tileSize + 1);
+      var offsetX = -origin.x + startCol * tileSize;
+      var offsetY = -origin.y + startRow * tileSize;
       var visibleTiles = [];
       var dim = false;
       for (var col = startCol; col <= endCol; col++) {
         var _loop = function _loop(row) {
-          var x = (col - startCol) * mapTileSize + offsetX;
-          var y = (row - startRow) * mapTileSize + offsetY;
-          var mapTile = _this.findTile(mapTiles, col, row);
-          if (mapTile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
-            visibleTiles.push(Object.assign({}, mapTile, {
-              xPos: x, yPos: y, width: mapTileSize, height: mapTileSize
+          var x = (col - startCol) * tileSize + offsetX;
+          var y = (row - startRow) * tileSize + offsetY;
+          var tile = _this.findTile(tiles, col, row);
+          if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
+            visibleTiles.push(Object.assign({}, tile, {
+              xPos: x, yPos: y, width: tileSize, height: tileSize
             }));
             dim = false;
           } else {
             dim = true;
           }
-          if (mapTile) {
+          if (tile) {
             [BOTTOM, MIDDLE].forEach(function (layer) {
-              if (layer in mapTile.layers) {
-                var id = mapTile.layers[layer] - 1;
+              if (layer in tile.layers) {
+                var id = tile.layers[layer] - 1;
                 (0, _draw.drawById)(_this.ctx, _this.atlas, id, gridZoom, x, y);
               }
             });
 
-            if (!dim && 'visitors' in mapTile && mapTile.visitors === true) {
-              var iconOffset = (mapTileSize - iconSize) / 2;
+            if (!dim && 'visitors' in tile && tile.visitors === true) {
+              var iconOffset = (tileSize - iconSize) / 2;
               (0, _draw.drawByName)(_this.ctx, _this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
             }
 
             if (dim) {
               _this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-              _this.ctx.fillRect(x, y, mapTileSize, mapTileSize);
+              _this.ctx.fillRect(x, y, tileSize, tileSize);
             }
           }
         };
@@ -4303,27 +4266,27 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Party = __webpack_require__(74);
+var _Party = __webpack_require__(77);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(75);
+var _Vehicle = __webpack_require__(78);
 
 var _Vehicle2 = _interopRequireDefault(_Vehicle);
 
-var _Inventory = __webpack_require__(76);
+var _Inventory = __webpack_require__(79);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
-var _Zoom = __webpack_require__(77);
+var _Zoom = __webpack_require__(76);
 
 var _Zoom2 = _interopRequireDefault(_Zoom);
 
@@ -4370,7 +4333,9 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 74 */
+/* 74 */,
+/* 75 */,
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4382,13 +4347,89 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(3);
+var _requests = __webpack_require__(6);
 
-var _draw = __webpack_require__(4);
+var _actions = __webpack_require__(1);
+
+var _utils = __webpack_require__(2);
+
+var _draw = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Zoom = function () {
+  function Zoom(store, canvas, ctx, loader) {
+    _classCallCheck(this, Zoom);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.iconsXl = loader.getImage('icons-xl');
+
+    this.connect = new _Connect2.default(this.store);
+
+    this.scale = 2;
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+
+    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
+  }
+
+  _createClass(Zoom, [{
+    key: 'update',
+    value: function update(delta, x, y) {
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && this.store.dispatch(clickedButton.onClick());
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this = this;
+
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = _this.canvas.width - _this.size * (index + 1);
+        var y = 0;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: y,
+          width: _this.size,
+          height: _this.size
+        });
+      });
+    }
+  }]);
+
+  return Zoom;
+}();
+
+exports.default = Zoom;
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(0);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _utils = __webpack_require__(2);
+
+var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4412,8 +4453,7 @@ var Party = function () {
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
 
-    var party = this.connect.party.party;
-
+    var party = this.connect.party;
 
     this.buttons = party.map(function (member) {
       return { name: member.name, id: member.icon, onClick: function onClick() {
@@ -4433,11 +4473,10 @@ var Party = function () {
     value: function render() {
       var _this = this;
 
-      var party = this.connect.party.party;
+      var party = this.connect.party;
 
       // Makes a NEW set of buttons each time
       // Allows adding and removing party members
-
       this.buttons = party.map(function (member, index) {
         var x = 0;
         var y = index * _this.portraitSize;
@@ -4471,7 +4510,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 75 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4483,13 +4522,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(2);
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4513,8 +4552,7 @@ var Vehicle = function () {
     this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.wrenchSize = this.icons.tileset.tilewidth;
 
-    var vehicle = this.connect.vehicle.vehicle;
-
+    var vehicle = this.connect.vehicle;
 
     this.buttons = [{ id: vehicle.icon, onClick: function onClick() {
         return console.log(vehicle.type);
@@ -4532,11 +4570,10 @@ var Vehicle = function () {
     value: function render() {
       var _this = this;
 
-      var vehicle = this.connect.vehicle.vehicle;
+      var vehicle = this.connect.vehicle;
 
       // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
       // For example see Party.js
-
       this.buttons = this.buttons.map(function (button, index) {
         var x = 0;
         var y = _this.canvas.height - _this.vehicleSize;
@@ -4561,7 +4598,7 @@ var Vehicle = function () {
 exports.default = Vehicle;
 
 /***/ }),
-/* 76 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4578,9 +4615,9 @@ var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(2);
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4638,7 +4675,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 77 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4650,83 +4687,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _requests = __webpack_require__(6);
-
-var _actions = __webpack_require__(0);
-
-var _utils = __webpack_require__(3);
-
-var _draw = __webpack_require__(4);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Zoom = function () {
-  function Zoom(store, canvas, ctx, loader) {
-    _classCallCheck(this, Zoom);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
-
-    this.connect = new _Connect2.default(this.store);
-
-    this.scale = 2;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
-
-    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
-  }
-
-  _createClass(Zoom, [{
-    key: 'update',
-    value: function update(delta, x, y) {
-      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && this.store.dispatch(clickedButton.onClick());
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this = this;
-
-      this.buttons = this.buttons.map(function (button, index) {
-        var x = _this.canvas.width - _this.size * (index + 1);
-        var y = 0;
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
-        return Object.assign({}, button, {
-          xPos: x,
-          yPos: y,
-          width: _this.size,
-          height: _this.size
-        });
-      });
-    }
-  }]);
-
-  return Zoom;
-}();
-
-exports.default = Zoom;
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Story = __webpack_require__(79);
+var _Story = __webpack_require__(81);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -4766,7 +4727,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4778,17 +4739,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(2);
+var _constants = __webpack_require__(4);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(2);
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(3);
 
 var _Animation = __webpack_require__(9);
 
@@ -4906,7 +4867,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4918,15 +4879,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(3);
 
-var _register = __webpack_require__(81);
+var _register = __webpack_require__(83);
 
-var _login = __webpack_require__(82);
+var _login = __webpack_require__(84);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(2);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4934,7 +4895,7 @@ var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5044,7 +5005,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5059,7 +5020,7 @@ var _utils = __webpack_require__(5);
 
 var _requests = __webpack_require__(6);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _failure = __webpack_require__(18);
 
@@ -5113,7 +5074,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

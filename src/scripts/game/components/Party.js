@@ -16,7 +16,7 @@ export default class Party {
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
 
-    const {party} = this.connect.party;
+    const party = this.connect.party;
 
     this.buttons = party.map(member => (
       { name: member.name, id: member.icon, onClick: () => console.log(member.name) }
@@ -29,7 +29,7 @@ export default class Party {
   }
 
   render() {
-    const {party} = this.connect.party;
+    const party = this.connect.party;
 
     // Makes a NEW set of buttons each time
     // Allows adding and removing party members
