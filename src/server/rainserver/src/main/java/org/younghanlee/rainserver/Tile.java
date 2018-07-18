@@ -44,6 +44,14 @@ public class Tile {
 		this.visitors.remove(name);
 	}
 	
+	public HashSet<String> getVisitors() {
+		return visitors;
+	}
+	
+	public boolean occupied() {
+		return !visitors.isEmpty();
+	}
+	
 	public JSONObject toJSONObject() {
 		JSONObject jo = new JSONObject();
 		jo.accumulate("id", id);
@@ -55,8 +63,7 @@ public class Tile {
 			layersJO.accumulate(entry.getKey(), entry.getValue());
 		}
 		jo.accumulate("layers", layers);
-		
-		jo.accumulate("visitors", visitors);
+		jo.accumulate("visitors", occupied());
 		
 		return jo;
 	}
@@ -67,7 +74,7 @@ public class Tile {
 	
 	public HashSet<Integer> inSight(int sight) {
 		HashSet<Integer> tiles = new HashSet<Integer>();
-		System.out.println("Center:" + x + "," + y);
+		// System.out.println("Center:" + x + "," + y);
 		
 		int ymin = y - sight;
 		int ymax = y + sight;
@@ -90,7 +97,7 @@ public class Tile {
 				xmax = Constants.MAPWIDTH - 1;
 			}
 			for (int j = xmin; j <= xmax; j++) {
-				System.out.println(i + "," + j);
+				// System.out.println(i + "," + j);
 				tiles.add(getID(i,j));
 			}
 		}
