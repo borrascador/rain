@@ -86,12 +86,21 @@ public class World {
 	}
 	
 	public static void dump() {
-		System.out.println("Registered users:" + numPlayers);
-		System.out.println("Players online:" + online);
+		System.out.println("REGISTERED USERS:" + numPlayers);
+		System.out.println("PLAYERS ONLINE:" + online);
 
-		
+		// List all players (Including)
 		for (Player p : players.values()) {
 		    System.out.println(p.toString());
+		}
+		
+		// List all tiles containing players
+		System.out.println("OCCUPIED TILES:");
+		for (int i=0; i<numTiles; i++) {
+			Tile t = map[i];
+			if (t.occupied()) {
+				System.out.println("  " + i + " " + t.getVisitors().toString());
+			}
 		}
 		
 		System.out.println();

@@ -2,6 +2,9 @@ package org.younghanlee.rainserver;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -59,6 +62,17 @@ public class Server extends WebSocketServer {
 		World.addPlayer("b", "test2@test.com", "TRIBE");
 		dump();
 	}
+	
+	public void flush() {
+		for (WebSocket w: getConnections()) {
+			// System.out.println(w.toString());
+			Connection c = (Connection) w;
+			Player p = c.getPlayer();
+			if (p != null) {
+				p.flushBuffer(c);
+			}
+		}
+	}
 
 
 	public static void main(String[] args) {
@@ -67,9 +81,21 @@ public class Server extends WebSocketServer {
 		String host = "localhost";
 		int port = 8887;
 
-		WebSocketServer server = new Server(new InetSocketAddress(host, port));
+		Server server = new Server(new InetSocketAddress(host, port));
 		server.setWebSocketFactory(new WebSocketFactory());
+		
+		ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
+		exec.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Sending updates: ");
+				server.flush();
+				return;
+			}
+		}, 0, 1, TimeUnit.SECONDS);
+		
 		server.run();
+
 		
 	}
 }
