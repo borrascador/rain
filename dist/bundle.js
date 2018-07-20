@@ -73,138 +73,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Connect = function () {
-  function Connect(store) {
-    _classCallCheck(this, Connect);
-
-    this.store = store;
-  }
-
-  _createClass(Connect, [{
-    key: "connected",
-    get: function get() {
-      return this.store.getState().connected;
-    }
-  }, {
-    key: "loggedIn",
-    get: function get() {
-      return this.store.getState().loggedIn;
-    }
-  }, {
-    key: "error",
-    get: function get() {
-      return this.store.getState().error;
-    }
-  }, {
-    key: "mode",
-    get: function get() {
-      return this.store.getState().mode;
-    }
-  }, {
-    key: "click",
-    get: function get() {
-      var _store$getState = this.store.getState(),
-          xClick = _store$getState.xClick,
-          yClick = _store$getState.yClick;
-
-      return { xClick: xClick, yClick: yClick };
-    }
-  }, {
-    key: "keys",
-    get: function get() {
-      var allKeys = this.store.getState().keys;
-      var trueKeys = Object.keys(allKeys).filter(function (x) {
-        return allKeys[x] === true;
-      });
-      return trueKeys;
-    }
-  }, {
-    key: "offset",
-    get: function get() {
-      var _store$getState2 = this.store.getState(),
-          offsetX = _store$getState2.offsetX,
-          offsetY = _store$getState2.offsetY;
-
-      return { offsetX: offsetX, offsetY: offsetY };
-    }
-  }, {
-    key: "story",
-    get: function get() {
-      var _store$getState3 = this.store.getState(),
-          story = _store$getState3.story;
-
-      var buttons = story.buttons.map(function (button, idx) {
-        return Object.assign({}, button, { id: idx + 1 });
-      });
-      return Object.assign({}, story, { buttons: buttons });
-    }
-  }, {
-    key: "map",
-    get: function get() {
-      var _store$getState4 = this.store.getState(),
-          tiles = _store$getState4.tiles,
-          sight = _store$getState4.sight,
-          zoom = _store$getState4.zoom;
-
-      return { tiles: tiles, sight: sight, zoom: zoom };
-    }
-  }, {
-    key: "positionId",
-    get: function get() {
-      return this.store.getState().position;
-    }
-  }, {
-    key: "positionCoords",
-    get: function get() {
-      var _store$getState5 = this.store.getState(),
-          tiles = _store$getState5.tiles,
-          position = _store$getState5.position;
-
-      var _tiles$find = tiles.find(function (tile) {
-        return tile.id === position;
-      }),
-          x = _tiles$find.x,
-          y = _tiles$find.y;
-
-      return { x: x, y: y };
-    }
-  }, {
-    key: "inventory",
-    get: function get() {
-      return this.store.getState().inventory;
-    }
-  }, {
-    key: "party",
-    get: function get() {
-      return this.store.getState().party;
-    }
-  }, {
-    key: "vehicle",
-    get: function get() {
-      return this.store.getState().vehicle;
-    }
-  }]);
-
-  return Connect;
-}();
-
-exports.default = Connect;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 // Type and action definitions
 
 var KEYDOWN = exports.KEYDOWN = 'KEYDOWN';
@@ -355,7 +223,165 @@ var positionError = exports.positionError = function positionError(code) {
 var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Connect = function () {
+  function Connect(store) {
+    _classCallCheck(this, Connect);
+
+    this.store = store;
+  }
+
+  _createClass(Connect, [{
+    key: "connected",
+    get: function get() {
+      return this.store.getState().connected;
+    }
+  }, {
+    key: "loggedIn",
+    get: function get() {
+      return this.store.getState().loggedIn;
+    }
+  }, {
+    key: "error",
+    get: function get() {
+      return this.store.getState().error;
+    }
+  }, {
+    key: "mode",
+    get: function get() {
+      return this.store.getState().mode;
+    }
+  }, {
+    key: "click",
+    get: function get() {
+      var _store$getState = this.store.getState(),
+          xClick = _store$getState.xClick,
+          yClick = _store$getState.yClick;
+
+      return { xClick: xClick, yClick: yClick };
+    }
+  }, {
+    key: "keys",
+    get: function get() {
+      var allKeys = this.store.getState().keys;
+      var trueKeys = Object.keys(allKeys).filter(function (x) {
+        return allKeys[x] === true;
+      });
+      return trueKeys;
+    }
+  }, {
+    key: "offset",
+    get: function get() {
+      var _store$getState2 = this.store.getState(),
+          offsetX = _store$getState2.offsetX,
+          offsetY = _store$getState2.offsetY;
+
+      return { offsetX: offsetX, offsetY: offsetY };
+    }
+  }, {
+    key: "story",
+    get: function get() {
+      var _store$getState3 = this.store.getState(),
+          story = _store$getState3.story;
+
+      var buttons = story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, { id: idx + 1 });
+      });
+      return Object.assign({}, story, { buttons: buttons });
+    }
+  }, {
+    key: "map",
+    get: function get() {
+      var _store$getState4 = this.store.getState(),
+          tiles = _store$getState4.tiles,
+          sight = _store$getState4.sight,
+          zoom = _store$getState4.zoom;
+
+      return { tiles: tiles, sight: sight, zoom: zoom };
+    }
+  }, {
+    key: "positionId",
+    get: function get() {
+      return this.store.getState().position;
+    }
+  }, {
+    key: "positionCoords",
+    get: function get() {
+      var _store$getState5 = this.store.getState(),
+          tiles = _store$getState5.tiles,
+          position = _store$getState5.position;
+
+      var _tiles$find = tiles.find(function (tile) {
+        return tile.id === position;
+      }),
+          x = _tiles$find.x,
+          y = _tiles$find.y;
+
+      return { x: x, y: y };
+    }
+  }, {
+    key: "inventory",
+    get: function get() {
+      return this.store.getState().inventory;
+    }
+  }, {
+    key: "party",
+    get: function get() {
+      return this.store.getState().party;
+    }
+  }, {
+    key: "vehicle",
+    get: function get() {
+      return this.store.getState().vehicle;
+    }
+  }]);
+
+  return Connect;
+}();
+
+exports.default = Connect;
+
+/***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
+var LAYER = exports.LAYER = {
+  BOTTOM: "BOTTOM",
+  MIDDLE: "MIDDLE",
+  TOP: "TOP"
+};
+var MODE = exports.MODE = {
+  MAP: "MAP",
+  STORY: "STORY",
+  TITLE: "TITLE"
+};
+var VEHICLE = exports.VEHICLE = {
+  JEEP: "jeep",
+  CANOE: "canoe"
+};
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -409,7 +435,7 @@ var getItemById = exports.getItemById = function getItemById(array, id) {
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -519,32 +545,6 @@ function splitIntoLines(ctx, text, maxWidth) {
 }
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
-var LAYER = exports.LAYER = {
-  BOTTOM: "BOTTOM",
-  MIDDLE: "MIDDLE",
-  TOP: "TOP"
-};
-var MODE = exports.MODE = {
-  MAP: "MAP",
-  STORY: "STORY",
-  TITLE: "TITLE"
-};
-var VEHICLE = exports.VEHICLE = {
-  JEEP: "jeep",
-  CANOE: "canoe"
-};
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -581,10 +581,11 @@ function makeInputLine(id) {
 function makeButtons() {
   var submit = create('button', 'submit');
   submit.innerHTML = 'OK';
+  var spacer = create('div', 'spacer');
   var cancel = create('button', 'cancel');
   cancel.innerHTML = 'CANCEL';
   var buttons = create('div', 'buttons');
-  buttons.append(submit, cancel);
+  buttons.append(submit, spacer, cancel);
   return { buttons: buttons, submit: submit, cancel: cancel };
 }
 
@@ -603,11 +604,11 @@ exports.login = login;
 exports.logout = logout;
 exports.position = position;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _store = __webpack_require__(10);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 var _loading = __webpack_require__(71);
 
@@ -1663,7 +1664,7 @@ exports = module.exports = __webpack_require__(23)(false);
 
 
 // module
-exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(24)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\ninput #password {\n  -webkit-text-security: square;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.cancel {\n  margin-left: 50px;\n}\n", ""]);
+exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(24)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.spacer {\n  display: inline-block;\n  width: 34px;\n}\n\n.items {\n  border: 2px solid white;\n  margin: 8px;\n  overflow: auto;\n  padding: 0px;\n}\n\n.items div {\n  padding: 0px;\n}\n\n.left {\n  float: left;\n}\n\n.right {\n  float: right;\n}\n\n.clear {\n  clear: both;\n}\n", ""]);
 
 // exports
 
@@ -2929,7 +2930,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = reducer;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _reduxWebsocketBridge = __webpack_require__(16);
 
@@ -2939,7 +2940,7 @@ var _ui = __webpack_require__(49);
 
 var _utils = __webpack_require__(8);
 
-var _initialState = __webpack_require__(51);
+var _initialState = __webpack_require__(50);
 
 function reducer(state, action) {
   if (typeof state === 'undefined') {
@@ -3093,7 +3094,7 @@ exports.changeMode = exports.zoomOut = exports.zoomIn = undefined;
 
 var _utils = __webpack_require__(8);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 function zoomIn(state) {
   if (state.zoom < 5) {
@@ -3126,8 +3127,7 @@ exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
 
 /***/ }),
-/* 50 */,
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3138,19 +3138,23 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initialState = undefined;
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
-var _keys = __webpack_require__(52);
+var _keys = __webpack_require__(51);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _story = __webpack_require__(53);
+var _story = __webpack_require__(52);
 
 var _story2 = _interopRequireDefault(_story);
 
-var _party = __webpack_require__(54);
+var _party = __webpack_require__(53);
 
 var _party2 = _interopRequireDefault(_party);
+
+var _inventory = __webpack_require__(54);
+
+var _inventory2 = _interopRequireDefault(_inventory);
 
 var _input = __webpack_require__(17);
 
@@ -3162,12 +3166,12 @@ var uiState = {
 };
 
 var gameState = {
-  story: _story2.default,
+  story: _story2.default, // DEBUG with story
   position: null,
   sight: 2,
   tiles: [],
-  party: [],
-  inventory: [],
+  party: [], // DEBUG with party
+  inventory: [], // DEBUG with inventory
   vehicle: {
     type: _constants.VEHICLE.JEEP,
     icon: 15,
@@ -3195,22 +3199,28 @@ var connectionState = {
 var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = {"0":"false","1":"false","2":"false","3":"false","4":"false","5":"false","6":"false","7":"false","8":"false","9":"false","ArrowUp":"false","ArrowDown":"false","ArrowRight":"false","ArrowLeft":"false","Enter":"false","Backspace":"false","Delete":"false","Escape":"false"}
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = {"text":"A wild jaguar creeps from the shadows with glowing eyes.\n\nYou are scared, very scared.","buttons":[{"text":"Run away","ref":"9184"},{"text":"Stand your ground and soak in the fear of the neverending moment","ref":"5622"},{"text":"Shoot","ref":"3214"}]}
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = [{"name":"J. Cruz","icon":0,"health":5,"jeito":3},{"name":"H. Villa","icon":1,"health":1,"jeito":2},{"name":"F. Boa","icon":2,"health":2,"jeito":4},{"name":"R. Stone","icon":0,"health":1,"jeito":1},{"name":"D. Lee","icon":2,"health":3,"jeito":5}]
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+module.exports = [{"id":1,"name":"Mushroom","quantity":3},{"id":2,"name":"Apple","quantity":1},{"id":3,"name":"Cassava","quantity":5}]
 
 /***/ }),
 /* 55 */
@@ -3653,7 +3663,7 @@ var _addInputListeners = __webpack_require__(59);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -3697,17 +3707,17 @@ var _MapView = __webpack_require__(69);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _StoryView = __webpack_require__(80);
+var _StoryView = __webpack_require__(79);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(82);
+var _TitleView = __webpack_require__(81);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3812,7 +3822,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = addInputListeners;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
@@ -3970,7 +3980,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -3982,7 +3992,7 @@ var _Overlay = __webpack_require__(73);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3997,12 +4007,19 @@ var MapView = function () {
     this.ctx = ctx;
     this.loader = loader;
 
+    this.setDim = this.setDim.bind(this);
+
     this.connect = new _Connect2.default(this.store);
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
   }
 
   _createClass(MapView, [{
+    key: 'setDim',
+    value: function setDim(dim) {
+      this.dim = dim;
+    }
+  }, {
     key: 'update',
     value: function update(delta) {
       var _connect$click = this.connect.click,
@@ -4010,8 +4027,10 @@ var MapView = function () {
           yClick = _connect$click.yClick;
 
       xClick && yClick && this.store.dispatch((0, _actions.clicked)());
-      this.camera.update(delta, xClick, yClick);
-      this.overlay.update(delta, xClick, yClick);
+      if (!this.dim) {
+        this.camera.update(delta, xClick, yClick);
+        this.overlay.update(delta, xClick, yClick);
+      }
     }
   }, {
     key: 'render',
@@ -4021,6 +4040,11 @@ var MapView = function () {
 
       this.camera.render();
       this.overlay.render();
+
+      if (this.dim) {
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      }
     }
   }]);
 
@@ -4042,17 +4066,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(6);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4266,27 +4290,27 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Party = __webpack_require__(77);
+var _Party = __webpack_require__(74);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(78);
+var _Vehicle = __webpack_require__(75);
 
 var _Vehicle2 = _interopRequireDefault(_Vehicle);
 
-var _Inventory = __webpack_require__(79);
+var _Inventory = __webpack_require__(76);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
-var _Zoom = __webpack_require__(76);
+var _Zoom = __webpack_require__(78);
 
 var _Zoom2 = _interopRequireDefault(_Zoom);
 
@@ -4295,7 +4319,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Overlay = function () {
-  function Overlay(store, canvas, ctx, loader) {
+  function Overlay(store, canvas, ctx, loader, setDim) {
     _classCallCheck(this, Overlay);
 
     this.store = store;
@@ -4306,7 +4330,7 @@ var Overlay = function () {
     this.zoom = new _Zoom2.default(this.store, this.canvas, this.ctx, this.loader);
     this.party = new _Party2.default(this.store, this.canvas, this.ctx, this.loader);
     this.vehicle = new _Vehicle2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader, setDim);
   }
 
   _createClass(Overlay, [{
@@ -4333,9 +4357,7 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 74 */,
-/* 75 */,
-/* 76 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4347,89 +4369,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _requests = __webpack_require__(6);
+var _utils = __webpack_require__(3);
 
-var _actions = __webpack_require__(1);
-
-var _utils = __webpack_require__(2);
-
-var _draw = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Zoom = function () {
-  function Zoom(store, canvas, ctx, loader) {
-    _classCallCheck(this, Zoom);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
-
-    this.connect = new _Connect2.default(this.store);
-
-    this.scale = 2;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
-
-    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
-  }
-
-  _createClass(Zoom, [{
-    key: 'update',
-    value: function update(delta, x, y) {
-      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && this.store.dispatch(clickedButton.onClick());
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this = this;
-
-      this.buttons = this.buttons.map(function (button, index) {
-        var x = _this.canvas.width - _this.size * (index + 1);
-        var y = 0;
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
-        return Object.assign({}, button, {
-          xPos: x,
-          yPos: y,
-          width: _this.size,
-          height: _this.size
-        });
-      });
-    }
-  }]);
-
-  return Zoom;
-}();
-
-exports.default = Zoom;
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(0);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(2);
-
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4510,7 +4456,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 78 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4522,13 +4468,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4598,7 +4544,7 @@ var Vehicle = function () {
 exports.default = Vehicle;
 
 /***/ }),
-/* 79 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4608,23 +4554,26 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // import Connect from '../../store/reducers/Connect';
-
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
+
+var _inventory = __webpack_require__(77);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Inventory = function () {
-  function Inventory(store, canvas, ctx, loader) {
+  function Inventory(store, canvas, ctx, loader, setDim) {
+    var _this = this;
+
     _classCallCheck(this, Inventory);
 
     this.store = store;
@@ -4636,11 +4585,12 @@ var Inventory = function () {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
 
-    // this.connect = new Connect(this.store);
-
-    this.buttons = [{ name: 'pack-big', onClick: function onClick() {
-        return console.log('pack-big');
-      } }];
+    this.buttons = [{
+      name: 'pack-big',
+      onClick: function onClick() {
+        return (0, _inventory.inventoryDialog)(_this.store, setDim);
+      }
+    }];
   }
 
   _createClass(Inventory, [{
@@ -4653,17 +4603,17 @@ var Inventory = function () {
   }, {
     key: 'render',
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
       this.buttons = this.buttons.map(function (button) {
-        var x = _this.canvas.width - _this.size;
-        var y = _this.canvas.height / 2 - _this.size / 2;
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
+        var x = _this2.canvas.width - _this2.size;
+        var y = _this2.canvas.height / 2 - _this2.size / 2;
+        (0, _draw.drawByName)(_this2.ctx, _this2.iconsXl, button.name, _this2.scale, x, y + _this2.animate.getValue());
         return Object.assign({}, button, {
           xPos: x,
           yPos: y,
-          width: _this.size,
-          height: _this.size
+          width: _this2.size,
+          height: _this2.size
         });
       });
     }
@@ -4675,7 +4625,78 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 80 */
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.inventoryDialog = inventoryDialog;
+
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _utils = __webpack_require__(5);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function inventoryDialog(store, setDim) {
+  var connect = new _Connect2.default(store);
+
+  var container = document.getElementById('container');
+  var dialog = (0, _utils.create)('div', 'dialog', 'inventory');
+  container.append(dialog);
+
+  var title = (0, _utils.create)('div', 'title');
+  title.innerHTML = 'INVENTORY';
+
+  var items = (0, _utils.create)('div', 'items');
+
+  connect.inventory.forEach(function (item) {
+    var line = (0, _utils.create)('div', 'item');
+    var name = (0, _utils.create)('span', 'left');
+    name.innerHTML = item.name;
+    var quantity = (0, _utils.create)('span', 'right');
+    quantity.innerHTML = 'x' + item.quantity;
+    var clear = (0, _utils.create)('div', 'clear');
+    line.append(name, quantity, clear);
+    items.append(line);
+  });
+
+  if (connect.inventory.length === 0) {
+    var line = (0, _utils.create)('div', 'item');
+    line.innerHTML = 'Inventory is empty!';
+    items.append(line);
+  }
+
+  var submit = (0, _utils.create)('button', 'submit');
+  submit.innerHTML = 'OK';
+  var buttons = (0, _utils.create)('div', 'buttons');
+  buttons.append(submit);
+
+  var dimCallback = function dimCallback(dim) {
+    setDim(dim);
+    // dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
+  };
+
+  dimCallback(true);
+
+  submit.onclick = function () {
+    dimCallback(false);
+    container.contains(dialog) && container.removeChild(dialog);
+  };
+
+  var content = (0, _utils.create)('div', 'content');
+  content.append(title, items, buttons);
+  dialog.append(content);
+}
+
+/***/ }),
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4687,7 +4708,83 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(81);
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _requests = __webpack_require__(6);
+
+var _actions = __webpack_require__(0);
+
+var _utils = __webpack_require__(3);
+
+var _draw = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Zoom = function () {
+  function Zoom(store, canvas, ctx, loader) {
+    _classCallCheck(this, Zoom);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.iconsXl = loader.getImage('icons-xl');
+
+    this.connect = new _Connect2.default(this.store);
+
+    this.scale = 2;
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+
+    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
+  }
+
+  _createClass(Zoom, [{
+    key: 'update',
+    value: function update(delta, x, y) {
+      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      clickedButton && this.store.dispatch(clickedButton.onClick());
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this = this;
+
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = _this.canvas.width - _this.size * (index + 1);
+        var y = 0;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: y,
+          width: _this.size,
+          height: _this.size
+        });
+      });
+    }
+  }]);
+
+  return Zoom;
+}();
+
+exports.default = Zoom;
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Story = __webpack_require__(80);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -4727,7 +4824,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4739,17 +4836,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 var _Animation = __webpack_require__(9);
 
@@ -4867,7 +4964,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4879,15 +4976,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
-var _register = __webpack_require__(83);
+var _register = __webpack_require__(82);
 
-var _login = __webpack_require__(84);
+var _login = __webpack_require__(83);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4895,7 +4992,7 @@ var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5005,7 +5102,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5020,7 +5117,7 @@ var _utils = __webpack_require__(5);
 
 var _requests = __webpack_require__(6);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _failure = __webpack_require__(18);
 
@@ -5074,7 +5171,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

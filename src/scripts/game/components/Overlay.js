@@ -7,7 +7,7 @@ import Inventory from './Inventory';
 import Zoom from './Zoom';
 
 export default class Overlay {
-  constructor (store, canvas, ctx, loader) {
+  constructor (store, canvas, ctx, loader, setDim) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
@@ -16,7 +16,7 @@ export default class Overlay {
     this.zoom = new Zoom(this.store, this.canvas, this.ctx, this.loader);
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
     this.vehicle = new Vehicle(this.store, this.canvas, this.ctx, this.loader);
-    this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader);
+    this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader, setDim);
   }
 
   update(delta, xClick, yClick) {

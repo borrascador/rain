@@ -63,10 +63,6 @@ input {
   color: black;
 }
 
-input #password {
-  -webkit-text-security: square;
-}
-
 button {
   width: 120px;
   padding: 4px;
@@ -74,6 +70,30 @@ button {
   background-color: black;
 }
 
-.cancel {
-  margin-left: 50px;
+.spacer {
+  display: inline-block;
+  width: 34px;
+}
+
+.items {
+  border: 2px solid white;
+  margin: 8px;
+  overflow: auto;
+  padding: 0px;
+}
+
+.items div {
+  padding: 0px;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear {
+  clear: both;
 }

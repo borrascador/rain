@@ -2,6 +2,7 @@ import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
 import story from '../../../data/story.json';
 import party from '../../../data/party.json';
+import inventory from '../../../data/inventory.json';
 import { makeKeys } from '../utils/input';
 
 const uiState = {
@@ -10,12 +11,12 @@ const uiState = {
 };
 
 const gameState = {
-  story: story,
+  story: story, // DEBUG with story
   position: null,
   sight: 2,
   tiles: [],
-  party: [],
-  inventory: [],
+  party: [], // DEBUG with party
+  inventory: [], // DEBUG with inventory
   vehicle: {
     type: VEHICLE.JEEP,
     icon: 15,
