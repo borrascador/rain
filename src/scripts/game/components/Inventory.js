@@ -1,10 +1,10 @@
-// import Connect from '../../store/reducers/Connect';
 import Animation from '../utils/Animation';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
+import { inventoryDialog } from '../dialogs/inventory';
 
 export default class Inventory {
-  constructor (store, canvas, ctx, loader) {
+  constructor (store, canvas, ctx, loader, setDim) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
@@ -14,10 +14,11 @@ export default class Inventory {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new Animation(this.scale, this.scale, 0.5);
 
-    // this.connect = new Connect(this.store);
-
     this.buttons = [
-      { name: 'pack-big', onClick: () => console.log('pack-big') }
+      {
+        name: 'pack-big',
+        onClick: () => inventoryDialog(this.store, setDim)
+      }
     ];
   }
 
