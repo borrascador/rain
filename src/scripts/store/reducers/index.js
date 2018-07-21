@@ -66,13 +66,27 @@ export default function reducer(state, action) {
       return Object.assign({}, state, {
         sending: false,
         loggedIn: true,
-        position: action.payload.position,
         tiles: action.payload.tiles,
+        // party: action.payload.party, // TODO
+        // vehicle: action.payload.vehicle, // TODO
+        // story: action.payload.story // TODO
+        // inventory: action.payload.inventory, // TODO
+        position: action.payload.position,
+        // sight: action.payload.sight, // TODO
+        zoom: 3,
         error: null
       });
 
     case LOGOUT_RESPONSE:
       return Object.assign({}, state, {
+        tiles: [],
+        party: [],
+        inventory: [],
+        vehicle: null,
+        story: null,
+        position: null,
+        sight: null,
+        zoom: 3,
         sending: false,
         loggedIn: false,
         error: null

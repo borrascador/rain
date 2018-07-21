@@ -19,14 +19,18 @@ export default class Story {
     this.ctx.font = this.fontSize + 'px MECC';
     this.selectedId = null;
 
-    this.setEvent();
+    const story = this.connect.story;
+    if (story) {
+      this.setEvent(story);
+    } else {
+      this.buttons = [];
+    }
 
     this.mainText = mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
-  setEvent() {
-    const story = this.connect.story;
+  setEvent(story) {
     this.maxMainWidth = this.canvas.width - this.fontSize * 2;
     this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
     this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
@@ -71,11 +75,10 @@ export default class Story {
   update(delta) {
     this.updateKeys(delta);
     this.updateClick();
-    this.setEvent(); // Comment out to disable live text adjustment on resize
     this.blink.update(delta);
   }
 
-  render() {
+  renderStoryText() {
     this.ctx.font = this.fontSize + 'px MECC';
 
     this.ctx.fillStyle = '#6F6';
@@ -88,5 +91,15 @@ export default class Story {
     this.ctx.fillStyle = '#6F6';
     linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
     const promptCoords = this.mainText(this.prompt, this.fontSize, linePos);
+  }
+
+  render() {
+    const story = this.connect.story;
+    if (story) {
+      this.setEvent(story); // Comment out to disable live text adjustment on resize
+      this.renderStoryText();
+    } else {
+      this.buttons = [];
+    }
   };
 }

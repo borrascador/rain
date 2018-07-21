@@ -35,10 +35,10 @@ export default class Camera {
   }
 
   updateClick(x, y) {
-    const clickId = x && y && screenToImageButtonId(x, y, this.visibleTiles);
+    const clickId = x && y && screenToImageButtonId(x, y, this.clickTiles);
     if (clickId) {
       const pos = this.connect.positionCoords;
-      const tile = getItemById(this.visibleTiles, clickId);
+      const tile = getItemById(this.clickTiles, clickId);
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
         this.store.dispatch(position(clickId));
       }
@@ -63,17 +63,19 @@ export default class Camera {
     const endRow = startRow + Math.ceil((this.canvas.height / tileSize) + 1);
     const offsetX = -origin.x + startCol * tileSize;
     const offsetY = -origin.y + startRow * tileSize;
-    let visibleTiles = [];
+    let clickTiles = [];
     let dim = false;
     for (let col = startCol; col <= endCol; col++) {
       for (let row = startRow; row <= endRow; row++) {
         const x = (col - startCol) * tileSize + offsetX;
         const y = (row - startRow) * tileSize + offsetY;
         const tile = this.findTile(tiles, col, row);
-        if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
-          visibleTiles.push(Object.assign({}, tile, {
+        if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) === 1) {
+          clickTiles.push(Object.assign({}, tile, {
             xPos: x, yPos: y, width: tileSize, height: tileSize
           }));
+        }
+        if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= sight) {
           dim = false;
         } else {
           dim = true;
@@ -98,6 +100,6 @@ export default class Camera {
         }
       }
     }
-    this.visibleTiles = visibleTiles;
+    this.clickTiles = clickTiles;
   }
 }
