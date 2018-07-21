@@ -44,6 +44,13 @@ public class MessageHandler {
 				payload = jo.getJSONObject("payload");
 				p = World.getPlayer(payload.getString("user"));
 				
+				// Check if player exists
+				if (p == null) {
+					response = Message.LOGIN_ERROR("0101");
+					connection.send(response.toString());
+					break;
+				}
+				
 				// Check if there is already a login on this connection
 				if (connection.getPlayer() != null) {
 					response = Message.LOGIN_ERROR("0105");

@@ -107,7 +107,9 @@ public class World {
 	}
 	
 	public static Player getPlayer(String name) {
-		return players.get(name);
+		if (players.containsKey(name)) {
+			return players.get(name);
+		} else return null;
 	}
 	
 	public static JSONObject addPlayer(String user, String email, String player_class) {
