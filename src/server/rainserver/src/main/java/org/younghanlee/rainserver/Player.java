@@ -19,6 +19,9 @@ public class Player {
 	private int sight;
 	private HashSet<Integer> tilesSeen;
 	
+	private HashSet<Member> party;
+	private HashSet<Item> backpack;
+	
 	private HashSet<Integer> buffer;
 	
 	public int randomInt(int max) {
@@ -40,6 +43,10 @@ public class Player {
 		Tile t = World.getTile(position);
 		t.addVisitor(name);
 		this.tilesSeen = t.inSight(sight);	
+		
+		this.party = new HashSet<Member>();
+		this.backpack = new HashSet<Item>();
+		
 		this.buffer = new HashSet<Integer>();
 	}
 	
@@ -47,12 +54,17 @@ public class Player {
 		this.online = true;
 		World.onlineInc();
 		connection.setPlayer(this);
+		Tile t = World.getTile(position);
+		t.addVisitor(this.name);
+		t.updateNeighbors(this, Constants.MAXSIGHT);
 	}
 	
 	public JSONObject logoff(Connection connection) {
 		this.online = false;
 		World.onlineDec();
-		World.getTile(position).removeVisitor(this.name);
+		Tile t = World.getTile(position);
+		t.removeVisitor(this.name);
+		t.updateNeighbors(this, Constants.MAXSIGHT);
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}
@@ -98,17 +110,7 @@ public class Player {
 			source.removeVisitor(this.name);
 			
 			// Tell players you are leaving range
-			for (int i: source.inSight(Constants.MAXSIGHT)) {
-				Tile t = World.getTile(i);
-				for (String name: t.getVisitors()) {
-					if (!name.equals(this.name)) {
-						Player p = World.getPlayer(name);
-						if (t.inSight(p.getSight()).contains(position)) {
-							p.addToBuffer(position);
-						}
-					}
-				}
-			}
+			source.updateNeighbors(this, Constants.MAXSIGHT);
 			
 			// Add it to destination tile
 			this.position = destination;	
@@ -118,17 +120,7 @@ public class Player {
 			this.tilesSeen.addAll(dest.inSight(sight));
 			
 			// Tell players you are in range
-			for (int i: dest.inSight(Constants.MAXSIGHT)) {
-				Tile t = World.getTile(i);
-				for (String name: t.getVisitors()) {
-					if (!name.equals(this.name)) {
-						Player p = World.getPlayer(name);
-						if (t.inSight(p.getSight()).contains(position)) {
-							p.addToBuffer(position);
-						}
-					}
-				}
-			}
+			dest.updateNeighbors(this, Constants.MAXSIGHT);
 			
 			return true;
 		} else return false;

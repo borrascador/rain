@@ -72,6 +72,10 @@ public class Tile {
 		return x * Constants.MAPWIDTH + y;
 	}
 	
+	public int distance(Tile t) {
+		return Math.abs(y-t.y) + Math.abs(x-t.x);
+	}
+	
 	public HashSet<Integer> inSight(int sight) {
 		HashSet<Integer> tiles = new HashSet<Integer>();
 		// System.out.println("Center:" + x + "," + y);
@@ -107,6 +111,22 @@ public class Tile {
 	// Return whether or not move is allowed
 	public boolean legalMove (int newTile, int range) {
 		return true; 
+	}
+	
+	// name is the player that is triggering the update
+	// We don't need to send an update to this player.
+	public void updateNeighbors(Player p, int range) {
+		for (int i: inSight(Constants.MAXSIGHT)) {
+			Tile t = World.getTile(i);
+			for (String name: t.getVisitors()) {
+				if (!p.getName().equals(name)) {
+					Player p2 = World.getPlayer(name);
+					if (distance(t) <= p2.getSight()) {
+						p2.addToBuffer(id);
+					}
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args){
