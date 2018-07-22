@@ -19,12 +19,12 @@ public class Player {
 	private int sight;
 	private HashSet<Integer> tilesSeen;
 	
-	private HashSet<Member> party;
-	private HashSet<Item> backpack;
+	private HashMap<Integer, Member> party;
+	private HashMap<Integer, Integer> backpack;
 	
 	private HashSet<Integer> buffer;
 	
-	public int randomInt(int max) {
+	public static int randomInt(int max) {
 		return (int)(Math.random() * (max + 1));
 	}
 
@@ -44,8 +44,9 @@ public class Player {
 		t.addVisitor(name);
 		this.tilesSeen = t.inSight(sight);	
 		
-		this.party = new HashSet<Member>();
-		this.backpack = new HashSet<Item>();
+		this.party = new HashMap<Integer, Member>();		
+		
+		this.backpack = new HashMap<Integer, Integer>();
 		
 		this.buffer = new HashSet<Integer>();
 	}
@@ -154,6 +155,37 @@ public class Player {
 		JSONArray ja = new JSONArray();
 		for (int ts: World.getTile(position).inSight(sight)) {
 			ja.put(World.getTile(ts).toJSONObject());
+		}
+		return ja;
+	}
+	
+	public void setQuantity(int itemID, int quantity) {
+		if (quantity > 0) {
+			backpack.put(itemID, quantity);
+		} else {
+			backpack.remove(itemID);
+		}
+	}
+	
+	public int getQuantity(int itemID) {
+		if (backpack.containsKey(itemID)){
+			return backpack.get(itemID);
+		} else return 0;
+	}
+	
+	public JSONArray backpackToJSONArray() {
+		JSONArray ja = new JSONArray();
+		for (int i: backpack.keySet()) {
+			Item item = World.getItem(i);
+			ja.put(item.toJSONObject(i, backpack.get(i)));
+		}
+		return ja;
+	}
+	
+	public JSONArray partyToJSONArray() {
+		JSONArray ja = new JSONArray();
+		for (Member m: party.values()) {
+			ja.put(m.toJSONObject());
 		}
 		return ja;
 	}
