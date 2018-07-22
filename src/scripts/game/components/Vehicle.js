@@ -18,9 +18,14 @@ export default class Vehicle {
 
     const vehicle = this.connect.vehicle;
 
-    this.buttons = [
-      { id: vehicle.icon, onClick: () => console.log(vehicle.type) }
-    ];
+    if (vehicle) {
+      this.buttons = [{
+        id: vehicle.icon,
+        onClick: () => console.log(vehicle.type)
+      }];
+    } else {
+      this.buttons = [];
+    }
   }
 
   update(delta, x, y) {
@@ -28,22 +33,18 @@ export default class Vehicle {
     clickedButton && clickedButton.onClick();
   }
 
-  render() {
-    const vehicle = this.connect.vehicle;
-
-    // TODO: What if there is no vehicle? Need to handle 0 or 1 vehicles.
-    // For example see Party.js
-    this.buttons = this.buttons.map((button, index) => {
+  renderVehicle(vehicle) {
+    this.buttons = this.buttons.map(button => {
       const x = 0;
       const y = this.canvas.height - this.vehicleSize;
       drawById(this.ctx, this.iconsXl, vehicle.icon, this.scale, x, y);
-      [...Array(vehicle.repair)].map((_, i) => {
+      for (let i = 0; i < vehicle.repair; i++) {
         drawByName(
           this.ctx, this.icons, 'wrench', 1,
           this.vehicleSize + i * (this.wrenchSize + 8),
           this.canvas.height - (this.wrenchSize + this.vehicleSize) / 2
         );
-      });
+      };
       return Object.assign({}, button, {
         id: vehicle.icon,
         xPos: x,
@@ -52,5 +53,10 @@ export default class Vehicle {
         height: this.vehicleSize
       });
     });
+  }
+
+  render() {
+    const vehicle = this.connect.vehicle;
+    vehicle && this.renderVehicle(vehicle);
   }
 }

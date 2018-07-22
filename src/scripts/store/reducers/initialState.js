@@ -1,9 +1,11 @@
 import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
-import story from '../../../data/story.json';
-import party from '../../../data/party.json';
-import inventory from '../../../data/inventory.json';
 import { makeKeys } from '../utils/input';
+
+// import party from '../../../data/party.json';
+// import inventory from '../../../data/inventory.json';
+// import vehicle from '../../../data/vehicle.json';
+// import story from '../../../data/story.json';
 
 const uiState = {
   mode: MODE.TITLE,
@@ -11,17 +13,13 @@ const uiState = {
 };
 
 const gameState = {
-  story: story, // DEBUG with story
-  position: null,
-  sight: 2,
   tiles: [],
   party: [], // DEBUG with party
   inventory: [], // DEBUG with inventory
-  vehicle: {
-    type: VEHICLE.JEEP,
-    icon: 15,
-    repair: 5,
-  }
+  vehicle: null, // DEBUG with vehicle
+  story: null, // DEBUG with story
+  position: null,
+  sight: null
 };
 
 const inputState = {
