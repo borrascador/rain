@@ -3011,12 +3011,12 @@ function reducer(state, action) {
         sending: false,
         loggedIn: true,
         tiles: action.payload.tiles,
-        // party: action.payload.party, // TODO
+        party: action.payload.party,
         // vehicle: action.payload.vehicle, // TODO
         // story: action.payload.story // TODO
-        // inventory: action.payload.inventory, // TODO
+        inventory: action.payload.inventory,
         position: action.payload.position,
-        // sight: action.payload.sight, // TODO
+        sight: action.payload.sight,
         zoom: 3,
         error: null
       });
