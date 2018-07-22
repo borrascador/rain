@@ -110,3 +110,5 @@ export const positionError = (code) => ({
   type: POSITION_ERROR,
   payload: { code }
 });
+
+export const TILE_UPDATE = 'TILE_UPDATE';

@@ -22,9 +22,10 @@ export function makeInputLine(id) {
 export function makeButtons() {
   const submit = create('button', 'submit');
   submit.innerHTML = 'OK';
+  const spacer = create('div', 'spacer');
   const cancel = create('button', 'cancel');
   cancel.innerHTML = 'CANCEL';
   const buttons = create('div', 'buttons');
-  buttons.append(submit, cancel);
+  buttons.append(submit, spacer, cancel);
   return { buttons, submit, cancel };
 }

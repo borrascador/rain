@@ -23,19 +23,6 @@ export default class Connect {
     return this.store.getState().tabs;
   }
 
-  get story() {
-    const {story} = this.store.getState();
-    const buttons = story.buttons.map((button, idx) =>
-      Object.assign({}, button, {id: idx + 1})
-    );
-    return Object.assign({}, story, {buttons: buttons});
-  }
-
-  get map() {
-    const {zoom, mapTiles} = this.store.getState();
-    return {zoom, mapTiles,};
-  }
-
   get click() {
     const {xClick, yClick} = this.store.getState();
     return {xClick, yClick,};
@@ -54,28 +41,43 @@ export default class Connect {
     return {offsetX, offsetY,};
   }
 
+  get story() {
+    const {story} = this.store.getState();
+    if (story) {
+      // TODO: Decide on a better way to do this / define object
+      const buttons = story.buttons.map((button, idx) =>
+        Object.assign({}, button, {id: idx + 1})
+      );
+      return Object.assign({}, story, {buttons: buttons});
+    } else {
+      return null;
+    }
+  }
+
+  get map() {
+    const {tiles, sight, zoom} = this.store.getState();
+    return {tiles, sight, zoom,};
+  }
+
   get positionId() {
     return this.store.getState().position;
   }
 
   get positionCoords() {
-    const { mapTiles, position } = this.store.getState();
-    const { x, y } = mapTiles.find(tile => tile.id === position);
+    const { tiles, position } = this.store.getState();
+    const { x, y } = tiles.find(tile => tile.id === position);
     return { x, y };
   }
 
+  get inventory() {
+    return this.store.getState().inventory;
+  }
+
   get party() {
-    const {party} = this.store.getState();
-    return {party,};
+    return this.store.getState().party;
   }
 
   get vehicle() {
-    const {vehicle} = this.store.getState();
-    return {vehicle,};
-  }
-
-  get sight() {
-    const {sight} = this.store.getState();
-    return {sight,};
+    return this.store.getState().vehicle;
   }
 }

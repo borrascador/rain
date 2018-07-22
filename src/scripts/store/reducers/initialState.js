@@ -1,30 +1,27 @@
 import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
-import tabs from '../../../data/tabs.json';
-import story from '../../../data/story.json';
-import party from '../../../data/party.json';
 import { makeKeys } from '../utils/input';
+
+import tabs from '../../../data/tabs.json'; // XXX
+// import party from '../../../data/party.json';
+// import inventory from '../../../data/inventory.json';
+// import vehicle from '../../../data/vehicle.json';
+// import story from '../../../data/story.json';
 
 const uiState = {
   mode: MODE.TITLE,
   tabs: tabs,
-  story: story
+  zoom: 3
 };
 
-const mapState = {
-  zoom: 3,
-  mapTiles: []
-};
-
-const playerState = {
+const gameState = {
+  tiles: [],
+  party: [], // DEBUG with party
+  inventory: [], // DEBUG with inventory
+  vehicle: null, // DEBUG with vehicle
+  story: null, // DEBUG with story
   position: null,
-  sight: 2,
-  party: party,
-  vehicle: {
-    type: VEHICLE.JEEP,
-    icon: 15,
-    repair: 5,
-  }
+  sight: null
 };
 
 const inputState = {
@@ -46,8 +43,7 @@ const connectionState = {
 
 export const initialState = Object.assign({},
   uiState,
-  mapState,
-  playerState,
+  gameState,
   inputState,
   connectionState
 );
