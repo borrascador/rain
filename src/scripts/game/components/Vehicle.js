@@ -19,10 +19,9 @@ export default class Vehicle {
     const vehicle = this.connect.vehicle;
 
     if (vehicle) {
-      this.buttons = [{
-        id: vehicle.icon,
-        onClick: () => console.log(vehicle.type)
-      }];
+      this.buttons = [
+        { id: vehicle.icon, onClick: () => console.log(vehicle.type) }
+      ];
     } else {
       this.buttons = [];
     }

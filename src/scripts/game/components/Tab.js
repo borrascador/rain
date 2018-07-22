@@ -1,6 +1,6 @@
 import Connect from '../../store/reducers/Connect';
 import { screenToImageButton } from './utils';
-import { drawByName, trace } from '../utils/draw';
+import { drawByName, drawById, trace } from '../utils/draw';
 
 export default class Tab {
   constructor (store, canvas, ctx, loader, buttons, height) {
@@ -33,7 +33,7 @@ export default class Tab {
     this.buttons = this.buttons.map((button, index) => {
       const x = this.height * index + (this.height - this.size) / 2;
       const y = this.canvas.height - (this.height + this.size + this.lineHeight) / 2;
-      drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y);
+      drawById(this.ctx, this.iconsXl, 21, this.scale, x, y); //COMBAK
       this.ctx.fillText(button.name, x + this.size / 2, y + this.size + this.lineHeight);
       trace(this.ctx, this.size, x, y);
       return Object.assign({}, button, {

@@ -14,7 +14,11 @@ export default class Tabs {
     this.scale = 4;
     this.height = 192;
 
-    this.newTile();
+    this.openTab = null;
+  }
+
+  switchTab(tab) {
+    this.openTab = tab;
   }
 
   update(delta, x, y) {
@@ -22,21 +26,7 @@ export default class Tabs {
     // clickedButton && this.store.dispatch(clickedButton.onClick());
     clickedTab && this.switchTab(clickedTab);
 
-    this.openTab.content.update(delta, x, y);
-  }
-
-  newTile() {
-    this.tabs = this.connect.tabs.map(tab => ({
-      text: tab.text,
-      content: new Tab(
-        this.store, this.canvas, this.ctx, this.loader, tab.buttons, this.height
-      )
-    }));
-    this.openTab = this.tabs[0];
-  }
-
-  switchTab(tab) {
-    this.openTab = tab;
+    this.openTab && this.openTab.content && this.openTab.content.update(delta, x, y);
   }
 
   renderTabs() {
@@ -48,7 +38,7 @@ export default class Tabs {
     this.ctx.strokeStyle = '#FFF';
     this.ctx.lineWidth = 2;
 
-    this.tabs = this.tabs.map(tab => {
+    this.tabs = this.connect.tabs.map(tab => {
       const lineWidth = this.ctx.measureText(tab.text).width;
       this.ctx.beginPath();
       this.ctx.moveTo(x, y);
@@ -62,9 +52,15 @@ export default class Tabs {
       const yPos = y - fontSize / 4;
       this.ctx.fillText(tab.text, xPos, yPos);
       x = x + lineHeight * 2 + lineWidth;
-      this.openTab.text !== tab.text && this.ctx.closePath();
+      if (this.openTab && this.openTab.text !== tab.text || this.openTab === null) {
+        this.ctx.closePath();
+      }
       this.ctx.stroke();
       return Object.assign({}, tab, {
+        text: tab.text,
+        content: new Tab(
+          this.store, this.canvas, this.ctx, this.loader, tab.buttons, this.height
+        ),
         xPos: xPos,
         yPos: yPos,
         width: lineWidth,
@@ -83,6 +79,6 @@ export default class Tabs {
     this.ctx.fillRect(0, this.canvas.height - this.height, this.canvas.width, this.height);
 
     this.renderTabs();
-    this.openTab.content.render();
+    this.openTab && this.openTab.content && this.openTab.content.render();
   }
 }

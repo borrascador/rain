@@ -10,7 +10,7 @@ import tabs from '../../../data/tabs.json'; // XXX
 
 const uiState = {
   mode: MODE.TITLE,
-  tabs: tabs,
+  tabs: [],
   zoom: 3
 };
 
