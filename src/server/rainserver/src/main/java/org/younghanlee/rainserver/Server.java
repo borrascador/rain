@@ -60,6 +60,12 @@ public class Server extends WebSocketServer {
 		System.out.println("server started successfully");
 		World.addPlayer("a", "test1@test.com", "TRIBE");
 		World.addPlayer("b", "test2@test.com", "TRIBE");
+		
+		for (Player p: World.getPlayers().values()) {
+			for (int i=0; i<4; i++) {
+				p.setQuantity(Player.randomInt(World.numItems() -1), Player.randomInt(100));
+			}
+		}
 		dump();
 	}
 	
@@ -77,6 +83,29 @@ public class Server extends WebSocketServer {
 
 	public static void main(String[] args) {
 		new World();
+		Item item = new Item ("potato");
+		item.addTag("seed");
+		item.addTag("food");
+		World.addItem(item);
+		
+		item = new Item ("black bean");
+		item.addTag("seed");
+		item.addTag("food");
+		World.addItem(item);
+		
+		item = new Item ("lima bean");
+		item.addTag("seed");
+		item.addTag("food");
+		World.addItem(item);
+		
+		item = new Item ("tomato");
+		item.addTag("food");
+		World.addItem(item);
+		
+		item = new Item ("tomato seed");
+		item.addTag("seed");
+		World.addItem(item);	
+		
 		
 		String host = "localhost";
 		int port = 8887;

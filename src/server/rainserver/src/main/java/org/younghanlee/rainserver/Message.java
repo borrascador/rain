@@ -45,12 +45,16 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject LOGIN_RESPONSE(int position, JSONArray tiles) {
+	public static JSONObject LOGIN_RESPONSE(Player p, JSONArray tiles) {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "LOGIN_RESPONSE");
 		JSONObject payload = new JSONObject();
-		payload.put("position", position);
+		payload.put("position", p.getPosition());
 		payload.put("tiles", tiles);
+		payload.put("sight", p.getSight());
+		System.out.println("test");
+		payload.put("inventory", p.backpackToJSONArray());
+		payload.put("party", p.partyToJSONArray());
 		jo.accumulate("payload", payload);
 		return jo;
 	}

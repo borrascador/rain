@@ -68,9 +68,8 @@ public class MessageHandler {
 				p.login(connection);
 					
 				// Send ordinary response
-				int position = p.getPosition();
 				tiles = p.tilesSeenArray();
-				response = Message.LOGIN_RESPONSE(position, tiles);
+				response = Message.LOGIN_RESPONSE(p, tiles);
 				connection.send(response.toString());
 				break;
 				
