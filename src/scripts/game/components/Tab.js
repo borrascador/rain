@@ -7,12 +7,12 @@ export default class Tab {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
+    this.items = loader.getImage('items');
 
     this.buttons = buttons;
     this.height = height;
     this.scale = 4;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.size = this.items.tileset.tilewidth * this.scale;
 
     this.ctx.strokeStyle = '#FFF';
     this.ctx.lineWidth = 2;
@@ -33,7 +33,7 @@ export default class Tab {
     this.buttons = this.buttons.map((button, index) => {
       const x = this.height * index + (this.height - this.size) / 2;
       const y = this.canvas.height - (this.height + this.size + this.lineHeight) / 2;
-      drawById(this.ctx, this.iconsXl, 21, this.scale, x, y); //COMBAK
+      drawById(this.ctx, this.items, button.id, this.scale, x, y); //COMBAK
       this.ctx.fillText(button.name, x + this.size / 2, y + this.size + this.lineHeight);
       trace(this.ctx, this.size, x, y);
       return Object.assign({}, button, {

@@ -39,9 +39,9 @@ export function inventoryToTabs(inventory) {
   inventory.forEach(item => {
     item.tags.forEach(tag => {
       if(!obj[tag]) {
-        obj[tag] = Array({ name: item.name });
+        obj[tag] = Array({ name: item.name, id: item.id });
       } else {
-        obj[tag].push({ name: item.name });
+        obj[tag].push({ name: item.name, id: item.id });
       }
     });
   });
@@ -54,5 +54,6 @@ export function inventoryToTabs(inventory) {
       });
     }
   }
+  console.log(tabs);
   return tabs;
 }

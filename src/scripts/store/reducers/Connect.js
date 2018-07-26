@@ -55,18 +55,13 @@ export default class Connect {
   }
 
   get map() {
-    const {tiles, sight, zoom} = this.store.getState();
-    return {tiles, sight, zoom,};
-  }
-
-  get positionId() {
-    return this.store.getState().position;
-  }
-
-  get positionCoords() {
-    const { tiles, position } = this.store.getState();
+    const { position, tiles, sight, zoom} = this.store.getState();
     const { x, y } = tiles.find(tile => tile.id === position);
-    return { x, y };
+    const pos = {};
+    pos.x = x;
+    pos.y = y;
+    // console.log(pos);
+    return { pos, tiles, sight, zoom, };
   }
 
   get inventory() {

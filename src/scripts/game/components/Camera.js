@@ -37,7 +37,7 @@ export default class Camera {
   updateClick(x, y) {
     const clickId = x && y && screenToImageButtonId(x, y, this.clickTiles);
     if (clickId) {
-      const pos = this.connect.positionCoords;
+      const { pos } = this.connect.map;
       const tile = getItemById(this.clickTiles, clickId);
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
         this.store.dispatch(position(clickId));
@@ -50,8 +50,7 @@ export default class Camera {
   }
 
   render() {
-    const pos = this.connect.positionCoords;
-    const { tiles, sight, zoom } = this.connect.map;
+    const { pos, tiles, sight, zoom } = this.connect.map;
     const tileSize = this.atlas.tileset.tilewidth * zoom;
     const iconSize = this.icons.tileset.tilewidth * zoom;
     const gridZoom = (tileSize - 1) / (tileSize / zoom)
