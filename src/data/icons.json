@@ -117,6 +117,14 @@
         {
          "name":"crop3"
         },
+     "37":
+        {
+         "name":"plant"
+        },
+     "38":
+        {
+         "name":"harvest"
+        },
      "4":
         {
          "name":"down"
@@ -245,6 +253,14 @@
          "name":"string"
         },
      "36":
+        {
+         "name":"string"
+        },
+     "37":
+        {
+         "name":"string"
+        },
+     "38":
         {
          "name":"string"
         },
