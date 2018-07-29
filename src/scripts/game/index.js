@@ -5,10 +5,12 @@ import atlasImage from '../../images/atlas.png';
 import iconsImage from '../../images/icons.png';
 import iconsXlImage from '../../images/icons-xl.png';
 import waterImage from '../../images/water.png';
+import itemsImage from '../../images/items.png';
 import atlasTileset from '../../data/atlas.json';
 import iconsTileset from '../../data/icons.json';
 import iconsXlTileset from '../../data/icons-xl.json';
 import waterTileset from '../../data/water.json';
+import itemsTileset from '../../data/items.json';
 import MapView from './views/MapView';
 import StoryView from './views/StoryView';
 import TitleView from './views/TitleView';
@@ -34,7 +36,8 @@ export default class RainGame {
 			this.loader.setImage('atlas', atlasImage, atlasTileset),
 			this.loader.setImage('icons', iconsImage, iconsTileset),
 			this.loader.setImage('icons-xl', iconsXlImage, iconsXlTileset),
-			this.loader.setImage('water', waterImage, waterTileset)
+			this.loader.setImage('water', waterImage, waterTileset),
+			this.loader.setImage('items', itemsImage, itemsTileset)
 		])
     .then(loaded => {
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
@@ -58,10 +61,12 @@ export default class RainGame {
 
 		if (this.mode !== MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
 			this.store.dispatch(changeMode(MODE.TITLE));
+			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
+			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
+		} else {
+			this.update(delta);
+			this.render();
 		}
-
-		this.update(delta);
-		this.render();
 	}
 
 	update (delta) {

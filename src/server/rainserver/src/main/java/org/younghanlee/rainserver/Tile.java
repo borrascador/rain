@@ -17,7 +17,7 @@ public class Tile {
 	private HashMap<String, Integer> events;
 	
 	private Player owner;
-	private Player[] visitors;
+	private HashSet<String> visitors;
 	
 	public Tile(int id) {
 		this.id = id;
@@ -25,7 +25,7 @@ public class Tile {
 		this.y = (id - x)/Constants.MAPWIDTH;
 		this.layers = new HashMap<String, Integer>();
 		this.events = new HashMap<String, Integer>();
-		this.visitors = new Player[0];
+		this.visitors = new HashSet<String>();
 	}
 	
 	public void addLayer(String name, int value) {
@@ -34,6 +34,22 @@ public class Tile {
 	
 	public void addEvent(String name, int value) {
 		this.events.put(name, value);
+	}
+	
+	public void addVisitor(String name) {
+		this.visitors.add(name);
+	}
+	
+	public void removeVisitor(String name) {
+		this.visitors.remove(name);
+	}
+	
+	public HashSet<String> getVisitors() {
+		return visitors;
+	}
+	
+	public boolean occupied() {
+		return !visitors.isEmpty();
 	}
 	
 	public JSONObject toJSONObject() {
@@ -47,8 +63,7 @@ public class Tile {
 			layersJO.accumulate(entry.getKey(), entry.getValue());
 		}
 		jo.accumulate("layers", layers);
-		
-		jo.accumulate("visitors", visitors);
+		jo.accumulate("visitors", occupied());
 		
 		return jo;
 	}
@@ -57,9 +72,13 @@ public class Tile {
 		return x * Constants.MAPWIDTH + y;
 	}
 	
+	public int distance(Tile t) {
+		return Math.abs(y-t.y) + Math.abs(x-t.x);
+	}
+	
 	public HashSet<Integer> inSight(int sight) {
 		HashSet<Integer> tiles = new HashSet<Integer>();
-		System.out.println("Center:" + x + "," + y);
+		// System.out.println("Center:" + x + "," + y);
 		
 		int ymin = y - sight;
 		int ymax = y + sight;
@@ -82,7 +101,7 @@ public class Tile {
 				xmax = Constants.MAPWIDTH - 1;
 			}
 			for (int j = xmin; j <= xmax; j++) {
-				System.out.println(i + "," + j);
+				// System.out.println(i + "," + j);
 				tiles.add(getID(i,j));
 			}
 		}
@@ -92,6 +111,22 @@ public class Tile {
 	// Return whether or not move is allowed
 	public boolean legalMove (int newTile, int range) {
 		return true; 
+	}
+	
+	// name is the player that is triggering the update
+	// We don't need to send an update to this player.
+	public void updateNeighbors(Player p, int range) {
+		for (int i: inSight(Constants.MAXSIGHT)) {
+			Tile t = World.getTile(i);
+			for (String name: t.getVisitors()) {
+				if (!p.getName().equals(name)) {
+					Player p2 = World.getPlayer(name);
+					if (distance(t) <= p2.getSight()) {
+						p2.addToBuffer(id);
+					}
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args){

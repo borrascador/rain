@@ -17,11 +17,15 @@ public class World {
 	
 	private static HashMap<String, Player> players;
 	private static HashMap<String, String> emails;
+	private static HashMap<Integer, Item> items;
 	
 	private static int mapWidth;
 	private static int mapHeight;
 	private static int numTiles;
 	private static Tile[] map;
+	
+	private static int itemID;
+	private static int memberID;
 	
 	World() {
 		JSONObject m = null;
@@ -34,9 +38,14 @@ public class World {
 		
 		players = new HashMap<String, Player>();
 		emails = new HashMap<String, String>();
+		items = new HashMap<Integer, Item>();
+		
+		itemID = 0;
+		memberID = 0;
 		
 		numPlayers = 0;
 		online = 0;
+		
 		mapWidth = Constants.MAPWIDTH;
 		mapHeight = Constants.MAPHEIGHT;
 		numTiles = mapWidth * mapHeight;
@@ -85,20 +94,48 @@ public class World {
 		online--;
 	}
 	
+	public static void addItem(Item i) {
+		items.put(itemID, i);
+		itemID++;
+	}
+	
+	public static Item getItem(int id) {
+		return items.get(id);
+	}
+	
+	public static int numItems() {
+		return itemID;
+	}
+	
 	public static void dump() {
-		System.out.println("Registered users:" + numPlayers);
-		System.out.println("Players online:" + online);
+		System.out.println("REGISTERED USERS:" + numPlayers);
+		System.out.println("PLAYERS ONLINE:" + online);
 
-		
+		// List all players (Including)
 		for (Player p : players.values()) {
 		    System.out.println(p.toString());
+		}
+		
+		// List all tiles containing players
+		System.out.println("OCCUPIED TILES:");
+		for (int i=0; i<numTiles; i++) {
+			Tile t = map[i];
+			if (t.occupied()) {
+				System.out.println("  " + i + " " + t.getVisitors().toString());
+			}
 		}
 		
 		System.out.println();
 	}
 	
 	public static Player getPlayer(String name) {
-		return players.get(name);
+		if (players.containsKey(name)) {
+			return players.get(name);
+		} else return null;
+	}
+	
+	public static HashMap<String, Player> getPlayers(){
+		return players;
 	}
 	
 	public static JSONObject addPlayer(String user, String email, String player_class) {

@@ -44,6 +44,13 @@ public class MessageHandler {
 				payload = jo.getJSONObject("payload");
 				p = World.getPlayer(payload.getString("user"));
 				
+				// Check if player exists
+				if (p == null) {
+					response = Message.LOGIN_ERROR("0101");
+					connection.send(response.toString());
+					break;
+				}
+				
 				// Check if there is already a login on this connection
 				if (connection.getPlayer() != null) {
 					response = Message.LOGIN_ERROR("0105");
@@ -61,9 +68,8 @@ public class MessageHandler {
 				p.login(connection);
 					
 				// Send ordinary response
-				int position = p.getPosition();
 				tiles = p.tilesSeenArray();
-				response = Message.LOGIN_RESPONSE(position, tiles);
+				response = Message.LOGIN_RESPONSE(p, tiles);
 				connection.send(response.toString());
 				break;
 				

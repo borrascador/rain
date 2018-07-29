@@ -10,16 +10,24 @@ export default class MapView {
     this.ctx = ctx;
     this.loader = loader;
 
+    this.setDim = this.setDim.bind(this);
+
     this.connect = new Connect(this.store);
     this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
-    this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
+    this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+  }
+
+  setDim(dim) {
+    this.dim = dim;
   }
 
   update(delta) {
     const {xClick, yClick} = this.connect.click;
     xClick && yClick && this.store.dispatch(clicked());
-    this.camera.update(delta, xClick, yClick);
-    this.overlay.update(delta, xClick, yClick);
+    if (!this.dim) {
+      this.camera.update(delta, xClick, yClick);
+      this.overlay.update(delta, xClick, yClick);
+    }
   }
 
   render() {
@@ -28,5 +36,10 @@ export default class MapView {
 
     this.camera.render();
     this.overlay.render();
+
+    if (this.dim) {
+      this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
   }
 }

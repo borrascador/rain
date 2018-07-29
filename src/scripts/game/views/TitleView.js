@@ -85,6 +85,11 @@ export default class TitleView {
   renderText() {
     this.ctx.fillStyle = '#FFF';
     this.title = this.centerText(this.title, 64, 1/4);
+
+    this.ctx.fillStyle = this.connect.connected ? '#3F6' : '#F36';
+    this.centerText([{ text: this.connect.connected ? 'CONNECTED' : 'DISCONNECTED' }], 32, 9/10);
+
+    this.ctx.fillStyle = '#FFF';
     this.buttons = this.centerText(this.buttons, 32, 3/4);
   }
 
