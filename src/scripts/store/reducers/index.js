@@ -5,7 +5,8 @@ import {
   LOGIN_REQUEST, LOGIN_RESPONSE, LOGIN_ERROR,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, LOGOUT_ERROR,
   POSITION_REQUEST, POSITION_RESPONSE, POSITION_ERROR,
-  TILE_UPDATE
+  TILE_UPDATE,
+  EVENT_REQUEST, EVENT_PROMPT, EVENT_DECISION, EVENT_RESULT, EVENT_ERROR,
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
@@ -41,6 +42,8 @@ export default function reducer(state, action) {
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:
     case POSITION_REQUEST:
+    case EVENT_REQUEST:
+    case EVENT_DECISION:
       return Object.assign({}, state, {
         sending: true,
         error: null
@@ -50,6 +53,7 @@ export default function reducer(state, action) {
     case LOGIN_ERROR:
     case LOGOUT_ERROR:
     case POSITION_ERROR:
+    case EVENT_ERROR:
       return Object.assign({}, state, {
         sending: false,
         error: action.payload.code,
@@ -105,6 +109,17 @@ export default function reducer(state, action) {
     case TILE_UPDATE:
       return Object.assign({}, state, {
         tiles: mergeArrays(state.tiles, action.payload.tiles)
+      });
+
+    case EVENT_PROMPT:
+      return Object.assign({}, state, {
+        // Use this to receive events...? Should I do `sending: false` here?
+      });
+
+    case EVENT_RESULT:
+      return Object.assign({}, state, {
+        sending: false,
+        inventory: mergeArrays(state.inventory, action.payload.inventory)
       });
 
     case `@@websocket/${ OPEN }`:

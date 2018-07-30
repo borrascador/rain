@@ -112,3 +112,26 @@ export const positionError = (code) => ({
 });
 
 export const TILE_UPDATE = 'TILE_UPDATE';
+
+export const EVENT_REQUEST = 'EVENT_REQUEST';
+export const EVENT_PROMPT = 'EVENT_PROMPT';
+export const EVENT_DECISION = 'EVENT_DECISION';
+export const EVENT_RESULT = 'EVENT_RESULT';
+export const EVENT_ERROR = 'EVENT_ERROR';
+
+export const plantEventRequest = (id) => ({
+  type: EVENT_REQUEST,
+  meta: { send: true },
+  payload: { type: 'plant', id }
+});
+
+export const harvestEventRequest = () => ({
+  type: EVENT_REQUEST,
+  meta: { send: true },
+  payload: { type: 'harvest' }
+});
+
+export const eventError = (code) => ({
+  type: EVENT_ERROR,
+  payload: { code }
+});

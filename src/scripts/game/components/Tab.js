@@ -33,7 +33,7 @@ export default class Tab {
     this.buttons = this.buttons.map((button, index) => {
       const x = this.height * index + (this.height - this.size) / 2;
       const y = this.canvas.height - (this.height + this.size + this.lineHeight) / 2;
-      drawById(this.ctx, this.items, button.id, this.scale, x, y); //COMBAK
+      drawById(this.ctx, this.items, button.id, this.scale, x, y);
       this.ctx.fillText(button.name, x + this.size / 2, y + this.size + this.lineHeight);
       trace(this.ctx, this.size, x, y);
       return Object.assign({}, button, {

@@ -355,6 +355,35 @@ var positionError = exports.positionError = function positionError(code) {
 
 var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
+var EVENT_REQUEST = exports.EVENT_REQUEST = 'EVENT_REQUEST';
+var EVENT_PROMPT = exports.EVENT_PROMPT = 'EVENT_PROMPT';
+var EVENT_DECISION = exports.EVENT_DECISION = 'EVENT_DECISION';
+var EVENT_RESULT = exports.EVENT_RESULT = 'EVENT_RESULT';
+var EVENT_ERROR = exports.EVENT_ERROR = 'EVENT_ERROR';
+
+var plantEventRequest = exports.plantEventRequest = function plantEventRequest(id) {
+  return {
+    type: EVENT_REQUEST,
+    meta: { send: true },
+    payload: { type: 'plant', id: id }
+  };
+};
+
+var harvestEventRequest = exports.harvestEventRequest = function harvestEventRequest() {
+  return {
+    type: EVENT_REQUEST,
+    meta: { send: true },
+    payload: { type: 'harvest' }
+  };
+};
+
+var eventError = exports.eventError = function eventError(code) {
+  return {
+    type: EVENT_ERROR,
+    payload: { code: code }
+  };
+};
+
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -615,6 +644,8 @@ exports.register = register;
 exports.login = login;
 exports.logout = logout;
 exports.position = position;
+exports.plant = plant;
+exports.harvest = harvest;
 
 var _actions = __webpack_require__(1);
 
@@ -704,20 +735,52 @@ function logout(callback) {
   };
 }
 
-function position(position, callback) {
+function position(position) {
   return function (dispatch, getState) {
     var state = getState();
     if (state.sending === false) {
       dispatch((0, _actions.positionRequest)(position));
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
-        callback && callback();
         clearTimeout(timer);
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        callback && callback();
         getState().sending && dispatch((0, _actions.positionError)('0201')); // Timeout error
+      }, 2000);
+    }
+  };
+}
+
+function plant(id) {
+  return function (dispatch, getState) {
+    var state = getState();
+    if (state.sending === false) {
+      dispatch((0, _actions.plantEventRequest)(id));
+      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
+        unsubscribe();
+        clearTimeout(timer);
+      });
+      var timer = setTimeout(function () {
+        unsubscribe();
+        getState().sending && dispatch((0, _actions.eventError)('0201')); // Timeout error
+      }, 2000);
+    }
+  };
+}
+
+function harvest() {
+  return function (dispatch, getState) {
+    var state = getState();
+    if (state.sending === false) {
+      dispatch((0, _actions.harvestEventRequest)());
+      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
+        unsubscribe();
+        clearTimeout(timer);
+      });
+      var timer = setTimeout(function () {
+        unsubscribe();
+        getState().sending && dispatch((0, _actions.eventError)('0201')); // Timeout error
       }, 2000);
     }
   };
@@ -777,11 +840,9 @@ function updateItemInArray(array, itemId, updateItemCallback) {
 
 function mergeArrays(oldArray, newArray) {
   var obj = {};
-
   oldArray.forEach(function (item) {
     obj[item.id] = item;
   });
-
   newArray.forEach(function (item) {
     if (obj.hasOwnProperty(item.id)) {
       obj[item.id] = Object.assign(obj[item.id], item);
@@ -789,13 +850,10 @@ function mergeArrays(oldArray, newArray) {
       obj[item.id] = item;
     }
   });
-
   var result = [];
-
   for (var prop in obj) {
     if (obj.hasOwnProperty(prop)) result.push(obj[prop]);
   }
-
   return result;
 };
 
@@ -819,7 +877,6 @@ function inventoryToTabs(inventory) {
       });
     }
   }
-  console.log(tabs);
   return tabs;
 }
 
@@ -3017,6 +3074,8 @@ function reducer(state, action) {
     case _actions.LOGIN_REQUEST:
     case _actions.LOGOUT_REQUEST:
     case _actions.POSITION_REQUEST:
+    case _actions.EVENT_REQUEST:
+    case _actions.EVENT_DECISION:
       return Object.assign({}, state, {
         sending: true,
         error: null
@@ -3026,6 +3085,7 @@ function reducer(state, action) {
     case _actions.LOGIN_ERROR:
     case _actions.LOGOUT_ERROR:
     case _actions.POSITION_ERROR:
+    case _actions.EVENT_ERROR:
       return Object.assign({}, state, {
         sending: false,
         error: action.payload.code,
@@ -3081,6 +3141,17 @@ function reducer(state, action) {
     case _actions.TILE_UPDATE:
       return Object.assign({}, state, {
         tiles: (0, _utils.mergeArrays)(state.tiles, action.payload.tiles)
+      });
+
+    case _actions.EVENT_PROMPT:
+      return Object.assign({}, state, {
+        // Use this to receive events...? Should I do `sending: false` here?
+      });
+
+    case _actions.EVENT_RESULT:
+      return Object.assign({}, state, {
+        sending: false,
+        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory)
       });
 
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
@@ -4991,7 +5062,7 @@ var Tab = function () {
       this.buttons = this.buttons.map(function (button, index) {
         var x = _this.height * index + (_this.height - _this.size) / 2;
         var y = _this.canvas.height - (_this.height + _this.size + _this.lineHeight) / 2;
-        (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, y); //COMBAK
+        (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, y);
         _this.ctx.fillText(button.name, x + _this.size / 2, y + _this.size + _this.lineHeight);
         (0, _draw.trace)(_this.ctx, _this.size, x, y);
         return Object.assign({}, button, {

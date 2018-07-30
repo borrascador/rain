@@ -4,6 +4,7 @@ import {
   loginRequest, loginError,
   logoutRequest, logoutError,
   positionRequest, positionError,
+  plantEventRequest, harvestEventRequest, eventError
 } from './actions';
 import { subscribe } from '../store';
 import { MODE } from '../../game/constants';
@@ -87,21 +88,52 @@ export function logout(callback) {
   }
 }
 
-
-export function position(position, callback) {
+export function position(position) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.sending === false) {
       dispatch(positionRequest(position));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
-        callback && callback();
         clearTimeout(timer);
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        callback && callback();
         getState().sending && dispatch(positionError('0201')); // Timeout error
+      }, 2000);
+    }
+  }
+}
+
+export function plant(id) {
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state.sending === false) {
+      dispatch(plantEventRequest(id));
+      const unsubscribe = subscribe('sending', state => {
+        unsubscribe();
+        clearTimeout(timer);
+      });
+      const timer = setTimeout(() => {
+        unsubscribe();
+        getState().sending && dispatch(eventError('0201')); // Timeout error
+      }, 2000);
+    }
+  }
+}
+
+export function harvest() {
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state.sending === false) {
+      dispatch(harvestEventRequest());
+      const unsubscribe = subscribe('sending', state => {
+        unsubscribe();
+        clearTimeout(timer);
+      });
+      const timer = setTimeout(() => {
+        unsubscribe();
+        getState().sending && dispatch(eventError('0201')); // Timeout error
       }, 2000);
     }
   }
