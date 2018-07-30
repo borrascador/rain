@@ -1,5 +1,8 @@
 package org.younghanlee.rainserver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -125,6 +128,50 @@ public class Message {
 		jo.accumulate("type", "TILE_UPDATE");
 		JSONObject payload = new JSONObject();
 		payload.put("tiles", tiles);
+		jo.accumulate("payload", payload);
+		return jo;
+	}
+	
+	public static JSONObject PLANT_REQUEST(int id) {
+		JSONObject jo = new JSONObject(); 
+		jo.accumulate("type", "EVENT_REQUEST");
+		JSONObject payload = new JSONObject();
+		payload.accumulate("type", "plant");
+		payload.accumulate("id", id);
+		jo.accumulate("payload", payload);
+		return jo;
+	}
+	
+	public static JSONObject HARVEST_REQUEST(int id, String action_type) {
+		JSONObject jo = new JSONObject(); 
+		jo.accumulate("type", "EVENT_REQUEST");
+		JSONObject payload = new JSONObject();
+		payload.accumulate("type", "harvest");
+		jo.accumulate("payload", payload);
+		return jo;
+	}
+	
+	public static JSONObject EVENT_RESULT(Player p, String target, List<Integer> list) {
+		JSONObject jo = new JSONObject(); 
+		jo.accumulate("type", "EVENT_RESULT");
+		JSONObject payload = new JSONObject();
+		JSONArray changes = new JSONArray();
+		if (target.equals("inventory")) {
+			for (int i: list) {
+				JSONObject item = new JSONObject();
+				item.accumulate("id", i);
+				item.accumulate("quantity", p.getQuantity(i));
+				changes.put(item);
+			}
+			payload.accumulate("inventory", changes);
+		} else if (target.equals("party")) {
+			for (int i: list) {
+				JSONObject member = new JSONObject();
+				member.accumulate("id", i);
+				changes.put(member);
+			}
+			payload.accumulate("party", changes);
+		}
 		jo.accumulate("payload", payload);
 		return jo;
 	}

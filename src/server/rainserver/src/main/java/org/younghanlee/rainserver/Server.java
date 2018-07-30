@@ -63,7 +63,10 @@ public class Server extends WebSocketServer {
 		
 		for (Player p: World.getPlayers().values()) {
 			for (int i=0; i<4; i++) {
-				p.setQuantity(Player.randomInt(World.numItems() -1), Player.randomInt(100));
+				p.setQuantity(Player.randomInt(World.numItems() - 1), Player.randomInt(100));
+			}
+			for (int i=0; i<2; i++) {
+				p.addMember("test", Player.randomInt(3));
 			}
 		}
 		dump();
