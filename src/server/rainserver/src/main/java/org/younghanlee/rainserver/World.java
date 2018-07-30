@@ -18,6 +18,7 @@ public class World {
 	private static HashMap<String, Player> players;
 	private static HashMap<String, String> emails;
 	private static HashMap<Integer, Item> items;
+	private static HashMap<Integer, Member> members;
 	
 	private static int mapWidth;
 	private static int mapHeight;
@@ -36,16 +37,22 @@ public class World {
 			System.exit(1);
 		}
 		
+		// All users, online or offline
 		players = new HashMap<String, Player>();
 		emails = new HashMap<String, String>();
-		items = new HashMap<Integer, Item>();
 		
+		// Item and party member registry
+		items = new HashMap<Integer, Item>();
+		members = new HashMap<Integer, Member>();
+		
+		// indexing
 		itemID = 0;
 		memberID = 0;
 		
 		numPlayers = 0;
 		online = 0;
 		
+		// Map dimensions
 		mapWidth = Constants.MAPWIDTH;
 		mapHeight = Constants.MAPHEIGHT;
 		numTiles = mapWidth * mapHeight;
@@ -99,8 +106,18 @@ public class World {
 		itemID++;
 	}
 	
+	public static int addMember(Member m) {
+		members.put(memberID, m);
+		memberID++;
+		return memberID - 1;
+	}
+	
 	public static Item getItem(int id) {
 		return items.get(id);
+	}
+	
+	public static Member getMember(int id) {
+		return members.get(id);
 	}
 	
 	public static int numItems() {
@@ -136,6 +153,12 @@ public class World {
 	
 	public static HashMap<String, Player> getPlayers(){
 		return players;
+	}
+	
+	public static void plantGrowth() {
+		for (int i=0; i<numTiles; i++) {
+			World.getTile(i).decGrowthStage(1);
+		}
 	}
 	
 	public static JSONObject addPlayer(String user, String email, String player_class) {

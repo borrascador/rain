@@ -3,22 +3,16 @@ package org.younghanlee.rainserver;
 import org.json.JSONObject;
 
 public class Member {
-	private int id;
 	private String name;
 	private int icon;
 	private int health;
 	private int jeito;
 	
-	public Member(int id, String name, int icon) {
-		this.id = id;
+	public Member(String name, int icon) {
 		this.name = name;
 		this.icon = icon;
 		this.health = 5;
 		this.jeito = 10;
-	}
-	
-	public int getId() {
-		return this.id;
 	}
 	
 	public String getName() {
@@ -45,7 +39,7 @@ public class Member {
 		this.jeito = n;
 	}
 	
-	public JSONObject toJSONObject() {
+	public JSONObject toJSONObject(int id) {
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);
 		jo.put("health", health);
