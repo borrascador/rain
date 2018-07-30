@@ -132,6 +132,25 @@ public class Message {
 		return jo;
 	}
 	
+	public static JSONObject PLANT_REQUEST(int id) {
+		JSONObject jo = new JSONObject(); 
+		jo.accumulate("type", "EVENT_REQUEST");
+		JSONObject payload = new JSONObject();
+		payload.accumulate("type", "plant");
+		payload.accumulate("id", id);
+		jo.accumulate("payload", payload);
+		return jo;
+	}
+	
+	public static JSONObject HARVEST_REQUEST(int id, String action_type) {
+		JSONObject jo = new JSONObject(); 
+		jo.accumulate("type", "EVENT_REQUEST");
+		JSONObject payload = new JSONObject();
+		payload.accumulate("type", "harvest");
+		jo.accumulate("payload", payload);
+		return jo;
+	}
+	
 	public static JSONObject EVENT_RESULT(Player p, String target, List<Integer> list) {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "EVENT_RESULT");

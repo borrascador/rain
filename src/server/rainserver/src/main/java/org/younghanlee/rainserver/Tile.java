@@ -76,11 +76,14 @@ public class Tile {
 			crop.accumulate("name", World.getItem(id).getName());
 			int stage = entry.getValue();
 			if (stage > 1) {
-				stage = 1;
+				stage = 1; 
 			}
 			crop.accumulate("stage", stage);
+			crops.put(crop);
 		}
-		jo.accumulate("crops", crops);
+		System.out.println(crops.toString());
+		jo.put("crops", crops);
+		System.out.println(jo.toString());
 		
 		return jo;
 	}
