@@ -103,6 +103,15 @@ public class MessageHandler {
 				}
 				connection.send(response.toString());
 				break;
+			
+			case "EVENT_REQUEST":
+				payload = jo.getJSONObject("payload");
+				EventHandler.handleRequest(payload, connection);
+				break;
+			case "EVENT_DECISION":
+				payload = jo.getJSONObject("payload");
+				EventHandler.handleDecision(payload, connection);
+				break;
 				
 			default:
 				System.out.println("Unrecognized message type:" + message_type);

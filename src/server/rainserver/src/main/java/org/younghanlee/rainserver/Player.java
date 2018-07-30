@@ -19,7 +19,7 @@ public class Player {
 	private int sight;
 	private HashSet<Integer> tilesSeen;
 	
-	private HashMap<Integer, Member> party;
+	private HashSet<Integer> party;
 	private HashMap<Integer, Integer> backpack;
 	
 	private HashSet<Integer> buffer;
@@ -44,7 +44,7 @@ public class Player {
 		t.addVisitor(name);
 		this.tilesSeen = t.inSight(sight);	
 		
-		this.party = new HashMap<Integer, Member>();		
+		this.party = new HashSet<Integer>();		
 		
 		this.backpack = new HashMap<Integer, Integer>();
 		
@@ -182,10 +182,16 @@ public class Player {
 		return ja;
 	}
 	
+	public void addMember(String name, int icon) {
+		Member m = new Member(name, icon);
+		int id = World.addMember(m);
+		party.add(id);
+	}
+	
 	public JSONArray partyToJSONArray() {
 		JSONArray ja = new JSONArray();
-		for (Member m: party.values()) {
-			ja.put(m.toJSONObject());
+		for (int id: party) {
+			ja.put(World.getMember(id).toJSONObject(id));
 		}
 		return ja;
 	}

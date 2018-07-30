@@ -1,6 +1,7 @@
 package org.younghanlee.rainserver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -15,6 +16,7 @@ public class Tile {
 	
 	private HashMap<String, Integer> layers;
 	private HashMap<String, Integer> events;
+	private HashMap<Integer, Integer> crops;
 	
 	private Player owner;
 	private HashSet<String> visitors;
@@ -25,6 +27,7 @@ public class Tile {
 		this.y = (id - x)/Constants.MAPWIDTH;
 		this.layers = new HashMap<String, Integer>();
 		this.events = new HashMap<String, Integer>();
+		this.crops = new HashMap<Integer, Integer>();
 		this.visitors = new HashSet<String>();
 	}
 	
@@ -64,6 +67,20 @@ public class Tile {
 		}
 		jo.accumulate("layers", layers);
 		jo.accumulate("visitors", occupied());
+		
+		JSONArray crops = new JSONArray();
+		for (HashMap.Entry<Integer, Integer> entry : this.crops.entrySet()) {
+			JSONObject crop = new JSONObject();
+			int id = entry.getKey();
+			crop.accumulate("id", id);
+			crop.accumulate("name", World.getItem(id).getName());
+			int stage = entry.getValue();
+			if (stage > 1) {
+				stage = 1;
+			}
+			crop.accumulate("stage", stage);
+		}
+		jo.accumulate("crops", crops);
 		
 		return jo;
 	}
@@ -125,6 +142,36 @@ public class Tile {
 						p2.addToBuffer(id);
 					}
 				}
+			}
+		}
+	}
+	
+	public JSONObject plant (int seed_id, Player p) {
+		int n = p.getQuantity(seed_id);
+		if (n >= 1) {
+			p.setQuantity(seed_id, n - 1);
+			this.crops.put(seed_id, 10);
+			updateNeighbors(p, 0);
+			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
+		} else return null;
+	}
+	
+	public JSONObject harvest(int seed_id, Player p) {
+		int n = p.getQuantity(seed_id);
+		int yield = Player.randomInt(10);
+		p.setQuantity(seed_id, n + yield);
+		this.crops.remove(seed_id);
+		updateNeighbors(p, 0);
+		return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
+	}
+	
+	public void decGrowthStage(int i) {
+		for (HashMap.Entry<Integer, Integer> entry : crops.entrySet()) {
+			int key = entry.getKey();
+			int n = entry.getValue();
+			crops.put(key, n-1);
+			if (n-1 == 0) {
+				updateNeighbors(null, 0);
 			}
 		}
 	}
