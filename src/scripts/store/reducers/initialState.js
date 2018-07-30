@@ -2,6 +2,7 @@ import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
 import { makeKeys } from '../utils/input';
 
+import tabs from '../../../data/tabs.json'; // XXX
 // import party from '../../../data/party.json';
 // import inventory from '../../../data/inventory.json';
 // import vehicle from '../../../data/vehicle.json';
@@ -9,6 +10,7 @@ import { makeKeys } from '../utils/input';
 
 const uiState = {
   mode: MODE.TITLE,
+  tabs: [],
   zoom: 3
 };
 

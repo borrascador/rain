@@ -10,7 +10,7 @@ import {
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { zoomIn, zoomOut, changeMode } from '../utils/ui';
-import { mergeArrays } from '../utils/utils';
+import { mergeArrays, inventoryToTabs } from '../utils/utils';
 import { initialState } from './initialState';
 
 export default function reducer(state, action) {
@@ -68,9 +68,10 @@ export default function reducer(state, action) {
         loggedIn: true,
         tiles: action.payload.tiles,
         party: action.payload.party,
+        inventory: action.payload.inventory,
+        tabs: inventoryToTabs(action.payload.inventory),
         // vehicle: action.payload.vehicle, // TODO
         // story: action.payload.story // TODO
-        inventory: action.payload.inventory,
         position: action.payload.position,
         sight: action.payload.sight,
         zoom: 3,
@@ -82,6 +83,7 @@ export default function reducer(state, action) {
         tiles: [],
         party: [],
         inventory: [],
+        tabs: [],
         vehicle: null,
         story: null,
         position: null,

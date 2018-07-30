@@ -19,7 +19,7 @@ export default class Loader {
     img.src = src;
     img.tileset = tileset;
     img.tiles = tileset.tiles;
-    img.tilenames = this.makeNameLookup(tileset);
+    img.tilenames = tileset.tileproperties && this.makeNameLookup(tileset);
 
     return d;
   }
@@ -29,6 +29,7 @@ export default class Loader {
   }
 
   makeNameLookup(tileset) {
+
     let tileNames = {};
     for (let count = 0; count < tileset.tilecount; count++) {
       if (tileset.tileproperties[count] && tileset.tileproperties[count].name) {

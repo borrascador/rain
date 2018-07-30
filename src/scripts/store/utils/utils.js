@@ -33,3 +33,27 @@ export function mergeArrays(oldArray, newArray) {
 
   return result;
 };
+
+export function inventoryToTabs(inventory) {
+  let obj = {};
+  inventory.forEach(item => {
+    item.tags.forEach(tag => {
+      if(!obj[tag]) {
+        obj[tag] = Array({ name: item.name, id: item.id });
+      } else {
+        obj[tag].push({ name: item.name, id: item.id });
+      }
+    });
+  });
+  let tabs = [];
+  for(let prop in obj) {
+    if(obj.hasOwnProperty(prop)) {
+      tabs.push({
+        text: prop,
+        buttons: obj[prop]
+      });
+    }
+  }
+  console.log(tabs);
+  return tabs;
+}

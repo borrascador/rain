@@ -76,7 +76,7 @@ export function logout(callback) {
         unsubscribe();
         callback && callback();
         clearTimeout(timer);
-        dispatch(changeMode(MODE.TITLE));
+        // change mode to TITLE in tick()
       });
       const timer = setTimeout(() => {
         unsubscribe();

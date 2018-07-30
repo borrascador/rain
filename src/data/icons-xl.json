@@ -1,11 +1,11 @@
 { "columns":5,
  "image":"..\/images\/icons-xl.png",
- "imageheight":128,
+ "imageheight":160,
  "imagewidth":160,
  "margin":0,
  "name":"icons-xl",
  "spacing":0,
- "tilecount":20,
+ "tilecount":25,
  "tileheight":32,
  "tileproperties":
     {
@@ -44,6 +44,26 @@
      "2":
         {
          "name":"party3"
+        },
+     "20":
+        {
+         "name":"back"
+        },
+     "21":
+        {
+         "name":"health"
+        },
+     "22":
+        {
+         "name":"luck"
+        },
+     "23":
+        {
+         "name":"apple"
+        },
+     "24":
+        {
+         "name":"cassava"
         },
      "5":
         {
@@ -101,6 +121,26 @@
          "name":"string"
         },
      "2":
+        {
+         "name":"string"
+        },
+     "20":
+        {
+         "name":"string"
+        },
+     "21":
+        {
+         "name":"string"
+        },
+     "22":
+        {
+         "name":"string"
+        },
+     "23":
+        {
+         "name":"string"
+        },
+     "24":
         {
          "name":"string"
         },
