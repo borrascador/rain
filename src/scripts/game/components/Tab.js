@@ -1,6 +1,7 @@
 import Connect from '../../store/reducers/Connect';
 import { screenToImageButton } from './utils';
 import { drawByName, drawById, trace } from '../utils/draw';
+import { plant } from '../../store/actions';
 
 export default class Tab {
   constructor (store, canvas, ctx, loader, buttons, height) {
@@ -23,8 +24,8 @@ export default class Tab {
 
   update(delta, x, y) {
     const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
-    // clickedButton && this.store.dispatch(clickedButton.onClick());
-    clickedButton && console.log(clickedButton.name);
+    clickedButton && this.store.dispatch(plant(clickedbutton.id));
+    // clickedButton && console.log(clickedButton.name);
   }
 
   render() {

@@ -5020,6 +5020,8 @@ var _utils = __webpack_require__(2);
 
 var _draw = __webpack_require__(3);
 
+var _actions = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../store/actions\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5049,8 +5051,8 @@ var Tab = function () {
     key: 'update',
     value: function update(delta, x, y) {
       var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      // clickedButton && this.store.dispatch(clickedButton.onClick());
-      clickedButton && console.log(clickedButton.name);
+      clickedButton && this.store.dispatch((0, _actions.plant)(clickedbutton.id));
+      // clickedButton && console.log(clickedButton.name);
     }
   }, {
     key: 'render',
