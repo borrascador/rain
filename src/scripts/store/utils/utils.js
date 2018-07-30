@@ -10,13 +10,20 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
 };
 
 export function mergeArrays(oldArray, newArray) {
+  if (!newArray) return oldArray;
   let obj = {};
   oldArray.forEach(item => {
     obj[item.id] = item;
   });
   newArray.forEach(item => {
-    if(obj.hasOwnProperty(item.id)) {
-      obj[item.id] = Object.assign(obj[item.id], item);
+    if (obj.hasOwnProperty(item.id)) {
+      if (item.hasOwnProperty('quantity') && item.quantity === 0) {
+        delete obj[item.id];
+      } else if (item.hasOwnProperty('health') && item.health === 0) {
+        delete obj[item.id];
+      } else {
+        obj[item.id] = Object.assign(obj[item.id], item);
+      }
     } else {
       obj[item.id] = item;
     }

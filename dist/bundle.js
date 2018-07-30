@@ -369,11 +369,11 @@ var plantEventRequest = exports.plantEventRequest = function plantEventRequest(i
   };
 };
 
-var harvestEventRequest = exports.harvestEventRequest = function harvestEventRequest() {
+var harvestEventRequest = exports.harvestEventRequest = function harvestEventRequest(id) {
   return {
     type: EVENT_REQUEST,
     meta: { send: true },
-    payload: { type: 'harvest' }
+    payload: { type: 'harvest', id: id }
   };
 };
 
@@ -724,7 +724,7 @@ function logout(callback) {
         unsubscribe();
         callback && callback();
         clearTimeout(timer);
-        // change mode to TITLE in tick()
+        // NOTE: mode changes to TITLE in tick()
       });
       var timer = setTimeout(function () {
         unsubscribe();
@@ -769,11 +769,11 @@ function plant(id) {
   };
 }
 
-function harvest() {
+function harvest(id) {
   return function (dispatch, getState) {
     var state = getState();
     if (state.sending === false) {
-      dispatch((0, _actions.harvestEventRequest)());
+      dispatch((0, _actions.harvestEventRequest)(id));
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
         clearTimeout(timer);
@@ -839,13 +839,20 @@ function updateItemInArray(array, itemId, updateItemCallback) {
 };
 
 function mergeArrays(oldArray, newArray) {
+  if (!newArray) return oldArray;
   var obj = {};
   oldArray.forEach(function (item) {
     obj[item.id] = item;
   });
   newArray.forEach(function (item) {
     if (obj.hasOwnProperty(item.id)) {
-      obj[item.id] = Object.assign(obj[item.id], item);
+      if (item.hasOwnProperty('quantity') && item.quantity === 0) {
+        delete obj[item.id];
+      } else if (item.hasOwnProperty('health') && item.health === 0) {
+        delete obj[item.id];
+      } else {
+        obj[item.id] = Object.assign(obj[item.id], item);
+      }
     } else {
       obj[item.id] = item;
     }
@@ -3151,7 +3158,8 @@ function reducer(state, action) {
     case _actions.EVENT_RESULT:
       return Object.assign({}, state, {
         sending: false,
-        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory)
+        party: (0, _utils.mergeArrays)(state.party, action.payload.party),
+        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory[0]) // COMBAK
       });
 
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
@@ -5020,7 +5028,7 @@ var _utils = __webpack_require__(2);
 
 var _draw = __webpack_require__(3);
 
-var _actions = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../store/actions\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _requests = __webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5051,8 +5059,8 @@ var Tab = function () {
     key: 'update',
     value: function update(delta, x, y) {
       var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && this.store.dispatch((0, _actions.plant)(clickedbutton.id));
-      // clickedButton && console.log(clickedButton.name);
+      clickedButton && this.store.dispatch((0, _requests.plant)(clickedButton.id));
+      // clickedButton && this.store.dispatch(harvest(clickedButton.id));
     }
   }, {
     key: 'render',

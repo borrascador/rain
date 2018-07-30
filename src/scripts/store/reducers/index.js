@@ -119,7 +119,8 @@ export default function reducer(state, action) {
     case EVENT_RESULT:
       return Object.assign({}, state, {
         sending: false,
-        inventory: mergeArrays(state.inventory, action.payload.inventory)
+        party: mergeArrays(state.party, action.payload.party),
+        inventory: mergeArrays(state.inventory, action.payload.inventory[0]) // COMBAK
       });
 
     case `@@websocket/${ OPEN }`:

@@ -125,10 +125,10 @@ export const plantEventRequest = (id) => ({
   payload: { type: 'plant', id }
 });
 
-export const harvestEventRequest = () => ({
+export const harvestEventRequest = (id) => ({
   type: EVENT_REQUEST,
   meta: { send: true },
-  payload: { type: 'harvest' }
+  payload: { type: 'harvest', id }
 });
 
 export const eventError = (code) => ({

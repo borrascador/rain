@@ -77,7 +77,7 @@ export function logout(callback) {
         unsubscribe();
         callback && callback();
         clearTimeout(timer);
-        // change mode to TITLE in tick()
+        // NOTE: mode changes to TITLE in tick()
       });
       const timer = setTimeout(() => {
         unsubscribe();
@@ -122,11 +122,11 @@ export function plant(id) {
   }
 }
 
-export function harvest() {
+export function harvest(id) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.sending === false) {
-      dispatch(harvestEventRequest());
+      dispatch(harvestEventRequest(id));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
         clearTimeout(timer);
