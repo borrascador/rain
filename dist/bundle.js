@@ -3159,7 +3159,7 @@ function reducer(state, action) {
       return Object.assign({}, state, {
         sending: false,
         party: (0, _utils.mergeArrays)(state.party, action.payload.party),
-        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory[0]) // COMBAK
+        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory) // COMBAK
       });
 
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:

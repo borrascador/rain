@@ -163,14 +163,14 @@ public class Message {
 				item.accumulate("quantity", p.getQuantity(i));
 				changes.put(item);
 			}
-			payload.accumulate("inventory", changes);
+			payload.put("inventory", changes);
 		} else if (target.equals("party")) {
 			for (int i: list) {
 				JSONObject member = new JSONObject();
 				member.accumulate("id", i);
 				changes.put(member);
 			}
-			payload.accumulate("party", changes);
+			payload.put("party", changes);
 		}
 		jo.accumulate("payload", payload);
 		return jo;
