@@ -33,7 +33,7 @@ export default class MapView {
   }
 
   render() {
-    this.ctx.fillStyle = 'black';
+    this.ctx.fillStyle = 'rgb(0, 20, 0)';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.camera.render();
