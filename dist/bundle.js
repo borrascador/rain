@@ -5547,8 +5547,6 @@ var ActionBar = function () {
     this.barSize = this.buttonSize * 1.5;
     this.barWidth = this.barSize * 5;
     this.gutter = (this.barSize - this.buttonSize) / 2;
-    this.buttonX = (this.canvas.width - this.barWidth) / 2 + this.gutter;
-    this.buttonY = this.canvas.height - this.barSize + this.gutter;
 
     this.fontSize = 16;
     this.title = "ACTIONS";
@@ -5573,8 +5571,10 @@ var ActionBar = function () {
   }, {
     key: 'renderButtons',
     value: function renderButtons() {
+      var buttonX = (this.canvas.width - this.barWidth) / 2 + this.gutter;
+      var buttonY = this.canvas.height - this.barSize + this.gutter;
       for (var id = 34, pos = 0; pos < 5; id++, pos++) {
-        (0, _draw.drawById)(this.ctx, this.icons, id, this.scale, this.buttonX + this.barSize * pos, this.buttonY);
+        (0, _draw.drawById)(this.ctx, this.icons, id, this.scale, buttonX + this.barSize * pos, buttonY);
       }
     }
   }, {
