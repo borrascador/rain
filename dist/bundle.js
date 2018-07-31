@@ -3159,7 +3159,7 @@ function reducer(state, action) {
       return Object.assign({}, state, {
         sending: false,
         party: (0, _utils.mergeArrays)(state.party, action.payload.party),
-        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory[0]) // COMBAK
+        inventory: (0, _utils.mergeArrays)(state.inventory, action.payload.inventory) // COMBAK
       });
 
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
@@ -4213,11 +4213,11 @@ var _MapView = __webpack_require__(70);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _StoryView = __webpack_require__(82);
+var _StoryView = __webpack_require__(83);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(84);
+var _TitleView = __webpack_require__(85);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -5511,7 +5511,8 @@ function inventoryDialog(store, setDim) {
 }
 
 /***/ }),
-/* 82 */
+/* 82 */,
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5523,7 +5524,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(83);
+var _Story = __webpack_require__(84);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -5563,7 +5564,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5717,7 +5718,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5731,9 +5732,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(3);
 
-var _register = __webpack_require__(85);
+var _register = __webpack_require__(86);
 
-var _login = __webpack_require__(86);
+var _login = __webpack_require__(87);
 
 var _utils = __webpack_require__(2);
 
@@ -5860,7 +5861,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5929,7 +5930,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
