@@ -4515,6 +4515,10 @@ var _Overlay2 = _interopRequireDefault(_Overlay);
 
 var _actions = __webpack_require__(1);
 
+var _ActionBar = __webpack_require__(87);
+
+var _ActionBar2 = _interopRequireDefault(_ActionBar);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4533,6 +4537,7 @@ var MapView = function () {
     this.connect = new _Connect2.default(this.store);
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+    this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
   _createClass(MapView, [{
@@ -4550,7 +4555,7 @@ var MapView = function () {
       xClick && yClick && this.store.dispatch((0, _actions.clicked)());
       if (!this.dim) {
         this.camera.update(delta, xClick, yClick);
-        this.overlay.update(delta, xClick, yClick);
+        // this.overlay.update(delta, xClick, yClick);
       }
     }
   }, {
@@ -4560,7 +4565,8 @@ var MapView = function () {
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
       this.camera.render();
-      this.overlay.render();
+      // this.overlay.render();
+      this.actionBar.render();
 
       if (this.dim) {
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
@@ -5983,6 +5989,80 @@ function loginDialog(store, setDim) {
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
 }
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _draw = __webpack_require__(3);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ActionBar = function () {
+  function ActionBar(store, canvas, ctx, loader) {
+    _classCallCheck(this, ActionBar);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.icons = loader.getImage('icons');
+
+    this.scale = 4;
+    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
+    this.barSize = this.buttonSize * 1.5;
+    this.barWidth = this.barSize * 5;
+    this.gutter = (this.barSize - this.buttonSize) / 2;
+    this.buttonX = (this.canvas.width - this.barWidth) / 2 + this.gutter;
+    this.buttonY = this.canvas.height - this.barSize + this.gutter;
+
+    this.fontSize = 16;
+    this.title = "ACTIONS";
+    this.ctx.font = this.fontSize + 'px MECC';
+    this.titleWidth = this.ctx.measureText(this.title).width;
+  }
+
+  _createClass(ActionBar, [{
+    key: 'renderBar',
+    value: function renderBar() {
+      this.ctx.fillStyle = "rgb(22, 11, 33, 0.9)";
+      this.ctx.fillRect((this.canvas.width - this.barWidth) / 2, this.canvas.height - this.barSize, this.barWidth, this.barSize);
+
+      this.ctx.fillStyle = "#000";
+      this.ctx.fillRect((this.canvas.width - this.titleWidth) / 2 - 5, this.canvas.height - this.barSize - this.fontSize / 2, this.titleWidth + 8, this.fontSize + 4);
+
+      this.ctx.textAlign = 'alphabetical';
+      this.ctx.font = this.fontSize + 'px MECC';
+      this.ctx.fillStyle = "#FFF";
+      this.ctx.fillText(this.title, (this.canvas.width - this.titleWidth) / 2, this.canvas.height - this.barSize + this.fontSize / 2);
+    }
+  }, {
+    key: 'renderButtons',
+    value: function renderButtons() {
+      for (var id = 34, pos = 0; pos < 5; id++, pos++) {
+        (0, _draw.drawById)(this.ctx, this.icons, id, this.scale, this.buttonX + this.barSize * pos, this.buttonY);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      this.renderBar();
+      this.renderButtons();
+    }
+  }]);
+
+  return ActionBar;
+}();
+
+exports.default = ActionBar;
 
 /***/ })
 /******/ ]);
