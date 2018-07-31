@@ -82,6 +82,10 @@ public class Server extends WebSocketServer {
 			}
 		}
 	}
+	
+	public void backup() {
+		// File map = new File("backup/map.json");
+	}
 
 
 	public static void main(String[] args) {
@@ -122,6 +126,16 @@ public class Server extends WebSocketServer {
 			public void run() {
 				System.out.println("Sending updates: ");
 				server.flush();
+				return;
+			}
+		}, 0, 1, TimeUnit.SECONDS);
+		
+		ScheduledExecutorService exec2 = Executors.newScheduledThreadPool(10);
+		exec2.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Preparing backup: ");
+				server.backup();
 				return;
 			}
 		}, 0, 1, TimeUnit.SECONDS);

@@ -154,7 +154,7 @@ public class Tile {
 		if (n >= 1) {
 			p.setQuantity(seed_id, n - 1);
 			this.crops.put(seed_id, 10);
-			updateNeighbors(p, 0);
+			updateNeighbors(null, 0);
 			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
 		} else return null;
 	}
@@ -164,7 +164,7 @@ public class Tile {
 		int yield = Player.randomInt(10);
 		p.setQuantity(seed_id, n + yield);
 		this.crops.remove(seed_id);
-		updateNeighbors(p, 0);
+		updateNeighbors(null, 0);
 		return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
 	}
 	
