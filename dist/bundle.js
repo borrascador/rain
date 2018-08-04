@@ -968,7 +968,9 @@ function configureStore() {
 			return rws._shouldReconnect && rws._connect();
 		});
 		return rws;
-	}), _errors.errorLogger, loggerMiddleware));
+	}), _errors.errorLogger
+	// loggerMiddleware
+	));
 }
 
 var store = exports.store = configureStore();
@@ -3035,9 +3037,9 @@ var _input = __webpack_require__(17);
 
 var _ui = __webpack_require__(49);
 
-var _game = __webpack_require__(88);
+var _game = __webpack_require__(50);
 
-var _initialState = __webpack_require__(50);
+var _initialState = __webpack_require__(51);
 
 function reducer(state, action) {
   if (typeof state === 'undefined') {
@@ -3221,11 +3223,100 @@ exports.changeMode = changeMode;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.registerResponse = registerResponse;
+exports.loginResponse = loginResponse;
+exports.logoutResponse = logoutResponse;
+exports.positionResponse = positionResponse;
+exports.tileUpdate = tileUpdate;
+exports.eventResult = eventResult;
+
+var _utils = __webpack_require__(8);
+
+function registerResponse() {
+  return Object.assign({}, state, {
+    sending: false,
+    error: null
+  });
+}
+
+function loginResponse(state, action) {
+  return Object.assign({}, state, {
+    sending: false,
+    loggedIn: true,
+    tiles: action.payload.tiles,
+    party: action.payload.party,
+    inventory: action.payload.inventory,
+    actions: (0, _utils.getActions)(action.payload.inventory, action.payload.tiles, action.payload.position),
+    // vehicle: action.payload.vehicle, // TODO
+    // story: action.payload.story // TODO
+    position: action.payload.position,
+    sight: action.payload.sight,
+    zoom: 3,
+    error: null
+  });
+}
+
+function logoutResponse(state) {
+  return Object.assign({}, state, {
+    tiles: [],
+    party: [],
+    inventory: [],
+    actions: { 'main': [] },
+    vehicle: null,
+    story: null,
+    position: null,
+    sight: null,
+    zoom: 3,
+    sending: false,
+    loggedIn: false,
+    error: null
+  });
+}
+
+function positionResponse(state, action) {
+  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
+  return Object.assign({}, state, {
+    sending: false,
+    position: action.payload.position,
+    tiles: tiles,
+    actions: (0, _utils.getActions)(state.inventory, tiles, action.payload.position),
+    error: null
+  });
+}
+
+function tileUpdate(state, action) {
+  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
+  return Object.assign({}, state, {
+    tiles: tiles,
+    actions: (0, _utils.getActions)(state.inventory, tiles, state.position)
+  });
+}
+
+function eventResult(state, action) {
+  var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
+  return Object.assign({}, state, {
+    sending: false,
+    party: (0, _utils.mergeArrays)(state.party, action.payload.party),
+    inventory: inventory,
+    actions: (0, _utils.getActions)(inventory, state.tiles, state.position)
+  });
+}
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.initialState = undefined;
 
 var _constants = __webpack_require__(4);
 
-var _keys = __webpack_require__(51);
+var _keys = __webpack_require__(52);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -3274,13 +3365,12 @@ var connectionState = {
 var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = {"0":"false","1":"false","2":"false","3":"false","4":"false","5":"false","6":"false","7":"false","8":"false","9":"false","ArrowUp":"false","ArrowDown":"false","ArrowRight":"false","ArrowLeft":"false","Enter":"false","Backspace":"false","Delete":"false","Escape":"false"}
 
 /***/ }),
-/* 52 */,
 /* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -4146,11 +4236,11 @@ var _MapView = __webpack_require__(70);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _StoryView = __webpack_require__(83);
+var _StoryView = __webpack_require__(81);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(85);
+var _TitleView = __webpack_require__(83);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -4446,7 +4536,7 @@ var _Overlay = __webpack_require__(74);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _ActionBar = __webpack_require__(82);
+var _ActionBar = __webpack_require__(80);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
@@ -4762,19 +4852,19 @@ var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Zoom = __webpack_require__(77);
+var _Zoom = __webpack_require__(75);
 
 var _Zoom2 = _interopRequireDefault(_Zoom);
 
-var _Party = __webpack_require__(78);
+var _Party = __webpack_require__(76);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(79);
+var _Vehicle = __webpack_require__(77);
 
 var _Vehicle2 = _interopRequireDefault(_Vehicle);
 
-var _Inventory = __webpack_require__(80);
+var _Inventory = __webpack_require__(78);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
@@ -4821,9 +4911,7 @@ var Overlay = function () {
 exports.default = Overlay;
 
 /***/ }),
-/* 75 */,
-/* 76 */,
-/* 77 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4899,7 +4987,7 @@ var Zoom = function () {
 exports.default = Zoom;
 
 /***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4998,7 +5086,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 79 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5090,7 +5178,7 @@ var Vehicle = function () {
 exports.default = Vehicle;
 
 /***/ }),
-/* 80 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5110,7 +5198,7 @@ var _utils = __webpack_require__(2);
 
 var _draw = __webpack_require__(3);
 
-var _inventory = __webpack_require__(81);
+var _inventory = __webpack_require__(79);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5171,7 +5259,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 81 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5202,21 +5290,35 @@ function inventoryDialog(store, setDim) {
 
   var items = (0, _utils.create)('div', 'items');
 
+  var total = 0;
   connect.inventory.forEach(function (item) {
     var line = (0, _utils.create)('div', 'item');
     var name = (0, _utils.create)('span', 'left');
     name.innerHTML = item.name;
     var quantity = (0, _utils.create)('span', 'right');
-    quantity.innerHTML = 'x' + item.quantity;
+    quantity.innerHTML = item.quantity / 10 + '#';
     var clear = (0, _utils.create)('div', 'clear');
     line.append(name, quantity, clear);
     items.append(line);
+    total += item.quantity;
   });
 
   if (connect.inventory.length === 0) {
     var line = (0, _utils.create)('div', 'item');
-    line.innerHTML = 'Inventory is empty!';
+    line.innerHTML = 'Empty!';
     items.append(line);
+  } else {
+    var limit = connect.party.length * connect.party.reduce(function (a, b) {
+      return a.jeito + b.jeito;
+    });
+    var newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS! XXX
+    var color = newTotal / limit > 1 ? "red" : newTotal / limit > 0.9 ? "yellow" : "green";
+    var hr = (0, _utils.create)('hr');
+    hr.style.border = '1px solid white';
+    var ratio = (0, _utils.create)('span', 'right');
+    ratio.innerHTML = total / 10 + '/' + limit + '#';
+    ratio.style.color = color;
+    items.append(hr, ratio);
   }
 
   var submit = (0, _utils.create)('button', 'submit');
@@ -5242,7 +5344,7 @@ function inventoryDialog(store, setDim) {
 }
 
 /***/ }),
-/* 82 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5276,6 +5378,7 @@ var ActionBar = function () {
     this.canvas = canvas;
     this.ctx = ctx;
     this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
     this.connect = new _Connect2.default(this.store);
 
     this.current = 'main';
@@ -5329,7 +5432,11 @@ var ActionBar = function () {
       var buttons = this.connect.actions[this.current];
       this.buttons = buttons.map(function (button, index) {
         var x = buttonX + _this.barSize * index;
-        (0, _draw.drawById)(_this.ctx, _this.icons, button.id, _this.scale, x, buttonY);
+        if (_this.current !== 'main' && index > 0) {
+          (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale / 2, x, buttonY);
+        } else {
+          (0, _draw.drawById)(_this.ctx, _this.icons, button.id, _this.scale, x, buttonY);
+        }
         return Object.assign({}, button, {
           xPos: x,
           yPos: buttonY,
@@ -5354,7 +5461,7 @@ var ActionBar = function () {
 exports.default = ActionBar;
 
 /***/ }),
-/* 83 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5366,7 +5473,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(84);
+var _Story = __webpack_require__(82);
 
 var _Story2 = _interopRequireDefault(_Story);
 
@@ -5406,7 +5513,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 84 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5560,7 +5667,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 85 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5574,9 +5681,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(3);
 
-var _register = __webpack_require__(86);
+var _register = __webpack_require__(84);
 
-var _login = __webpack_require__(87);
+var _login = __webpack_require__(85);
 
 var _utils = __webpack_require__(2);
 
@@ -5703,7 +5810,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 86 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5772,7 +5879,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 87 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5825,95 +5932,6 @@ function loginDialog(store, setDim) {
   var content = (0, _utils.create)('div', 'content');
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
-}
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.registerResponse = registerResponse;
-exports.loginResponse = loginResponse;
-exports.logoutResponse = logoutResponse;
-exports.positionResponse = positionResponse;
-exports.tileUpdate = tileUpdate;
-exports.eventResult = eventResult;
-
-var _utils = __webpack_require__(8);
-
-function registerResponse() {
-  return Object.assign({}, state, {
-    sending: false,
-    error: null
-  });
-}
-
-function loginResponse(state, action) {
-  return Object.assign({}, state, {
-    sending: false,
-    loggedIn: true,
-    tiles: action.payload.tiles,
-    party: action.payload.party,
-    inventory: action.payload.inventory,
-    actions: (0, _utils.getActions)(action.payload.inventory, action.payload.tiles, action.payload.position),
-    // vehicle: action.payload.vehicle, // TODO
-    // story: action.payload.story // TODO
-    position: action.payload.position,
-    sight: action.payload.sight,
-    zoom: 3,
-    error: null
-  });
-}
-
-function logoutResponse(state) {
-  return Object.assign({}, state, {
-    tiles: [],
-    party: [],
-    inventory: [],
-    actions: { 'main': [] },
-    vehicle: null,
-    story: null,
-    position: null,
-    sight: null,
-    zoom: 3,
-    sending: false,
-    loggedIn: false,
-    error: null
-  });
-}
-
-function positionResponse(state, action) {
-  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
-  return Object.assign({}, state, {
-    sending: false,
-    position: action.payload.position,
-    tiles: tiles,
-    actions: (0, _utils.getActions)(state.inventory, tiles, action.payload.position),
-    error: null
-  });
-}
-
-function tileUpdate(state, action) {
-  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
-  return Object.assign({}, state, {
-    tiles: tiles,
-    actions: (0, _utils.getActions)(state.inventory, tiles, state.position)
-  });
-}
-
-function eventResult(state, action) {
-  var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
-  return Object.assign({}, state, {
-    sending: false,
-    party: (0, _utils.mergeArrays)(state.party, action.payload.party),
-    inventory: inventory,
-    actions: (0, _utils.getActions)(inventory, state.tiles, state.position)
-  });
 }
 
 /***/ })

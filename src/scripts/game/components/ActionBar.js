@@ -9,6 +9,7 @@ export default class ActionBar {
     this.canvas = canvas;
     this.ctx = ctx;
     this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
     this.connect = new Connect(this.store);
 
     this.current = 'main';
@@ -70,7 +71,11 @@ export default class ActionBar {
     const buttons = this.connect.actions[this.current];
     this.buttons = buttons.map((button, index) => {
       const x = buttonX + this.barSize * index;
-      drawById(this.ctx, this.icons, button.id, this.scale, x, buttonY);
+      if (this.current !== 'main' && index > 0) {
+        drawById(this.ctx, this.items, button.id, this.scale / 2, x, buttonY);
+      } else {
+        drawById(this.ctx, this.icons, button.id, this.scale, x, buttonY);
+      }
       return Object.assign({}, button, {
         xPos: x,
         yPos: buttonY,

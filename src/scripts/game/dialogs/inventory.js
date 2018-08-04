@@ -13,21 +13,33 @@ export function inventoryDialog(store, setDim) {
 
   const items = create('div', 'items');
 
+  let total = 0;
   connect.inventory.forEach(item => {
     const line = create('div', 'item');
     const name = create('span', 'left');
     name.innerHTML = item.name;
     const quantity = create('span', 'right');
-    quantity.innerHTML = 'x' + item.quantity;
+    quantity.innerHTML = item.quantity / 10 + '#';
     const clear = create('div', 'clear');
     line.append(name, quantity, clear);
     items.append(line);
+    total += item.quantity;
   });
 
   if (connect.inventory.length === 0) {
     const line = create('div', 'item');
-    line.innerHTML = 'Inventory is empty!';
+    line.innerHTML = 'Empty!';
     items.append(line);
+  } else {
+    const limit = connect.party.length * connect.party.reduce((a, b) => a.jeito + b.jeito);
+    const newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS! XXX
+    const color = newTotal / limit > 1 ? "red" : newTotal / limit > 0.9 ? "yellow" : "green";
+    const hr = create('hr');
+    hr.style.border = '1px solid white';
+    const ratio = create('span', 'right');
+    ratio.innerHTML = `${total/10}/${limit}#`;
+    ratio.style.color = color;
+    items.append(hr, ratio);
   }
 
   const submit = create('button', 'submit');
