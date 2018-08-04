@@ -11,7 +11,9 @@ import {
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from '../utils/input';
 import { zoomIn, zoomOut, changeMode } from '../utils/ui';
-import { mergeArrays, inventoryToTabs } from '../utils/utils';
+import {
+  registerResponse, loginResponse, logoutResponse, positionResponse, tileUpdate, eventResult
+} from '../utils/game';
 import { initialState } from './initialState';
 
 export default function reducer(state, action) {
@@ -61,67 +63,24 @@ export default function reducer(state, action) {
       });
 
     case REGISTER_RESPONSE:
-      return Object.assign({}, state, {
-        sending: false,
-        error: null
-      });
-
+      return registerResponse();
     case LOGIN_RESPONSE:
-      return Object.assign({}, state, {
-        sending: false,
-        loggedIn: true,
-        tiles: action.payload.tiles,
-        party: action.payload.party,
-        inventory: action.payload.inventory,
-        tabs: inventoryToTabs(action.payload.inventory),
-        // vehicle: action.payload.vehicle, // TODO
-        // story: action.payload.story // TODO
-        position: action.payload.position,
-        sight: action.payload.sight,
-        zoom: 3,
-        error: null
-      });
-
+      return loginResponse(state, action);
     case LOGOUT_RESPONSE:
-      return Object.assign({}, state, {
-        tiles: [],
-        party: [],
-        inventory: [],
-        tabs: [],
-        vehicle: null,
-        story: null,
-        position: null,
-        sight: null,
-        zoom: 3,
-        sending: false,
-        loggedIn: false,
-        error: null
-      });
-
+      return logoutResponse(state);
     case POSITION_RESPONSE:
-      return Object.assign({}, state, {
-        sending: false,
-        position: action.payload.position,
-        tiles: mergeArrays(state.tiles, action.payload.tiles),
-        error: null
-      });
+      return positionResponse(state, action);
 
     case TILE_UPDATE:
-      return Object.assign({}, state, {
-        tiles: mergeArrays(state.tiles, action.payload.tiles)
-      });
+      return tileUpdate(state, action);
 
     case EVENT_PROMPT:
       return Object.assign({}, state, {
+        // TODO
         // Use this to receive events...? Should I do `sending: false` here?
       });
-
     case EVENT_RESULT:
-      return Object.assign({}, state, {
-        sending: false,
-        party: mergeArrays(state.party, action.payload.party),
-        inventory: mergeArrays(state.inventory, action.payload.inventory) // COMBAK
-      });
+      return eventResult(state, action);
 
     case `@@websocket/${ OPEN }`:
       return Object.assign({}, state, {

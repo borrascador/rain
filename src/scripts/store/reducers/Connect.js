@@ -19,8 +19,8 @@ export default class Connect {
     return this.store.getState().mode;
   }
 
-  get tabs() {
-    return this.store.getState().tabs;
+  get actions() {
+    return this.store.getState().actions;
   }
 
   get click() {
@@ -60,7 +60,6 @@ export default class Connect {
     const pos = {};
     pos.x = x;
     pos.y = y;
-    // console.log(pos);
     return { pos, tiles, sight, zoom, };
   }
 

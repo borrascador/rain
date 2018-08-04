@@ -1,8 +1,8 @@
 import Connect from '../../store/reducers/Connect';
 import Camera from '../components/Camera';
 import Overlay from '../components/Overlay';
-import {clicked} from '../../store/actions/actions';
 import ActionBar from '../components/ActionBar';
+import { clicked } from '../../store/actions/actions';
 
 export default class MapView {
   constructor (store, canvas, ctx, loader) {
@@ -28,7 +28,8 @@ export default class MapView {
     xClick && yClick && this.store.dispatch(clicked());
     if (!this.dim) {
       this.camera.update(delta, xClick, yClick);
-      // this.overlay.update(delta, xClick, yClick);
+      this.overlay.update(delta, xClick, yClick);
+      this.actionBar.update(delta, xClick, yClick);
     }
   }
 
@@ -37,7 +38,7 @@ export default class MapView {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.camera.render();
-    // this.overlay.render();
+    this.overlay.render();
     this.actionBar.render();
 
     if (this.dim) {

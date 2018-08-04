@@ -4,7 +4,7 @@ import {
   loginRequest, loginError,
   logoutRequest, logoutError,
   positionRequest, positionError,
-  plantEventRequest, harvestEventRequest, eventError
+  eventRequest, eventError
 } from './actions';
 import { subscribe } from '../store';
 import { MODE } from '../../game/constants';
@@ -105,28 +105,11 @@ export function position(position) {
   }
 }
 
-export function plant(id) {
+export function sendEvent(type, id) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.sending === false) {
-      dispatch(plantEventRequest(id));
-      const unsubscribe = subscribe('sending', state => {
-        unsubscribe();
-        clearTimeout(timer);
-      });
-      const timer = setTimeout(() => {
-        unsubscribe();
-        getState().sending && dispatch(eventError('0201')); // Timeout error
-      }, 2000);
-    }
-  }
-}
-
-export function harvest(id) {
-  return (dispatch, getState) => {
-    const state = getState();
-    if (state.sending === false) {
-      dispatch(harvestEventRequest(id));
+      dispatch(eventRequest(type, id));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
         clearTimeout(timer);

@@ -119,16 +119,10 @@ export const EVENT_DECISION = 'EVENT_DECISION';
 export const EVENT_RESULT = 'EVENT_RESULT';
 export const EVENT_ERROR = 'EVENT_ERROR';
 
-export const plantEventRequest = (id) => ({
+export const eventRequest = (type, id) => ({
   type: EVENT_REQUEST,
   meta: { send: true },
-  payload: { type: 'plant', id }
-});
-
-export const harvestEventRequest = (id) => ({
-  type: EVENT_REQUEST,
-  meta: { send: true },
-  payload: { type: 'harvest', id }
+  payload: { type, id }
 });
 
 export const eventError = (code) => ({
