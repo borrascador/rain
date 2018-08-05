@@ -41,7 +41,6 @@ public class Player {
 		this.y = randomInt(Constants.MAPHEIGHT - 1);
 		this.position = Constants.MAPWIDTH * y + x;	
 		Tile t = World.getTile(position);
-		t.addVisitor(name);
 		this.tilesSeen = t.inSight(sight);	
 		
 		this.party = new HashSet<Integer>();		
