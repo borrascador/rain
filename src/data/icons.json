@@ -85,6 +85,10 @@
         {
          "name":"red-cross-small"
         },
+     "29":
+        {
+         "name":"food"
+        },
      "3":
         {
          "name":"up"
@@ -107,23 +111,27 @@
         },
      "34":
         {
-         "name":"crop1"
+         "name":"plant"
         },
      "35":
         {
-         "name":"crop2"
+         "name":"crop1"
         },
      "36":
         {
-         "name":"crop3"
+         "name":"crop2"
         },
      "37":
         {
-         "name":"plant"
+         "name":"crop3"
         },
      "38":
         {
          "name":"harvest"
+        },
+     "39":
+        {
+         "name":"back"
         },
      "4":
         {
@@ -224,6 +232,10 @@
         {
          "name":"string"
         },
+     "29":
+        {
+         "name":"string"
+        },
      "3":
         {
          "name":"string"
@@ -261,6 +273,10 @@
          "name":"string"
         },
      "38":
+        {
+         "name":"string"
+        },
+     "39":
         {
          "name":"string"
         },

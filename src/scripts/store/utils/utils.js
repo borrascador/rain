@@ -36,25 +36,34 @@ export function mergeArrays(oldArray, newArray) {
   return result;
 };
 
-export function inventoryToTabs(inventory) {
-  let obj = {};
+export function getActions(inventory, tiles, position) {
+  const currentTile = tiles.find(tile => tile.id === position);
+  let actions = { 'main': [] };
+
+  if (currentTile.crops && currentTile.crops.length > 0) {
+    actions['main'].push({ target: 'harvest', id: 38 });
+    actions['harvest'] = [ { target: 'main', id: 39 } ];
+    actions['harvest'].push(...currentTile.crops.map(crop => {
+      return Object.assign({}, crop, { tag: 'harvest' });
+    }));
+  }
+
   inventory.forEach(item => {
-    item.tags.forEach(tag => {
-      if(!obj[tag]) {
-        obj[tag] = Array({ name: item.name, id: item.id });
+    item.tags.forEach((tag, index) => {
+      if(!actions[tag]) {
+        actions['main'].push({
+          target: tag,
+          id: tag === 'seed' ? 34 : tag === 'harvest' ? 38 : 29
+        });
+        actions[tag] = [
+          { target: 'main', id: 39 },
+          { tag, name: item.name, id: item.id }
+        ];
       } else {
-        obj[tag].push({ name: item.name, id: item.id });
+        actions[tag].push({ tag, name: item.name, id: item.id });
       }
     });
   });
-  let tabs = [];
-  for(let prop in obj) {
-    if(obj.hasOwnProperty(prop)) {
-      tabs.push({
-        text: prop,
-        buttons: obj[prop]
-      });
-    }
-  }
-  return tabs;
+
+  return actions;
 }

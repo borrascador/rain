@@ -93,7 +93,7 @@ export default class Camera {
           }
 
           if (dim) {
-            this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+            this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
             this.ctx.fillRect(x, y, tileSize, tileSize);
           }
         }

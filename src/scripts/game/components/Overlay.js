@@ -1,7 +1,6 @@
 import {MODE} from '../constants';
 import {changeMode} from '../../store/actions/actions';
 import Connect from '../../store/reducers/Connect';
-import Tabs from './Tabs';
 import Zoom from './Zoom';
 import Party from './Party';
 import Vehicle from './Vehicle';
@@ -14,7 +13,6 @@ export default class Overlay {
     this.ctx = ctx;
     this.loader = loader;
 
-    this.tabs = new Tabs(this.store, this.canvas, this.ctx, this.loader);
     this.zoom = new Zoom(this.store, this.canvas, this.ctx, this.loader);
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
     this.vehicle = new Vehicle(this.store, this.canvas, this.ctx, this.loader);
@@ -22,7 +20,6 @@ export default class Overlay {
   }
 
   update(delta, xClick, yClick) {
-    this.tabs.update(delta, xClick, yClick);
     this.zoom.update(delta, xClick, yClick);
     this.party.update(delta, xClick, yClick);
     this.vehicle.update(delta, xClick, yClick);
@@ -30,7 +27,6 @@ export default class Overlay {
   }
 
   render() {
-    this.tabs.render();
     this.zoom.render();
     this.party.render();
     this.vehicle.render();
