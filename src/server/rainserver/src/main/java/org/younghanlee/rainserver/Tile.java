@@ -133,14 +133,16 @@ public class Tile {
 		return true; 
 	}
 	
-	// name is the player that is triggering the update
+	// n is the player that is triggering the update
 	// We don't need to send an update to this player.
-	public void updateNeighbors(Player p, int range) {
+	public void updateNeighbors(String n, int range) {
 		for (int i: inSight(Constants.MAXSIGHT)) {
 			Tile t = World.getTile(i);
 			for (String name: t.getVisitors()) {
-				if (!p.getName().equals(name)) {
+				if (!name.equals(n)) {
+					System.out.println("test2");
 					Player p2 = World.getPlayer(name);
+					System.out.println("test3");
 					if (distance(t) <= p2.getSight()) {
 						p2.addToBuffer(id);
 					}
@@ -154,18 +156,25 @@ public class Tile {
 		if (n >= 1) {
 			p.setQuantity(seed_id, n - 1);
 			this.crops.put(seed_id, 10);
+			System.out.println("test");
 			updateNeighbors(null, 0);
+			System.out.println("test2");
 			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
 		} else return null;
 	}
 	
 	public JSONObject harvest(int seed_id, Player p) {
-		int n = p.getQuantity(seed_id);
-		int yield = Player.randomInt(10);
-		p.setQuantity(seed_id, n + yield);
-		this.crops.remove(seed_id);
-		updateNeighbors(null, 0);
-		return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
+		if (this.crops.containsKey(seed_id)) {
+			int n = p.getQuantity(seed_id);
+			int yield = Player.randomInt(10);
+			p.setQuantity(seed_id, n + yield);
+			this.crops.remove(seed_id);
+			updateNeighbors(null, 0);
+			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
+		} else {
+			// EVENT_ERROR
+			return null;
+		}
 	}
 	
 	public void decGrowthStage(int i) {
