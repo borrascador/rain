@@ -1,5 +1,6 @@
 package org.younghanlee.rainserver;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -29,9 +30,20 @@ public class World {
 	private static int memberID;
 	
 	World() {
+		
+		// Read map.json
 		JSONObject m = null;
 		try {
 			m = new JSONObject(new String(Files.readAllBytes(Paths.get("map.json"))));
+		} catch (IOException e) {
+			System.out.println("Map file "+ "map.json" + " not found.");
+			System.exit(1);
+		}
+		
+		// Read items.json
+		JSONArray itemList = null;
+		try {
+			itemList = new JSONArray(new String(Files.readAllBytes(Paths.get("items.json"))));
 		} catch (IOException e) {
 			System.out.println("Map file "+ "map.json" + " not found.");
 			System.exit(1);
@@ -51,6 +63,17 @@ public class World {
 		
 		numPlayers = 0;
 		online = 0;
+		
+		JSONObject itemObject;
+		for (int i = 0; i < itemList.length(); i++) {
+			itemObject = itemList.getJSONObject(i);
+			Item it = new Item(itemObject.getString("name"));
+			JSONArray tags = itemObject.getJSONArray("tags");
+			for (int j = 0; j < tags.length(); j++) {
+				 it.addTag(tags.getString(j));
+			}
+			addItem(it);
+		}
 		
 		// Map dimensions
 		mapWidth = Constants.MAPWIDTH;
@@ -122,6 +145,16 @@ public class World {
 	
 	public static int numItems() {
 		return itemID;
+	}
+	
+	public static HashSet<Integer> itemByTag(String tag) {
+		HashSet<Integer> hs = new HashSet<Integer>();
+		for (int id: items.keySet()) {
+			if (items.get(id).hasTag(tag)) {
+				hs.add(id);
+			}
+		}
+		return hs;
 	}
 	
 	public static void dump() {

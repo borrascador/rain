@@ -1,16 +1,21 @@
 package org.younghanlee.rainserver;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
+	private int tick;
 
 	public Server(InetSocketAddress address) {
 		super(address);
@@ -18,6 +23,14 @@ public class Server extends WebSocketServer {
 	
 	public static void dump() {
 		World.dump();
+	}
+	
+	public int getTick() {
+		return tick;
+	}
+	
+	public void tickInc() {
+		tick++;
 	}
 
 	@Override
@@ -60,15 +73,6 @@ public class Server extends WebSocketServer {
 		System.out.println("server started successfully");
 		World.addPlayer("a", "test1@test.com", "TRIBE");
 		World.addPlayer("b", "test2@test.com", "TRIBE");
-		
-		for (Player p: World.getPlayers().values()) {
-			for (int i=0; i<4; i++) {
-				p.setQuantity(Player.randomInt(World.numItems() - 1), Player.randomInt(100));
-			}
-			for (int i=0; i<2; i++) {
-				p.addMember("test", Player.randomInt(3));
-			}
-		}
 		dump();
 	}
 	
@@ -83,36 +87,22 @@ public class Server extends WebSocketServer {
 		}
 	}
 	
-	public void backup() {
-		// File map = new File("backup/map.json");
+	public void backup(int index) {
+		File map = new File("backup/" + index + "/map.json");
+		map.getParentFile().mkdirs();
 	}
 
 
 	public static void main(String[] args) {
-		new World();
-		Item item = new Item ("potato");
-		item.addTag("seed");
-		item.addTag("food");
-		World.addItem(item);
+		File bf = new File("backup");
+		try {
+			FileUtils.deleteDirectory(bf);
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		bf.mkdirs();
 		
-		item = new Item ("black bean");
-		item.addTag("seed");
-		item.addTag("food");
-		World.addItem(item);
-		
-		item = new Item ("lima bean");
-		item.addTag("seed");
-		item.addTag("food");
-		World.addItem(item);
-		
-		item = new Item ("tomato");
-		item.addTag("food");
-		World.addItem(item);
-		
-		item = new Item ("tomato seed");
-		item.addTag("seed");
-		World.addItem(item);	
-		
+		new World();		
 		
 		String host = "localhost";
 		int port = 8887;
@@ -120,25 +110,26 @@ public class Server extends WebSocketServer {
 		Server server = new Server(new InetSocketAddress(host, port));
 		server.setWebSocketFactory(new WebSocketFactory());
 		
-		ScheduledExecutorService exec = Executors.newScheduledThreadPool(10);
-		exec.scheduleAtFixedRate(new Runnable() {
+		ScheduledExecutorService updateExec = Executors.newScheduledThreadPool(10);
+		updateExec.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Sending updates: ");
+				System.out.println("Sending updates: tick "+ server.getTick());
 				server.flush();
+				server.tickInc();
 				return;
 			}
 		}, 0, 1, TimeUnit.SECONDS);
 		
-		ScheduledExecutorService exec2 = Executors.newScheduledThreadPool(10);
-		exec2.scheduleAtFixedRate(new Runnable() {
+		ScheduledExecutorService backupExec = Executors.newScheduledThreadPool(10);
+		backupExec.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Preparing backup: ");
-				server.backup();
+				System.out.println("Preparing backup: " + server.getTick());
+				server.backup(server.getTick());
 				return;
 			}
-		}, 0, 1, TimeUnit.SECONDS);
+		}, 0, 10, TimeUnit.SECONDS);
 		
 		server.run();
 

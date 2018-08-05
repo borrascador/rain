@@ -43,9 +43,11 @@ public class Player {
 		Tile t = World.getTile(position);
 		this.tilesSeen = t.inSight(sight);	
 		
-		this.party = new HashSet<Integer>();		
+		this.party = new HashSet<Integer>();	
+		addMember("test", Player.randomInt(3));
 		
 		this.backpack = new HashMap<Integer, Integer>();
+		setQuantity(Player.randomInt(World.numItems() - 1), Player.randomInt(100));
 		
 		this.buffer = new HashSet<Integer>();
 	}
@@ -56,7 +58,7 @@ public class Player {
 		connection.setPlayer(this);
 		Tile t = World.getTile(position);
 		t.addVisitor(this.name);
-		t.updateNeighbors(this, Constants.MAXSIGHT);
+		t.updateNeighbors(this.name, Constants.MAXSIGHT);
 	}
 	
 	public JSONObject logoff(Connection connection) {
@@ -64,7 +66,7 @@ public class Player {
 		World.onlineDec();
 		Tile t = World.getTile(position);
 		t.removeVisitor(this.name);
-		t.updateNeighbors(this, Constants.MAXSIGHT);
+		t.updateNeighbors(this.name, Constants.MAXSIGHT);
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}
@@ -110,7 +112,7 @@ public class Player {
 			source.removeVisitor(this.name);
 			
 			// Tell players you are leaving range
-			source.updateNeighbors(this, Constants.MAXSIGHT);
+			source.updateNeighbors(this.name, Constants.MAXSIGHT);
 			
 			// Add it to destination tile
 			this.position = destination;	
@@ -120,7 +122,7 @@ public class Player {
 			this.tilesSeen.addAll(dest.inSight(sight));
 			
 			// Tell players you are in range
-			dest.updateNeighbors(this, Constants.MAXSIGHT);
+			dest.updateNeighbors(this.name, Constants.MAXSIGHT);
 			
 			return true;
 		} else return false;
