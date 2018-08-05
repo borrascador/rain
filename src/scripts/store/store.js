@@ -19,7 +19,7 @@ function configureStore () {
 				return rws;
 			}),
 			errorLogger,
-			// loggerMiddleware
+			loggerMiddleware
 		)
 	)
 }

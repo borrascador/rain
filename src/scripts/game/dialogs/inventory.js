@@ -32,7 +32,7 @@ export function inventoryDialog(store, setDim) {
     items.append(line);
   } else {
     const limit = connect.party.length * connect.party.reduce((a, b) => a.jeito + b.jeito);
-    const newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS! XXX
+    const newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS SCALING! XXX
     const color = newTotal / limit > 1 ? "red" : newTotal / limit > 0.9 ? "yellow" : "green";
     const hr = create('hr');
     hr.style.border = '1px solid white';

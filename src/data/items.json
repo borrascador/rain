@@ -1,12 +1,58 @@
-{ "columns":5,
+{ "columns":10,
  "image":"..\/images\/items.png",
  "imageheight":160,
  "imagewidth":160,
  "margin":0,
  "name":"items",
  "spacing":0,
- "tilecount":25,
- "tileheight":32,
- "tilewidth":32,
+ "tilecount":100,
+ "tileheight":16,
+ "tileproperties":
+    {
+     "0":
+        {
+         "name":"potato"
+        },
+     "1":
+        {
+         "name":"black bean"
+        },
+     "2":
+        {
+         "name":"lima bean"
+        },
+     "3":
+        {
+         "name":"tomato"
+        },
+     "4":
+        {
+         "name":"tomato seed"
+        }
+    },
+ "tilepropertytypes":
+    {
+     "0":
+        {
+         "name":"string"
+        },
+     "1":
+        {
+         "name":"string"
+        },
+     "2":
+        {
+         "name":"string"
+        },
+     "3":
+        {
+         "name":"string"
+        },
+     "4":
+        {
+         "name":"string"
+        }
+    },
+ "tilewidth":16,
  "type":"tileset"
 }

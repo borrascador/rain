@@ -63,7 +63,7 @@ export default function reducer(state, action) {
       });
 
     case REGISTER_RESPONSE:
-      return registerResponse();
+      return registerResponse(state);
     case LOGIN_RESPONSE:
       return loginResponse(state, action);
     case LOGOUT_RESPONSE:

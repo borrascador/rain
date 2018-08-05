@@ -1,6 +1,6 @@
 import { getActions, mergeArrays } from './utils';
 
-export function registerResponse() {
+export function registerResponse(state) {
   return Object.assign({}, state, {
     sending: false,
     error: null
