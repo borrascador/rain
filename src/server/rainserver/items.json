@@ -1,61 +1,76 @@
 [
 	{
+		"id": 0,
 		"name": "tomato",
 		"tags":["food"]
 	},
 	{
+		"id": 1,
 		"name": "tomato seed",
 		"tags":["seed"]
 	},
 	{
+		"id": 2,
 		"name": "potato",
 		"tags":["food", "seed"]
 	},
 	{
+		"id": 3,
 		"name": "yuca",
 		"tags":["food", "seed"]
 	},
 	{
+		"id": 4,
 		"name": "red meat",
 		"tags":["food"]
 	},
 	{
+		"id": 5,
 		"name": "hide",
 		"tags":["crafting"]
 	},
 	{
+		"id": 6,
 		"name": "fur",
 		"tags":["crafting"]
 	},
 	{
+		"id": 7,
 		"name": "sinew",
 		"tags":["crafting"]
 	},
 	{
+		"id": 8,
 		"name": "black bean",
 		"tags":["food", "seed"]
 	},
-		{
+	{
+		"id": 9,
 		"name": "lima bean",
 		"tags":["food", "seed"]
 	},
 	{
+		"id": 10,
 		"name": "stick",
 		"tags":["farming", "hunting", "fishing"]
 	},
 	{
+		"id": 11,
 		"name": "spear",
 		"tags":["fishing", "hunting"]
 	},
 	{
+		"id": 12,
 		"name": "bow and arrow",
 		"tags":["fishing", "hunting"]
 	},
 	{
+		"id": 13,
 		"name": "net",
 		"tags":["fishing", "hunting"]
 	},
 	{
+		"id": 14,
 		"name": "sling",
 		"tags":["hunting"]
 	}
