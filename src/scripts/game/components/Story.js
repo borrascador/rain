@@ -1,6 +1,6 @@
 import { MODE } from '../constants';
 import { clicked } from '../../store/actions/actions';
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { screenToTextButtonId, getItemById } from './utils';
 import { mainText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';

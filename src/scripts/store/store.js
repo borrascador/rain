@@ -1,11 +1,11 @@
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from './reducers/index.js';
+import reducer from './reducer';
 import ReduxWebSocketBridge from 'redux-websocket-bridge';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import initSubscriber from 'redux-subscriber';
-import { errorLogger } from './utils/errors';
+import { errorLogger } from './errors';
 
 function configureStore () {
 	const loggerMiddleware = createLogger();

@@ -2,7 +2,7 @@ import { makeTextButton } from '../utils/draw';
 import { registerDialog } from '../dialogs/register';
 import { loginDialog } from '../dialogs/login';
 import { screenToTextButton } from '../components/utils';
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
 import { drawById, drawByName, centerText } from '../utils/draw';

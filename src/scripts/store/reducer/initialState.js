@@ -1,6 +1,6 @@
 import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
-import { makeKeys } from '../utils/input';
+import { makeKeys } from './input';
 
 // import party from '../../../data/party.json';
 // import inventory from '../../../data/inventory.json';

@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { drawById, drawByName } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';

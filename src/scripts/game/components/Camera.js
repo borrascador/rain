@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { position } from '../../store/actions/requests';
 import { LAYER } from '../constants'
 import { screenToImageButtonId, getItemById } from './utils';

@@ -1,5 +1,20 @@
 import { getActions, mergeArrays } from './utils';
 
+export function sendRequest(state) {
+  return Object.assign({}, state, {
+    sending: true,
+    error: null
+  });
+}
+
+export function receiveError(state, action) {
+  return Object.assign({}, state, {
+    sending: false,
+    error: action.payload.code,
+    errorMessage: action.payload.message
+  });
+}
+
 export function registerResponse(state) {
   return Object.assign({}, state, {
     sending: false,
@@ -60,6 +75,13 @@ export function tileUpdate(state, action) {
   });
 }
 
+export function eventPrompt(state, action) {
+  return Object.assign({}, state, {
+    // TODO
+    // Use this to receive events...? Should I do `sending: false` here?
+  });
+}
+
 export function eventResult(state, action) {
   const inventory = mergeArrays(state.inventory, action.payload.inventory)
   return Object.assign({}, state, {
@@ -67,5 +89,18 @@ export function eventResult(state, action) {
     party: mergeArrays(state.party, action.payload.party),
     inventory: inventory,
     actions: getActions(inventory, state.tiles, state.position)
+  });
+}
+
+export function openSocket(state) {
+  return Object.assign({}, state, {
+    connected: true
+  });
+}
+
+export function closeSocket(state) {
+  return Object.assign({}, state, {
+    connected: false,
+    loggedIn: false
   });
 }
