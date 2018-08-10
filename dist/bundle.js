@@ -144,6 +144,23 @@ var changeMode = exports.changeMode = function changeMode(mode) {
   };
 };
 
+var CLIENT_ERROR = exports.CLIENT_ERROR = 'CLIENT_ERROR';
+
+var clientError = exports.clientError = function clientError(code, message) {
+  return {
+    type: CLIENT_ERROR,
+    payload: { code: code, message: message }
+  };
+};
+
+var sendClientError = exports.sendClientError = function sendClientError(code, message) {
+  return {
+    type: CLIENT_ERROR,
+    meta: { send: true },
+    payload: { code: code, message: message }
+  };
+};
+
 var REGISTER_REQUEST = exports.REGISTER_REQUEST = 'REGISTER_REQUEST';
 var REGISTER_RESPONSE = exports.REGISTER_RESPONSE = 'REGISTER_RESPONSE';
 var REGISTER_ERROR = exports.REGISTER_ERROR = 'REGISTER_ERROR';
@@ -156,10 +173,18 @@ var registerRequest = exports.registerRequest = function registerRequest(user, e
   };
 };
 
-var registerError = exports.registerError = function registerError(code) {
+var registerError = exports.registerError = function registerError(code, message) {
   return {
     type: REGISTER_ERROR,
-    payload: { code: code }
+    payload: { code: code, message: message }
+  };
+};
+
+var sendRegisterError = exports.sendRegisterError = function sendRegisterError(code, message) {
+  return {
+    type: REGISTER_ERROR,
+    meta: { send: true },
+    payload: { code: code, message: message }
   };
 };
 
@@ -175,10 +200,18 @@ var loginRequest = exports.loginRequest = function loginRequest(user, password) 
   };
 };
 
-var loginError = exports.loginError = function loginError(code) {
+var loginError = exports.loginError = function loginError(code, message) {
   return {
     type: LOGIN_ERROR,
-    payload: { code: code }
+    payload: { code: code, message: message }
+  };
+};
+
+var sendLoginError = exports.sendLoginError = function sendLoginError(code, message) {
+  return {
+    type: LOGIN_ERROR,
+    meta: { send: true },
+    payload: { code: code, message: message }
   };
 };
 
@@ -194,10 +227,18 @@ var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
   };
 };
 
-var logoutError = exports.logoutError = function logoutError(code) {
+var logoutError = exports.logoutError = function logoutError(code, message) {
   return {
     type: LOGOUT_ERROR,
-    payload: { code: code }
+    payload: { code: code, message: message }
+  };
+};
+
+var sendLogoutError = exports.sendLogoutError = function sendLogoutError(code, message) {
+  return {
+    type: LOGOUT_ERROR,
+    meta: { send: true },
+    payload: { code: code, message: message }
   };
 };
 
@@ -213,10 +254,18 @@ var positionRequest = exports.positionRequest = function positionRequest(positio
   };
 };
 
-var positionError = exports.positionError = function positionError(code) {
+var positionError = exports.positionError = function positionError(code, message) {
   return {
     type: POSITION_ERROR,
-    payload: { code: code }
+    payload: { code: code, message: message }
+  };
+};
+
+var sendPositionError = exports.sendPositionError = function sendPositionError(code, message) {
+  return {
+    type: POSITION_ERROR,
+    meta: { send: true },
+    payload: { code: code, message: message }
   };
 };
 
@@ -236,10 +285,18 @@ var eventRequest = exports.eventRequest = function eventRequest(type, id) {
   };
 };
 
-var eventError = exports.eventError = function eventError(code) {
+var eventError = exports.eventError = function eventError(code, message) {
   return {
     type: EVENT_ERROR,
-    payload: { code: code }
+    payload: { code: code, message: message }
+  };
+};
+
+var sendEventError = exports.sendEventError = function sendEventError(code, message) {
+  return {
+    type: EVENT_ERROR,
+    meta: { send: true },
+    payload: { code: code, message: message }
   };
 };
 
@@ -538,7 +595,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch((0, _actions.registerError)('0201')); // Timeout error
+        getState().sending && dispatch((0, _actions.registerError)(200, 'Response timeout'));
         (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -566,7 +623,7 @@ function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch((0, _actions.loginError)('0201')); // Timeout error
+        getState().sending && dispatch((0, _actions.loginError)(200, 'Response timeout'));
         (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -587,7 +644,7 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch((0, _actions.logoutError)('0201')); // Timeout error
+        getState().sending && dispatch((0, _actions.logoutError)(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -604,7 +661,7 @@ function position(position) {
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch((0, _actions.positionError)('0201')); // Timeout error
+        getState().sending && dispatch((0, _actions.positionError)(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -621,7 +678,7 @@ function sendEvent(type, id) {
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch((0, _actions.eventError)('0201')); // Timeout error
+        getState().sending && dispatch((0, _actions.eventError)(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -2953,6 +3010,7 @@ function reducer(state, action) {
     case _actions.EVENT_REQUEST:
     case _actions.EVENT_DECISION:
       return (0, _game.sendRequest)(state);
+    case _actions.CLIENT_ERROR:
     case _actions.REGISTER_ERROR:
     case _actions.LOGIN_ERROR:
     case _actions.LOGOUT_ERROR:
@@ -3107,7 +3165,11 @@ function receiveError(state, action) {
   return Object.assign({}, state, {
     sending: false,
     error: action.payload.code,
-    errorMessage: action.payload.message
+    errorMessage: action.payload.message,
+    errorLog: state.errorLog.concat({
+      error: action.payload.code,
+      errorMessage: action.payload.message
+    })
   });
 }
 
@@ -3258,7 +3320,9 @@ var connectionState = {
   connected: false,
   loggedIn: false,
   sending: false,
-  error: null
+  error: null,
+  errorMessage: null,
+  errorLog: []
 };
 
 var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
@@ -4004,54 +4068,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var errorMessages = {
-  // Register
-  '0000': 'Message syntax error',
-  '0001': 'Username taken',
-  '0002': 'Email taken',
-  '0003': 'Passwords do not match',
+var errorTypes = [{ name: 'Account', min: 100, max: 199 }, { name: 'Connection', min: 200, max: 299 }, { name: 'Gameplay', min: 300, max: 799 }, { name: 'Client', min: 800, max: 899 }, { name: 'Server', min: 900, max: 999 }];
 
-  // Login
-  '0100': 'Message syntax error',
-  '0101': 'Username or password incorrect',
-  '0102': 'User already online',
-  '0103': 'Too many login attempts',
-  '0104': 'Account suspended',
-  '0105': 'Client instance already logged in',
-
-  // Connection
-  '0201': 'Response timeout',
-  '0202': 'Websocket closed unexpectedly',
-  '0203': 'Request type not recognized',
-  '0204': 'Response type not recognized',
-
-  // Move
-  '0300': 'Message syntax error',
-  '0301': 'Illegal move',
-  '0302': 'Exceeded move limit',
-  '0303': 'Not logged in',
-
-  // Logout
-  '0401': 'Account already logged out'
-};
-
-var errorTypes = {
-  '00': 'Register',
-  '01': 'Login',
-  '02': 'Connection',
-  '03': 'Move',
-  '04': 'Logout'
-};
-
-function getErrorType(id) {
-  return errorTypes[id.substring(0, 2)];
-}
-
-function logError(id) {
-  var type = getErrorType(id);
-  var message = errorMessages[id];
-  type && message ? console.error(type + 'Error #' + id + ': ' + message) : console.error('Error code not recognized');
-  return message;
+function getErrorType(code) {
+  return errorTypes.find(function (type) {
+    return code >= type.min && code <= type.max;
+  }).name;
 }
 
 var errorLogger = exports.errorLogger = function errorLogger(store) {
@@ -4059,7 +4081,12 @@ var errorLogger = exports.errorLogger = function errorLogger(store) {
     return function (action) {
       // TODO: Check if action type is a non-empty string
       if (action.type.substring(action.type.length - 5, action.type.length) === 'ERROR') {
-        action.payload.message = action.payload && action.payload.code && logError(action.payload.code) || 'Unknown Error';
+        if (!action.payload.code || !action.payload.message) {
+          action.payload.code = 800;
+          action.payload.message = 'ERROR bad payload';
+        }
+        var type = getErrorType(action.payload.code);
+        console.error(type + 'Error #' + action.payload.code + ': ' + action.payload.message);
       }
       next(action);
     };
@@ -5776,7 +5803,7 @@ function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch((0, _requests.register)(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch((0, _actions.registerError)('0003')); // Password matching error
+      store.dispatch((0, _actions.registerError)(110, 'Passwords do not match'));
       (0, _failure.failureDialog)(store.getState().errorMessage, dimCallback);
     }
   };

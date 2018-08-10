@@ -37,7 +37,9 @@ const connectionState = {
   connected: false,
   loggedIn: false,
   sending: false,
-  error: null
+  error: null,
+  errorMessage: null,
+  errorLog: []
 };
 
 export const initialState = Object.assign({},

@@ -36,7 +36,7 @@ export function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch(register(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch(registerError('0003')); // Password matching error
+      store.dispatch(registerError(110, 'Passwords do not match'));
       failureDialog(store.getState().errorMessage, dimCallback);
     }
   }

@@ -33,7 +33,7 @@ export function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch(registerError('0201')); // Timeout error
+        getState().sending && dispatch(registerError(200, 'Response timeout'));
         failureDialog(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -61,7 +61,7 @@ export function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch(loginError('0201')); // Timeout error
+        getState().sending && dispatch(loginError(200, 'Response timeout'));
         failureDialog(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -82,7 +82,7 @@ export function logout(callback) {
       const timer = setTimeout(() => {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch(logoutError('0201')); // Timeout error
+        getState().sending && dispatch(logoutError(200, 'Response timeout'));
       }, 2000);
     }
   }
@@ -99,7 +99,7 @@ export function position(position) {
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        getState().sending && dispatch(positionError('0201')); // Timeout error
+        getState().sending && dispatch(positionError(200, 'Response timeout'));
       }, 2000);
     }
   }
@@ -116,7 +116,7 @@ export function sendEvent(type, id) {
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        getState().sending && dispatch(eventError('0201')); // Timeout error
+        getState().sending && dispatch(eventError(200, 'Response timeout'));
       }, 2000);
     }
   }

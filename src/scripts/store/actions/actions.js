@@ -51,6 +51,19 @@ export const changeMode = (mode) => ({
   payload: { mode }
 });
 
+export const CLIENT_ERROR = 'CLIENT_ERROR';
+
+export const clientError = (code, message) => ({
+  type: CLIENT_ERROR,
+  payload: { code, message }
+});
+
+export const sendClientError = (code, message) => ({
+  type: CLIENT_ERROR,
+  meta: { send: true },
+  payload: { code, message }
+})
+
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 export const REGISTER_RESPONSE = 'REGISTER_RESPONSE';
 export const REGISTER_ERROR = 'REGISTER_ERROR';
@@ -61,9 +74,15 @@ export const registerRequest = (user, email, password) => ({
   payload: { user, email, password }
 });
 
-export const registerError = (code) => ({
+export const registerError = (code, message) => ({
   type: REGISTER_ERROR,
-  payload: { code }
+  payload: { code, message }
+});
+
+export const sendRegisterError = (code, message) => ({
+  type: REGISTER_ERROR,
+  meta: { send: true },
+  payload: { code, message }
 });
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
@@ -76,10 +95,16 @@ export const loginRequest = (user, password) => ({
   payload: { user, password }
 });
 
-export const loginError = (code) => ({
+export const loginError = (code, message) => ({
   type: LOGIN_ERROR,
-  payload: { code }
+  payload: { code, message }
 });
+
+export const sendLoginError = (code, message) => ({
+  type: LOGIN_ERROR,
+  meta: { send: true },
+  payload: { code, message }
+})
 
 export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 export const LOGOUT_RESPONSE = 'LOGOUT_RESPONSE';
@@ -91,10 +116,16 @@ export const logoutRequest = (user) => ({
   payload: { user }
 });
 
-export const logoutError = (code) => ({
+export const logoutError = (code, message) => ({
   type: LOGOUT_ERROR,
-  payload: { code }
+  payload: { code, message }
 });
+
+export const sendLogoutError = (code, message) => ({
+  type: LOGOUT_ERROR,
+  meta: { send: true },
+  payload: { code, message }
+})
 
 export const POSITION_REQUEST = 'POSITION_REQUEST';
 export const POSITION_RESPONSE = 'POSITION_RESPONSE';
@@ -106,9 +137,15 @@ export const positionRequest = (position) => ({
   payload: { position }
 });
 
-export const positionError = (code) => ({
+export const positionError = (code, message) => ({
   type: POSITION_ERROR,
-  payload: { code }
+  payload: { code, message }
+});
+
+export const sendPositionError = (code, message) => ({
+  type: POSITION_ERROR,
+  meta: { send: true },
+  payload: { code, message }
 });
 
 export const TILE_UPDATE = 'TILE_UPDATE';
@@ -125,7 +162,13 @@ export const eventRequest = (type, id) => ({
   payload: { type, id }
 });
 
-export const eventError = (code) => ({
+export const eventError = (code, message) => ({
   type: EVENT_ERROR,
-  payload: { code }
+  payload: { code, message }
 });
+
+export const sendEventError = (code, message) => ({
+  type: EVENT_ERROR,
+  meta: { send: true },
+  payload: { code, message }
+})

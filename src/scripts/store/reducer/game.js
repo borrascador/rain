@@ -11,7 +11,11 @@ export function receiveError(state, action) {
   return Object.assign({}, state, {
     sending: false,
     error: action.payload.code,
-    errorMessage: action.payload.message
+    errorMessage: action.payload.message,
+    errorLog: state.errorLog.concat({
+      error: action.payload.code,
+      errorMessage: action.payload.message
+    })
   });
 }
 
