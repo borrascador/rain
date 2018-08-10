@@ -15,12 +15,17 @@ function getErrorType(code) {
 export const errorLogger = store => next => action => {
   // TODO: Check if action type is a non-empty string
 	if (action.type.substring(action.type.length - 5, action.type.length) === 'ERROR') {
-    if (!action.payload.code || !action.payload.message) {
+    if (!action.payload.code) {
       action.payload.code = 800;
       action.payload.message = 'ERROR bad payload';
     }
     const type = getErrorType(action.payload.code);
-    console.error(`${type}Error #${action.payload.code}: ${action.payload.message}`);
+    if (action.payload.message) {
+      console.error(`${type}Error #${action.payload.code}: ${action.payload.message}`);
+    } else {
+      // TODO: Lookup some error messages here?
+      console.error(`${type}Error #${action.payload.code}`);
+    }
 	}
 	next(action);
 }
