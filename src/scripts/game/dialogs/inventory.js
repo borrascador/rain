@@ -31,7 +31,15 @@ export function inventoryDialog(store, setDim) {
     line.innerHTML = 'Empty!';
     items.append(line);
   } else {
-    const limit = connect.party.length * connect.party.reduce((a, b) => a.jeito + b.jeito);
+    const party = connect.party;
+    let limit;
+    if (party.length > 1) {
+      limit = party.length * party.reduce((a, b) => a.jeito + b.jeito);
+    } else if (party.length === 1) {
+      limit = party[0].jeito;
+    } else {
+      limit = 0;
+    }
     const newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS SCALING! XXX
     const color = newTotal / limit > 1 ? "red" : newTotal / limit > 0.9 ? "yellow" : "green";
     const hr = create('hr');

@@ -41,11 +41,22 @@ export function getActions(inventory, tiles, position) {
   let actions = { 'main': [] };
 
   if (currentTile.crops && currentTile.crops.length > 0) {
-    actions['main'].push({ target: 'harvest', id: 38 });
-    actions['harvest'] = [ { target: 'main', id: 39 } ];
+    actions['main'].push({ target: 'harvest', id: 14 });
+    actions['harvest'] = [ { target: 'main', id: 18 } ];
     actions['harvest'].push(...currentTile.crops.map(crop => {
       return Object.assign({}, crop, { tag: 'harvest' });
     }));
+  }
+
+  const getIconFromTag = (tag) => {
+    switch(tag) {
+      case 'seed': return 10;
+      case 'harvest': return 14;
+      case 'food': return 15;
+      case 'hunting': return 16;
+      case 'fishing': return 17;
+    }
+    return 9;
   }
 
   inventory.forEach(item => {
@@ -53,10 +64,10 @@ export function getActions(inventory, tiles, position) {
       if(!actions[tag]) {
         actions['main'].push({
           target: tag,
-          id: tag === 'seed' ? 34 : tag === 'harvest' ? 38 : 29
+          id: getIconFromTag(tag)
         });
         actions[tag] = [
-          { target: 'main', id: 39 },
+          { target: 'main', id: 18 },
           { tag, name: item.name, id: item.id }
         ];
       } else {
