@@ -68,11 +68,7 @@ export default class ActionBar {
   renderButtons() {
     const buttonX = (this.canvas.width - this.barWidth) / 2 + this.gutter;
     const buttonY = this.canvas.height - this.barSize + this.gutter;
-    if (!this.connect.actions[this.current]) {
-      this.current = 'main';
-    }
-    const buttons = this.connect.actions[this.current];
-    this.buttons = buttons.map((button, index) => {
+    this.buttons = this.buttons.map((button, index) => {
       const x = buttonX + this.barSize * index;
       if (this.current !== 'main' && index > 0) {
         drawById(this.ctx, this.items, button.id, this.scale, x, buttonY);
@@ -89,6 +85,10 @@ export default class ActionBar {
   }
 
   render() {
+    if (!this.connect.actions[this.current]) {
+      this.current = 'main';
+    }
+    this.buttons = this.connect.actions[this.current];
     this.barWidth = this.barSize * this.buttons.length;
     this.titleWidth = this.ctx.measureText(this.current).width;
     this.buttons.length > 0 && this.renderBar();

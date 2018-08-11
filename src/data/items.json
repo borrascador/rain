@@ -11,23 +11,63 @@
     {
      "0":
         {
-         "name":"potato"
+         "name":"tomato"
         },
      "1":
         {
-         "name":"black bean"
+         "name":"tomato seed"
+        },
+     "10":
+        {
+         "name":"stick"
+        },
+     "11":
+        {
+         "name":"spear"
+        },
+     "12":
+        {
+         "name":"bow and arrow"
+        },
+     "13":
+        {
+         "name":"net"
+        },
+     "14":
+        {
+         "name":"sling"
         },
      "2":
         {
-         "name":"lima bean"
+         "name":"potato"
         },
      "3":
         {
-         "name":"tomato"
+         "name":"yuca"
         },
      "4":
         {
-         "name":"tomato seed"
+         "name":"meat"
+        },
+     "5":
+        {
+         "name":"hide"
+        },
+     "6":
+        {
+         "name":"fur"
+        },
+     "7":
+        {
+         "name":"sinew"
+        },
+     "8":
+        {
+         "name":"black bean"
+        },
+     "9":
+        {
+         "name":"lima bean"
         }
     },
  "tilepropertytypes":
@@ -40,6 +80,26 @@
         {
          "name":"string"
         },
+     "10":
+        {
+         "name":"string"
+        },
+     "11":
+        {
+         "name":"string"
+        },
+     "12":
+        {
+         "name":"string"
+        },
+     "13":
+        {
+         "name":"string"
+        },
+     "14":
+        {
+         "name":"string"
+        },
      "2":
         {
          "name":"string"
@@ -49,6 +109,26 @@
          "name":"string"
         },
      "4":
+        {
+         "name":"string"
+        },
+     "5":
+        {
+         "name":"string"
+        },
+     "6":
+        {
+         "name":"string"
+        },
+     "7":
+        {
+         "name":"string"
+        },
+     "8":
+        {
+         "name":"string"
+        },
+     "9":
         {
          "name":"string"
         }

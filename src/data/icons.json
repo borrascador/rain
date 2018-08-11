@@ -1,11 +1,11 @@
 { "columns":10,
  "image":"..\/images\/icons.png",
- "imageheight":64,
+ "imageheight":96,
  "imagewidth":160,
  "margin":0,
  "name":"icons",
  "spacing":0,
- "tilecount":40,
+ "tilecount":60,
  "tileheight":16,
  "tileproperties":
     {
@@ -19,119 +19,51 @@
         },
      "10":
         {
-         "name":"gold"
+         "name":"plant"
         },
      "11":
         {
-         "name":"wood"
+         "name":"crop1"
         },
      "12":
         {
-         "name":"cow"
+         "name":"crop2"
         },
      "13":
         {
-         "name":"crop"
+         "name":"crop3"
         },
      "14":
         {
-         "name":"tree"
+         "name":"harvest"
         },
      "15":
         {
-         "name":"leaf"
+         "name":"food"
         },
      "16":
         {
-         "name":"wrench-round"
+         "name":"hunt"
         },
      "17":
         {
-         "name":"tree-small"
+         "name":"fish"
+        },
+     "18":
+        {
+         "name":"back"
+        },
+     "19":
+        {
+         "name":"user"
         },
      "2":
         {
          "name":"wrench"
         },
-     "20":
-        {
-         "name":"question"
-        },
-     "21":
-        {
-         "name":"skull"
-        },
-     "22":
-        {
-         "name":"dna"
-        },
-     "23":
-        {
-         "name":"mind"
-        },
-     "24":
-        {
-         "name":"red-cross-large"
-        },
-     "25":
-        {
-         "name":"fish"
-        },
-     "26":
-        {
-         "name":"bird"
-        },
-     "27":
-        {
-         "name":"red-cross-small"
-        },
-     "29":
-        {
-         "name":"food"
-        },
      "3":
         {
          "name":"up"
-        },
-     "30":
-        {
-         "name":"user"
-        },
-     "31":
-        {
-         "name":"users1"
-        },
-     "32":
-        {
-         "name":"users2"
-        },
-     "33":
-        {
-         "name":"plus"
-        },
-     "34":
-        {
-         "name":"plant"
-        },
-     "35":
-        {
-         "name":"crop1"
-        },
-     "36":
-        {
-         "name":"crop2"
-        },
-     "37":
-        {
-         "name":"crop3"
-        },
-     "38":
-        {
-         "name":"harvest"
-        },
-     "39":
-        {
-         "name":"back"
         },
      "4":
         {
@@ -152,6 +84,10 @@
      "8":
         {
          "name":"player-dark"
+        },
+     "9":
+        {
+         "name":"question"
         }
     },
  "tilepropertytypes":
@@ -196,87 +132,19 @@
         {
          "name":"string"
         },
+     "18":
+        {
+         "name":"string"
+        },
+     "19":
+        {
+         "name":"string"
+        },
      "2":
         {
          "name":"string"
         },
-     "20":
-        {
-         "name":"string"
-        },
-     "21":
-        {
-         "name":"string"
-        },
-     "22":
-        {
-         "name":"string"
-        },
-     "23":
-        {
-         "name":"string"
-        },
-     "24":
-        {
-         "name":"string"
-        },
-     "25":
-        {
-         "name":"string"
-        },
-     "26":
-        {
-         "name":"string"
-        },
-     "27":
-        {
-         "name":"string"
-        },
-     "29":
-        {
-         "name":"string"
-        },
      "3":
-        {
-         "name":"string"
-        },
-     "30":
-        {
-         "name":"string"
-        },
-     "31":
-        {
-         "name":"string"
-        },
-     "32":
-        {
-         "name":"string"
-        },
-     "33":
-        {
-         "name":"string"
-        },
-     "34":
-        {
-         "name":"string"
-        },
-     "35":
-        {
-         "name":"string"
-        },
-     "36":
-        {
-         "name":"string"
-        },
-     "37":
-        {
-         "name":"string"
-        },
-     "38":
-        {
-         "name":"string"
-        },
-     "39":
         {
          "name":"string"
         },
@@ -297,6 +165,10 @@
          "name":"string"
         },
      "8":
+        {
+         "name":"string"
+        },
+     "9":
         {
          "name":"string"
         }
