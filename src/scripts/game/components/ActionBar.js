@@ -39,7 +39,7 @@ export default class ActionBar {
   }
 
   renderBar() {
-    this.ctx.fillStyle = "rgb(22, 11, 33, 0.9)";
+    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(
       (this.canvas.width - this.barWidth) / 2,
       this.canvas.height - this.barSize,
@@ -47,7 +47,7 @@ export default class ActionBar {
       this.barSize
     );
 
-    this.ctx.fillStyle = "rgb(22, 11, 33, 0.9)";
+    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(
       (this.canvas.width - this.titleWidth) / 2 - 8,
       this.canvas.height - (this.barSize + this.fontSize + 4),
@@ -93,13 +93,22 @@ export default class ActionBar {
         const textWidth = this.ctx.measureText(text).width;
         const padding = 8;
 
-        this.ctx.fillStyle = "rgb(10, 5, 15, 0.95)";
+        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
         this.ctx.fillRect(
           button.xPos + button.width / 2 - textWidth / 2 - padding,
-          this.canvas.height - 1.5 * this.barSize - padding,
+          this.canvas.height - 1.2 * this.barSize - padding,
           textWidth + padding * 2,
           this.fontSize + padding * 2
         );
+
+        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+        const y = this.canvas.height - 1.2 * this.barSize + this.fontSize + padding;
+        this.ctx.beginPath();
+        this.ctx.moveTo(button.xPos + 1/3 * button.width, y);
+        this.ctx.lineTo(button.xPos + 2/3 * button.width, y);
+        this.ctx.lineTo(button.xPos + 1/2 * button.width, y + padding);
+        this.ctx.closePath();
+        this.ctx.fill();
 
         this.ctx.textAlign = 'alphabetical';
         this.ctx.font = this.fontSize + 'px MECC';
@@ -107,7 +116,7 @@ export default class ActionBar {
         this.ctx.fillText(
           text,
           button.xPos + button.width / 2 - textWidth / 2,
-          this.canvas.height - 1.5 * this.barSize + this.fontSize
+          this.canvas.height - 1.2 * this.barSize + this.fontSize
         );
       }
     }
