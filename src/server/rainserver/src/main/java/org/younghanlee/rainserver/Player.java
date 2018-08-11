@@ -10,7 +10,6 @@ public class Player {
 	
 	private String name;
 	private String email;
-	private String player_class;
 	private boolean online;
 	private int position;
 	private int x;
@@ -29,9 +28,8 @@ public class Player {
 	}
 
 	
-	public Player(String name, String email, String player_class) {
+	public Player(String name, String email) {
 		this.name = name;
-		this.player_class = player_class;
 		this.sight = 2;
 		
 		// Player is offline upon registration. Call Login afterwards
@@ -47,7 +45,10 @@ public class Player {
 		addMember("test", Player.randomInt(3));
 		
 		this.backpack = new HashMap<Integer, Integer>();
-		setQuantity(Player.randomInt(World.numItems() - 1), Player.randomInt(100));
+		// Give stick
+		setQuantity(10, 1);
+		// Give potatos
+		setQuantity(2, 100);
 		
 		this.buffer = new HashSet<Integer>();
 	}
@@ -199,7 +200,7 @@ public class Player {
 	
 	
 	public String toString() {
-		return "NAME:" + name + "   CLASS:" + player_class + "   ONLINE:" + online + "   POSITION:"  + position;
+		return "NAME:" + name + "   ONLINE:" + online + "   POSITION:"  + position;
 	}
 	
 	public static void main(String[] args) {

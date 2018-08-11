@@ -46,21 +46,21 @@ public class MessageHandler {
 				
 				// Check if player exists
 				if (p == null) {
-					response = Message.LOGIN_ERROR("0101");
+					response = Message.ERROR(107, "User does not exist");
 					connection.send(response.toString());
 					break;
 				}
 				
 				// Check if there is already a login on this connection
 				if (connection.getPlayer() != null) {
-					response = Message.LOGIN_ERROR("0105");
+					response = Message.ERROR(118, null);
 					connection.send(response.toString());
 					break;
 				} 
 				
 				// Check if player is online
 				if (p.isOnline()) {
-					response = Message.LOGIN_ERROR("0102");
+					response = Message.ERROR(115, null);
 					connection.send(response.toString());
 					break;
 				}
@@ -76,7 +76,7 @@ public class MessageHandler {
 			case "LOGOUT_REQUEST":
 				// Check if there is any user logged in on this connection
 				if (username == "") {
-					response = Message.LOGOUT_ERROR("0401");
+					response = Message.ERROR(119, null);
 				} else {
 					response = World.getPlayer(username).logoff(connection);
 				}
@@ -84,11 +84,6 @@ public class MessageHandler {
 				break;
 				
 			case "POSITION_REQUEST":
-				// Check if logged in 
-				if (username == "") {
-					response = Message.POSITION_ERROR("0303");
-					connection.send(response.toString());
-				} 
 				
 				payload = jo.getJSONObject("payload");
 				int destination = payload.getInt("position");
@@ -99,7 +94,7 @@ public class MessageHandler {
 					tiles = p.inSightArray();
 					response = Message.POSITION_RESPONSE(destination, tiles);
 				} else {
-					response = Message.POSITION_ERROR("0301");
+					response = Message.ERROR(308, null);
 				}
 				connection.send(response.toString());
 				break;
@@ -115,6 +110,8 @@ public class MessageHandler {
 				
 			default:
 				System.out.println("Unrecognized message type:" + message_type);
+				response = Message.ERROR(202, "Unrecognized message type: " + message_type);
+				connection.send(response.toString());
 				
 		}
 	}

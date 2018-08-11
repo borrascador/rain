@@ -198,24 +198,21 @@ public class World {
 		
 		// Check if username is taken
 		if (players.containsKey(user)) {
-			return Message.REGISTER_ERROR("0001");
+			return Message.ERROR(106, "username "+ user + "taken");
 		} 
 
 		// Check if email is taken
 		if (emails.containsKey(email)) {
-			return Message.REGISTER_ERROR("0002");
+			return Message.ERROR(108, "email " + email + " taken");
 		} 
 		// Otherwise add player
 		else {
-			for (int i=0; i<Constants.PLAYER_CLASSES.length; i++) {
-				if (player_class.equals(Constants.PLAYER_CLASSES[i])){
-					players.put(user, new Player(user, email, player_class));
-					emails.put(email, user);
-					numPlayers++;
-					return Message.REGISTER_RESPONSE();
-				}
-			}
-			return Message.REGISTER_ERROR("0000");
+
+			players.put(user, new Player(user, email));
+			emails.put(email, user);
+			numPlayers++;
+			return Message.REGISTER_RESPONSE();
+
 		}
 	}
 	

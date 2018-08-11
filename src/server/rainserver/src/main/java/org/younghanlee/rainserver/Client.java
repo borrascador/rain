@@ -24,6 +24,7 @@ public class Client extends WebSocketClient {
 	public void onOpen(ServerHandshake handshakedata) {
 		System.out.println("new connection opened");
 		send(Message.LOGIN_REQUEST("a", null).toString());
+		send(Message.LOGIN_REQUEST("c", null).toString());
 			
 	}
 
