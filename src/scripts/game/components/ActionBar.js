@@ -47,11 +47,11 @@ export default class ActionBar {
       this.barSize
     );
 
-    this.ctx.fillStyle = "#000";
+    this.ctx.fillStyle = "rgb(22, 11, 33, 0.9)";
     this.ctx.fillRect(
-      (this.canvas.width - this.titleWidth) / 2 - 5,
-      this.canvas.height - this.barSize - this.fontSize / 2,
-      this.titleWidth + 8,
+      (this.canvas.width - this.titleWidth) / 2 - 8,
+      this.canvas.height - (this.barSize + this.fontSize + 4),
+      this.titleWidth + 16,
       this.fontSize + 4
     );
 
@@ -61,7 +61,7 @@ export default class ActionBar {
     this.ctx.fillText(
       this.current,
       (this.canvas.width - this.titleWidth) / 2,
-      this.canvas.height - this.barSize + this.fontSize / 2
+      this.canvas.height - this.barSize
     );
   }
 
@@ -84,6 +84,35 @@ export default class ActionBar {
     })
   }
 
+  renderHover() {
+    const { xDragging, yDragging } = this.connect.drag;
+    if (xDragging && yDragging) {
+      const button = screenToImageButton(xDragging, yDragging, this.buttons);
+      if (button) {
+        const text = button.name || button.target || 'no text';
+        const textWidth = this.ctx.measureText(text).width;
+        const padding = 8;
+
+        this.ctx.fillStyle = "rgb(10, 5, 15, 0.95)";
+        this.ctx.fillRect(
+          button.xPos + button.width / 2 - textWidth / 2 - padding,
+          this.canvas.height - 1.5 * this.barSize - padding,
+          textWidth + padding * 2,
+          this.fontSize + padding * 2
+        );
+
+        this.ctx.textAlign = 'alphabetical';
+        this.ctx.font = this.fontSize + 'px MECC';
+        this.ctx.fillStyle = "#FFF";
+        this.ctx.fillText(
+          text,
+          button.xPos + button.width / 2 - textWidth / 2,
+          this.canvas.height - 1.5 * this.barSize + this.fontSize
+        );
+      }
+    }
+  }
+
   render() {
     if (!this.connect.actions[this.current]) {
       this.current = 'main';
@@ -93,5 +122,6 @@ export default class ActionBar {
     this.titleWidth = this.ctx.measureText(this.current).width;
     this.buttons.length > 0 && this.renderBar();
     this.renderButtons();
+    this.renderHover();
   }
 }

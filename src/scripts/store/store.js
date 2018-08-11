@@ -6,9 +6,12 @@ import ReduxWebSocketBridge from 'redux-websocket-bridge';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import initSubscriber from 'redux-subscriber';
 import { errorLogger } from './errors';
+import { DRAG } from './actions/actions';
 
 function configureStore () {
-	const loggerMiddleware = createLogger();
+	const loggerMiddleware = createLogger({
+	  predicate: (getState, action) => action.type !== DRAG
+	});
 	return createStore(
 		reducer,
 		applyMiddleware(

@@ -9,8 +9,9 @@ import {
   EVENT_REQUEST, EVENT_PROMPT, EVENT_DECISION, EVENT_RESULT, EVENT_ERROR,
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
-import { keyDown, keyUp, mouseDown, drag, mouseUp, clicked } from './input';
-import { zoomIn, zoomOut, changeMode } from './ui';
+import {
+  keyDown, keyUp, mouseDown, drag, mouseUp, clicked,zoomIn, zoomOut, changeMode
+} from './ui';
 import {
   sendRequest, receiveError, registerResponse, loginResponse, logoutResponse,
   positionResponse, tileUpdate, eventPrompt, eventResult, openSocket, closeSocket

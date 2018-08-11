@@ -36,9 +36,9 @@ export default class Connect {
     return trueKeys;
   }
 
-  get offset() {
-    const {offsetX, offsetY} = this.store.getState();
-    return {offsetX, offsetY,};
+  get drag() {
+    const {xDragging, yDragging} = this.store.getState();
+    return {xDragging, yDragging,};
   }
 
   get story() {
