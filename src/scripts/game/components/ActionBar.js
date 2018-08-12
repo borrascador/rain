@@ -27,13 +27,22 @@ export default class ActionBar {
   update(delta, x, y) {
     // this.animate.update(delta);
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button && button.target) {
+    if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
       this.current = button.target;
     } else if (button && button.tag === 'seed') {
       this.store.dispatch(sendEvent('plant', button.id));
       this.current = 'main';
     } else if (button && button.tag === 'harvest') {
       this.store.dispatch(sendEvent('harvest', button.id));
+      this.current = 'main';
+    } else if (button && button.tag === 'hunting') {
+      this.store.dispatch(sendEvent('hunt', button.id));
+      this.current = 'main';
+    } else if (button && button.tag === 'fishing') {
+      this.store.dispatch(sendEvent('fish', button.id));
+      this.current = 'main';
+    } else if (button && button.tag === 'food') {
+      this.store.dispatch(sendEvent('eat', button.id));
       this.current = 'main';
     }
   }

@@ -3,7 +3,8 @@ import { getActions, mergeArrays } from './utils';
 export function request(state) {
   return Object.assign({}, state, {
     sending: true,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -22,7 +23,8 @@ export function error(state, action) {
 export function registerResponse(state) {
   return Object.assign({}, state, {
     sending: false,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -39,7 +41,8 @@ export function loginResponse(state, action) {
     position: action.payload.position,
     sight: action.payload.sight,
     zoom: 3,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -56,7 +59,8 @@ export function logoutResponse(state) {
     zoom: 3,
     sending: false,
     loggedIn: false,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -87,24 +91,46 @@ export function eventPrompt(state, action) {
 }
 
 export function eventResult(state, action) {
-  const inventory = mergeArrays(state.inventory, action.payload.inventory)
+  const inventory = mergeArrays(state.inventory, action.payload.inventory);
+  const tiles = mergeArrays(state.tiles, action.payload.tiles);
+  const party = mergeArrays(state.party, action.payload.party);
+  const actions = getActions(inventory, tiles, state.position);
   return Object.assign({}, state, {
-    sending: false,
-    party: mergeArrays(state.party, action.payload.party),
-    inventory: inventory,
-    actions: getActions(inventory, state.tiles, state.position)
+    sending: false, error: null, errorMessage: null,
+    inventory, tiles, party, actions
   });
 }
 
 export function openSocket(state) {
   return Object.assign({}, state, {
-    connected: true
+    connected: true,
+    loggedIn: false,
+    tiles: [],
+    party: [],
+    inventory: [],
+    actions: { 'main': [] },
+    vehicle: null,
+    story: null,
+    position: null,
+    sight: null,
+    zoom: 3,
+    sending: false
   });
 }
 
 export function closeSocket(state) {
   return Object.assign({}, state, {
     connected: false,
-    loggedIn: false
+    loggedIn: false,
+    tiles: [],
+    party: [],
+    inventory: [],
+    actions: { 'main': [] },
+    vehicle: null,
+    story: null,
+    position: null,
+    sight: null,
+    zoom: 3,
+    sending: false
   });
 }

@@ -629,7 +629,7 @@ var _failure = __webpack_require__(18);
 function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
     var state = getState();
-    if (state.sending === false) {
+    if (state.connected && !state.loggedIn && !state.sending) {
       dispatch((0, _actions.registerRequest)(user, email, password));
       var exitLoading = (0, _loading.loadingDialog)(dimCallback);
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
@@ -657,7 +657,7 @@ function register(user, email, password, dimCallback, exitRegister) {
 function login(user, password, dimCallback, exitLogin) {
   return function (dispatch, getState) {
     var state = getState();
-    if (state.sending === false) {
+    if (state.connected && !state.loggedIn && !state.sending) {
       dispatch((0, _actions.loginRequest)(user, password));
       var exitLoading = (0, _loading.loadingDialog)(dimCallback);
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
@@ -685,7 +685,7 @@ function login(user, password, dimCallback, exitLogin) {
 function logout(callback) {
   return function (dispatch, getState) {
     var state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch((0, _actions.logoutRequest)());
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
@@ -705,7 +705,7 @@ function logout(callback) {
 function position(position) {
   return function (dispatch, getState) {
     var state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch((0, _actions.positionRequest)(position));
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
@@ -722,7 +722,7 @@ function position(position) {
 function sendEvent(type, id) {
   return function (dispatch, getState) {
     var state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch((0, _actions.eventRequest)(type, id));
       var unsubscribe = (0, _store.subscribe)('sending', function (state) {
         unsubscribe();
@@ -3187,7 +3187,8 @@ var _utils = __webpack_require__(17);
 function request(state) {
   return Object.assign({}, state, {
     sending: true,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -3206,7 +3207,8 @@ function error(state, action) {
 function registerResponse(state) {
   return Object.assign({}, state, {
     sending: false,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -3223,7 +3225,8 @@ function loginResponse(state, action) {
     position: action.payload.position,
     sight: action.payload.sight,
     zoom: 3,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -3240,7 +3243,8 @@ function logoutResponse(state) {
     zoom: 3,
     sending: false,
     loggedIn: false,
-    error: null
+    error: null,
+    errorMessage: null
   });
 }
 
@@ -3272,24 +3276,46 @@ function eventPrompt(state, action) {
 
 function eventResult(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
+  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
+  var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
+  var actions = (0, _utils.getActions)(inventory, tiles, state.position);
   return Object.assign({}, state, {
-    sending: false,
-    party: (0, _utils.mergeArrays)(state.party, action.payload.party),
-    inventory: inventory,
-    actions: (0, _utils.getActions)(inventory, state.tiles, state.position)
+    sending: false, error: null, errorMessage: null,
+    inventory: inventory, tiles: tiles, party: party, actions: actions
   });
 }
 
 function openSocket(state) {
   return Object.assign({}, state, {
-    connected: true
+    connected: true,
+    loggedIn: false,
+    tiles: [],
+    party: [],
+    inventory: [],
+    actions: { 'main': [] },
+    vehicle: null,
+    story: null,
+    position: null,
+    sight: null,
+    zoom: 3,
+    sending: false
   });
 }
 
 function closeSocket(state) {
   return Object.assign({}, state, {
     connected: false,
-    loggedIn: false
+    loggedIn: false,
+    tiles: [],
+    party: [],
+    inventory: [],
+    actions: { 'main': [] },
+    vehicle: null,
+    story: null,
+    position: null,
+    sight: null,
+    zoom: 3,
+    sending: false
   });
 }
 
@@ -4997,7 +5023,7 @@ var Party = function () {
     key: 'update',
     value: function update(delta, x, y) {
       var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && console.log('foo');
+      clickedButton && console.log(clickedButton.name);
     }
   }, {
     key: 'render',
@@ -5020,12 +5046,12 @@ var Party = function () {
           (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
           );
         });
-        return {
+        return Object.assign({}, member, {
           xPos: x,
           yPos: y,
           width: _this.portraitSize,
           height: _this.portraitSize
-        };
+        });
       });
     }
   }]);
@@ -5356,13 +5382,22 @@ var ActionBar = function () {
     value: function update(delta, x, y) {
       // this.animate.update(delta);
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      if (button && button.target) {
+      if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
         this.current = button.target;
       } else if (button && button.tag === 'seed') {
         this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
         this.current = 'main';
       } else if (button && button.tag === 'harvest') {
         this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
+        this.current = 'main';
+      } else if (button && button.tag === 'hunting') {
+        this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
+        this.current = 'main';
+      } else if (button && button.tag === 'fishing') {
+        this.store.dispatch((0, _requests.sendEvent)('fish', button.id));
+        this.current = 'main';
+      } else if (button && button.tag === 'food') {
+        this.store.dispatch((0, _requests.sendEvent)('eat', button.id));
         this.current = 'main';
       }
     }

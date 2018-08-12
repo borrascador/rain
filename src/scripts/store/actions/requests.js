@@ -11,7 +11,7 @@ import { failureDialog } from '../../game/dialogs/failure';
 export function register(user, email, password, dimCallback, exitRegister) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && !state.loggedIn && !state.sending) {
       dispatch(registerRequest(user, email, password));
       const exitLoading = loadingDialog(dimCallback);
       const unsubscribe = subscribe('sending', state => {
@@ -39,7 +39,7 @@ export function register(user, email, password, dimCallback, exitRegister) {
 export function login(user, password, dimCallback, exitLogin) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && !state.loggedIn && !state.sending) {
       dispatch(loginRequest(user, password));
       const exitLoading = loadingDialog(dimCallback);
       const unsubscribe = subscribe('sending', state => {
@@ -67,7 +67,7 @@ export function login(user, password, dimCallback, exitLogin) {
 export function logout(callback) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch(logoutRequest());
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
@@ -87,7 +87,7 @@ export function logout(callback) {
 export function position(position) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch(positionRequest(position));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
@@ -104,7 +104,7 @@ export function position(position) {
 export function sendEvent(type, id) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch(eventRequest(type, id));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();

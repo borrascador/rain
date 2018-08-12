@@ -21,7 +21,7 @@ export default class Party {
 
   update(delta, x, y) {
     const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
-    clickedButton && console.log('foo');
+    clickedButton && console.log(clickedButton.name);
   }
 
   render() {
@@ -47,12 +47,12 @@ export default class Party {
           (index * 2 + 1.1) * this.portraitSize / 2 // TODO: Eliminate hardcoded values
         );
       });
-      return {
+      return Object.assign({}, member, {
         xPos: x,
         yPos: y,
         width: this.portraitSize,
         height: this.portraitSize
-      };
+      });
     });
   }
 }
