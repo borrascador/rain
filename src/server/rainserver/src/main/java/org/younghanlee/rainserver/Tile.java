@@ -160,7 +160,9 @@ public class Tile {
 			updateNeighbors(null, 0);
 			System.out.println("test2");
 			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
-		} else return null;
+		} else {
+			return Message.ERROR(312, "Missing" + World.getItem(seed_id).getName());
+		}
 	}
 	
 	public JSONObject harvest(int seed_id, Player p) {
@@ -172,8 +174,7 @@ public class Tile {
 			updateNeighbors(null, 0);
 			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
 		} else {
-			// EVENT_ERROR
-			return null;
+			return Message.ERROR(313, "There is no crop " + World.getItem(seed_id).getName() +" here");
 		}
 	}
 	
