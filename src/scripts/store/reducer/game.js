@@ -1,13 +1,13 @@
 import { getActions, mergeArrays } from './utils';
 
-export function sendRequest(state) {
+export function request(state) {
   return Object.assign({}, state, {
     sending: true,
     error: null
   });
 }
 
-export function receiveError(state, action) {
+export function error(state, action) {
   return Object.assign({}, state, {
     sending: false,
     error: action.payload.code,

@@ -144,18 +144,18 @@ var changeMode = exports.changeMode = function changeMode(mode) {
   };
 };
 
-var CLIENT_ERROR = exports.CLIENT_ERROR = 'CLIENT_ERROR';
+var ERROR = exports.ERROR = 'ERROR';
 
-var clientError = exports.clientError = function clientError(code, message) {
+var error = exports.error = function error(code, message) {
   return {
-    type: CLIENT_ERROR,
+    type: ERROR,
     payload: { code: code, message: message }
   };
 };
 
-var sendClientError = exports.sendClientError = function sendClientError(code, message) {
+var sendError = exports.sendError = function sendError(code, message) {
   return {
-    type: CLIENT_ERROR,
+    type: ERROR,
     meta: { send: true },
     payload: { code: code, message: message }
   };
@@ -163,7 +163,6 @@ var sendClientError = exports.sendClientError = function sendClientError(code, m
 
 var REGISTER_REQUEST = exports.REGISTER_REQUEST = 'REGISTER_REQUEST';
 var REGISTER_RESPONSE = exports.REGISTER_RESPONSE = 'REGISTER_RESPONSE';
-var REGISTER_ERROR = exports.REGISTER_ERROR = 'REGISTER_ERROR';
 
 var registerRequest = exports.registerRequest = function registerRequest(user, email, password) {
   return {
@@ -173,24 +172,8 @@ var registerRequest = exports.registerRequest = function registerRequest(user, e
   };
 };
 
-var registerError = exports.registerError = function registerError(code, message) {
-  return {
-    type: REGISTER_ERROR,
-    payload: { code: code, message: message }
-  };
-};
-
-var sendRegisterError = exports.sendRegisterError = function sendRegisterError(code, message) {
-  return {
-    type: REGISTER_ERROR,
-    meta: { send: true },
-    payload: { code: code, message: message }
-  };
-};
-
 var LOGIN_REQUEST = exports.LOGIN_REQUEST = 'LOGIN_REQUEST';
 var LOGIN_RESPONSE = exports.LOGIN_RESPONSE = 'LOGIN_RESPONSE';
-var LOGIN_ERROR = exports.LOGIN_ERROR = 'LOGIN_ERROR';
 
 var loginRequest = exports.loginRequest = function loginRequest(user, password) {
   return {
@@ -200,24 +183,8 @@ var loginRequest = exports.loginRequest = function loginRequest(user, password) 
   };
 };
 
-var loginError = exports.loginError = function loginError(code, message) {
-  return {
-    type: LOGIN_ERROR,
-    payload: { code: code, message: message }
-  };
-};
-
-var sendLoginError = exports.sendLoginError = function sendLoginError(code, message) {
-  return {
-    type: LOGIN_ERROR,
-    meta: { send: true },
-    payload: { code: code, message: message }
-  };
-};
-
 var LOGOUT_REQUEST = exports.LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 var LOGOUT_RESPONSE = exports.LOGOUT_RESPONSE = 'LOGOUT_RESPONSE';
-var LOGOUT_ERROR = exports.LOGOUT_ERROR = 'LOGOUT_ERROR';
 
 var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
   return {
@@ -227,24 +194,8 @@ var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
   };
 };
 
-var logoutError = exports.logoutError = function logoutError(code, message) {
-  return {
-    type: LOGOUT_ERROR,
-    payload: { code: code, message: message }
-  };
-};
-
-var sendLogoutError = exports.sendLogoutError = function sendLogoutError(code, message) {
-  return {
-    type: LOGOUT_ERROR,
-    meta: { send: true },
-    payload: { code: code, message: message }
-  };
-};
-
 var POSITION_REQUEST = exports.POSITION_REQUEST = 'POSITION_REQUEST';
 var POSITION_RESPONSE = exports.POSITION_RESPONSE = 'POSITION_RESPONSE';
-var POSITION_ERROR = exports.POSITION_ERROR = 'POSITION_ERROR';
 
 var positionRequest = exports.positionRequest = function positionRequest(position) {
   return {
@@ -254,49 +205,18 @@ var positionRequest = exports.positionRequest = function positionRequest(positio
   };
 };
 
-var positionError = exports.positionError = function positionError(code, message) {
-  return {
-    type: POSITION_ERROR,
-    payload: { code: code, message: message }
-  };
-};
-
-var sendPositionError = exports.sendPositionError = function sendPositionError(code, message) {
-  return {
-    type: POSITION_ERROR,
-    meta: { send: true },
-    payload: { code: code, message: message }
-  };
-};
-
 var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 var EVENT_REQUEST = exports.EVENT_REQUEST = 'EVENT_REQUEST';
 var EVENT_PROMPT = exports.EVENT_PROMPT = 'EVENT_PROMPT';
 var EVENT_DECISION = exports.EVENT_DECISION = 'EVENT_DECISION';
 var EVENT_RESULT = exports.EVENT_RESULT = 'EVENT_RESULT';
-var EVENT_ERROR = exports.EVENT_ERROR = 'EVENT_ERROR';
 
 var eventRequest = exports.eventRequest = function eventRequest(type, id) {
   return {
     type: EVENT_REQUEST,
     meta: { send: true },
     payload: { type: type, id: id }
-  };
-};
-
-var eventError = exports.eventError = function eventError(code, message) {
-  return {
-    type: EVENT_ERROR,
-    payload: { code: code, message: message }
-  };
-};
-
-var sendEventError = exports.sendEventError = function sendEventError(code, message) {
-  return {
-    type: EVENT_ERROR,
-    meta: { send: true },
-    payload: { code: code, message: message }
   };
 };
 
@@ -727,7 +647,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch((0, _actions.registerError)(200, 'Response timeout'));
+        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
         (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -755,7 +675,7 @@ function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch((0, _actions.loginError)(200, 'Response timeout'));
+        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
         (0, _failure.failureDialog)(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -776,7 +696,7 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch((0, _actions.logoutError)(200, 'Response timeout'));
+        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -793,7 +713,7 @@ function position(position) {
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch((0, _actions.positionError)(200, 'Response timeout'));
+        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -810,7 +730,7 @@ function sendEvent(type, id) {
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch((0, _actions.eventError)(200, 'Response timeout'));
+        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -3170,14 +3090,9 @@ function reducer(state, action) {
     case _actions.POSITION_REQUEST:
     case _actions.EVENT_REQUEST:
     case _actions.EVENT_DECISION:
-      return (0, _game.sendRequest)(state);
-    case _actions.CLIENT_ERROR:
-    case _actions.REGISTER_ERROR:
-    case _actions.LOGIN_ERROR:
-    case _actions.LOGOUT_ERROR:
-    case _actions.POSITION_ERROR:
-    case _actions.EVENT_ERROR:
-      return (0, _game.receiveError)(state, action);
+      return (0, _game.request)(state);
+    case _actions.ERROR:
+      return (0, _game.error)(state, action);
     case _actions.REGISTER_RESPONSE:
       return (0, _game.registerResponse)(state);
     case _actions.LOGIN_RESPONSE:
@@ -3255,8 +3170,8 @@ module.exports = function isFSA(action) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sendRequest = sendRequest;
-exports.receiveError = receiveError;
+exports.request = request;
+exports.error = error;
 exports.registerResponse = registerResponse;
 exports.loginResponse = loginResponse;
 exports.logoutResponse = logoutResponse;
@@ -3269,14 +3184,14 @@ exports.closeSocket = closeSocket;
 
 var _utils = __webpack_require__(17);
 
-function sendRequest(state) {
+function request(state) {
   return Object.assign({}, state, {
     sending: true,
     error: null
   });
 }
 
-function receiveError(state, action) {
+function error(state, action) {
   return Object.assign({}, state, {
     sending: false,
     error: action.payload.code,
@@ -5946,7 +5861,7 @@ function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch((0, _requests.register)(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch((0, _actions.registerError)(110, 'Passwords do not match'));
+      store.dispatch((0, _actions.error)(110, 'Passwords do not match'));
       (0, _failure.failureDialog)(store.getState().errorMessage, dimCallback);
     }
   };

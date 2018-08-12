@@ -1,6 +1,6 @@
 import { create, makeInputLine, makeButtons } from './utils';
 import { register } from '../../store/actions/requests';
-import { registerError } from '../../store/actions/actions';
+import { error } from '../../store/actions/actions';
 import { failureDialog } from './failure';
 
 export function registerDialog(store, setDim) {
@@ -36,7 +36,7 @@ export function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch(register(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch(registerError(110, 'Passwords do not match'));
+      store.dispatch(error(110, 'Passwords do not match'));
       failureDialog(store.getState().errorMessage, dimCallback);
     }
   }
