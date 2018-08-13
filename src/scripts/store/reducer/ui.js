@@ -1,6 +1,7 @@
+import { MODE } from '../../game/constants';
 import { updateObject } from './utils';
 
-function makeKeys() {
+export function makeKeys() {
   let keys = {
     "ArrowUp": false,
     "ArrowDown": false,
@@ -23,7 +24,7 @@ function makeKeys() {
   return keys;
 }
 
-function keyDown(state, action) {
+export function keyDown(state, action) {
   if (state.keys.hasOwnProperty(action.payload.key)) {
     return updateObject(state, {
       keys: updateObject(state.keys, {
@@ -35,7 +36,7 @@ function keyDown(state, action) {
   }
 }
 
-function keyUp(state, action) {
+export function keyUp(state, action) {
   if (state.keys.hasOwnProperty(action.payload.key)) {
     return updateObject(state, {
       keys: updateObject(state.keys, {
@@ -47,27 +48,23 @@ function keyUp(state, action) {
   }
 }
 
-function mouseDown(state, action) {
+export function mouseDown(state, action) {
   return updateObject(state, {
     xDragging: action.payload.x,
     yDragging: action.payload.y,
   });
 }
 
-function drag(state, action) {
-  if (state.xDragging !== null || state.yDragging !== null) {
-    return updateObject(state, {
-      offsetX: state.offsetX + action.payload.x - state.xDragging,
-      offsetY: state.offsetY + action.payload.y - state.yDragging,
-      xDragging: action.payload.x,
-      yDragging: action.payload.y,
-    });
-  } else {
-    return state;
-  }
+export function drag(state, action) {
+  return updateObject(state, {
+    offsetX: state.offsetX + action.payload.x - state.xDragging,
+    offsetY: state.offsetY + action.payload.y - state.yDragging,
+    xDragging: action.payload.x,
+    yDragging: action.payload.y,
+  });
 }
 
-function mouseUp(state, action) {
+export function mouseUp(state, action) {
   if (state.xDragging !== null || state.yDragging !== null) {
     return updateObject(state, {
       xDragging: null,
@@ -80,7 +77,7 @@ function mouseUp(state, action) {
   }
 }
 
-function clicked(state) {
+export function clicked(state) {
   if (state.xClick !== null && state.yClick !== null) {
     return updateObject(state, {
       xClick: null,
@@ -91,4 +88,28 @@ function clicked(state) {
   }
 }
 
-export { makeKeys, keyDown, keyUp, mouseDown, drag, mouseUp, clicked };
+export function zoomIn(state) {
+  if (state.zoom < 5) {
+    return updateObject(state, {
+      zoom: state.zoom + 1
+    })
+  } else {
+    return state;
+  }
+}
+
+export function zoomOut(state) {
+  if (state.zoom > 1) {
+    return updateObject(state, {
+      zoom: state.zoom - 1
+    })
+  } else {
+    return state;
+  }
+}
+
+export function changeMode(state, action) {
+  return updateObject(state, {
+    mode: action.payload.mode,
+  });
+}

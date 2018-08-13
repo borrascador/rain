@@ -1,10 +1,6 @@
 import {
-  changeMode,
-  registerRequest, registerError,
-  loginRequest, loginError,
-  logoutRequest, logoutError,
-  positionRequest, positionError,
-  eventRequest, eventError
+  changeMode, error, registerRequest, loginRequest,
+  logoutRequest, positionRequest, eventRequest,
 } from './actions';
 import { subscribe } from '../store';
 import { MODE } from '../../game/constants';
@@ -15,7 +11,7 @@ import { failureDialog } from '../../game/dialogs/failure';
 export function register(user, email, password, dimCallback, exitRegister) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && !state.loggedIn && !state.sending) {
       dispatch(registerRequest(user, email, password));
       const exitLoading = loadingDialog(dimCallback);
       const unsubscribe = subscribe('sending', state => {
@@ -33,7 +29,7 @@ export function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch(registerError('0201')); // Timeout error
+        getState().sending && dispatch(error(200, 'Response timeout'));
         failureDialog(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -43,7 +39,7 @@ export function register(user, email, password, dimCallback, exitRegister) {
 export function login(user, password, dimCallback, exitLogin) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && !state.loggedIn && !state.sending) {
       dispatch(loginRequest(user, password));
       const exitLoading = loadingDialog(dimCallback);
       const unsubscribe = subscribe('sending', state => {
@@ -61,7 +57,7 @@ export function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch(loginError('0201')); // Timeout error
+        getState().sending && dispatch(error(200, 'Response timeout'));
         failureDialog(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -71,7 +67,7 @@ export function login(user, password, dimCallback, exitLogin) {
 export function logout(callback) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch(logoutRequest());
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
@@ -82,7 +78,7 @@ export function logout(callback) {
       const timer = setTimeout(() => {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch(logoutError('0201')); // Timeout error
+        getState().sending && dispatch(error(200, 'Response timeout'));
       }, 2000);
     }
   }
@@ -91,7 +87,7 @@ export function logout(callback) {
 export function position(position) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch(positionRequest(position));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
@@ -99,7 +95,7 @@ export function position(position) {
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        getState().sending && dispatch(positionError('0201')); // Timeout error
+        getState().sending && dispatch(error(200, 'Response timeout'));
       }, 2000);
     }
   }
@@ -108,7 +104,7 @@ export function position(position) {
 export function sendEvent(type, id) {
   return (dispatch, getState) => {
     const state = getState();
-    if (state.sending === false) {
+    if (state.connected && state.loggedIn && !state.sending) {
       dispatch(eventRequest(type, id));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
@@ -116,7 +112,7 @@ export function sendEvent(type, id) {
       });
       const timer = setTimeout(() => {
         unsubscribe();
-        getState().sending && dispatch(eventError('0201')); // Timeout error
+        getState().sending && dispatch(error(200, 'Response timeout'));
       }, 2000);
     }
   }

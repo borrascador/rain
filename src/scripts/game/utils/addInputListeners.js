@@ -19,9 +19,9 @@ export default function addInputListeners (dispatch, canvas) {
     dispatch(mouseDown(event.x, event.y));
   }, false);
 
-  // canvas.addEventListener('mousemove', (event) => {
-  //   dispatch(drag(event.x, event.y));
-  // }, false);
+  canvas.addEventListener('mousemove', (event) => {
+    dispatch(drag(event.x, event.y));
+  }, false);
 
   canvas.addEventListener('mouseup', (event) => {
     const rect = canvas.getBoundingClientRect();

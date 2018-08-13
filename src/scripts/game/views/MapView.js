@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import Camera from '../components/Camera';
 import Overlay from '../components/Overlay';
 import ActionBar from '../components/ActionBar';

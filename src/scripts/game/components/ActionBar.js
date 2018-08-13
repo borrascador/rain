@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { drawById, drawByName } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
@@ -27,7 +27,7 @@ export default class ActionBar {
   update(delta, x, y) {
     // this.animate.update(delta);
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button && button.target) {
+    if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
       this.current = button.target;
     } else if (button && button.tag === 'seed') {
       this.store.dispatch(sendEvent('plant', button.id));
@@ -35,11 +35,20 @@ export default class ActionBar {
     } else if (button && button.tag === 'harvest') {
       this.store.dispatch(sendEvent('harvest', button.id));
       this.current = 'main';
+    } else if (button && button.tag === 'hunting') {
+      this.store.dispatch(sendEvent('hunt', button.id));
+      this.current = 'main';
+    } else if (button && button.tag === 'fishing') {
+      this.store.dispatch(sendEvent('fish', button.id));
+      this.current = 'main';
+    } else if (button && button.tag === 'food') {
+      this.store.dispatch(sendEvent('eat', button.id));
+      this.current = 'main';
     }
   }
 
   renderBar() {
-    this.ctx.fillStyle = "rgb(22, 11, 33, 0.9)";
+    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(
       (this.canvas.width - this.barWidth) / 2,
       this.canvas.height - this.barSize,
@@ -47,11 +56,11 @@ export default class ActionBar {
       this.barSize
     );
 
-    this.ctx.fillStyle = "#000";
+    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(
-      (this.canvas.width - this.titleWidth) / 2 - 5,
-      this.canvas.height - this.barSize - this.fontSize / 2,
-      this.titleWidth + 8,
+      (this.canvas.width - this.titleWidth) / 2 - 8,
+      this.canvas.height - (this.barSize + this.fontSize + 4),
+      this.titleWidth + 16,
       this.fontSize + 4
     );
 
@@ -61,7 +70,7 @@ export default class ActionBar {
     this.ctx.fillText(
       this.current,
       (this.canvas.width - this.titleWidth) / 2,
-      this.canvas.height - this.barSize + this.fontSize / 2
+      this.canvas.height - this.barSize
     );
   }
 
@@ -84,6 +93,44 @@ export default class ActionBar {
     })
   }
 
+  renderHover() {
+    const { xDragging, yDragging } = this.connect.drag;
+    if (xDragging && yDragging) {
+      const button = screenToImageButton(xDragging, yDragging, this.buttons);
+      if (button) {
+        const text = button.name || button.target || 'no text';
+        const textWidth = this.ctx.measureText(text).width;
+        const padding = 8;
+
+        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+        this.ctx.fillRect(
+          button.xPos + button.width / 2 - textWidth / 2 - padding,
+          this.canvas.height - 1.2 * this.barSize - padding,
+          textWidth + padding * 2,
+          this.fontSize + padding * 2
+        );
+
+        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+        const y = this.canvas.height - 1.2 * this.barSize + this.fontSize + padding;
+        this.ctx.beginPath();
+        this.ctx.moveTo(button.xPos + 1/3 * button.width, y);
+        this.ctx.lineTo(button.xPos + 2/3 * button.width, y);
+        this.ctx.lineTo(button.xPos + 1/2 * button.width, y + padding);
+        this.ctx.closePath();
+        this.ctx.fill();
+
+        this.ctx.textAlign = 'alphabetical';
+        this.ctx.font = this.fontSize + 'px MECC';
+        this.ctx.fillStyle = "#FFF";
+        this.ctx.fillText(
+          text,
+          button.xPos + button.width / 2 - textWidth / 2,
+          this.canvas.height - 1.2 * this.barSize + this.fontSize
+        );
+      }
+    }
+  }
+
   render() {
     if (!this.connect.actions[this.current]) {
       this.current = 'main';
@@ -93,5 +140,6 @@ export default class ActionBar {
     this.titleWidth = this.ctx.measureText(this.current).width;
     this.buttons.length > 0 && this.renderBar();
     this.renderButtons();
+    this.renderHover();
   }
 }

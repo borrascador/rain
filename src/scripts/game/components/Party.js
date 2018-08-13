@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
@@ -16,16 +16,12 @@ export default class Party {
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
 
-    const party = this.connect.party;
-
-    this.buttons = party.map(member => (
-      { name: member.name, id: member.icon, onClick: () => console.log(member.name) }
-    ));
+    this.buttons = this.connect.party.slice();
   }
 
   update(delta, x, y) {
     const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
-    clickedButton && clickedButton.onClick();
+    clickedButton && console.log(clickedButton.name);
   }
 
   render() {
@@ -51,15 +47,12 @@ export default class Party {
           (index * 2 + 1.1) * this.portraitSize / 2 // TODO: Eliminate hardcoded values
         );
       });
-      return {
-        name: member.name,
-        id: member.icon,
-        onClick: () => console.log(member.name),
+      return Object.assign({}, member, {
         xPos: x,
         yPos: y,
         width: this.portraitSize,
         height: this.portraitSize
-      };
+      });
     });
   }
 }

@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { create } from './utils';
 
 export function inventoryDialog(store, setDim) {

@@ -1,4 +1,4 @@
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import { logout } from '../../store/actions/requests';
 import { zoomIn, zoomOut } from '../../store/actions/actions';
 import { screenToImageButton } from './utils';

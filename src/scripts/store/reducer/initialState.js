@@ -1,6 +1,6 @@
 import { MODE, VEHICLE } from '../../game/constants';
 import keys from '../../../data/keys.json';
-import { makeKeys } from '../utils/input';
+import { makeKeys } from './ui';
 
 // import party from '../../../data/party.json';
 // import inventory from '../../../data/inventory.json';
@@ -37,7 +37,9 @@ const connectionState = {
   connected: false,
   loggedIn: false,
   sending: false,
-  error: null
+  error: null,
+  errorMessage: null,
+  errorLog: []
 };
 
 export const initialState = Object.assign({},

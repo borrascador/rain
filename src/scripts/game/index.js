@@ -1,5 +1,5 @@
 import addInputListeners from './utils/addInputListeners';
-import Connect from '../store/reducers/Connect';
+import Connect from '../store/Connect';
 import Loader from './utils/Loader';
 import atlasImage from '../../images/atlas.png';
 import iconsImage from '../../images/icons.png';

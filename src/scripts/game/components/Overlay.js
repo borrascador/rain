@@ -1,6 +1,6 @@
 import {MODE} from '../constants';
 import {changeMode} from '../../store/actions/actions';
-import Connect from '../../store/reducers/Connect';
+import Connect from '../../store/Connect';
 import Zoom from './Zoom';
 import Party from './Party';
 import Vehicle from './Vehicle';
