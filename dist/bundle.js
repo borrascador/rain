@@ -3181,8 +3181,8 @@ function loginResponse(state, action) {
     party: action.payload.party,
     inventory: action.payload.inventory,
     actions: (0, _utils.getActions)(action.payload.inventory, action.payload.tiles, action.payload.position),
-    // vehicle: action.payload.vehicle, // TODO
-    // story: action.payload.story // TODO
+    vehicle: action.payload.vehicle || null,
+    story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
     zoom: 3,
