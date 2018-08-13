@@ -1,7 +1,5 @@
 package org.younghanlee.rainserver;
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.java_websocket.WebSocket;
 
 public class EventHandler {
 	public static void handleRequest (JSONObject event, Connection connection){

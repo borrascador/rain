@@ -1,8 +1,9 @@
 package org.younghanlee.rainserver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,6 +11,9 @@ public class Player {
 	
 	private String name;
 	private String email;
+	private String passwordHash;
+	private String passwordSalt;
+	
 	private boolean online;
 	private int position;
 	private int x;
@@ -28,8 +32,11 @@ public class Player {
 	}
 
 	
-	public Player(String name, String email) {
+	public Player(String name, String email, String password) {
 		this.name = name;
+		this.passwordSalt = Password.generateSalt();
+		this.passwordHash = Password.multiHash(password, passwordSalt);
+		
 		this.sight = 2;
 		
 		// Player is offline upon registration. Call Login afterwards
@@ -51,6 +58,14 @@ public class Player {
 		setQuantity(2, 100);
 		
 		this.buffer = new HashSet<Integer>();
+	}
+	
+	public String getHash() {
+		return passwordHash;
+	}
+	
+	public String getSalt() {
+		return passwordSalt;
 	}
 	
 	public void login(Connection connection) {

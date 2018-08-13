@@ -1,14 +1,10 @@
 package org.younghanlee.rainserver;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -194,7 +190,7 @@ public class World {
 		}
 	}
 	
-	public static JSONObject addPlayer(String user, String email, String player_class) {
+	public static JSONObject addPlayer(String user, String email, String password) {
 		
 		// Check if username is taken
 		if (players.containsKey(user)) {
@@ -208,7 +204,7 @@ public class World {
 		// Otherwise add player
 		else {
 
-			players.put(user, new Player(user, email));
+			players.put(user, new Player(user, email, password));
 			emails.put(email, user);
 			numPlayers++;
 			return Message.REGISTER_RESPONSE();
