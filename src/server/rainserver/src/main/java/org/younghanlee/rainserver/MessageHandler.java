@@ -1,7 +1,6 @@
 package org.younghanlee.rainserver;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.java_websocket.WebSocket;
 
 public class MessageHandler {
 
@@ -33,10 +32,11 @@ public class MessageHandler {
 				payload = jo.getJSONObject("payload");
 				String user = payload.getString("user");
 				String email = payload.getString("email");
+				String password = payload.getString("password");
 				
 				System.out.println("Attempting to add " + user + " " + email);
 				
-				response = World.addPlayer(user, email, "TRIBE");
+				response = World.addPlayer(user, email, password);
 				connection.send(response.toString());
 				break;
 				
@@ -57,6 +57,17 @@ public class MessageHandler {
 					connection.send(response.toString());
 					break;
 				} 
+				
+				// Check if password is correct 
+				String hash = Password.multiHash(payload.getString("password"), p.getSalt());
+				if (!hash.equals(p.getHash())) {
+					response = Message.ERROR(114, null);
+					// System.out.println("wrong password");
+					connection.send(response.toString());
+					break;
+				} else {
+					// System.out.println("right password");
+				}
 				
 				// Check if player is online
 				if (p.isOnline()) {
