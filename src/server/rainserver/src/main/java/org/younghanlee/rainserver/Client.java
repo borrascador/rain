@@ -8,8 +8,6 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 
-import org.json.JSONObject;
-
 public class Client extends WebSocketClient {
 
 	public Client(URI serverUri, Draft draft) {

@@ -1,9 +1,7 @@
 package org.younghanlee.rainserver;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

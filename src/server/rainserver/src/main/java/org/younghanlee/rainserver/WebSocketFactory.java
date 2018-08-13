@@ -5,8 +5,8 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 
 import org.java_websocket.WebSocketAdapter;
-import org.java_websocket.drafts.Draft;
 import org.java_websocket.WebSocketServerFactory;
+import org.java_websocket.drafts.Draft;
 
 public class WebSocketFactory implements WebSocketServerFactory {
 	@Override

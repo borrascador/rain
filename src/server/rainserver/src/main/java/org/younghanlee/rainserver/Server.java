@@ -3,8 +3,6 @@ package org.younghanlee.rainserver;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -71,8 +69,8 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onStart() {
 		System.out.println("server started successfully");
-		World.addPlayer("a", "test1@test.com", "TRIBE");
-		World.addPlayer("b", "test2@test.com", "TRIBE");
+		World.addPlayer("a", "test1@test.com", "a");
+		World.addPlayer("b", "test2@test.com", "b");
 		dump();
 	}
 	
@@ -102,7 +100,8 @@ public class Server extends WebSocketServer {
 		}
 		bf.mkdirs();
 		
-		new World();		
+		new World();	
+		new Password();
 		
 		String host = "localhost";
 		int port = 8887;
