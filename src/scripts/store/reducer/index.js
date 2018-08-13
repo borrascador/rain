@@ -2,8 +2,7 @@ import {
   KEYDOWN, KEYUP, MOUSEDOWN, DRAG, MOUSEUP, CLICKED,
   ZOOM_IN, ZOOM_OUT, CHANGE_MODE, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
-  LOGOUT_REQUEST, LOGOUT_RESPONSE, TILE_UPDATE,
-  EVENT_REQUEST, EVENT_PROMPT, EVENT_DECISION, EVENT_RESULT,
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, TILE_UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import {
@@ -11,7 +10,7 @@ import {
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
-  tileUpdate, eventPrompt, eventResult, openSocket, closeSocket
+  tileUpdate, eventResponse, openSocket, closeSocket
 } from './game';
 import { initialState } from './initialState';
 
@@ -42,7 +41,6 @@ export default function reducer(state, action) {
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:
     case EVENT_REQUEST:
-    case EVENT_DECISION:
       return request(state);
     case ERROR:
       return error(state, action);
@@ -54,10 +52,8 @@ export default function reducer(state, action) {
       return logoutResponse(state);
     case TILE_UPDATE:
       return tileUpdate(state, action);
-    case EVENT_PROMPT:
-      return eventPrompt(state, action);
-    case EVENT_RESULT:
-      return eventResult(state, action);
+    case EVENT_RESPONSE:
+      return eventResponse(state, action);
     case `@@websocket/${ OPEN }`:
       return openSocket(state);
     case `@@websocket/${ CLOSE }`:

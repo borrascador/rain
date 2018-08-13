@@ -72,27 +72,22 @@ export function tileUpdate(state, action) {
   });
 }
 
-export function eventPrompt(state, action) {
-  return Object.assign({}, state, {
-    // TODO
-    // Use this to receive events...? Should I do `sending: false` here?
-  });
-}
-
-export function eventResult(state, action) {
+export function eventResponse(state, action) {
   const inventory = mergeArrays(state.inventory, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const position = action.payload.position || state.position;
+  const story = action.payload.story || state.story;
   const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
     sending: false,
     error: null,
     errorMessage: null,
-    position,
     inventory,
     tiles,
     party,
+    position,
+    story,
     actions
   });
 }
