@@ -194,17 +194,6 @@ var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
   };
 };
 
-var POSITION_REQUEST = exports.POSITION_REQUEST = 'POSITION_REQUEST';
-var POSITION_RESPONSE = exports.POSITION_RESPONSE = 'POSITION_RESPONSE';
-
-var positionRequest = exports.positionRequest = function positionRequest(position) {
-  return {
-    type: POSITION_REQUEST,
-    meta: { send: true },
-    payload: { position: position }
-  };
-};
-
 var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 var EVENT_REQUEST = exports.EVENT_REQUEST = 'EVENT_REQUEST';
@@ -611,7 +600,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.register = register;
 exports.login = login;
 exports.logout = logout;
-exports.position = position;
 exports.sendEvent = sendEvent;
 
 var _actions = __webpack_require__(0);
@@ -696,23 +684,6 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
-      }, 2000);
-    }
-  };
-}
-
-function position(position) {
-  return function (dispatch, getState) {
-    var state = getState();
-    if (state.connected && state.loggedIn && !state.sending) {
-      dispatch((0, _actions.positionRequest)(position));
-      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
-        unsubscribe();
-        clearTimeout(timer);
-      });
-      var timer = setTimeout(function () {
-        unsubscribe();
         getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
       }, 2000);
     }
@@ -3087,7 +3058,6 @@ function reducer(state, action) {
     case _actions.REGISTER_REQUEST:
     case _actions.LOGIN_REQUEST:
     case _actions.LOGOUT_REQUEST:
-    case _actions.POSITION_REQUEST:
     case _actions.EVENT_REQUEST:
     case _actions.EVENT_DECISION:
       return (0, _game.request)(state);
@@ -3099,8 +3069,6 @@ function reducer(state, action) {
       return (0, _game.loginResponse)(state, action);
     case _actions.LOGOUT_RESPONSE:
       return (0, _game.logoutResponse)(state);
-    case _actions.POSITION_RESPONSE:
-      return (0, _game.positionResponse)(state, action);
     case _actions.TILE_UPDATE:
       return (0, _game.tileUpdate)(state, action);
     case _actions.EVENT_PROMPT:
@@ -3175,7 +3143,6 @@ exports.error = error;
 exports.registerResponse = registerResponse;
 exports.loginResponse = loginResponse;
 exports.logoutResponse = logoutResponse;
-exports.positionResponse = positionResponse;
 exports.tileUpdate = tileUpdate;
 exports.eventPrompt = eventPrompt;
 exports.eventResult = eventResult;
@@ -3248,17 +3215,6 @@ function logoutResponse(state) {
   });
 }
 
-function positionResponse(state, action) {
-  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
-  return Object.assign({}, state, {
-    sending: false,
-    position: action.payload.position,
-    tiles: tiles,
-    actions: (0, _utils.getActions)(state.inventory, tiles, action.payload.position),
-    error: null
-  });
-}
-
 function tileUpdate(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   return Object.assign({}, state, {
@@ -3278,10 +3234,17 @@ function eventResult(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
-  var actions = (0, _utils.getActions)(inventory, tiles, state.position);
+  var position = action.payload.position || state.position;
+  var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
-    sending: false, error: null, errorMessage: null,
-    inventory: inventory, tiles: tiles, party: party, actions: actions
+    sending: false,
+    error: null,
+    errorMessage: null,
+    position: position,
+    inventory: inventory,
+    tiles: tiles,
+    party: party,
+    actions: actions
   });
 }
 
@@ -4664,7 +4627,7 @@ var Camera = function () {
 
         var tile = (0, _utils.getItemById)(this.clickTiles, clickId);
         if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-          this.store.dispatch((0, _requests.position)(clickId));
+          this.store.dispatch((0, _requests.sendEvent)('move', clickId));
         }
       }
     }

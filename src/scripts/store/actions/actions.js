@@ -91,15 +91,6 @@ export const logoutRequest = (user) => ({
   payload: { user }
 });
 
-export const POSITION_REQUEST = 'POSITION_REQUEST';
-export const POSITION_RESPONSE = 'POSITION_RESPONSE';
-
-export const positionRequest = (position) => ({
-  type: POSITION_REQUEST,
-  meta: { send: true },
-  payload: { position }
-});
-
 export const TILE_UPDATE = 'TILE_UPDATE';
 
 export const EVENT_REQUEST = 'EVENT_REQUEST';

@@ -2,8 +2,8 @@ import {
   KEYDOWN, KEYUP, MOUSEDOWN, DRAG, MOUSEUP, CLICKED,
   ZOOM_IN, ZOOM_OUT, CHANGE_MODE, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
-  LOGOUT_REQUEST, LOGOUT_RESPONSE, POSITION_REQUEST, POSITION_RESPONSE,
-  TILE_UPDATE, EVENT_REQUEST, EVENT_PROMPT, EVENT_DECISION, EVENT_RESULT,
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, TILE_UPDATE,
+  EVENT_REQUEST, EVENT_PROMPT, EVENT_DECISION, EVENT_RESULT,
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import {
@@ -11,7 +11,7 @@ import {
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
-  positionResponse, tileUpdate, eventPrompt, eventResult, openSocket, closeSocket
+  tileUpdate, eventPrompt, eventResult, openSocket, closeSocket
 } from './game';
 import { initialState } from './initialState';
 
@@ -41,7 +41,6 @@ export default function reducer(state, action) {
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:
-    case POSITION_REQUEST:
     case EVENT_REQUEST:
     case EVENT_DECISION:
       return request(state);
@@ -53,8 +52,6 @@ export default function reducer(state, action) {
       return loginResponse(state, action);
     case LOGOUT_RESPONSE:
       return logoutResponse(state);
-    case POSITION_RESPONSE:
-      return positionResponse(state, action);
     case TILE_UPDATE:
       return tileUpdate(state, action);
     case EVENT_PROMPT:

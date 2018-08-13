@@ -64,17 +64,6 @@ export function logoutResponse(state) {
   });
 }
 
-export function positionResponse(state, action) {
-  const tiles = mergeArrays(state.tiles, action.payload.tiles);
-  return Object.assign({}, state, {
-    sending: false,
-    position: action.payload.position,
-    tiles: tiles,
-    actions: getActions(state.inventory, tiles, action.payload.position),
-    error: null
-  });
-}
-
 export function tileUpdate(state, action) {
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   return Object.assign({}, state, {
@@ -94,10 +83,17 @@ export function eventResult(state, action) {
   const inventory = mergeArrays(state.inventory, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
-  const actions = getActions(inventory, tiles, state.position);
+  const position = action.payload.position || state.position;
+  const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
-    sending: false, error: null, errorMessage: null,
-    inventory, tiles, party, actions
+    sending: false,
+    error: null,
+    errorMessage: null,
+    position,
+    inventory,
+    tiles,
+    party,
+    actions
   });
 }
 
