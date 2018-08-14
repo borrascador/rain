@@ -36,8 +36,8 @@ export function loginResponse(state, action) {
     party: action.payload.party,
     inventory: action.payload.inventory,
     actions: getActions(action.payload.inventory, action.payload.tiles, action.payload.position),
-    // vehicle: action.payload.vehicle, // TODO
-    // story: action.payload.story // TODO
+    vehicle: action.payload.vehicle || null,
+    story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
     zoom: 3,
@@ -64,17 +64,6 @@ export function logoutResponse(state) {
   });
 }
 
-export function positionResponse(state, action) {
-  const tiles = mergeArrays(state.tiles, action.payload.tiles);
-  return Object.assign({}, state, {
-    sending: false,
-    position: action.payload.position,
-    tiles: tiles,
-    actions: getActions(state.inventory, tiles, action.payload.position),
-    error: null
-  });
-}
-
 export function tileUpdate(state, action) {
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   return Object.assign({}, state, {
@@ -83,21 +72,23 @@ export function tileUpdate(state, action) {
   });
 }
 
-export function eventPrompt(state, action) {
-  return Object.assign({}, state, {
-    // TODO
-    // Use this to receive events...? Should I do `sending: false` here?
-  });
-}
-
-export function eventResult(state, action) {
+export function eventResponse(state, action) {
   const inventory = mergeArrays(state.inventory, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
-  const actions = getActions(inventory, tiles, state.position);
+  const position = action.payload.position || state.position;
+  const story = action.payload.story || state.story;
+  const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
-    sending: false, error: null, errorMessage: null,
-    inventory, tiles, party, actions
+    sending: false,
+    error: null,
+    errorMessage: null,
+    inventory,
+    tiles,
+    party,
+    position,
+    story,
+    actions
   });
 }
 

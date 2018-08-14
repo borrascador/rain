@@ -1,5 +1,5 @@
 import Connect from '../../store/Connect';
-import { position } from '../../store/actions/requests';
+import { sendEvent } from '../../store/actions/requests';
 import { LAYER } from '../constants'
 import { screenToImageButtonId, getItemById } from './utils';
 import { drawById, drawByName } from '../utils/draw';
@@ -40,7 +40,7 @@ export default class Camera {
       const { pos } = this.connect.map;
       const tile = getItemById(this.clickTiles, clickId);
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-        this.store.dispatch(position(clickId));
+        this.store.dispatch(sendEvent('move', clickId));
       }
     }
   }

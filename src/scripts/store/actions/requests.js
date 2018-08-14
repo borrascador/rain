@@ -1,6 +1,5 @@
 import {
-  changeMode, error, registerRequest, loginRequest,
-  logoutRequest, positionRequest, eventRequest,
+  changeMode, error, registerRequest, loginRequest, logoutRequest, eventRequest,
 } from './actions';
 import { subscribe } from '../store';
 import { MODE } from '../../game/constants';
@@ -78,23 +77,6 @@ export function logout(callback) {
       const timer = setTimeout(() => {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch(error(200, 'Response timeout'));
-      }, 2000);
-    }
-  }
-}
-
-export function position(position) {
-  return (dispatch, getState) => {
-    const state = getState();
-    if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(positionRequest(position));
-      const unsubscribe = subscribe('sending', state => {
-        unsubscribe();
-        clearTimeout(timer);
-      });
-      const timer = setTimeout(() => {
-        unsubscribe();
         getState().sending && dispatch(error(200, 'Response timeout'));
       }, 2000);
     }

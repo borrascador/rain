@@ -194,23 +194,10 @@ var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
   };
 };
 
-var POSITION_REQUEST = exports.POSITION_REQUEST = 'POSITION_REQUEST';
-var POSITION_RESPONSE = exports.POSITION_RESPONSE = 'POSITION_RESPONSE';
-
-var positionRequest = exports.positionRequest = function positionRequest(position) {
-  return {
-    type: POSITION_REQUEST,
-    meta: { send: true },
-    payload: { position: position }
-  };
-};
-
 var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 var EVENT_REQUEST = exports.EVENT_REQUEST = 'EVENT_REQUEST';
-var EVENT_PROMPT = exports.EVENT_PROMPT = 'EVENT_PROMPT';
-var EVENT_DECISION = exports.EVENT_DECISION = 'EVENT_DECISION';
-var EVENT_RESULT = exports.EVENT_RESULT = 'EVENT_RESULT';
+var EVENT_RESPONSE = exports.EVENT_RESPONSE = 'EVENT_RESULT';
 
 var eventRequest = exports.eventRequest = function eventRequest(type, id) {
   return {
@@ -611,7 +598,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.register = register;
 exports.login = login;
 exports.logout = logout;
-exports.position = position;
 exports.sendEvent = sendEvent;
 
 var _actions = __webpack_require__(0);
@@ -696,23 +682,6 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
-      }, 2000);
-    }
-  };
-}
-
-function position(position) {
-  return function (dispatch, getState) {
-    var state = getState();
-    if (state.connected && state.loggedIn && !state.sending) {
-      dispatch((0, _actions.positionRequest)(position));
-      var unsubscribe = (0, _store.subscribe)('sending', function (state) {
-        unsubscribe();
-        clearTimeout(timer);
-      });
-      var timer = setTimeout(function () {
-        unsubscribe();
         getState().sending && dispatch((0, _actions.error)(200, 'Response timeout'));
       }, 2000);
     }
@@ -3087,9 +3056,7 @@ function reducer(state, action) {
     case _actions.REGISTER_REQUEST:
     case _actions.LOGIN_REQUEST:
     case _actions.LOGOUT_REQUEST:
-    case _actions.POSITION_REQUEST:
     case _actions.EVENT_REQUEST:
-    case _actions.EVENT_DECISION:
       return (0, _game.request)(state);
     case _actions.ERROR:
       return (0, _game.error)(state, action);
@@ -3099,14 +3066,10 @@ function reducer(state, action) {
       return (0, _game.loginResponse)(state, action);
     case _actions.LOGOUT_RESPONSE:
       return (0, _game.logoutResponse)(state);
-    case _actions.POSITION_RESPONSE:
-      return (0, _game.positionResponse)(state, action);
     case _actions.TILE_UPDATE:
       return (0, _game.tileUpdate)(state, action);
-    case _actions.EVENT_PROMPT:
-      return (0, _game.eventPrompt)(state, action);
-    case _actions.EVENT_RESULT:
-      return (0, _game.eventResult)(state, action);
+    case _actions.EVENT_RESPONSE:
+      return (0, _game.eventResponse)(state, action);
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
       return (0, _game.openSocket)(state);
     case '@@websocket/' + _reduxWebsocketBridge.CLOSE:
@@ -3175,10 +3138,8 @@ exports.error = error;
 exports.registerResponse = registerResponse;
 exports.loginResponse = loginResponse;
 exports.logoutResponse = logoutResponse;
-exports.positionResponse = positionResponse;
 exports.tileUpdate = tileUpdate;
-exports.eventPrompt = eventPrompt;
-exports.eventResult = eventResult;
+exports.eventResponse = eventResponse;
 exports.openSocket = openSocket;
 exports.closeSocket = closeSocket;
 
@@ -3220,8 +3181,8 @@ function loginResponse(state, action) {
     party: action.payload.party,
     inventory: action.payload.inventory,
     actions: (0, _utils.getActions)(action.payload.inventory, action.payload.tiles, action.payload.position),
-    // vehicle: action.payload.vehicle, // TODO
-    // story: action.payload.story // TODO
+    vehicle: action.payload.vehicle || null,
+    story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
     zoom: 3,
@@ -3248,17 +3209,6 @@ function logoutResponse(state) {
   });
 }
 
-function positionResponse(state, action) {
-  var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
-  return Object.assign({}, state, {
-    sending: false,
-    position: action.payload.position,
-    tiles: tiles,
-    actions: (0, _utils.getActions)(state.inventory, tiles, action.payload.position),
-    error: null
-  });
-}
-
 function tileUpdate(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   return Object.assign({}, state, {
@@ -3267,21 +3217,23 @@ function tileUpdate(state, action) {
   });
 }
 
-function eventPrompt(state, action) {
-  return Object.assign({}, state, {
-    // TODO
-    // Use this to receive events...? Should I do `sending: false` here?
-  });
-}
-
-function eventResult(state, action) {
+function eventResponse(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
-  var actions = (0, _utils.getActions)(inventory, tiles, state.position);
+  var position = action.payload.position || state.position;
+  var story = action.payload.story || state.story;
+  var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
-    sending: false, error: null, errorMessage: null,
-    inventory: inventory, tiles: tiles, party: party, actions: actions
+    sending: false,
+    error: null,
+    errorMessage: null,
+    inventory: inventory,
+    tiles: tiles,
+    party: party,
+    position: position,
+    story: story,
+    actions: actions
   });
 }
 
@@ -4664,7 +4616,7 @@ var Camera = function () {
 
         var tile = (0, _utils.getItemById)(this.clickTiles, clickId);
         if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-          this.store.dispatch((0, _requests.position)(clickId));
+          this.store.dispatch((0, _requests.sendEvent)('move', clickId));
         }
       }
     }
@@ -5503,61 +5455,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Story = __webpack_require__(81);
-
-var _Story2 = _interopRequireDefault(_Story);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var StoryView = function () {
-  function StoryView(store, canvas, ctx) {
-    _classCallCheck(this, StoryView);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-
-    this.story = new _Story2.default(this.store, this.canvas, this.ctx);
-  }
-
-  _createClass(StoryView, [{
-    key: 'update',
-    value: function update(delta) {
-      this.story.update(delta);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-      this.story.render();
-    }
-  }]);
-
-  return StoryView;
-}();
-
-exports.default = StoryView;
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _constants = __webpack_require__(4);
 
 var _actions = __webpack_require__(0);
+
+var _requests = __webpack_require__(6);
 
 var _Connect = __webpack_require__(1);
 
@@ -5575,9 +5477,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Story = function () {
-  function Story(store, canvas, ctx) {
-    _classCallCheck(this, Story);
+var StoryView = function () {
+  function StoryView(store, canvas, ctx) {
+    _classCallCheck(this, StoryView);
 
     this.store = store;
     this.canvas = canvas;
@@ -5593,7 +5495,7 @@ var Story = function () {
 
     var story = this.connect.story;
     if (story) {
-      this.setEvent(story);
+      this.refresh(story);
     } else {
       this.buttons = [];
     }
@@ -5602,9 +5504,9 @@ var Story = function () {
     this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
-  _createClass(Story, [{
-    key: 'setEvent',
-    value: function setEvent(story) {
+  _createClass(StoryView, [{
+    key: 'refresh',
+    value: function refresh(story) {
       var _this = this;
 
       this.maxMainWidth = this.canvas.width - this.fontSize * 2;
@@ -5620,12 +5522,6 @@ var Story = function () {
       this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
     }
   }, {
-    key: 'chooseButton',
-    value: function chooseButton() {
-      var button = (0, _utils.getItemById)(this.buttons, this.selectedId);
-      console.log(button.ref); // TODO: Implement async request / response
-    }
-  }, {
     key: 'updateKeys',
     value: function updateKeys(delta) {
       var _this2 = this;
@@ -5634,7 +5530,7 @@ var Story = function () {
       keys.map(function (key) {
         if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selectedId = parseInt(key);
         if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selectedId = null;
-        if (_this2.selectedId && key === "Enter") _this2.chooseButton();
+        _this2.selectedId && key === "Enter" && _this2.store.dispatch((0, _requests.sendEvent)('decision', button.id));
       });
     }
   }, {
@@ -5645,13 +5541,14 @@ var Story = function () {
           yClick = _connect$click.yClick;
 
       if (xClick && yClick) {
-        var clickId = (0, _utils.screenToTextButtonId)(xClick, yClick, this.buttons);
         this.store.dispatch((0, _actions.clicked)());
-        if (this.selectedId && this.selectedId === clickId) {
-          this.selectedId = clickId;
-          this.chooseButton();
-        } else {
-          this.selectedId = clickId;
+        var _button = screenToTextButton(xClick, yClick, this.buttons);
+        if (_button) {
+          if (this.selectedId && this.selectedId === _button.id) {
+            this.store.dispatch((0, _requests.sendEvent)('decision', _button.id));
+          } else {
+            this.selectedId = clickId;
+          }
         }
       }
     }
@@ -5681,9 +5578,12 @@ var Story = function () {
   }, {
     key: 'render',
     value: function render() {
+      this.ctx.fillStyle = 'black';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
       var story = this.connect.story;
       if (story) {
-        this.setEvent(story); // Comment out to disable live text adjustment on resize
+        this.refresh(story); // Comment out to disable live text adjustment on resize
         this.renderStoryText();
       } else {
         this.buttons = [];
@@ -5691,12 +5591,13 @@ var Story = function () {
     }
   }]);
 
-  return Story;
+  return StoryView;
 }();
 
-exports.default = Story;
+exports.default = StoryView;
 
 /***/ }),
+/* 81 */,
 /* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
