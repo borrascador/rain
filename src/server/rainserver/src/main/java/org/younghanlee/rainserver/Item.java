@@ -7,15 +7,24 @@ import org.json.JSONObject;
 
 public class Item {
 	private String name;
+	// If this is a seed what fruit does it yield
+	private int yield;
 	HashSet<String> tags;
 	
-	public Item(String name) {
+	public Item(String name, int yield) {
 		this.name = name;
+		if (yield != -1) {
+			this.yield = yield;
+		}
 		this.tags = new HashSet<String>();
 	}
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public int getYield() {
+		return this.yield;
 	}
 	
 	public void addTag(String s) {
@@ -26,11 +35,37 @@ public class Item {
 		return tags.contains(s);
 	}
 	
+	// id, name, new_quantity, change
+	public JSONObject change(int id, int change, Player p) {
+		JSONObject jo = new JSONObject();
+		
+		int quantity = p.getQuantity(id);
+		if (quantity == 0) {
+			jo.put("yield", yield);
+			JSONArray tagArray = new JSONArray();
+			for (String s: tags) {
+				tagArray.put(s);
+			}
+			jo.put("tags", tagArray);
+		}
+		
+		jo.put("id", id);
+		jo.put("name", name);
+		
+		quantity += change;
+		p.setQuantity(id, quantity);
+		
+		jo.put("quantity", quantity);
+		jo.put("change", change);
+		return jo;
+	}
+	
 	public JSONObject toJSONObject(int id, int quantity) {
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);
 		jo.put("name", name);
 		jo.put("quantity", quantity);
+		jo.put("yield", yield);
 		JSONArray tagArray = new JSONArray();
 		for (String s: tags) {
 			tagArray.put(s);

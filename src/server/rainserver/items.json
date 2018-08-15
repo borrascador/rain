@@ -7,16 +7,19 @@
 	{
 		"id": 1,
 		"name": "tomato seed",
+		"yield": 0,
 		"tags":["seed"]
 	},
 	{
 		"id": 2,
 		"name": "potato",
+		"yield": 2,
 		"tags":["food", "seed"]
 	},
 	{
 		"id": 3,
 		"name": "yuca",
+		"yield": 3,
 		"tags":["food", "seed"]
 	},
 	{
@@ -42,11 +45,13 @@
 	{
 		"id": 8,
 		"name": "black bean",
+		"yield": 8,
 		"tags":["food", "seed"]
 	},
 	{
 		"id": 9,
 		"name": "lima bean",
+		"yield": 9,
 		"tags":["food", "seed"]
 	},
 	{

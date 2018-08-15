@@ -15,6 +15,7 @@ public class World {
 	private static HashMap<String, Player> players;
 	private static HashMap<String, String> emails;
 	private static HashMap<Integer, Item> items;
+	private static HashMap<String, Animal> animals;
 	private static HashMap<Integer, Member> members;
 	
 	private static int mapWidth;
@@ -22,7 +23,6 @@ public class World {
 	private static int numTiles;
 	private static Tile[] map;
 	
-	private static int itemID;
 	private static int memberID;
 	
 	World() {
@@ -41,7 +41,16 @@ public class World {
 		try {
 			itemList = new JSONArray(new String(Files.readAllBytes(Paths.get("items.json"))));
 		} catch (IOException e) {
-			System.out.println("Map file "+ "map.json" + " not found.");
+			System.out.println("Item file "+ "item.json" + " not found.");
+			System.exit(1);
+		}
+		
+		// Read animals.json
+		JSONArray animalList = null;
+		try {
+			animalList = new JSONArray(new String(Files.readAllBytes(Paths.get("animals.json"))));
+		} catch (IOException e) {
+			System.out.println("Item file "+ "animals.json" + " not found.");
 			System.exit(1);
 		}
 		
@@ -52,23 +61,40 @@ public class World {
 		// Item and party member registry
 		items = new HashMap<Integer, Item>();
 		members = new HashMap<Integer, Member>();
+		animals = new HashMap<String, Animal>();
 		
 		// indexing
-		itemID = 0;
 		memberID = 0;
 		
 		numPlayers = 0;
 		online = 0;
 		
+		// store items in memory
 		JSONObject itemObject;
 		for (int i = 0; i < itemList.length(); i++) {
 			itemObject = itemList.getJSONObject(i);
-			Item it = new Item(itemObject.getString("name"));
+			String name = itemObject.getString("name");
+			Integer yield = null;
+			if (itemObject.has("yield")) {
+				yield = itemObject.getInt("yield");
+			} else {
+				yield = -1;
+			}
+			int id = itemObject.getInt("id");
+			Item it = new Item(name, yield);
 			JSONArray tags = itemObject.getJSONArray("tags");
 			for (int j = 0; j < tags.length(); j++) {
 				 it.addTag(tags.getString(j));
 			}
-			addItem(it);
+			items.put(id, it);
+		}
+		
+		// store animals in memory
+		JSONObject animalObject;
+		for (int i = 0; i < animalList.length(); i++) {
+			animalObject = animalList.getJSONObject(i);
+			String name = animalObject.getString("name");
+			animals.put(name, new Animal(animalObject));
 		}
 		
 		// Map dimensions
@@ -120,11 +146,6 @@ public class World {
 		online--;
 	}
 	
-	public static void addItem(Item i) {
-		items.put(itemID, i);
-		itemID++;
-	}
-	
 	public static int addMember(Member m) {
 		members.put(memberID, m);
 		memberID++;
@@ -140,7 +161,7 @@ public class World {
 	}
 	
 	public static int numItems() {
-		return itemID;
+		return items.size();
 	}
 	
 	public static HashSet<Integer> itemByTag(String tag) {

@@ -1,4 +1,5 @@
 package org.younghanlee.rainserver;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class EventHandler {
@@ -6,6 +7,7 @@ public class EventHandler {
 		String event_type = event.getString("type");
 		Player p = connection.getPlayer();
 		int id;
+		JSONArray tiles;
 		JSONObject response;
 		switch (event_type) {
 			case "plant":
@@ -18,12 +20,24 @@ public class EventHandler {
 				response = World.getTile(p.getPosition()).harvest(id, p);
 				connection.send(response.toString());
 				break;
+			case "move":
+				int destination = event.getInt("id");
+				int range = 1;
+				
+				if (p.move(range, destination)) {
+					tiles = p.inSightArray();
+					response = Message.EVENT_RESPONSE(null, null, tiles, destination, null);
+				} else {
+					response = Message.ERROR(308, null);
+				}
+				connection.send(response.toString());
+				break;
+			case "hunt":
+				id = event.getInt("id");
+				break;
 			default:
-				System.out.println("Error: uncrecognized event type");
+				System.out.println("Error: unrecognized event type");
 				break;
 		}
-	}
-	
-	public static void handleDecision (JSONObject event, Connection connection){
 	}
 }

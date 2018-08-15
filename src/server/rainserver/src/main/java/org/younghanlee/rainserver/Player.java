@@ -25,6 +25,9 @@ public class Player {
 	private HashSet<Integer> party;
 	private HashMap<Integer, Integer> backpack;
 	
+	private Animal hunting;
+	private Decision decision;
+	
 	private HashSet<Integer> buffer;
 	
 	public static int randomInt(int max) {
@@ -56,6 +59,8 @@ public class Player {
 		setQuantity(10, 1);
 		// Give potatos
 		setQuantity(2, 100);
+		
+		this.decision = null;
 		
 		this.buffer = new HashSet<Integer>();
 	}
@@ -120,6 +125,7 @@ public class Player {
 		int x = destination % Constants.MAPWIDTH;
 		int y = (destination - x)/Constants.MAPWIDTH;
 		if (legalMove(range, x, y)) {
+			System.out.println("Legal Move");
 			this.x = x;
 			this.y = y;
 			
@@ -158,6 +164,10 @@ public class Player {
 	
 	public int getSight() {
 		return sight;
+	}
+	
+	public Animal getHunting() {
+		return hunting;
 	}
 	
 	public JSONArray tilesSeenArray() {
