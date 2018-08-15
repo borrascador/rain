@@ -94,7 +94,7 @@ export const logoutRequest = (user) => ({
 export const TILE_UPDATE = 'TILE_UPDATE';
 
 export const EVENT_REQUEST = 'EVENT_REQUEST';
-export const EVENT_RESPONSE = 'EVENT_RESULT';
+export const EVENT_RESPONSE = 'EVENT_RESPONSE';
 
 export const eventRequest = (type, id) => ({
   type: EVENT_REQUEST,
