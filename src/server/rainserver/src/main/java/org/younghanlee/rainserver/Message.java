@@ -76,25 +76,6 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject POSITION_REQUEST(int position) {
-		JSONObject jo = new JSONObject(); 
-		jo.accumulate("type", "POSITION_REQUEST");
-		JSONObject payload = new JSONObject();
-		payload.put("position", position);
-		jo.accumulate("payload", payload);
-		return jo;
-	}
-	
-	public static JSONObject POSITION_RESPONSE(int position, JSONArray tiles) {
-		JSONObject jo = new JSONObject(); 
-		jo.accumulate("type", "POSITION_RESPONSE");
-		JSONObject payload = new JSONObject();
-		payload.put("position", position);
-		payload.put("tiles", tiles);
-		jo.accumulate("payload", payload);
-		return jo;
-	}
-	
 	public static JSONObject TILE_UPDATE(JSONArray tiles) {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "TILE_UPDATE");
@@ -104,47 +85,27 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject PLANT_REQUEST(int id) {
+	public static JSONObject EVENT_RESPONSE(JSONArray party, JSONArray inventory, JSONArray tiles, Integer position, JSONObject story) {
 		JSONObject jo = new JSONObject(); 
-		jo.accumulate("type", "EVENT_REQUEST");
+		jo.accumulate("type", "EVENT_RESPONSE");
 		JSONObject payload = new JSONObject();
-		payload.accumulate("type", "plant");
-		payload.accumulate("id", id);
-		jo.accumulate("payload", payload);
-		return jo;
-	}
-	
-	public static JSONObject HARVEST_REQUEST(int id, String action_type) {
-		JSONObject jo = new JSONObject(); 
-		jo.accumulate("type", "EVENT_REQUEST");
-		JSONObject payload = new JSONObject();
-		payload.accumulate("type", "harvest");
-		jo.accumulate("payload", payload);
-		return jo;
-	}
-	
-	public static JSONObject EVENT_RESULT(Player p, String target, List<Integer> list) {
-		JSONObject jo = new JSONObject(); 
-		jo.accumulate("type", "EVENT_RESULT");
-		JSONObject payload = new JSONObject();
-		JSONArray changes = new JSONArray();
-		if (target.equals("inventory")) {
-			for (int i: list) {
-				JSONObject item = new JSONObject();
-				item.accumulate("id", i);
-				item.accumulate("quantity", p.getQuantity(i));
-				changes.put(item);
-			}
-			payload.put("inventory", changes);
-		} else if (target.equals("party")) {
-			for (int i: list) {
-				JSONObject member = new JSONObject();
-				member.accumulate("id", i);
-				changes.put(member);
-			}
-			payload.put("party", changes);
+		if (party != null) {
+			payload.put("party", party);
+		}
+		if (inventory != null) {
+			payload.put("inventory", inventory);
+		}
+		if (tiles != null) {
+			payload.put("tiles", tiles);
+		}
+		if (position != null) {
+			payload.put("position", position);
+		}
+		if (story != null) {
+			payload.put("story", story);
 		}
 		jo.accumulate("payload", payload);
+		System.out.println(jo.toString());
 		return jo;
 	}
 	

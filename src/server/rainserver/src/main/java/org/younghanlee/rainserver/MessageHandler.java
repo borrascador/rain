@@ -93,30 +93,10 @@ public class MessageHandler {
 				}
 				connection.send(response.toString());
 				break;
-				
-			case "POSITION_REQUEST":
-				
-				payload = jo.getJSONObject("payload");
-				int destination = payload.getInt("position");
-				p = World.getPlayer(username);
-				int range = 1;
-				
-				if (p.move(range, destination)) {
-					tiles = p.inSightArray();
-					response = Message.POSITION_RESPONSE(destination, tiles);
-				} else {
-					response = Message.ERROR(308, null);
-				}
-				connection.send(response.toString());
-				break;
 			
 			case "EVENT_REQUEST":
 				payload = jo.getJSONObject("payload");
 				EventHandler.handleRequest(payload, connection);
-				break;
-			case "EVENT_DECISION":
-				payload = jo.getJSONObject("payload");
-				EventHandler.handleDecision(payload, connection);
 				break;
 				
 			default:

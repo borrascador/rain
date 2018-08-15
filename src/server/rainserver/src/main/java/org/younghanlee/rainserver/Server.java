@@ -113,7 +113,7 @@ public class Server extends WebSocketServer {
 		updateExec.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Sending updates: tick "+ server.getTick());
+				// System.out.println("Sending updates: tick "+ server.getTick());
 				server.flush();
 				server.tickInc();
 				return;
@@ -124,7 +124,7 @@ public class Server extends WebSocketServer {
 		backupExec.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Preparing backup: " + server.getTick());
+				// System.out.println("Preparing backup: " + server.getTick());
 				server.backup(server.getTick());
 				return;
 			}

@@ -80,9 +80,9 @@ public class Tile {
 			crop.accumulate("stage", stage);
 			crops.put(crop);
 		}
-		System.out.println(crops.toString());
+		// System.out.println(crops.toString());
 		jo.put("crops", crops);
-		System.out.println(jo.toString());
+		// System.out.println(jo.toString());
 		
 		return jo;
 	}
@@ -153,27 +153,34 @@ public class Tile {
 	public JSONObject plant (int seed_id, Player p) {
 		int n = p.getQuantity(seed_id);
 		if (n >= 1) {
-			p.setQuantity(seed_id, n - 1);
-			this.crops.put(seed_id, 10);
-			System.out.println("test");
+			int yield_id = World.getItem(seed_id).getYield();
+			
+			JSONObject inventory_change = World.getItem(seed_id).change(seed_id, -1, p);
+			JSONArray inventory_changes = new JSONArray();
+			inventory_changes.put(inventory_change);
+
+			this.crops.put(yield_id, 10);
 			updateNeighbors(null, 0);
-			System.out.println("test2");
-			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
+			return Message.EVENT_RESPONSE(null, inventory_changes, null, null, null);
 		} else {
 			return Message.ERROR(312, "Missing" + World.getItem(seed_id).getName());
 		}
 	}
 	
-	public JSONObject harvest(int seed_id, Player p) {
-		if (this.crops.containsKey(seed_id)) {
-			int n = p.getQuantity(seed_id);
-			int yield = Player.randomInt(10);
-			p.setQuantity(seed_id, n + yield);
-			this.crops.remove(seed_id);
+	public JSONObject harvest(int crop_id, Player p) {
+		if (this.crops.containsKey(crop_id)) {
+			int yield = 2 + Player.randomInt(10);
+			
+			JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p);
+			JSONArray inventory_changes = new JSONArray();
+			inventory_changes.put(inventory_change);
+			
+			this.crops.remove(crop_id);
 			updateNeighbors(null, 0);
-			return Message.EVENT_RESULT(p, "inventory", Arrays.asList(seed_id));
+
+			return Message.EVENT_RESPONSE(null, inventory_changes, null, null, null);
 		} else {
-			return Message.ERROR(313, "There is no crop " + World.getItem(seed_id).getName() +" here");
+			return Message.ERROR(313, "There is no crop " + World.getItem(crop_id).getName() +" here");
 		}
 	}
 	
