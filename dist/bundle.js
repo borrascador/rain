@@ -197,7 +197,7 @@ var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
 var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
 
 var EVENT_REQUEST = exports.EVENT_REQUEST = 'EVENT_REQUEST';
-var EVENT_RESPONSE = exports.EVENT_RESPONSE = 'EVENT_RESULT';
+var EVENT_RESPONSE = exports.EVENT_RESPONSE = 'EVENT_RESPONSE';
 
 var eventRequest = exports.eventRequest = function eventRequest(type, id) {
   return {
@@ -550,51 +550,6 @@ var VEHICLE = exports.VEHICLE = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.create = create;
-exports.makeInputLine = makeInputLine;
-exports.makeButtons = makeButtons;
-function create(tag, className, id) {
-  var elt = document.createElement(tag);
-  if (className) elt.className = className;
-  if (id) elt.id = id;
-  return elt;
-}
-
-function makeInputLine(id) {
-  var line = create('div', 'input-line');
-  var labelContainer = create('span', 'label-container');
-  var label = create('div', 'label');
-  label.innerHTML = id.substring(0, 8) === 'password' ? 'password' : id;
-  var inputContainer = create('span', 'input-container');
-  var input = create('input', 'input', id);
-  if (id.substring(0, 8) === 'password') input.type = 'password';
-  labelContainer.append(label);
-  inputContainer.append(input);
-  line.append(labelContainer, inputContainer);
-  return { line: line, input: input };
-}
-
-function makeButtons() {
-  var submit = create('button', 'submit');
-  submit.innerHTML = 'OK';
-  var spacer = create('div', 'spacer');
-  var cancel = create('button', 'cancel');
-  cancel.innerHTML = 'CANCEL';
-  var buttons = create('div', 'buttons');
-  buttons.append(submit, spacer, cancel);
-  return { buttons: buttons, submit: submit, cancel: cancel };
-}
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 exports.register = register;
 exports.login = login;
 exports.logout = logout;
@@ -703,6 +658,51 @@ function sendEvent(type, id) {
       }, 2000);
     }
   };
+}
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.create = create;
+exports.makeInputLine = makeInputLine;
+exports.makeButtons = makeButtons;
+function create(tag, className, id) {
+  var elt = document.createElement(tag);
+  if (className) elt.className = className;
+  if (id) elt.id = id;
+  return elt;
+}
+
+function makeInputLine(id) {
+  var line = create('div', 'input-line');
+  var labelContainer = create('span', 'label-container');
+  var label = create('div', 'label');
+  label.innerHTML = id.substring(0, 8) === 'password' ? 'password' : id;
+  var inputContainer = create('span', 'input-container');
+  var input = create('input', 'input', id);
+  if (id.substring(0, 8) === 'password') input.type = 'password';
+  labelContainer.append(label);
+  inputContainer.append(input);
+  line.append(labelContainer, inputContainer);
+  return { line: line, input: input };
+}
+
+function makeButtons() {
+  var submit = create('button', 'submit');
+  submit.innerHTML = 'OK';
+  var spacer = create('div', 'spacer');
+  var cancel = create('button', 'cancel');
+  cancel.innerHTML = 'CANCEL';
+  var buttons = create('div', 'buttons');
+  buttons.append(submit, spacer, cancel);
+  return { buttons: buttons, submit: submit, cancel: cancel };
 }
 
 /***/ }),
@@ -1674,7 +1674,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.failureDialog = failureDialog;
 
-var _utils = __webpack_require__(5);
+var _utils = __webpack_require__(6);
 
 function failureDialog(message, dimCallback) {
   var container = document.getElementById('container');
@@ -4179,7 +4179,7 @@ var _StoryView = __webpack_require__(80);
 
 var _StoryView2 = _interopRequireDefault(_StoryView);
 
-var _TitleView = __webpack_require__(82);
+var _TitleView = __webpack_require__(81);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -4560,7 +4560,7 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _requests = __webpack_require__(6);
+var _requests = __webpack_require__(5);
 
 var _constants = __webpack_require__(4);
 
@@ -4709,7 +4709,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.loadingDialog = loadingDialog;
 
-var _utils = __webpack_require__(5);
+var _utils = __webpack_require__(6);
 
 function loadingDialog(dimCallback) {
   var container = document.getElementById('container');
@@ -4744,7 +4744,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.successDialog = successDialog;
 
-var _utils = __webpack_require__(5);
+var _utils = __webpack_require__(6);
 
 function successDialog(dimCallback) {
   var container = document.getElementById('container');
@@ -4866,7 +4866,7 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _requests = __webpack_require__(6);
+var _requests = __webpack_require__(5);
 
 var _actions = __webpack_require__(0);
 
@@ -5202,7 +5202,7 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(5);
+var _utils = __webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5300,7 +5300,7 @@ var _draw = __webpack_require__(3);
 
 var _utils = __webpack_require__(2);
 
-var _requests = __webpack_require__(6);
+var _requests = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5459,7 +5459,7 @@ var _constants = __webpack_require__(4);
 
 var _actions = __webpack_require__(0);
 
-var _requests = __webpack_require__(6);
+var _requests = __webpack_require__(5);
 
 var _Connect = __webpack_require__(1);
 
@@ -5597,8 +5597,7 @@ var StoryView = function () {
 exports.default = StoryView;
 
 /***/ }),
-/* 81 */,
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5612,9 +5611,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(3);
 
-var _register = __webpack_require__(83);
+var _register = __webpack_require__(82);
 
-var _login = __webpack_require__(84);
+var _login = __webpack_require__(83);
 
 var _utils = __webpack_require__(2);
 
@@ -5741,7 +5740,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5752,9 +5751,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerDialog = registerDialog;
 
-var _utils = __webpack_require__(5);
+var _utils = __webpack_require__(6);
 
-var _requests = __webpack_require__(6);
+var _requests = __webpack_require__(5);
 
 var _actions = __webpack_require__(0);
 
@@ -5810,7 +5809,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5821,9 +5820,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.loginDialog = loginDialog;
 
-var _utils = __webpack_require__(5);
+var _utils = __webpack_require__(6);
 
-var _requests = __webpack_require__(6);
+var _requests = __webpack_require__(5);
 
 function loginDialog(store, setDim) {
   var container = document.getElementById('container');
