@@ -44,11 +44,9 @@ export default class Connect {
   get story() {
     const {story} = this.store.getState();
     if (story) {
-      // TODO: Decide on a better way to do this / define object
-      const buttons = story.buttons.map((button, idx) =>
-        Object.assign({}, button, {id: idx + 1})
-      );
-      return Object.assign({}, story, {buttons: buttons});
+      return Object.assign({}, story, {
+        buttons: story.buttons || [ { text: 'OK', id: 1 } ]
+      });
     } else {
       return null;
     }

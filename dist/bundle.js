@@ -230,32 +230,32 @@ var Connect = function () {
   }
 
   _createClass(Connect, [{
-    key: "connected",
+    key: 'connected',
     get: function get() {
       return this.store.getState().connected;
     }
   }, {
-    key: "loggedIn",
+    key: 'loggedIn',
     get: function get() {
       return this.store.getState().loggedIn;
     }
   }, {
-    key: "error",
+    key: 'error',
     get: function get() {
       return this.store.getState().error;
     }
   }, {
-    key: "mode",
+    key: 'mode',
     get: function get() {
       return this.store.getState().mode;
     }
   }, {
-    key: "actions",
+    key: 'actions',
     get: function get() {
       return this.store.getState().actions;
     }
   }, {
-    key: "click",
+    key: 'click',
     get: function get() {
       var _store$getState = this.store.getState(),
           xClick = _store$getState.xClick,
@@ -264,7 +264,7 @@ var Connect = function () {
       return { xClick: xClick, yClick: yClick };
     }
   }, {
-    key: "keys",
+    key: 'keys',
     get: function get() {
       var allKeys = this.store.getState().keys;
       var trueKeys = Object.keys(allKeys).filter(function (x) {
@@ -273,7 +273,7 @@ var Connect = function () {
       return trueKeys;
     }
   }, {
-    key: "drag",
+    key: 'drag',
     get: function get() {
       var _store$getState2 = this.store.getState(),
           xDragging = _store$getState2.xDragging,
@@ -282,23 +282,21 @@ var Connect = function () {
       return { xDragging: xDragging, yDragging: yDragging };
     }
   }, {
-    key: "story",
+    key: 'story',
     get: function get() {
       var _store$getState3 = this.store.getState(),
           story = _store$getState3.story;
 
       if (story) {
-        // TODO: Decide on a better way to do this / define object
-        var buttons = story.buttons.map(function (button, idx) {
-          return Object.assign({}, button, { id: idx + 1 });
+        return Object.assign({}, story, {
+          buttons: story.buttons || [{ text: 'OK', id: 1 }]
         });
-        return Object.assign({}, story, { buttons: buttons });
       } else {
         return null;
       }
     }
   }, {
-    key: "map",
+    key: 'map',
     get: function get() {
       var _store$getState4 = this.store.getState(),
           position = _store$getState4.position,
@@ -318,17 +316,17 @@ var Connect = function () {
       return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
     }
   }, {
-    key: "inventory",
+    key: 'inventory',
     get: function get() {
       return this.store.getState().inventory;
     }
   }, {
-    key: "party",
+    key: 'party',
     get: function get() {
       return this.store.getState().party;
     }
   }, {
-    key: "vehicle",
+    key: 'vehicle',
     get: function get() {
       return this.store.getState().vehicle;
     }
@@ -341,6 +339,32 @@ exports.default = Connect;
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
+var LAYER = exports.LAYER = {
+  BOTTOM: "BOTTOM",
+  MIDDLE: "MIDDLE",
+  TOP: "TOP"
+};
+var MODE = exports.MODE = {
+  MAP: "MAP",
+  STORY: "STORY",
+  TITLE: "TITLE"
+};
+var VEHICLE = exports.VEHICLE = {
+  JEEP: "jeep",
+  CANOE: "canoe"
+};
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -394,7 +418,7 @@ var getItemById = exports.getItemById = function getItemById(array, id) {
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -473,11 +497,11 @@ function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
-function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selectedId) {
+function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selected) {
   var x = fontSize * 3;
   var y = start;
   return buttons.map(function (button, idx) {
-    ctx.fillStyle = selectedId === button.id ? '#FF0' : '#6F6';
+    ctx.fillStyle = selected && selected.id === button.id ? '#FF0' : '#6F6';
     ctx.fillText(button.id + '.', fontSize, y);
     var coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
@@ -515,32 +539,6 @@ function splitIntoLines(ctx, text, maxWidth) {
 }
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
-var LAYER = exports.LAYER = {
-  BOTTOM: "BOTTOM",
-  MIDDLE: "MIDDLE",
-  TOP: "TOP"
-};
-var MODE = exports.MODE = {
-  MAP: "MAP",
-  STORY: "STORY",
-  TITLE: "TITLE"
-};
-var VEHICLE = exports.VEHICLE = {
-  JEEP: "jeep",
-  CANOE: "canoe"
-};
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -559,7 +557,7 @@ var _actions = __webpack_require__(0);
 
 var _store = __webpack_require__(9);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 var _loading = __webpack_require__(71);
 
@@ -1444,7 +1442,7 @@ exports.zoomIn = zoomIn;
 exports.zoomOut = zoomOut;
 exports.changeMode = changeMode;
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 var _utils = __webpack_require__(17);
 
@@ -3145,7 +3143,7 @@ exports.closeSocket = closeSocket;
 
 var _utils = __webpack_require__(17);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 function request(state) {
   return Object.assign({}, state, {
@@ -3287,7 +3285,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initialState = undefined;
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 var _keys = __webpack_require__(51);
 
@@ -4189,7 +4187,7 @@ var _TitleView2 = _interopRequireDefault(_TitleView);
 
 var _actions = __webpack_require__(0);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4566,11 +4564,11 @@ var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(5);
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4787,7 +4785,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 var _actions = __webpack_require__(0);
 
@@ -4874,9 +4872,9 @@ var _requests = __webpack_require__(5);
 
 var _actions = __webpack_require__(0);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4946,9 +4944,9 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5034,9 +5032,9 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5126,9 +5124,9 @@ var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 var _inventory = __webpack_require__(78);
 
@@ -5300,9 +5298,9 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 var _requests = __webpack_require__(5);
 
@@ -5459,7 +5457,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(4);
+var _constants = __webpack_require__(2);
 
 var _actions = __webpack_require__(0);
 
@@ -5469,9 +5467,9 @@ var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 var _Animation = __webpack_require__(8);
 
@@ -5495,7 +5493,7 @@ var StoryView = function () {
     this.fontSize = 32;
     this.lineHeight = 44;
     this.ctx.font = this.fontSize + 'px MECC';
-    this.selectedId = null;
+    this.selected = null;
 
     var story = this.connect.story;
     if (story) {
@@ -5516,14 +5514,26 @@ var StoryView = function () {
       this.maxMainWidth = this.canvas.width - this.fontSize * 2;
       this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
       this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
-      this.buttons = story.buttons.map(function (button, idx) {
-        return Object.assign({}, button, {
-          text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth)
+      if (story && story.buttons) {
+        this.buttons = story && story.buttons.map(function (button, idx) {
+          return Object.assign({}, button, {
+            text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth)
+          });
         });
-      });
-      var promptText = 'What is your choice? ' + (this.selectedId || '');
+      }
+      var index = this.buttons.indexOf(this.selected) + 1;
+      var promptText = 'What is your choice? ' + (index || '');
       var cursor = this.blink.getValue() ? '' : '_';
       this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
+    }
+  }, {
+    key: 'select',
+    value: function select(button) {
+      if (button.text[0] === 'OK') {
+        this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+      } else {
+        this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
+      }
     }
   }, {
     key: 'updateKeys',
@@ -5532,9 +5542,12 @@ var StoryView = function () {
 
       var keys = this.connect.keys;
       keys.map(function (key) {
-        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selectedId = parseInt(key);
-        if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selectedId = null;
-        _this2.selectedId && key === "Enter" && _this2.store.dispatch((0, _requests.sendEvent)('decision', button.id));
+        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selected = _this2.buttons[parseInt(key)];
+        if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selected = null;
+        if (key === "Enter" && _this2.selected !== null) {
+          _this2.select(_this2.selected);
+          _this2.selected = null;
+        }
       });
     }
   }, {
@@ -5546,13 +5559,16 @@ var StoryView = function () {
 
       if (xClick && yClick) {
         this.store.dispatch((0, _actions.clicked)());
-        var _button = screenToTextButton(xClick, yClick, this.buttons);
-        if (_button) {
-          if (this.selectedId && this.selectedId === _button.id) {
-            this.store.dispatch((0, _requests.sendEvent)('decision', _button.id));
+        var button = (0, _utils.screenToTextButton)(xClick, yClick, this.buttons);
+        if (button) {
+          if (this.selected && this.selected.id === button.id) {
+            this.select(this.selected);
+            this.selected = null;
           } else {
-            this.selectedId = clickId;
+            this.selected = button;
           }
+        } else {
+          this.selected = null;
         }
       }
     }
@@ -5573,7 +5589,7 @@ var StoryView = function () {
       var mainCoords = this.mainText(this.text, this.fontSize, linePos);
 
       linePos = mainCoords.yPos + this.lineHeight * 2;
-      this.buttons = this.buttonText(this.buttons, linePos, this.selectedId);
+      this.buttons = this.buttonText(this.buttons, linePos, this.selected);
 
       this.ctx.fillStyle = '#6F6';
       linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
@@ -5613,13 +5629,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _draw = __webpack_require__(3);
+var _draw = __webpack_require__(4);
 
 var _register = __webpack_require__(82);
 
 var _login = __webpack_require__(83);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 var _Connect = __webpack_require__(1);
 

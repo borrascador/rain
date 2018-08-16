@@ -61,11 +61,11 @@ export function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
-export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selectedId) {
+export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selected) {
   let x = fontSize * 3;
   let y = start;
   return buttons.map((button, idx) => {
-    ctx.fillStyle = (selectedId === button.id) ? '#FF0' : '#6F6';
+    ctx.fillStyle = (selected && selected.id === button.id) ? '#FF0' : '#6F6';
     ctx.fillText(`${button.id}.`, fontSize, y);
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
