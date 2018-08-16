@@ -137,9 +137,7 @@ public class Tile {
 			Tile t = World.getTile(i);
 			for (String name: t.getVisitors()) {
 				if (!name.equals(n)) {
-					System.out.println("test2");
 					Player p2 = World.getPlayer(name);
-					System.out.println("test3");
 					if (distance(t) <= p2.getSight()) {
 						p2.addToBuffer(id);
 					}

@@ -93,6 +93,8 @@ public class Player {
 		Tile t = World.getTile(position);
 		t.removeVisitor(this.name);
 		t.updateNeighbors(this.name, Constants.MAXSIGHT);
+		stopHunting();
+		decision = null;
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}
@@ -173,6 +175,24 @@ public class Player {
 	
 	public Animal getHunting() {
 		return hunting;
+	}
+	
+	public String stopHunting() {
+		String name = hunting.getName();
+		hunting = null;
+		return name;
+	}
+
+	
+	public void hunt(int item_id) {
+		hunting = World.getAnimal();
+		decision = new Decision(this, 2);
+		decision.addAttackChoice(0);
+		decision.addEscapeChoice(1);
+	}
+	
+	public Decision getDecision() {
+		return decision;
 	}
 	
 	public JSONArray tilesSeenArray() {

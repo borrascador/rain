@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 public class Animal {
 
+	private String name;
 	private int strength;
 	private int aggression;
 	private int speed;
@@ -27,6 +28,7 @@ public class Animal {
 	}
 	
 	public Animal(JSONObject jo) {
+		this.name = jo.getString("name");
 		this.strength = jo.getInt("strength");
 		this.aggression = jo.getInt("aggression");
 		this.speed = jo.getInt("speed");
@@ -45,6 +47,10 @@ public class Animal {
 		}
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+	
 	public int getStrength() {
 		return this.strength;
 	}
@@ -57,19 +63,36 @@ public class Animal {
 		return this.speed;
 	}
 	
+	public JSONObject fight(Player p) {
+		JSONObject story = new JSONObject();
+		if (Player.randomInt(100) > strength) {
+			story.put("text", "You defeated " + name);
+			return Message.EVENT_RESPONSE(null, rollDrop(p), null, null, story);
+		} else {
+			story.put("text", name + "has injured your party members");
+			return Message.EVENT_RESPONSE(null, null, null, null, story);
+		}	
+	}
+	
+	public JSONObject flee(Player p) {
+		JSONObject story = new JSONObject();
+		if (Player.randomInt(100) > speed) {
+			story.put("text", "You defeated " + name);
+			return Message.EVENT_RESPONSE(null, rollDrop(p), null, null, story);
+		} else {
+			story.put("text", name + "has escaped");
+			return Message.EVENT_RESPONSE(null, null, null, null, story);
+		}
+	}
 	
 	public JSONArray rollDrop(Player p) {
 		JSONArray items = new JSONArray();
 		for(Drop d : drops) {
 			if (Math.random() < d.rarity) {
-				JSONObject jo = new JSONObject();
 				int item = d.id;
-				int value = Player.randomInt(d.max - d.min) + d.min + p.getQuantity(item);
-				p.setQuantity(item, value);
-				jo.put("id", item);
-				jo.put("name", World.getItem(item).getName());
-				jo.put("quantity", value);
-				items.put(jo);
+				int value = Player.randomInt(d.max - d.min) + d.min;
+				JSONObject itemObject = World.getItem(item).change(item, value, p);
+				items.put(itemObject);
 			}
 		}
 		return items;
