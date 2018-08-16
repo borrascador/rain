@@ -179,8 +179,8 @@ public class World {
 	}
 	
 	public static Animal getAnimal() {
-		int id = Player.randomInt(animals.size());
-		return animals.get(id-1);
+		int id = Player.randomInt(animals.size()-1);
+		return animals.get(id);
 	}
 	
 	public static void dump() {

@@ -184,11 +184,12 @@ public class Player {
 	}
 
 	
-	public void hunt(int item_id) {
+	public Animal hunt(int item_id) {
 		hunting = World.getAnimal();
 		decision = new Decision(this, 2);
 		decision.addAttackChoice(0);
 		decision.addEscapeChoice(1);
+		return hunting;
 	}
 	
 	public Decision getDecision() {

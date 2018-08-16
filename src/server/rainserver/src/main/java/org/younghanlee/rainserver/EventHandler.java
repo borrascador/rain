@@ -34,13 +34,10 @@ public class EventHandler {
 				break;
 			case "hunt":
 				id = event.getInt("id");
-				p.hunt(id);
-				System.out.println("test");
+				Animal a = p.hunt(id);
 				JSONObject story = new JSONObject();
-				story.put("text", "You have spotted animal: "+ p.getHunting().getName());
-				System.out.println("test2");
+				story.put("text", "You have spotted animal: "+ a.getName());
 				story.put("buttons", p.getDecision().buttons());
-				System.out.println("test3");
 				response = Message.EVENT_RESPONSE(null, null, null, null, story);
 				connection.send(response.toString());
 				break;
