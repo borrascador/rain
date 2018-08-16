@@ -1,8 +1,8 @@
 import { MODE } from '../constants';
-import { clicked } from '../../store/actions/actions';
+import { clicked, changeMode } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
 import Connect from '../../store/Connect';
-import { screenToTextButtonId, getItemById } from '../components/utils';
+import { screenToTextButton, getItemById } from '../components/utils';
 import { mainText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';
 
@@ -18,7 +18,7 @@ export default class StoryView {
     this.fontSize = 32;
     this.lineHeight = 44;
     this.ctx.font = this.fontSize + 'px MECC';
-    this.selectedId = null;
+    this.selected = null;
 
     const story = this.connect.story;
     if (story) {
@@ -35,22 +35,36 @@ export default class StoryView {
     this.maxMainWidth = this.canvas.width - this.fontSize * 2;
     this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
     this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
-    this.buttons = story.buttons.map((button, idx) => {
-      return Object.assign({}, button, {
-        text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth)
+    if (story && story.buttons) {
+      this.buttons = story && story.buttons.map((button, idx) => {
+        return Object.assign({}, button, {
+          text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth)
+        });
       });
-    });
-    const promptText = `What is your choice? ${this.selectedId || ''}`;
+    }
+    const index = this.buttons.indexOf(this.selected) + 1
+    const promptText = `What is your choice? ${index || ''}`;
     const cursor = this.blink.getValue() ? '' : '_';
     this.prompt = splitIntoLines(this.ctx, promptText + cursor, this.maxMainWidth);
+  }
+
+  select(button) {
+    if (button.text[0] === 'OK') {
+      this.store.dispatch(changeMode(MODE.MAP));
+    } else {
+      this.store.dispatch(sendEvent('decision', button.id));
+    }
   }
 
   updateKeys(delta) {
     const keys = this.connect.keys;
     keys.map(key => {
-      if (key >= "1" && key <= this.buttons.length.toString()) this.selectedId = parseInt(key);
-      if (["Escape", "Backspace", "Delete"].includes(key)) this.selectedId = null;
-      this.selectedId && key === "Enter" && this.store.dispatch(sendEvent('decision', button.id));
+      if (key >= "1" && key <= this.buttons.length.toString()) this.selected = this.buttons[parseInt(key)];
+      if (["Escape", "Backspace", "Delete"].includes(key)) this.selected = null;
+      if (key === "Enter" && this.selected !== null) {
+        this.select(this.selected);
+        this.selected = null;
+      }
     });
   }
 
@@ -60,11 +74,14 @@ export default class StoryView {
       this.store.dispatch(clicked());
       const button = screenToTextButton(xClick, yClick, this.buttons);
       if (button) {
-        if (this.selectedId && this.selectedId === button.id) {
-          this.store.dispatch(sendEvent('decision', button.id));
+        if (this.selected && this.selected.id === button.id) {
+          this.select(this.selected);
+          this.selected = null;
         } else {
-          this.selectedId = clickId;
+          this.selected = button;
         }
+      } else {
+        this.selected = null;
       }
     }
   }
@@ -83,7 +100,7 @@ export default class StoryView {
     const mainCoords = this.mainText(this.text, this.fontSize, linePos);
 
     linePos = mainCoords.yPos + this.lineHeight * 2;
-    this.buttons = this.buttonText(this.buttons, linePos, this.selectedId);
+    this.buttons = this.buttonText(this.buttons, linePos, this.selected);
 
     this.ctx.fillStyle = '#6F6';
     linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
