@@ -85,6 +85,12 @@ public class Server extends WebSocketServer {
 		}
 	}
 	
+	public void growthTick() {
+		for (Tile t: World.getMap()) {
+			t.decGrowthStage(1);
+		}
+	}
+	
 	public void backup(int index) {
 		File map = new File("backup/" + index + "/map.json");
 		map.getParentFile().mkdirs();
@@ -116,6 +122,7 @@ public class Server extends WebSocketServer {
 				// System.out.println("Sending updates: tick "+ server.getTick());
 				server.flush();
 				server.tickInc();
+				server.growthTick();
 				return;
 			}
 		}, 0, 1, TimeUnit.SECONDS);

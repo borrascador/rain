@@ -138,6 +138,10 @@ public class World {
 		return map[id];
 	}
 	
+	public static Tile[] getMap() {
+		return map;
+	}
+	
 	public static void onlineInc() {
 		online++;
 	}

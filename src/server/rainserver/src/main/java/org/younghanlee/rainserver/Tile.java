@@ -80,9 +80,7 @@ public class Tile {
 			crop.accumulate("stage", stage);
 			crops.put(crop);
 		}
-		// System.out.println(crops.toString());
 		jo.put("crops", crops);
-		// System.out.println(jo.toString());
 		
 		return jo;
 	}
@@ -188,6 +186,7 @@ public class Tile {
 		for (HashMap.Entry<Integer, Integer> entry : crops.entrySet()) {
 			int key = entry.getKey();
 			int n = entry.getValue();
+			// System.out.println(key + ": " + n);
 			crops.put(key, n-1);
 			if (n-1 == 0) {
 				updateNeighbors(null, 0);
