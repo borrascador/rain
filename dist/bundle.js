@@ -3145,6 +3145,8 @@ exports.closeSocket = closeSocket;
 
 var _utils = __webpack_require__(17);
 
+var _constants = __webpack_require__(4);
+
 function request(state) {
   return Object.assign({}, state, {
     sending: true,
@@ -3223,6 +3225,7 @@ function eventResponse(state, action) {
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var position = action.payload.position || state.position;
   var story = action.payload.story || state.story;
+  var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
   var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
     sending: false,
@@ -3233,7 +3236,8 @@ function eventResponse(state, action) {
     party: party,
     position: position,
     story: story,
-    actions: actions
+    actions: actions,
+    mode: mode
   });
 }
 
