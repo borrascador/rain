@@ -34,7 +34,20 @@ public class EventHandler {
 				break;
 			case "hunt":
 				id = event.getInt("id");
+				p.hunt(id);
+				System.out.println("test");
+				JSONObject story = new JSONObject();
+				story.put("text", "You have spotted animal: "+ p.getHunting().getName());
+				System.out.println("test2");
+				story.put("buttons", p.getDecision().buttons());
+				System.out.println("test3");
+				response = Message.EVENT_RESPONSE(null, null, null, null, story);
+				connection.send(response.toString());
 				break;
+			case "decision":
+				id = event.getInt("id");
+				response = p.getDecision().choose(id, p);
+				connection.send(response.toString());
 			default:
 				System.out.println("Error: unrecognized event type");
 				break;

@@ -39,6 +39,11 @@ public class Member {
 		this.jeito = n;
 	}
 	
+	public JSONObject change(int health_change, int jeito_change) {
+		JSONObject jo = new JSONObject();
+		return jo;
+	}
+	
 	public JSONObject toJSONObject(int id) {
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);

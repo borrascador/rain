@@ -15,7 +15,7 @@ public class World {
 	private static HashMap<String, Player> players;
 	private static HashMap<String, String> emails;
 	private static HashMap<Integer, Item> items;
-	private static HashMap<String, Animal> animals;
+	private static HashMap<Integer, Animal> animals;
 	private static HashMap<Integer, Member> members;
 	
 	private static int mapWidth;
@@ -61,7 +61,7 @@ public class World {
 		// Item and party member registry
 		items = new HashMap<Integer, Item>();
 		members = new HashMap<Integer, Member>();
-		animals = new HashMap<String, Animal>();
+		animals = new HashMap<Integer, Animal>();
 		
 		// indexing
 		memberID = 0;
@@ -93,8 +93,8 @@ public class World {
 		JSONObject animalObject;
 		for (int i = 0; i < animalList.length(); i++) {
 			animalObject = animalList.getJSONObject(i);
-			String name = animalObject.getString("name");
-			animals.put(name, new Animal(animalObject));
+			int id = animalObject.getInt("id");
+			animals.put(id, new Animal(animalObject));
 		}
 		
 		// Map dimensions
@@ -176,6 +176,11 @@ public class World {
 			}
 		}
 		return hs;
+	}
+	
+	public static Animal getAnimal() {
+		int id = Player.randomInt(animals.size());
+		return animals.get(id-1);
 	}
 	
 	public static void dump() {
