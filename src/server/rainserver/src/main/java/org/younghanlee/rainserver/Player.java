@@ -59,6 +59,11 @@ public class Player {
 		setQuantity(10, 1);
 		// Give potatos
 		setQuantity(2, 100);
+		// Give beans
+		setQuantity(8, 100);
+		// Give tomato seeds
+		setQuantity(1, 100);
+		
 		
 		this.decision = null;
 		
