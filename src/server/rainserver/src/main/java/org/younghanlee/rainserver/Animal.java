@@ -69,7 +69,7 @@ public class Animal {
 			story.put("text", "You defeated " + name);
 			return Message.EVENT_RESPONSE(null, rollDrop(p), null, null, story);
 		} else {
-			story.put("text", name + "has injured your party members");
+			story.put("text", name + " has injured your party members");
 			return Message.EVENT_RESPONSE(null, null, null, null, story);
 		}	
 	}
@@ -80,7 +80,7 @@ public class Animal {
 			story.put("text", "You defeated " + name);
 			return Message.EVENT_RESPONSE(null, rollDrop(p), null, null, story);
 		} else {
-			story.put("text", name + "has escaped");
+			story.put("text", name + " has escaped");
 			return Message.EVENT_RESPONSE(null, null, null, null, story);
 		}
 	}

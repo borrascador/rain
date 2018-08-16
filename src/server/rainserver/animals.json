@@ -8,7 +8,7 @@
 		"drops": [{"id": 4, "min": 30, "max": 100, "rarity": 1}, {"id": 5, "min": 2, "max": 10, "rarity": 1}]
 	},
 	{
-		"id": 0,
+		"id": 1,
 		"name": "tiger",
 		"strength": 50,
 		"aggression": 50,
@@ -16,7 +16,7 @@
 		"drops": [{"id": 4, "min": 20, "max": 50, "rarity": 1}, {"id": 6, "min": 2, "max": 10, "rarity": 1}]
 	},
 	{
-		"id": 0,
+		"id": 2,
 		"name": "monkey",
 		"strength": 30,
 		"aggression": 50,
