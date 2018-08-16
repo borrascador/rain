@@ -1,4 +1,5 @@
 import { getActions, mergeArrays } from './utils';
+import { MODE } from '../../game/constants';
 
 export function request(state) {
   return Object.assign({}, state, {
@@ -78,6 +79,7 @@ export function eventResponse(state, action) {
   const party = mergeArrays(state.party, action.payload.party);
   const position = action.payload.position || state.position;
   const story = action.payload.story || state.story;
+  const mode = action.payload.story ? MODE.STORY : MODE.MAP;
   const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
     sending: false,
@@ -88,7 +90,8 @@ export function eventResponse(state, action) {
     party,
     position,
     story,
-    actions
+    actions,
+    mode
   });
 }
 
