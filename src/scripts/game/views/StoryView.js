@@ -38,12 +38,12 @@ export default class StoryView {
     if (story && story.buttons) {
       this.buttons = story && story.buttons.map((button, idx) => {
         return Object.assign({}, button, {
-          text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth)
+          text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth),
+          oneIndex: idx + 1
         });
       });
     }
-    const index = this.buttons.indexOf(this.selected) + 1
-    const promptText = `What is your choice? ${index || ''}`;
+    const promptText = `What is your choice? ${this.selected && this.selected.oneIndex || ''}`;
     const cursor = this.blink.getValue() ? '' : '_';
     this.prompt = splitIntoLines(this.ctx, promptText + cursor, this.maxMainWidth);
   }
@@ -59,7 +59,7 @@ export default class StoryView {
   updateKeys(delta) {
     const keys = this.connect.keys;
     keys.map(key => {
-      if (key >= "1" && key <= this.buttons.length.toString()) this.selected = this.buttons[parseInt(key)];
+      if (key >= "1" && key <= this.buttons.length.toString()) this.selected = this.buttons[parseInt(key) - 1];
       if (["Escape", "Backspace", "Delete"].includes(key)) this.selected = null;
       if (key === "Enter" && this.selected !== null) {
         this.select(this.selected);
