@@ -502,7 +502,7 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selected)
   var y = start;
   return buttons.map(function (button, idx) {
     ctx.fillStyle = selected && selected.id === button.id ? '#FF0' : '#6F6';
-    ctx.fillText(button.id + '.', fontSize, y);
+    ctx.fillText(button.oneIndex + '.', fontSize, y);
     var coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
     return Object.assign({}, button, coords, {
@@ -5517,12 +5517,12 @@ var StoryView = function () {
       if (story && story.buttons) {
         this.buttons = story && story.buttons.map(function (button, idx) {
           return Object.assign({}, button, {
-            text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth)
+            text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
+            oneIndex: idx + 1
           });
         });
       }
-      var index = this.buttons.indexOf(this.selected) + 1;
-      var promptText = 'What is your choice? ' + (index || '');
+      var promptText = 'What is your choice? ' + (this.selected && this.selected.oneIndex || '');
       var cursor = this.blink.getValue() ? '' : '_';
       this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
     }
@@ -5542,7 +5542,7 @@ var StoryView = function () {
 
       var keys = this.connect.keys;
       keys.map(function (key) {
-        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selected = _this2.buttons[parseInt(key)];
+        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selected = _this2.buttons[parseInt(key) - 1];
         if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selected = null;
         if (key === "Enter" && _this2.selected !== null) {
           _this2.select(_this2.selected);
