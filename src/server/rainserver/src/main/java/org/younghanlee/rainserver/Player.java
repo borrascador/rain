@@ -178,7 +178,9 @@ public class Player {
 	}
 	
 	public String stopHunting() {
-		String name = hunting.getName();
+		if (hunting != null) {
+			String name = hunting.getName();
+		}
 		hunting = null;
 		return name;
 	}
