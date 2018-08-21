@@ -41,6 +41,8 @@ export function loginResponse(state, action) {
     story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
+    pace: action.payload.pace || null,
+    rations: action.payload.story || null,
     zoom: 3,
     error: null,
     errorMessage: null
@@ -57,6 +59,8 @@ export function logoutResponse(state) {
     story: null,
     position: null,
     sight: null,
+    pace: null,
+    rations: null,
     zoom: 3,
     sending: false,
     loggedIn: false,
@@ -79,6 +83,8 @@ export function eventResponse(state, action) {
   const party = mergeArrays(state.party, action.payload.party);
   const position = action.payload.position || state.position;
   const story = action.payload.story || state.story;
+  const pace = action.payload.pace || state.pace;
+  const rations = action.payload.rations || state.rations;
   const mode = action.payload.story ? MODE.STORY : MODE.MAP;
   const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
@@ -90,6 +96,8 @@ export function eventResponse(state, action) {
     party,
     position,
     story,
+    pace,
+    rations,
     actions,
     mode
   });
@@ -107,6 +115,8 @@ export function openSocket(state) {
     story: null,
     position: null,
     sight: null,
+    pace: null,
+    rations: null,
     zoom: 3,
     sending: false
   });
@@ -124,6 +134,8 @@ export function closeSocket(state) {
     story: null,
     position: null,
     sight: null,
+    pace: null,
+    rations: null,
     zoom: 3,
     sending: false
   });

@@ -330,6 +330,16 @@ var Connect = function () {
     get: function get() {
       return this.store.getState().vehicle;
     }
+  }, {
+    key: 'pace',
+    get: function get() {
+      return this.store.getState().pace;
+    }
+  }, {
+    key: 'rations',
+    get: function get() {
+      return this.store.getState().rations;
+    }
   }]);
 
   return Connect;
@@ -3185,6 +3195,8 @@ function loginResponse(state, action) {
     story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
+    pace: action.payload.pace || null,
+    rations: action.payload.story || null,
     zoom: 3,
     error: null,
     errorMessage: null
@@ -3201,6 +3213,8 @@ function logoutResponse(state) {
     story: null,
     position: null,
     sight: null,
+    pace: null,
+    rations: null,
     zoom: 3,
     sending: false,
     loggedIn: false,
@@ -3223,6 +3237,8 @@ function eventResponse(state, action) {
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var position = action.payload.position || state.position;
   var story = action.payload.story || state.story;
+  var pace = action.payload.pace || state.pace;
+  var rations = action.payload.rations || state.rations;
   var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
   var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
@@ -3234,6 +3250,8 @@ function eventResponse(state, action) {
     party: party,
     position: position,
     story: story,
+    pace: pace,
+    rations: rations,
     actions: actions,
     mode: mode
   });
@@ -3251,6 +3269,8 @@ function openSocket(state) {
     story: null,
     position: null,
     sight: null,
+    pace: null,
+    rations: null,
     zoom: 3,
     sending: false
   });
@@ -3268,6 +3288,8 @@ function closeSocket(state) {
     story: null,
     position: null,
     sight: null,
+    pace: null,
+    rations: null,
     zoom: 3,
     sending: false
   });
@@ -3313,7 +3335,9 @@ var gameState = {
   vehicle: null, // DEBUG with vehicle
   story: null, // DEBUG with story
   position: null,
-  sight: null
+  sight: null,
+  pace: null,
+  rations: null
 };
 
 var inputState = {
@@ -4894,7 +4918,22 @@ var Zoom = function () {
     this.scale = 2;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
 
-    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
+    this.fontSize = 32;
+    this.ctx.font = this.fontSize + 'px MECC';
+
+    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 2);
+      }, id: 2 }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 1);
+      }, id: 1 }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 0);
+      }, id: 0 }, { name: 'RATIONS', onClick: function onClick() {
+        return (0, _requests.sendEvent)('rations', 2);
+      }, id: 2 }, { name: 'RATIONS', onClick: function onClick() {
+        return (0, _requests.sendEvent)('rations', 1);
+      }, id: 1 }, { name: 'RATIONS', onClick: function onClick() {
+        return (0, _requests.sendEvent)('rations', 0);
+      }, id: 0 }];
   }
 
   _createClass(Zoom, [{
@@ -4908,10 +4947,30 @@ var Zoom = function () {
     value: function render() {
       var _this = this;
 
+      var pace = this.connect.pace;
+      var rations = this.connect.rations;
       this.buttons = this.buttons.map(function (button, index) {
-        var x = _this.canvas.width - _this.size * (index + 1);
-        var y = 0;
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
+        var x = _this.canvas.width - _this.size * (index % 3 + 1);
+        var y = Math.floor(index / 3) * _this.size;
+
+        if (typeof button.id === "number") {
+          if (button.name === "PACE" && button.id === pace || button.name === "RATIONS" && button.id === rations) {
+            _this.ctx.fillStyle = "#FF0";
+          } else {
+            _this.ctx.fillStyle = "#FFF";
+          }
+          _this.ctx.font = _this.fontSize + 'px MECC';
+          var textWidth = _this.ctx.measureText(button.id.toString()).width;
+          _this.ctx.fillText(button.id, x + (_this.size - textWidth) / 2, y + (_this.size + _this.fontSize) / 2);
+          if (button.id === 0) {
+            var labelWidth = _this.ctx.measureText(button.name).width;
+            _this.ctx.fillStyle = "#FFF";
+            _this.ctx.fillText(button.name, x - labelWidth - _this.size / 4, y + (_this.size + _this.fontSize) / 2);
+          }
+        } else {
+          (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
+        }
+
         return Object.assign({}, button, {
           xPos: x,
           yPos: y,

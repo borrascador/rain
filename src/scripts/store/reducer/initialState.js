@@ -20,7 +20,9 @@ const gameState = {
   vehicle: null, // DEBUG with vehicle
   story: null, // DEBUG with story
   position: null,
-  sight: null
+  sight: null,
+  pace: null,
+  rations: null
 };
 
 const inputState = {

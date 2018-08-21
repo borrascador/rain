@@ -9,8 +9,8 @@
 	},
 	{
 		"id": 1,
-		"name": "tiger",
-		"strength": 50,
+		"name": "jaguar",
+		"strength": 100,
 		"aggression": 50,
 		"speed": 80,
 		"drops": [{"id": 4, "min": 20, "max": 50, "rarity": 1}, {"id": 6, "min": 2, "max": 10, "rarity": 1}]
@@ -22,5 +22,21 @@
 		"aggression": 50,
 		"speed": 50,
 		"drops": [{"id": 4, "min": 5, "max": 10, "rarity": 1}, {"id": 6, "min": 1, "max": 1, "rarity": 1}]
+	},
+	{
+		"id": 3,
+		"name": "tapir",
+		"strength": 40,
+		"aggression": 20,
+		"speed": 30,
+		"drops": [{"id": 4, "min": 20, "max": 150, "rarity": 1}, {"id": 6, "min":2, "max": 10, "rarity": 1}]
+	},
+	{
+		"id": 4,
+		"name": "sloth",
+		"strength": 30,
+		"aggression": 20,
+		"speed": 10,
+		"drops": [{"id": 4, "min": 5, "max": 15, "rarity": 1}, {"id": 6, "min":1, "max": 1, "rarity": 1}] 
 	}
 ]
