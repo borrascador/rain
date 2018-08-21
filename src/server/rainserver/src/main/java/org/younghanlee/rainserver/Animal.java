@@ -15,7 +15,7 @@ public class Animal {
 	
 	private class Drop {
 		int id;
-		int rarity;
+		float rarity;
 		int min;
 		int max;
 		

@@ -47,12 +47,42 @@ public class Decision {
 		}
 	};
 	
+	public static Choice fishDeep = new Choice() {
+		public String getText() {
+			return "Fish in Deeper waters";
+		}
+		public JSONObject result(Player p) {
+			JSONObject story = new JSONObject();
+			story.put("text", "Success");
+			return Message.EVENT_RESPONSE(null, null, null, null, story);
+		}
+	};
+	
+	public static Choice fishShallow = new Choice() {
+		public String getText() {
+			return "Fish in Shallow waters";
+		}
+		public JSONObject result(Player p) {
+			JSONObject story = new JSONObject();
+			story.put("text", "Success");
+			return Message.EVENT_RESPONSE(null, null, null, null, story);
+		}
+	};
+	
 	public void addAttackChoice(int index) {
 		choices[index] = attack;
 	}
 	
 	public void addEscapeChoice(int index) {
 		choices[index] = escape;
+	}
+	
+	public void addFishShallowChoice(int index) {
+		choices[index] = fishShallow;
+	}
+	
+	public void addFishDeepChoice(int index) {
+		choices[index] = fishDeep;
 	}
 	
 	public JSONArray buttons () {

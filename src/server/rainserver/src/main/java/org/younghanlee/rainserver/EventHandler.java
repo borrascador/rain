@@ -8,6 +8,7 @@ public class EventHandler {
 		Player p = connection.getPlayer();
 		int id;
 		JSONArray tiles;
+		JSONObject story;
 		JSONObject response;
 		switch (event_type) {
 			case "plant":
@@ -35,8 +36,17 @@ public class EventHandler {
 			case "hunt":
 				id = event.getInt("id");
 				Animal a = p.hunt(id);
-				JSONObject story = new JSONObject();
+				story = new JSONObject();
 				story.put("text", "You have spotted animal: "+ a.getName());
+				story.put("buttons", p.getDecision().buttons());
+				response = Message.EVENT_RESPONSE(null, null, null, null, story);
+				connection.send(response.toString());
+				break;
+			case "fish":
+				id = event.getInt("id");
+				int depth = p.fish(id);
+				story = new JSONObject();
+				story.put("text,", "You estimate the water here to be at least 5m deep.");
 				story.put("buttons", p.getDecision().buttons());
 				response = Message.EVENT_RESPONSE(null, null, null, null, story);
 				connection.send(response.toString());
