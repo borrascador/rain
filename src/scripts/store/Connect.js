@@ -72,4 +72,12 @@ export default class Connect {
   get vehicle() {
     return this.store.getState().vehicle;
   }
+
+  get pace() {
+    return this.store.getState().pace;
+  }
+
+  get rations() {
+    return this.store.getState().rations;
+  }
 }
