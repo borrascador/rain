@@ -178,7 +178,9 @@ public class Player {
 	}
 	
 	public String stopHunting() {
-		String name = hunting.getName();
+		if (hunting != null) {
+			String name = hunting.getName();
+		}
 		hunting = null;
 		return name;
 	}
@@ -190,6 +192,16 @@ public class Player {
 		decision.addAttackChoice(0);
 		decision.addEscapeChoice(1);
 		return hunting;
+	}
+	
+	public int fish (int item_id) {
+		System.out.println("test");
+		int depth = World.getTile(position).getDepth();
+		decision = new Decision(this, 2);
+		decision.addFishDeepChoice(0);
+		decision.addFishShallowChoice(1);
+		System.out.println("test");
+		return depth;
 	}
 	
 	public Decision getDecision() {

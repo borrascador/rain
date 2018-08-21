@@ -17,6 +17,8 @@ public class Tile {
 	private HashMap<String, Integer> events;
 	private HashMap<Integer, Integer> crops;
 	
+	private int waterDepth = 10;
+	
 	private Player owner;
 	private HashSet<String> visitors;
 	
@@ -164,20 +166,22 @@ public class Tile {
 	}
 	
 	public JSONObject harvest(int crop_id, Player p) {
-		if (this.crops.containsKey(crop_id)) {
-			int yield = 2 + Player.randomInt(10);
-			
-			JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p);
-			JSONArray inventory_changes = new JSONArray();
-			inventory_changes.put(inventory_change);
-			
-			this.crops.remove(crop_id);
-			updateNeighbors(null, 0);
-
-			return Message.EVENT_RESPONSE(null, inventory_changes, null, null, null);
-		} else {
+		if (!this.crops.containsKey(crop_id)) {
 			return Message.ERROR(313, "There is no crop " + World.getItem(crop_id).getName() +" here");
+		} 
+		if (this.crops.get(crop_id) > 0){
+			return Message.ERROR(314, World.getItem(crop_id).getName() +" is still growing");
 		}
+		int yield = 2 + Player.randomInt(10);
+			
+		JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p);
+		JSONArray inventory_changes = new JSONArray();
+		inventory_changes.put(inventory_change);
+			
+		this.crops.remove(crop_id);
+		updateNeighbors(null, 0);
+
+		return Message.EVENT_RESPONSE(null, inventory_changes, null, null, null);
 	}
 	
 	public void decGrowthStage(int i) {
@@ -190,6 +194,10 @@ public class Tile {
 				updateNeighbors(null, 0);
 			}
 		}
+	}
+	
+	public int getDepth() {
+		return waterDepth;
 	}
 	
 	public static void main(String[] args){
