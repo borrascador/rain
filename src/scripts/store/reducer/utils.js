@@ -44,7 +44,11 @@ export function getActions(inventory, tiles, position) {
     actions['main'].push({ target: 'harvest', id: 14 });
     actions['harvest'] = [ { target: 'main', id: 18 } ];
     actions['harvest'].push(...currentTile.crops.map(crop => {
-      return Object.assign({}, crop, { tag: 'harvest' });
+      if (crop.stage === 0) {
+        return Object.assign({}, crop, { tag: 'harvest' });
+      } else {
+        return Object.assign({}, crop, { id: 12 })
+      }
     }));
   }
 

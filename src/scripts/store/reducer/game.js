@@ -41,8 +41,8 @@ export function loginResponse(state, action) {
     story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
-    pace: action.payload.pace || null,
-    rations: action.payload.story || null,
+    pace: action.payload.pace || null, //COMBAK
+    rations: action.payload.story || null, //COMBAK
     zoom: 3,
     error: null,
     errorMessage: null

@@ -316,6 +316,17 @@ var Connect = function () {
       return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
     }
   }, {
+    key: 'currentTile',
+    get: function get() {
+      var _store$getState5 = this.store.getState(),
+          position = _store$getState5.position,
+          tiles = _store$getState5.tiles;
+
+      return tiles.find(function (tile) {
+        return tile.id === position;
+      });
+    }
+  }, {
     key: 'inventory',
     get: function get() {
       return this.store.getState().inventory;
@@ -1633,7 +1644,11 @@ function getActions(inventory, tiles, position) {
     actions['main'].push({ target: 'harvest', id: 14 });
     actions['harvest'] = [{ target: 'main', id: 18 }];
     (_actions$harvest = actions['harvest']).push.apply(_actions$harvest, _toConsumableArray(currentTile.crops.map(function (crop) {
-      return Object.assign({}, crop, { tag: 'harvest' });
+      if (crop.stage === 0) {
+        return Object.assign({}, crop, { tag: 'harvest' });
+      } else {
+        return Object.assign({}, crop, { id: 12 });
+      }
     })));
   }
 
@@ -3195,8 +3210,8 @@ function loginResponse(state, action) {
     story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
-    pace: action.payload.pace || null,
-    rations: action.payload.story || null,
+    pace: action.payload.pace || null, //COMBAK
+    rations: action.payload.story || null, //COMBAK
     zoom: 3,
     error: null,
     errorMessage: null
@@ -5363,6 +5378,8 @@ var _utils = __webpack_require__(3);
 
 var _requests = __webpack_require__(5);
 
+var _actions = __webpack_require__(0);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5401,8 +5418,16 @@ var ActionBar = function () {
         this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
         this.current = 'main';
       } else if (button && button.tag === 'harvest') {
-        this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
-        this.current = 'main';
+        var currentTile = this.connect.currentTile;
+        var currentCrop = currentTile.crops.find(function (crop) {
+          return crop.name === button.name;
+        });
+        if (currentCrop.stage <= 0) {
+          this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
+          this.current = 'main';
+        } else {
+          // this.store.dispatch(sendError()) // COMBAK
+        }
       } else if (button && button.tag === 'hunting') {
         this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
         this.current = 'main';
@@ -5417,16 +5442,18 @@ var ActionBar = function () {
   }, {
     key: 'renderBar',
     value: function renderBar() {
+      this.ctx.textAlign = 'alphabetical';
+      this.ctx.font = this.fontSize + 'px MECC';
+      var titleWidth = this.ctx.measureText(this.current).width;
+
       this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
       this.ctx.fillRect((this.canvas.width - this.barWidth) / 2, this.canvas.height - this.barSize, this.barWidth, this.barSize);
 
       this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
-      this.ctx.fillRect((this.canvas.width - this.titleWidth) / 2 - 8, this.canvas.height - (this.barSize + this.fontSize + 4), this.titleWidth + 16, this.fontSize + 4);
+      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - 8, this.canvas.height - (this.barSize + this.fontSize + 4), titleWidth + 16, this.fontSize + 4);
 
-      this.ctx.textAlign = 'alphabetical';
-      this.ctx.font = this.fontSize + 'px MECC';
       this.ctx.fillStyle = "#FFF";
-      this.ctx.fillText(this.current, (this.canvas.width - this.titleWidth) / 2, this.canvas.height - this.barSize);
+      this.ctx.fillText(this.current, (this.canvas.width - titleWidth) / 2, this.canvas.height - this.barSize);
     }
   }, {
     key: 'renderButtons',
@@ -5437,10 +5464,10 @@ var ActionBar = function () {
       var buttonY = this.canvas.height - this.barSize + this.gutter;
       this.buttons = this.buttons.map(function (button, index) {
         var x = buttonX + _this.barSize * index;
-        if (_this.current !== 'main' && index > 0) {
-          (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, buttonY);
-        } else {
+        if (_this.current === 'main' || index === 0 || !(button.tag || button.target)) {
           (0, _draw.drawById)(_this.ctx, _this.icons, button.id, _this.scale, x, buttonY);
+        } else {
+          (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, buttonY);
         }
         return Object.assign({}, button, {
           xPos: x,
@@ -5476,8 +5503,6 @@ var ActionBar = function () {
           this.ctx.closePath();
           this.ctx.fill();
 
-          this.ctx.textAlign = 'alphabetical';
-          this.ctx.font = this.fontSize + 'px MECC';
           this.ctx.fillStyle = "#FFF";
           this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, this.canvas.height - 1.2 * this.barSize + this.fontSize);
         }
@@ -5491,7 +5516,6 @@ var ActionBar = function () {
       }
       this.buttons = this.connect.actions[this.current];
       this.barWidth = this.barSize * this.buttons.length;
-      this.titleWidth = this.ctx.measureText(this.current).width;
       this.buttons.length > 0 && this.renderBar();
       this.renderButtons();
       this.renderHover();
