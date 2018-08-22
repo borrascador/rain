@@ -1,15 +1,22 @@
 package org.younghanlee.rainserver;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.security.KeyStore;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 import org.apache.commons.io.FileUtils;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
@@ -113,6 +120,29 @@ public class Server extends WebSocketServer {
 		int port = 8887;
 
 		Server server = new Server(new InetSocketAddress(host, port));
+//		String STORETYPE = "JKS";
+//		String KEYSTORE = "KeyStore.jks";
+//		String STOREPASSWORD = "keypassword";
+//		String KEYPASSWORD = "keypassword";
+//		
+//		SSLContext sslContext = null;
+//
+//		try {
+//			KeyStore ks = KeyStore.getInstance( STORETYPE );
+//			File kf = new File( KEYSTORE );
+//			ks.load( new FileInputStream( kf ), STOREPASSWORD.toCharArray() );
+//
+//			KeyManagerFactory kmf = KeyManagerFactory.getInstance( "SunX509" );
+//			kmf.init( ks, KEYPASSWORD.toCharArray() );
+//			TrustManagerFactory tmf = TrustManagerFactory.getInstance( "SunX509" );
+//			tmf.init( ks );
+//
+//			sslContext = SSLContext.getInstance( "TLS" );
+//			sslContext.init( kmf.getKeyManagers(), tmf.getTrustManagers(), null );
+//		} catch (Exception e){
+//			System.out.println("SSL INIT ERROR: " + e);
+//		}
+
 		server.setWebSocketFactory(new WebSocketFactory());
 		
 		ScheduledExecutorService updateExec = Executors.newScheduledThreadPool(10);
