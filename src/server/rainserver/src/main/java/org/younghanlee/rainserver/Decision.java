@@ -1,95 +1,130 @@
 package org.younghanlee.rainserver;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Decision {
 	
 	public interface Choice{
-		String getText();
+		String getText(Player p);
 		JSONObject result(Player p);
 	}
+	
+	public static HashMap<String, Choice> choiceMap;
 	
 	private Choice[] choices;
 	
 	
-	public Decision(Player p, int n) {
+	public Decision(String[] choiceNames) {
+		int n = choiceNames.length;
 		this.choices = new Choice[n];
+		for (int i=0; i<n; i++) {
+			this.choices[i] = choiceMap.get(choiceNames[i]);
+		}
 	}
 	
-	public JSONObject choose(int n, Player p) {
+	public JSONObject choose(Player p, int n) {
 		return choices[n].result(p);
 	}
 	
+	public static void createDecisionHashMap() {
+		choiceMap = new HashMap<String, Choice>();
+		choiceMap.put("attack", attack);
+		choiceMap.put("escape", escape);
+		choiceMap.put("process", process);
+		choiceMap.put("discard", discard);
+		choiceMap.put("stopHunting", stopHunting);
+		choiceMap.put("continueHunting", continueHunting);
+		choiceMap.put("fishDeep", fishDeep);
+		choiceMap.put("fishShallow", fishShallow);
+	}
+	
 	public static Choice attack = new Choice() {
-		public String getText() {
+		public String getText(Player p) {
 			return "attack";
 		}
 		public JSONObject result(Player p) {
-			Animal a = p.getHunting();
-			if (Player.randomInt(100) > a.getAggression()) {
-				return a.fight(p);
-			} else {
-				return a.flee(p);
-			}
+			return p.getHunt().attack();
+		}
+	};
+	
+	public static Choice stopHunting = new Choice() {
+		public String getText(Player p) {
+			String huntOrFish = p.getHunt().huntOrFish();
+			return "Stop " + huntOrFish + "ing";
+		}
+		public JSONObject result(Player p) {
+			JSONObject story = new JSONObject();
+			story.put("text", "You have stopped " + p.stopHunting() +"ing");
+			return Message.EVENT_RESPONSE(null, null, null, null, story);
+		}
+	};
+	
+	public static Choice continueHunting = new Choice() {
+		public String getText(Player p) {
+			String huntOrFish = p.getHunt().huntOrFish();
+			return "Continue " + huntOrFish + "ing";
+		}
+		public JSONObject result(Player p) {
+			return p.getHunt().getNext();
+		}
+	};
+	
+	public static Choice process = new Choice() {
+		public String getText(Player p) {
+			return "Process";
+		}
+		public JSONObject result(Player p) {
+			return p.getHunt().processFish();
+		}
+	};
+	
+	public static Choice discard = new Choice() {
+		public String getText(Player p) {
+			return "Discard";
+		}
+		public JSONObject result(Player p) {
+			return p.getHunt().discardFish();
 		}
 	};
 	
 	public static Choice escape = new Choice() {
-		public String getText() {
+		public String getText(Player p) {
 			return "escape";
 		}
 		public JSONObject result(Player p) {
-			String name = p.stopHunting();
-			JSONObject story = new JSONObject();
-			story.put("text", "You have escaped from: "+ name);
-			return Message.EVENT_RESPONSE(null, null, null, null, story);
+			return p.getHunt().escape();
 		}
 	};
 	
 	public static Choice fishDeep = new Choice() {
-		public String getText() {
+		public String getText(Player p) {
 			return "Fish in Deeper waters";
 		}
 		public JSONObject result(Player p) {
-			JSONObject story = new JSONObject();
-			story.put("text", "Success");
-			return Message.EVENT_RESPONSE(null, null, null, null, story);
+			p.startHunting(0, 2000);
+			return p.getHunt().getNext();
 		}
 	};
 	
 	public static Choice fishShallow = new Choice() {
-		public String getText() {
+		public String getText(Player p) {
 			return "Fish in Shallow waters";
 		}
 		public JSONObject result(Player p) {
-			JSONObject story = new JSONObject();
-			story.put("text", "Success");
-			return Message.EVENT_RESPONSE(null, null, null, null, story);
+			p.startHunting(0, 1000);
+			return p.getHunt().getNext();
 		}
 	};
+
 	
-	public void addAttackChoice(int index) {
-		choices[index] = attack;
-	}
-	
-	public void addEscapeChoice(int index) {
-		choices[index] = escape;
-	}
-	
-	public void addFishShallowChoice(int index) {
-		choices[index] = fishShallow;
-	}
-	
-	public void addFishDeepChoice(int index) {
-		choices[index] = fishDeep;
-	}
-	
-	public JSONArray buttons () {
+	public JSONArray buttons (Player p) {
 		JSONArray buttonArray = new JSONArray();
 		for (int i=0; i<choices.length; i++) {
 			JSONObject button = new JSONObject();
-			button.put("text", choices[i].getText());
+			button.put("text", choices[i].getText(p));
 			button.put("id", i);
 			buttonArray.put(button);
 		}

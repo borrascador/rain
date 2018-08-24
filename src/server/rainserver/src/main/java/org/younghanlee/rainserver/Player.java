@@ -29,7 +29,7 @@ public class Player {
 	private HashSet<Integer> party;
 	private HashMap<Integer, Integer> backpack;
 	
-	private Animal hunting;
+	private Hunt hunt;
 	private Decision decision;
 	
 	private HashSet<Integer> buffer;
@@ -57,6 +57,8 @@ public class Player {
 		
 		this.party = new HashSet<Integer>();	
 		addMember("test", Player.randomInt(3));
+		
+		this.hunt = null;
 		
 		this.backpack = new HashMap<Integer, Integer>();
 		// Give stick
@@ -97,7 +99,6 @@ public class Player {
 		Tile t = World.getTile(position);
 		t.removeVisitor(this.name);
 		t.updateNeighbors(this.name, Constants.MAXSIGHT);
-		stopHunting();
 		decision = null;
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
@@ -191,35 +192,22 @@ public class Player {
 		rations = n;
 	}
 	
-	public Animal getHunting() {
-		return hunting;
+	public void startHunting(int weapon, int habitat_id) {
+		hunt = new Hunt(this, weapon, habitat_id);
 	}
 	
 	public String stopHunting() {
-		if (hunting != null) {
-			String name = hunting.getName();
-		}
-		hunting = null;
-		return name;
-	}
-
-	
-	public Animal hunt(int item_id) {
-		hunting = World.getAnimal();
-		decision = new Decision(this, 2);
-		decision.addAttackChoice(0);
-		decision.addEscapeChoice(1);
-		return hunting;
+		String s =  hunt.huntOrFish();
+		hunt = null;
+		return s;
 	}
 	
-	public int fish (int item_id) {
-		System.out.println("test");
-		int depth = World.getTile(position).getDepth();
-		decision = new Decision(this, 2);
-		decision.addFishDeepChoice(0);
-		decision.addFishShallowChoice(1);
-		System.out.println("test");
-		return depth;
+	public Hunt getHunt(){
+		return hunt;
+	}
+	
+	public void setDecision(Decision d) {
+		decision = d;
 	}
 	
 	public Decision getDecision() {

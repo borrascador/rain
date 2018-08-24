@@ -9,6 +9,7 @@ public class EventHandler {
 		String event_type = event.getString("type");
 		Player p = connection.getPlayer();
 		int id;
+		Habitat h;
 		JSONArray tiles;
 		JSONObject story;
 		JSONObject response;
@@ -55,26 +56,27 @@ public class EventHandler {
 				break;
 			case "hunt":
 				id = event.getInt("id");
-				Animal a = p.hunt(id);
-				story = new JSONObject();
-				story.put("text", "You have spotted animal: "+ a.getName());
-				story.put("buttons", p.getDecision().buttons());
-				response = Message.EVENT_RESPONSE(null, null, null, null, story);
+				p.startHunting(id, 0);
+				response = p.getHunt().getNext();
 				connection.send(response.toString());
 				break;
 			case "fish":
 				id = event.getInt("id");
-				int depth = p.fish(id);
+				int depth = World.getTile(p.getPosition()).getDepth();
 				story = new JSONObject();
-				story.put("text", "You estimate the water here to be at least 5m deep.");
-				story.put("buttons", p.getDecision().buttons());
+				String[] choiceNames = {"fishDeep", "fishShallow"};
+				Decision d = new Decision(choiceNames);
+				p.setDecision(d);;
+				story.put("text", "You estimate the water here to be at least " + depth +" deep.");
+				story.put("buttons", p.getDecision().buttons(p));
 				response = Message.EVENT_RESPONSE(null, null, null, null, story);
 				connection.send(response.toString());
 				break;
 			case "decision":
 				id = event.getInt("id");
-				response = p.getDecision().choose(id, p);
+				response = p.getDecision().choose(p, id);
 				connection.send(response.toString());
+				break;
 			default:
 				System.out.println("Error: unrecognized event type");
 				break;

@@ -94,29 +94,9 @@
 		"name": "fish heads",
 		"tags":["food"]
 	},
-	{
+		{
 		"id": 18,
-		"name": "green anaconda",
-		"tags":["food"]
-	},
-	{
-		"id": 19,
-		"name": "turtle",
-		"tags":["food"]
-	},
-	{
-		"id": 20,
-		"name": "arapaima",
-		"tags":["food"]
-	},	
-	{
-		"id": 21,
-		"name": "catfish",
-		"tags":["food"]
-	},
-	{
-		"id": 22,
-		"name": "dorado",
-		"tags":["food"]
+		"name": "feathers",
+		"tags":["crafting"]
 	}
 ]

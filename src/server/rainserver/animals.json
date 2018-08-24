@@ -38,5 +38,37 @@
 		"aggression": 20,
 		"speed": 10,
 		"drops": [{"id": 4, "min": 5, "max": 15, "rarity": 1}, {"id": 6, "min":1, "max": 1, "rarity": 1}] 
+	},
+	{
+		"id": 5,
+		"name": "green anaconda",
+		"strength": 40,
+		"aggression": 30,
+		"speed": 30,
+		"drops": [{"id": 5, "min": 1, "max": 2, "rarity": 1}, {"id": 15, "min":10, "max": 20, "rarity": 1}] 
+	},
+	{
+		"id": 6,
+		"number": 10,
+		"name": "toad-headed turtle",
+		"drops": [{"id": 15, "min":1, "max": 3, "rarity": 1}] 
+	},
+	{
+		"id": 7,
+		"number": 3,
+		"name": "arapaima",
+		"drops": [{"id": 14, "min": 20, "max": 100, "rarity": 1}, {"id": 16, "min":10, "max": 20, "rarity": 1}, {"id": 17, "min":2, "max": 10, "rarity": 1}] 
+	},	
+	{
+		"id": 8,
+		"number": 20,
+		"name": "catfish",
+		"drops": [{"id": 14, "min": 2, "max": 5, "rarity": 1}, {"id": 16, "min":2, "max": 4, "rarity": 1}, {"id": 17, "min":1, "max": 1, "rarity": 0.5}] 
+	},
+	{
+		"id": 9,
+		"number": 5,
+		"name": "dorado",
+		"drops": [{"id": 14, "min": 5, "max": 20, "rarity": 1}, {"id": 16, "min":2, "max": 10, "rarity": 1}, {"id": 17, "min":1, "max": 3, "rarity": 1}] 
 	}
 ]
