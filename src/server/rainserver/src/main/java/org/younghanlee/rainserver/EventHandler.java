@@ -46,7 +46,7 @@ public class EventHandler {
 				id = event.getInt("id");
 				int depth = p.fish(id);
 				story = new JSONObject();
-				story.put("text,", "You estimate the water here to be at least 5m deep.");
+				story.put("text", "You estimate the water here to be at least 5m deep.");
 				story.put("buttons", p.getDecision().buttons());
 				response = Message.EVENT_RESPONSE(null, null, null, null, story);
 				connection.send(response.toString());

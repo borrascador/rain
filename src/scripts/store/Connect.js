@@ -61,6 +61,11 @@ export default class Connect {
     return { pos, tiles, sight, zoom, };
   }
 
+  get currentTile() {
+    const { position, tiles } = this.store.getState();
+    return tiles.find(tile => tile.id === position);
+  }
+
   get inventory() {
     return this.store.getState().inventory;
   }

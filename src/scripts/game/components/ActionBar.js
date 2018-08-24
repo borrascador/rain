@@ -2,6 +2,7 @@ import Connect from '../../store/Connect';
 import { drawById, drawByName } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
+import { sendError } from '../../store/actions/actions';
 
 export default class ActionBar {
   constructor (store, canvas, ctx, loader) {
@@ -33,8 +34,14 @@ export default class ActionBar {
       this.store.dispatch(sendEvent('plant', button.id));
       this.current = 'main';
     } else if (button && button.tag === 'harvest') {
-      this.store.dispatch(sendEvent('harvest', button.id));
-      this.current = 'main';
+      const currentTile = this.connect.currentTile;
+      const currentCrop = currentTile.crops.find(crop => crop.name === button.name);
+      if (currentCrop.stage <= 0) {
+        this.store.dispatch(sendEvent('harvest', button.id));
+        this.current = 'main';
+      } else {
+        // this.store.dispatch(sendError()) // COMBAK
+      }
     } else if (button && button.tag === 'hunting') {
       this.store.dispatch(sendEvent('hunt', button.id));
       this.current = 'main';
@@ -48,6 +55,10 @@ export default class ActionBar {
   }
 
   renderBar() {
+    this.ctx.textAlign = 'alphabetical';
+    this.ctx.font = this.fontSize + 'px MECC';
+    const titleWidth = this.ctx.measureText(this.current).width;
+
     this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(
       (this.canvas.width - this.barWidth) / 2,
@@ -58,18 +69,16 @@ export default class ActionBar {
 
     this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(
-      (this.canvas.width - this.titleWidth) / 2 - 8,
+      (this.canvas.width - titleWidth) / 2 - 8,
       this.canvas.height - (this.barSize + this.fontSize + 4),
-      this.titleWidth + 16,
+      titleWidth + 16,
       this.fontSize + 4
     );
 
-    this.ctx.textAlign = 'alphabetical';
-    this.ctx.font = this.fontSize + 'px MECC';
     this.ctx.fillStyle = "#FFF";
     this.ctx.fillText(
       this.current,
-      (this.canvas.width - this.titleWidth) / 2,
+      (this.canvas.width - titleWidth) / 2,
       this.canvas.height - this.barSize
     );
   }
@@ -79,10 +88,10 @@ export default class ActionBar {
     const buttonY = this.canvas.height - this.barSize + this.gutter;
     this.buttons = this.buttons.map((button, index) => {
       const x = buttonX + this.barSize * index;
-      if (this.current !== 'main' && index > 0) {
-        drawById(this.ctx, this.items, button.id, this.scale, x, buttonY);
-      } else {
+      if (this.current === 'main' || index === 0 || !(button.tag || button.target)) {
         drawById(this.ctx, this.icons, button.id, this.scale, x, buttonY);
+      } else {
+        drawById(this.ctx, this.items, button.id, this.scale, x, buttonY);
       }
       return Object.assign({}, button, {
         xPos: x,
@@ -119,8 +128,6 @@ export default class ActionBar {
         this.ctx.closePath();
         this.ctx.fill();
 
-        this.ctx.textAlign = 'alphabetical';
-        this.ctx.font = this.fontSize + 'px MECC';
         this.ctx.fillStyle = "#FFF";
         this.ctx.fillText(
           text,
@@ -137,7 +144,6 @@ export default class ActionBar {
     }
     this.buttons = this.connect.actions[this.current];
     this.barWidth = this.barSize * this.buttons.length;
-    this.titleWidth = this.ctx.measureText(this.current).width;
     this.buttons.length > 0 && this.renderBar();
     this.renderButtons();
     this.renderHover();
