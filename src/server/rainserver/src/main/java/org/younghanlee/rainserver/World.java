@@ -17,6 +17,7 @@ public class World {
 	private static HashMap<Integer, Item> items;
 	private static HashMap<Integer, Animal> animals;
 	private static HashMap<Integer, Member> members;
+	private static HashMap<Integer, Habitat> habitats;
 	
 	private static int mapWidth;
 	private static int mapHeight;
@@ -54,14 +55,24 @@ public class World {
 			System.exit(1);
 		}
 		
+		// Read habitats.json
+		JSONArray habitatList = null;
+		try {
+			habitatList = new JSONArray(new String(Files.readAllBytes(Paths.get("habitats.json"))));
+		} catch (IOException e) {
+			System.out.println("Item file "+ "habitats.json" + " not found.");
+			System.exit(1);
+		}
+		
 		// All users, online or offline
 		players = new HashMap<String, Player>();
 		emails = new HashMap<String, String>();
 		
-		// Item and party member registry
 		items = new HashMap<Integer, Item>();
 		members = new HashMap<Integer, Member>();
 		animals = new HashMap<Integer, Animal>();
+		habitats = new HashMap<Integer, Habitat>();
+		Decision.createDecisionHashMap();
 		
 		// indexing
 		memberID = 0;
@@ -95,6 +106,14 @@ public class World {
 			animalObject = animalList.getJSONObject(i);
 			int id = animalObject.getInt("id");
 			animals.put(id, new Animal(animalObject));
+		}
+		
+		// store habitats
+		JSONObject habitatObject;
+		for (int i = 0; i < habitatList.length(); i++) {
+			habitatObject = habitatList.getJSONObject(i);
+			int id = habitatObject.getInt("id");
+			habitats.put(id, new Habitat(habitatObject));
 		}
 		
 		// Map dimensions
@@ -178,9 +197,12 @@ public class World {
 		return hs;
 	}
 	
-	public static Animal getAnimal() {
-		int id = Player.randomInt(animals.size()-1);
+	public static Animal getAnimal(int id) {
 		return animals.get(id);
+	}
+	
+	public static Habitat getHabitat(int id) {
+		return habitats.get(id);
 	}
 	
 	public static void dump() {

@@ -18,6 +18,11 @@ public class Tile {
 	private HashMap<Integer, Integer> crops;
 	
 	private int waterDepth = 10;
+	private Habitat land;
+	private Habitat shallow;
+	private Habitat deep;
+	
+	private double wildlife;
 	
 	private Player owner;
 	private HashSet<String> visitors;
@@ -30,6 +35,11 @@ public class Tile {
 		this.events = new HashMap<String, Integer>();
 		this.crops = new HashMap<Integer, Integer>();
 		this.visitors = new HashSet<String>();
+		
+		wildlife = 1.0;
+		land = World.getHabitat(0);
+		shallow = World.getHabitat(1000);
+		deep = World.getHabitat(2000);
 	}
 	
 	public void addLayer(String name, int value) {
@@ -200,6 +210,10 @@ public class Tile {
 	
 	public int getDepth() {
 		return waterDepth;
+	}
+	
+	public double getWildlife() {
+		return wildlife;
 	}
 	
 	public static void main(String[] args){

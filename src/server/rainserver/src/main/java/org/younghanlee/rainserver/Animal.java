@@ -6,8 +6,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Animal {
-
+	
 	private String name;
+	
+	private boolean fish;
+	
+	private int number;
+	
 	private int strength;
 	private int aggression;
 	private int speed;
@@ -29,9 +34,16 @@ public class Animal {
 	
 	public Animal(JSONObject jo) {
 		this.name = jo.getString("name");
-		this.strength = jo.getInt("strength");
-		this.aggression = jo.getInt("aggression");
-		this.speed = jo.getInt("speed");
+		if (jo.has("number")){
+			fish = true;
+			this.number = jo.getInt("number");
+		} else {
+			fish = false;
+			this.number = 1;
+			this.strength = jo.getInt("strength");
+			this.aggression = jo.getInt("aggression");
+			this.speed = jo.getInt("speed");
+		}
 		
 		JSONArray dropsArray = jo.getJSONArray("drops");
 		int l = dropsArray.length();
@@ -47,8 +59,16 @@ public class Animal {
 		}
 	}
 	
+	public boolean isFish() {
+		return fish;
+	}
+	
 	public String getName() {
 		return this.name;
+	}
+	
+	public int getNumber() {
+		return number;
 	}
 	
 	public int getStrength() {
@@ -63,34 +83,26 @@ public class Animal {
 		return this.speed;
 	}
 	
-	public JSONObject fight(Player p) {
-		JSONObject story = new JSONObject();
-		if (Player.randomInt(100) > strength) {
-			story.put("text", "You defeated " + name);
-			return Message.EVENT_RESPONSE(null, rollDrop(p), null, null, story);
-		} else {
-			story.put("text", name + " has injured your party members");
-			return Message.EVENT_RESPONSE(null, null, null, null, story);
-		}	
+	public boolean flee(Player p) {
+		return Player.randomInt(100) > speed;
 	}
 	
-	public JSONObject flee(Player p) {
-		JSONObject story = new JSONObject();
-		if (Player.randomInt(100) > speed) {
-			story.put("text", "You defeated " + name);
-			return Message.EVENT_RESPONSE(null, rollDrop(p), null, null, story);
-		} else {
-			story.put("text", name + " has escaped");
-			return Message.EVENT_RESPONSE(null, null, null, null, story);
-		}
+	public boolean fight(Player p) {
+		return Player.randomInt(100) > strength;
 	}
 	
-	public JSONArray rollDrop(Player p) {
+	public JSONArray rollDrop(Player p, int n) {
 		JSONArray items = new JSONArray();
 		for(Drop d : drops) {
-			if (Math.random() < d.rarity) {
-				int item = d.id;
-				int value = Player.randomInt(d.max - d.min) + d.min;
+			int item = d.id;
+			int value = 0;
+			// roll n times
+			for (int i=0; i<n; i++) {
+				if (Math.random() < d.rarity) {
+					value += Player.randomInt(d.max - d.min) + d.min;
+				}		
+			}
+			if (value > 0) {
 				JSONObject itemObject = World.getItem(item).change(item, value, p);
 				items.put(itemObject);
 			}
