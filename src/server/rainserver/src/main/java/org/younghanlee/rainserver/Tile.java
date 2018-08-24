@@ -189,7 +189,9 @@ public class Tile {
 			int key = entry.getKey();
 			int n = entry.getValue();
 			// System.out.println(key + ": " + n);
-			crops.put(key, n-1);
+			if (n > 0) {
+				crops.put(key, n-1);
+			}
 			if (n-1 == 0) {
 				updateNeighbors(null, 0);
 			}
