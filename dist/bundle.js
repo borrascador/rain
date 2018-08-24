@@ -3210,8 +3210,8 @@ function loginResponse(state, action) {
     story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
-    pace: action.payload.pace || null, //COMBAK
-    rations: action.payload.story || null, //COMBAK
+    pace: action.payload.pace,
+    rations: action.payload.rations,
     zoom: 3,
     error: null,
     errorMessage: null
@@ -3252,8 +3252,8 @@ function eventResponse(state, action) {
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var position = action.payload.position || state.position;
   var story = action.payload.story || state.story;
-  var pace = action.payload.pace || state.pace;
-  var rations = action.payload.rations || state.rations;
+  var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
+  var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
   var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {

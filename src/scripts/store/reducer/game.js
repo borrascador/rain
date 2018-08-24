@@ -41,8 +41,8 @@ export function loginResponse(state, action) {
     story: action.payload.story || null,
     position: action.payload.position,
     sight: action.payload.sight,
-    pace: action.payload.pace || null, //COMBAK
-    rations: action.payload.story || null, //COMBAK
+    pace: action.payload.pace,
+    rations: action.payload.rations,
     zoom: 3,
     error: null,
     errorMessage: null
@@ -83,8 +83,8 @@ export function eventResponse(state, action) {
   const party = mergeArrays(state.party, action.payload.party);
   const position = action.payload.position || state.position;
   const story = action.payload.story || state.story;
-  const pace = action.payload.pace || state.pace;
-  const rations = action.payload.rations || state.rations;
+  const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
+  const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   const mode = action.payload.story ? MODE.STORY : MODE.MAP;
   const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
