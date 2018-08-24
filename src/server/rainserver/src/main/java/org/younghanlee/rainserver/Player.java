@@ -19,6 +19,10 @@ public class Player {
 	private int x;
 	private int y;
 	
+	private int pace;
+	private int speed;
+	private int rations;
+	
 	private int sight;
 	private HashSet<Integer> tilesSeen;
 	
@@ -171,6 +175,20 @@ public class Player {
 	
 	public int getSight() {
 		return sight;
+	}
+	
+	public int getPace() {
+		return pace;
+	}
+	public void setPace(int n) {
+		pace = n;
+	}
+	
+	public int getRations() {
+		return rations;
+	}
+	public void setRations(int n) {
+		rations = n;
 	}
 	
 	public Animal getHunting() {
