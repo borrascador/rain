@@ -29,9 +29,9 @@ public class EventHandler {
 				
 				if (p.move(range, destination)) {
 					tiles = p.inSightArray();
-					HashMap<String, Integer> destinationHashMap = new HashMap<String, Integer>();
-					destinationHashMap.put("destination", destination);
-					response = Message.EVENT_RESPONSE(null, null, tiles, destinationHashMap, null);
+					HashMap<String, Integer> positionHashMap = new HashMap<String, Integer>();
+					positionHashMap.put("position", destination);
+					response = Message.EVENT_RESPONSE(null, null, tiles, positionHashMap, null);
 				} else {
 					response = Message.ERROR(308, null);
 				}
