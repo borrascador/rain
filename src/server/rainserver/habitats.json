@@ -1,0 +1,46 @@
+[
+	{
+		"type": "land",
+		"habitats": [
+			{
+				"id": 0,
+				"public type": "wet forest",
+				"animals": [
+					{"id": 0, "rarity": 0.1},
+					{"id": 1, "rarity": 0.1},
+					{"id": 2, "rarity": 0.6},
+					{"id": 3, "rarity": 0.1},
+					{"id": 4, "rarity": 0.2}
+				]
+			}
+		]
+	},
+	
+	{
+		"type": "shallow water",
+		"habitats": [
+			{
+				"id": 1000,
+				"public type": "crick",
+				"animals": [
+				],
+				"fish": [
+				]
+			}
+		]
+	},
+	
+	{
+		"type": "deep water",
+		"habitats": [
+			{
+				"id": 2000,
+				"public type": "lake",
+				"animals": [
+				],
+				"fish": [
+				]
+			}
+		]
+	}
+]

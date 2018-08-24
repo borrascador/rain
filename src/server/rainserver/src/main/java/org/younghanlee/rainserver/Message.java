@@ -1,5 +1,6 @@
 package org.younghanlee.rainserver;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -54,6 +55,8 @@ public class Message {
 		payload.put("position", p.getPosition());
 		payload.put("tiles", tiles);
 		payload.put("sight", p.getSight());
+		payload.put("pace", p.getPace());
+		payload.put("rations", p.getRations());
 		System.out.println("test");
 		payload.put("inventory", p.backpackToJSONArray());
 		payload.put("party", p.partyToJSONArray());
@@ -85,7 +88,7 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject EVENT_RESPONSE(JSONArray party, JSONArray inventory, JSONArray tiles, Integer position, JSONObject story) {
+	public static JSONObject EVENT_RESPONSE(JSONArray party, JSONArray inventory, JSONArray tiles, HashMap<String, Integer> values, JSONObject story) {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "EVENT_RESPONSE");
 		JSONObject payload = new JSONObject();
@@ -98,8 +101,10 @@ public class Message {
 		if (tiles != null) {
 			payload.put("tiles", tiles);
 		}
-		if (position != null) {
-			payload.put("position", position);
+		if (values != null) {
+			for (String key : values.keySet()) {
+				payload.put(key, values.get(key));
+			}
 		}
 		if (story != null) {
 			payload.put("story", story);

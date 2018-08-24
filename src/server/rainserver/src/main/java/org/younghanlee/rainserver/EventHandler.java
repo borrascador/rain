@@ -1,4 +1,6 @@
 package org.younghanlee.rainserver;
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,10 +29,28 @@ public class EventHandler {
 				
 				if (p.move(range, destination)) {
 					tiles = p.inSightArray();
-					response = Message.EVENT_RESPONSE(null, null, tiles, destination, null);
+					HashMap<String, Integer> destinationHashMap = new HashMap<String, Integer>();
+					destinationHashMap.put("destination", destination);
+					response = Message.EVENT_RESPONSE(null, null, tiles, destinationHashMap, null);
 				} else {
 					response = Message.ERROR(308, null);
 				}
+				connection.send(response.toString());
+				break;
+			case "pace":
+				int pace = event.getInt("id");
+				p.setPace(pace);
+				HashMap<String, Integer> paceHashMap = new HashMap<String, Integer>();
+				paceHashMap.put("pace", p.getPace());
+				response = Message.EVENT_RESPONSE(null, null, null, paceHashMap, null);
+				connection.send(response.toString());
+				break;
+			case "rations":
+				int rations = event.getInt("id");
+				p.setRations(rations);
+				HashMap<String, Integer> rationsHashMap = new HashMap<String, Integer>();
+				rationsHashMap.put("rations", p.getRations());
+				response = Message.EVENT_RESPONSE(null, null, null, rationsHashMap, null);
 				connection.send(response.toString());
 				break;
 			case "hunt":
