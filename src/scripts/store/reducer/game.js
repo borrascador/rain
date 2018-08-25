@@ -1,4 +1,4 @@
-import { getActions, mergeArrays } from './utils';
+import { getActions, mergeArrays, makeStory } from './utils';
 import { MODE } from '../../game/constants';
 
 export function request(state) {
@@ -82,7 +82,7 @@ export function eventResponse(state, action) {
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const position = action.payload.position || state.position;
-  const story = action.payload.story || state.story;
+  const story = makeStory(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   const mode = action.payload.story ? MODE.STORY : MODE.MAP;

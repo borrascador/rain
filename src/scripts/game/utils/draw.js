@@ -61,6 +61,26 @@ export function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
+export function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+  let y;
+  const lengths = lines.map((line, idx) => {
+    console.log(line);
+    y = yPos + idx * lineHeight;
+    const change = line.change < 0 ? line.change : '+' + line.change;
+    const color = line.change < 0 ? '#F00' : '#0F0';
+    const text = `${change} ${line.name}`;
+    ctx.fillStyle = color;
+    ctx.fillText(text, xPos, y);
+    return ctx.measureText(text).width;
+  });
+  return {
+    xPos: xPos,
+    yPos: y,
+    width: lengths.reduce((a, b) => Math.max(a, b)),
+    height: lineHeight * lines.length
+  };
+}
+
 export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selected) {
   let x = fontSize * 3;
   let y = start;

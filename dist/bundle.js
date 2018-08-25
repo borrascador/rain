@@ -454,6 +454,7 @@ exports.trace = trace;
 exports.roundToZoom = roundToZoom;
 exports.centerText = centerText;
 exports.mainText = mainText;
+exports.changeText = changeText;
 exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
 function drawById(ctx, img, id, zoom, x, y) {
@@ -507,6 +508,28 @@ function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     y = yPos + idx * lineHeight;
     ctx.fillText(line, xPos, y);
     return ctx.measureText(line).width;
+  });
+  return {
+    xPos: xPos,
+    yPos: y,
+    width: lengths.reduce(function (a, b) {
+      return Math.max(a, b);
+    }),
+    height: lineHeight * lines.length
+  };
+}
+
+function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+  var y = void 0;
+  var lengths = lines.map(function (line, idx) {
+    console.log(line);
+    y = yPos + idx * lineHeight;
+    var change = line.change < 0 ? line.change : '+' + line.change;
+    var color = line.change < 0 ? '#F00' : '#0F0';
+    var text = change + ' ' + line.name;
+    ctx.fillStyle = color;
+    ctx.fillText(text, xPos, y);
+    return ctx.measureText(text).width;
   });
   return {
     xPos: xPos,
@@ -1591,6 +1614,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.updateObject = updateObject;
 exports.updateItemInArray = updateItemInArray;
 exports.mergeArrays = mergeArrays;
+exports.makeStory = makeStory;
 exports.getActions = getActions;
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -1631,6 +1655,13 @@ function mergeArrays(oldArray, newArray) {
   }
   return result;
 };
+
+function makeStory(state, action) {
+  var story = action.payload.story || state.story;
+  if (!action.payload.inventory) return story;
+
+  return Object.assign({}, story, { changes: action.payload.inventory });
+}
 
 function getActions(inventory, tiles, position) {
   var currentTile = tiles.find(function (tile) {
@@ -3251,7 +3282,7 @@ function eventResponse(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var position = action.payload.position || state.position;
-  var story = action.payload.story || state.story;
+  var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
@@ -5586,6 +5617,7 @@ var StoryView = function () {
     }
 
     this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.changeText = _draw.changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -5597,6 +5629,7 @@ var StoryView = function () {
       this.maxMainWidth = this.canvas.width - this.fontSize * 2;
       this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
       this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
+      this.changes = story.changes;
       if (story && story.buttons) {
         this.buttons = story && story.buttons.map(function (button, idx) {
           return Object.assign({}, button, {
@@ -5669,14 +5702,19 @@ var StoryView = function () {
 
       this.ctx.fillStyle = '#6F6';
       var linePos = 2 * this.fontSize;
-      var mainCoords = this.mainText(this.text, this.fontSize, linePos);
+      var coords = this.mainText(this.text, this.fontSize, linePos);
 
-      linePos = mainCoords.yPos + this.lineHeight * 2;
+      if (this.changes) {
+        linePos = coords.yPos + this.lineHeight * 2;
+        coords = this.changeText(this.changes, this.fontSize, linePos);
+      }
+
+      linePos = coords.yPos + this.lineHeight * 2;
       this.buttons = this.buttonText(this.buttons, linePos, this.selected);
 
       this.ctx.fillStyle = '#6F6';
       linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-      var promptCoords = this.mainText(this.prompt, this.fontSize, linePos);
+      this.mainText(this.prompt, this.fontSize, linePos);
     }
   }, {
     key: 'render',
