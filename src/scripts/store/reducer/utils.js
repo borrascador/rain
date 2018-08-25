@@ -36,6 +36,13 @@ export function mergeArrays(oldArray, newArray) {
   return result;
 };
 
+export function makeStory(state, action) {
+  const story = action.payload.story || state.story;
+  if (!action.payload.inventory) return story;
+
+  return Object.assign({}, story, { changes: action.payload.inventory });
+}
+
 export function getActions(inventory, tiles, position) {
   const currentTile = tiles.find(tile => tile.id === position);
   let actions = { 'main': [] };

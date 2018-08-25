@@ -3,7 +3,7 @@ import { clicked, changeMode } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
 import Connect from '../../store/Connect';
 import { screenToTextButton, getItemById } from '../components/utils';
-import { mainText, buttonText, splitIntoLines } from '../utils/draw';
+import { mainText, changeText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';
 
 export default class StoryView {
@@ -28,6 +28,7 @@ export default class StoryView {
     }
 
     this.mainText = mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.changeText = changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -35,6 +36,7 @@ export default class StoryView {
     this.maxMainWidth = this.canvas.width - this.fontSize * 2;
     this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
     this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
+    this.changes = story.changes;
     if (story && story.buttons) {
       this.buttons = story && story.buttons.map((button, idx) => {
         return Object.assign({}, button, {
@@ -97,14 +99,19 @@ export default class StoryView {
 
     this.ctx.fillStyle = '#6F6';
     let linePos = 2 * this.fontSize;
-    const mainCoords = this.mainText(this.text, this.fontSize, linePos);
+    let coords = this.mainText(this.text, this.fontSize, linePos);
 
-    linePos = mainCoords.yPos + this.lineHeight * 2;
+    if (this.changes) {
+      linePos = coords.yPos + this.lineHeight * 2;
+      coords = this.changeText(this.changes, this.fontSize, linePos);
+    }
+
+    linePos = coords.yPos + this.lineHeight * 2;
     this.buttons = this.buttonText(this.buttons, linePos, this.selected);
 
     this.ctx.fillStyle = '#6F6';
     linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-    const promptCoords = this.mainText(this.prompt, this.fontSize, linePos);
+    this.mainText(this.prompt, this.fontSize, linePos);
   }
 
   render() {
