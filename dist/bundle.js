@@ -522,7 +522,6 @@ function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
 function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   var y = void 0;
   var lengths = lines.map(function (line, idx) {
-    console.log(line);
     y = yPos + idx * lineHeight;
     var change = line.change < 0 ? line.change : '+' + line.change;
     var color = line.change < 0 ? '#F00' : '#0F0';

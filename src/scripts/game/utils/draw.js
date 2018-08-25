@@ -64,7 +64,6 @@ export function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
 export function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   let y;
   const lengths = lines.map((line, idx) => {
-    console.log(line);
     y = yPos + idx * lineHeight;
     const change = line.change < 0 ? line.change : '+' + line.change;
     const color = line.change < 0 ? '#F00' : '#0F0';
