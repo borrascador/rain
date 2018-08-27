@@ -12,7 +12,6 @@ import iconsXlTileset from '../../data/icons-xl.json';
 import waterTileset from '../../data/water.json';
 import itemsTileset from '../../data/items.json';
 import MapView from './views/MapView';
-import StoryView from './views/StoryView';
 import TitleView from './views/TitleView';
 import {changeMode} from '../store/actions/actions';
 import {MODE} from './constants.js'
@@ -41,7 +40,6 @@ export default class RainGame {
 		])
     .then(loaded => {
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
-			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
 			this.titleView = new TitleView(this.store, this.canvas, this.ctx, this.loader);
     }).then(() => {
 			window.requestAnimationFrame(this.tick);
@@ -50,51 +48,39 @@ export default class RainGame {
 
 	tick (elapsed) {
 		window.requestAnimationFrame(this.tick);
-		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+		if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+			this.canvas.width = window.innerWidth;
+			this.canvas.height = window.innerHeight;
+			this.ctx.imageSmoothingEnabled = false;
+		}
+
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		let delta = (elapsed - this._previousElapsed) / 1000.0;
 		delta = Math.min(delta, 0.250); // maximum delta of 250 ms
 		this._previousElapsed = elapsed;
 
-		this.mode = this.connect.mode;
-
-		if (this.mode !== MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
+		if (this.connect.mode !== MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
 			this.store.dispatch(changeMode(MODE.TITLE));
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
-			this.storyView = new StoryView(this.store, this.canvas, this.ctx);
-		} else {
-			this.update(delta);
-			this.render();
 		}
-	}
 
-	update (delta) {
-		if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
-			this.canvas.width = window.innerWidth;
-			this.canvas.height = window.innerHeight;
-			this.ctx.imageSmoothingEnabled = false;
-		}
-		if (this.mode === MODE.MAP) {
-			this.mapView.update(delta);
-		} else if (this.mode === MODE.MENU) {
-			this.menuView.update(delta);
-		} else if (this.mode === MODE.STORY) {
-			this.storyView.update(delta);
-		} else if (this.mode === MODE.TITLE) {
-			this.titleView.update(delta);
-		}
-	}
+		this.mode = this.connect.mode;
+		const keys = this.connect.keys;
+		const { xClick, yClick } = this.connect.click;
 
-	render () {
-		if (this.mode === MODE.MAP) {
-			this.mapView.render();
-		} else if	(this.mode === MODE.MENU) {
-			this.menuView.render();
-		} else if (this.mode === MODE.STORY) {
-			this.storyView.render();
-		} else if (this.mode === MODE.TITLE) {
-			this.titleView.render();
+		const mode = this.connect.mode;
+		switch (mode) {
+			case MODE.STORY:
+			case MODE.MAP:
+				this.mapView.update(delta, keys, xClick, yClick);
+				this.mapView.render();
+				break;
+			case MODE.TITLE:
+				this.titleView.update(delta, keys, xClick, yClick);
+				this.titleView.render();
+				break;
 		}
 	}
 }

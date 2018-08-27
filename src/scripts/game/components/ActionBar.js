@@ -26,7 +26,6 @@ export default class ActionBar {
   }
 
   update(delta, x, y) {
-    // this.animate.update(delta);
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
       this.current = button.target;
@@ -36,11 +35,9 @@ export default class ActionBar {
     } else if (button && button.tag === 'harvest') {
       const currentTile = this.connect.currentTile;
       const currentCrop = currentTile.crops.find(crop => crop.name === button.name);
-      if (currentCrop.stage <= 0) {
+      if (currentCrop.stage === 0) {
         this.store.dispatch(sendEvent('harvest', button.id));
         this.current = 'main';
-      } else {
-        // this.store.dispatch(sendError()) // COMBAK
       }
     } else if (button && button.tag === 'hunting') {
       this.store.dispatch(sendEvent('hunt', button.id));
