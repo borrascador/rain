@@ -7,11 +7,11 @@ export default class Animation {
     this.value = 0;
   }
 
-  update(delta) {
+  tick(delta) {
     this.time += delta;
     if (this.time >= this.interval) {
       this.time = 0;
-      this.value = this.value < this.max ? this.value + this.step : 0;      
+      this.value = this.value < this.max ? this.value + this.step : 0;
     }
   }
 

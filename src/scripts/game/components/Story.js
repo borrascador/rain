@@ -2,11 +2,11 @@ import { MODE } from '../constants';
 import { clicked, changeMode } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
 import Connect from '../../store/Connect';
-import { screenToTextButton, getItemById } from '../components/utils';
+import { screenToTextButton, getItemById } from './utils';
 import { mainText, changeText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';
 
-export default class StoryView {
+export default class Story {
   constructor (store, canvas, ctx) {
     this.store = store;
     this.canvas = canvas;
@@ -15,14 +15,16 @@ export default class StoryView {
     this.blink = new Animation(1, 1, 1);
     this.connect = new Connect(this.store);
 
-    this.fontSize = 32;
-    this.lineHeight = 44;
+    this.fontSize = 16;
+    this.lineHeight = this.fontSize * 11 / 8;
     this.ctx.font = this.fontSize + 'px MECC';
     this.selected = null;
 
-    const story = this.connect.story;
-    if (story) {
-      this.refresh(story);
+    this.width = this.canvas.width / 2;
+    this.height = this.canvas.height / 2;
+
+    if (this.connect.story) {
+      this.refresh(this.connect.story);
     } else {
       this.buttons = [];
     }
@@ -33,8 +35,9 @@ export default class StoryView {
   }
 
   refresh(story) {
-    this.maxMainWidth = this.canvas.width - this.fontSize * 2;
-    this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
+    this.ctx.font = this.fontSize + 'px MECC';
+    this.maxMainWidth = this.width - this.fontSize * 2;
+    this.maxButtonWidth = this.width - this.fontSize * 4;
     this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
     this.changes = story.changes;
     if (story && story.buttons) {
@@ -58,8 +61,7 @@ export default class StoryView {
     }
   }
 
-  updateKeys(delta) {
-    const keys = this.connect.keys;
+  updateKeys(keys) {
     keys.map(key => {
       if (key >= "1" && key <= this.buttons.length.toString()) this.selected = this.buttons[parseInt(key) - 1];
       if (["Escape", "Backspace", "Delete"].includes(key)) this.selected = null;
@@ -70,11 +72,10 @@ export default class StoryView {
     });
   }
 
-  updateClick() {
-    const {xClick, yClick} = this.connect.click;
-    if (xClick && yClick) {
+  updateClick(x, y) {
+    if (x && y) {
       this.store.dispatch(clicked());
-      const button = screenToTextButton(xClick, yClick, this.buttons);
+      const button = screenToTextButton(x, y, this.buttons);
       if (button) {
         if (this.selected && this.selected.id === button.id) {
           this.select(this.selected);
@@ -88,37 +89,39 @@ export default class StoryView {
     }
   }
 
-  update(delta) {
-    this.updateKeys(delta);
-    this.updateClick();
-    this.blink.update(delta);
+  update(delta, keys, x, y) {
+    this.width = this.canvas.width / 2;
+    this.height = this.canvas.height / 2;
+    this.blink.tick(delta);
+    this.updateKeys(keys);
+    this.updateClick(x, y);
   }
 
   renderStoryText() {
     this.ctx.font = this.fontSize + 'px MECC';
 
     this.ctx.fillStyle = '#6F6';
-    let linePos = 2 * this.fontSize;
-    let coords = this.mainText(this.text, this.fontSize, linePos);
+    let xPos = this.width / 2 + this.fontSize;
+    let yPos = this.height / 2 + this.fontSize * 2;
+    let coords = this.mainText(this.text, xPos, yPos);
 
     if (this.changes) {
-      linePos = coords.yPos + this.lineHeight * 2;
-      coords = this.changeText(this.changes, this.fontSize, linePos);
+      yPos = coords.yPos + this.lineHeight * 2;
+      coords = this.changeText(this.changes, xPos, yPos);
     }
 
-    linePos = coords.yPos + this.lineHeight * 2;
-    this.buttons = this.buttonText(this.buttons, linePos, this.selected);
+    yPos = coords.yPos + this.lineHeight * 2;
+    this.buttons = this.buttonText(this.buttons, xPos, yPos, this.selected);
 
     this.ctx.fillStyle = '#6F6';
-    linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-    this.mainText(this.prompt, this.fontSize, linePos);
+    yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+    this.mainText(this.prompt, xPos, yPos);
   }
 
-  render() {
-    this.ctx.fillStyle = 'black';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  render(story) {
+    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
 
-    const story = this.connect.story;
     if (story) {
       this.refresh(story); // Comment out to disable live text adjustment on resize
       this.renderStoryText();

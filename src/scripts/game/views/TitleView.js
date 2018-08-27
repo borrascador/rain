@@ -42,22 +42,21 @@ export default class TitleView {
   }
 
   updateAnimation(delta) {
-    this.animateBottom.update(delta);
-    this.animateTop.update(delta);
+    this.animateBottom.tick(delta);
+    this.animateTop.tick(delta);
   }
 
-  handleClick() {
-    const {xClick, yClick} = this.connect.click;
-    if (xClick && yClick) {
+  handleClick(x, y) {
+    if (x && y) {
       this.store.dispatch(clicked());
-      const button = !this.dim && screenToTextButton(xClick, yClick, this.buttons);
+      const button = !this.dim && screenToTextButton(x, y, this.buttons);
       button && button.onClick(this.store, this.setDim)
     }
   }
 
-  update(delta) {
+  update(delta, keys, x, y) {
     this.updateAnimation(delta);
-    this.handleClick();
+    this.handleClick(x, y);
   }
 
   renderBackground() {

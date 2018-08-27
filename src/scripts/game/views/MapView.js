@@ -1,6 +1,8 @@
+import { MODE } from '../constants';
 import Connect from '../../store/Connect';
 import Camera from '../components/Camera';
 import Overlay from '../components/Overlay';
+import Story from '../components/Story';
 import ActionBar from '../components/ActionBar';
 import { clicked } from '../../store/actions/actions';
 
@@ -12,10 +14,11 @@ export default class MapView {
     this.loader = loader;
 
     this.setDim = this.setDim.bind(this);
-
     this.connect = new Connect(this.store);
+
     this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+    this.story = new Story(this.store, this.canvas, this.ctx, this.setDim);
     this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
   }
 
@@ -23,13 +26,16 @@ export default class MapView {
     this.dim = dim;
   }
 
-  update(delta) {
-    const {xClick, yClick} = this.connect.click;
-    xClick && yClick && this.store.dispatch(clicked());
+  update(delta, keys, x, y) {
+    x && y && this.store.dispatch(clicked());
     if (!this.dim) {
-      this.camera.update(delta, xClick, yClick);
-      this.overlay.update(delta, xClick, yClick);
-      this.actionBar.update(delta, xClick, yClick);
+      if (this.connect.mode === MODE.STORY) {
+        this.story.update(delta, keys, x, y);
+      } else {
+        this.camera.update(delta, x, y);
+        this.overlay.update(delta, x, y);
+        this.actionBar.update(delta, x, y);
+      }
     }
   }
 
@@ -39,6 +45,7 @@ export default class MapView {
 
     this.camera.render();
     this.overlay.render();
+    this.connect.mode === MODE.STORY && this.story.render(this.connect.story);
     this.actionBar.render();
 
     if (this.dim) {

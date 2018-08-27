@@ -540,16 +540,16 @@ function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
-function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selected) {
-  var x = fontSize * 3;
-  var y = start;
+function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, selected) {
+  var x = xPos + fontSize * 2;
+  var y = yPos;
   return buttons.map(function (button, idx) {
     ctx.fillStyle = selected && selected.id === button.id ? '#FF0' : '#6F6';
-    ctx.fillText(button.oneIndex + '.', fontSize, y);
+    ctx.fillText(button.oneIndex + '.', xPos, y);
     var coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
     return Object.assign({}, button, coords, {
-      xPos: fontSize,
+      xPos: xPos,
       width: coords.width + fontSize * 2
     });
   });
@@ -800,8 +800,8 @@ var Animation = function () {
   }
 
   _createClass(Animation, [{
-    key: "update",
-    value: function update(delta) {
+    key: "tick",
+    value: function tick(delta) {
       this.time += delta;
       if (this.time >= this.interval) {
         this.time = 0;
@@ -4246,10 +4246,6 @@ var _MapView = __webpack_require__(69);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _StoryView = __webpack_require__(80);
-
-var _StoryView2 = _interopRequireDefault(_StoryView);
-
 var _TitleView = __webpack_require__(81);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
@@ -4285,7 +4281,6 @@ var RainGame = function () {
 			this.loader = new _Loader2.default();
 			Promise.all([this.loader.setImage('atlas', _atlas2.default, _atlas4.default), this.loader.setImage('icons', _icons2.default, _icons4.default), this.loader.setImage('icons-xl', _iconsXl2.default, _iconsXl4.default), this.loader.setImage('water', _water2.default, _water4.default), this.loader.setImage('items', _items2.default, _items4.default)]).then(function (loaded) {
 				_this.mapView = new _MapView2.default(_this.store, _this.canvas, _this.ctx, _this.loader);
-				_this.storyView = new _StoryView2.default(_this.store, _this.canvas, _this.ctx);
 				_this.titleView = new _TitleView2.default(_this.store, _this.canvas, _this.ctx, _this.loader);
 			}).then(function () {
 				window.requestAnimationFrame(_this.tick);
@@ -4295,53 +4290,42 @@ var RainGame = function () {
 		key: 'tick',
 		value: function tick(elapsed) {
 			window.requestAnimationFrame(this.tick);
-			this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+			if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
+				this.canvas.width = window.innerWidth;
+				this.canvas.height = window.innerHeight;
+				this.ctx.imageSmoothingEnabled = false;
+			}
+
 			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 			var delta = (elapsed - this._previousElapsed) / 1000.0;
 			delta = Math.min(delta, 0.250); // maximum delta of 250 ms
 			this._previousElapsed = elapsed;
 
-			this.mode = this.connect.mode;
-
-			if (this.mode !== _constants.MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
+			if (this.connect.mode !== _constants.MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
 				this.store.dispatch((0, _actions.changeMode)(_constants.MODE.TITLE));
 				this.mapView = new _MapView2.default(this.store, this.canvas, this.ctx, this.loader);
-				this.storyView = new _StoryView2.default(this.store, this.canvas, this.ctx);
-			} else {
-				this.update(delta);
-				this.render();
 			}
-		}
-	}, {
-		key: 'update',
-		value: function update(delta) {
-			if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
-				this.canvas.width = window.innerWidth;
-				this.canvas.height = window.innerHeight;
-				this.ctx.imageSmoothingEnabled = false;
-			}
-			if (this.mode === _constants.MODE.MAP) {
-				this.mapView.update(delta);
-			} else if (this.mode === _constants.MODE.MENU) {
-				this.menuView.update(delta);
-			} else if (this.mode === _constants.MODE.STORY) {
-				this.storyView.update(delta);
-			} else if (this.mode === _constants.MODE.TITLE) {
-				this.titleView.update(delta);
-			}
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			if (this.mode === _constants.MODE.MAP) {
-				this.mapView.render();
-			} else if (this.mode === _constants.MODE.MENU) {
-				this.menuView.render();
-			} else if (this.mode === _constants.MODE.STORY) {
-				this.storyView.render();
-			} else if (this.mode === _constants.MODE.TITLE) {
-				this.titleView.render();
+
+			this.mode = this.connect.mode;
+			var keys = this.connect.keys;
+			var _connect$click = this.connect.click,
+			    xClick = _connect$click.xClick,
+			    yClick = _connect$click.yClick;
+
+
+			var mode = this.connect.mode;
+			switch (mode) {
+				case _constants.MODE.STORY:
+				case _constants.MODE.MAP:
+					this.mapView.update(delta, keys, xClick, yClick);
+					this.mapView.render();
+					break;
+				case _constants.MODE.TITLE:
+					this.titleView.update(delta, keys, xClick, yClick);
+					this.titleView.render();
+					break;
 			}
 		}
 	}]);
@@ -4534,6 +4518,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _constants = __webpack_require__(2);
+
 var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
@@ -4546,7 +4532,11 @@ var _Overlay = __webpack_require__(73);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _ActionBar = __webpack_require__(79);
+var _Story = __webpack_require__(79);
+
+var _Story2 = _interopRequireDefault(_Story);
+
+var _ActionBar = __webpack_require__(80);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
@@ -4566,10 +4556,11 @@ var MapView = function () {
     this.loader = loader;
 
     this.setDim = this.setDim.bind(this);
-
     this.connect = new _Connect2.default(this.store);
+
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+    this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.setDim);
     this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
@@ -4580,16 +4571,16 @@ var MapView = function () {
     }
   }, {
     key: 'update',
-    value: function update(delta) {
-      var _connect$click = this.connect.click,
-          xClick = _connect$click.xClick,
-          yClick = _connect$click.yClick;
-
-      xClick && yClick && this.store.dispatch((0, _actions.clicked)());
+    value: function update(delta, keys, x, y) {
+      x && y && this.store.dispatch((0, _actions.clicked)());
       if (!this.dim) {
-        this.camera.update(delta, xClick, yClick);
-        this.overlay.update(delta, xClick, yClick);
-        this.actionBar.update(delta, xClick, yClick);
+        if (this.connect.mode === _constants.MODE.STORY) {
+          this.story.update(delta, keys, x, y);
+        } else {
+          this.camera.update(delta, x, y);
+          this.overlay.update(delta, x, y);
+          this.actionBar.update(delta, x, y);
+        }
       }
     }
   }, {
@@ -4600,6 +4591,7 @@ var MapView = function () {
 
       this.camera.render();
       this.overlay.render();
+      this.connect.mode === _constants.MODE.STORY && this.story.render(this.connect.story);
       this.actionBar.render();
 
       if (this.dim) {
@@ -5264,7 +5256,7 @@ var Inventory = function () {
   _createClass(Inventory, [{
     key: 'update',
     value: function update(delta, x, y) {
-      this.animate.update(delta);
+      this.animate.tick(delta);
       var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
       clickedButton && clickedButton.onClick();
     }
@@ -5398,6 +5390,185 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _constants = __webpack_require__(2);
+
+var _actions = __webpack_require__(0);
+
+var _requests = __webpack_require__(5);
+
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _utils = __webpack_require__(3);
+
+var _draw = __webpack_require__(4);
+
+var _Animation = __webpack_require__(8);
+
+var _Animation2 = _interopRequireDefault(_Animation);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Story = function () {
+  function Story(store, canvas, ctx) {
+    _classCallCheck(this, Story);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.blink = new _Animation2.default(1, 1, 1);
+    this.connect = new _Connect2.default(this.store);
+
+    this.fontSize = 16;
+    this.lineHeight = this.fontSize * 11 / 8;
+    this.ctx.font = this.fontSize + 'px MECC';
+    this.selected = null;
+
+    this.width = this.canvas.width / 2;
+    this.height = this.canvas.height / 2;
+
+    if (this.connect.story) {
+      this.refresh(this.connect.story);
+    } else {
+      this.buttons = [];
+    }
+
+    this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.changeText = _draw.changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+  }
+
+  _createClass(Story, [{
+    key: 'refresh',
+    value: function refresh(story) {
+      var _this = this;
+
+      this.ctx.font = this.fontSize + 'px MECC';
+      this.maxMainWidth = this.width - this.fontSize * 2;
+      this.maxButtonWidth = this.width - this.fontSize * 4;
+      this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
+      this.changes = story.changes;
+      if (story && story.buttons) {
+        this.buttons = story && story.buttons.map(function (button, idx) {
+          return Object.assign({}, button, {
+            text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
+            oneIndex: idx + 1
+          });
+        });
+      }
+      var promptText = 'What is your choice? ' + (this.selected && this.selected.oneIndex || '');
+      var cursor = this.blink.getValue() ? '' : '_';
+      this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
+    }
+  }, {
+    key: 'select',
+    value: function select(button) {
+      if (button.text[0] === 'OK') {
+        this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+      } else {
+        this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
+      }
+    }
+  }, {
+    key: 'updateKeys',
+    value: function updateKeys(keys) {
+      var _this2 = this;
+
+      keys.map(function (key) {
+        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selected = _this2.buttons[parseInt(key) - 1];
+        if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selected = null;
+        if (key === "Enter" && _this2.selected !== null) {
+          _this2.select(_this2.selected);
+          _this2.selected = null;
+        }
+      });
+    }
+  }, {
+    key: 'updateClick',
+    value: function updateClick(x, y) {
+      if (x && y) {
+        this.store.dispatch((0, _actions.clicked)());
+        var button = (0, _utils.screenToTextButton)(x, y, this.buttons);
+        if (button) {
+          if (this.selected && this.selected.id === button.id) {
+            this.select(this.selected);
+            this.selected = null;
+          } else {
+            this.selected = button;
+          }
+        } else {
+          this.selected = null;
+        }
+      }
+    }
+  }, {
+    key: 'update',
+    value: function update(delta, keys, x, y) {
+      this.width = this.canvas.width / 2;
+      this.height = this.canvas.height / 2;
+      this.blink.tick(delta);
+      this.updateKeys(keys);
+      this.updateClick(x, y);
+    }
+  }, {
+    key: 'renderStoryText',
+    value: function renderStoryText() {
+      this.ctx.font = this.fontSize + 'px MECC';
+
+      this.ctx.fillStyle = '#6F6';
+      var xPos = this.width / 2 + this.fontSize;
+      var yPos = this.height / 2 + this.fontSize * 2;
+      var coords = this.mainText(this.text, xPos, yPos);
+
+      if (this.changes) {
+        yPos = coords.yPos + this.lineHeight * 2;
+        coords = this.changeText(this.changes, xPos, yPos);
+      }
+
+      yPos = coords.yPos + this.lineHeight * 2;
+      this.buttons = this.buttonText(this.buttons, xPos, yPos, this.selected);
+
+      this.ctx.fillStyle = '#6F6';
+      yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+      this.mainText(this.prompt, xPos, yPos);
+    }
+  }, {
+    key: 'render',
+    value: function render(story) {
+      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+      this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
+
+      if (story) {
+        this.refresh(story); // Comment out to disable live text adjustment on resize
+        this.renderStoryText();
+      } else {
+        this.buttons = [];
+      }
+    }
+  }]);
+
+  return Story;
+}();
+
+exports.default = Story;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
@@ -5440,7 +5611,6 @@ var ActionBar = function () {
   _createClass(ActionBar, [{
     key: 'update',
     value: function update(delta, x, y) {
-      // this.animate.update(delta);
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
       if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
         this.current = button.target;
@@ -5452,11 +5622,9 @@ var ActionBar = function () {
         var currentCrop = currentTile.crops.find(function (crop) {
           return crop.name === button.name;
         });
-        if (currentCrop.stage <= 0) {
+        if (currentCrop.stage === 0) {
           this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
           this.current = 'main';
-        } else {
-          // this.store.dispatch(sendError()) // COMBAK
         }
       } else if (button && button.tag === 'hunting') {
         this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
@@ -5558,185 +5726,6 @@ var ActionBar = function () {
 exports.default = ActionBar;
 
 /***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _constants = __webpack_require__(2);
-
-var _actions = __webpack_require__(0);
-
-var _requests = __webpack_require__(5);
-
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(3);
-
-var _draw = __webpack_require__(4);
-
-var _Animation = __webpack_require__(8);
-
-var _Animation2 = _interopRequireDefault(_Animation);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var StoryView = function () {
-  function StoryView(store, canvas, ctx) {
-    _classCallCheck(this, StoryView);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-
-    this.blink = new _Animation2.default(1, 1, 1);
-    this.connect = new _Connect2.default(this.store);
-
-    this.fontSize = 32;
-    this.lineHeight = 44;
-    this.ctx.font = this.fontSize + 'px MECC';
-    this.selected = null;
-
-    var story = this.connect.story;
-    if (story) {
-      this.refresh(story);
-    } else {
-      this.buttons = [];
-    }
-
-    this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.changeText = _draw.changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-  }
-
-  _createClass(StoryView, [{
-    key: 'refresh',
-    value: function refresh(story) {
-      var _this = this;
-
-      this.maxMainWidth = this.canvas.width - this.fontSize * 2;
-      this.maxButtonWidth = this.canvas.width - this.fontSize * 4;
-      this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
-      this.changes = story.changes;
-      if (story && story.buttons) {
-        this.buttons = story && story.buttons.map(function (button, idx) {
-          return Object.assign({}, button, {
-            text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
-            oneIndex: idx + 1
-          });
-        });
-      }
-      var promptText = 'What is your choice? ' + (this.selected && this.selected.oneIndex || '');
-      var cursor = this.blink.getValue() ? '' : '_';
-      this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
-    }
-  }, {
-    key: 'select',
-    value: function select(button) {
-      if (button.text[0] === 'OK') {
-        this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
-      } else {
-        this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
-      }
-    }
-  }, {
-    key: 'updateKeys',
-    value: function updateKeys(delta) {
-      var _this2 = this;
-
-      var keys = this.connect.keys;
-      keys.map(function (key) {
-        if (key >= "1" && key <= _this2.buttons.length.toString()) _this2.selected = _this2.buttons[parseInt(key) - 1];
-        if (["Escape", "Backspace", "Delete"].includes(key)) _this2.selected = null;
-        if (key === "Enter" && _this2.selected !== null) {
-          _this2.select(_this2.selected);
-          _this2.selected = null;
-        }
-      });
-    }
-  }, {
-    key: 'updateClick',
-    value: function updateClick() {
-      var _connect$click = this.connect.click,
-          xClick = _connect$click.xClick,
-          yClick = _connect$click.yClick;
-
-      if (xClick && yClick) {
-        this.store.dispatch((0, _actions.clicked)());
-        var button = (0, _utils.screenToTextButton)(xClick, yClick, this.buttons);
-        if (button) {
-          if (this.selected && this.selected.id === button.id) {
-            this.select(this.selected);
-            this.selected = null;
-          } else {
-            this.selected = button;
-          }
-        } else {
-          this.selected = null;
-        }
-      }
-    }
-  }, {
-    key: 'update',
-    value: function update(delta) {
-      this.updateKeys(delta);
-      this.updateClick();
-      this.blink.update(delta);
-    }
-  }, {
-    key: 'renderStoryText',
-    value: function renderStoryText() {
-      this.ctx.font = this.fontSize + 'px MECC';
-
-      this.ctx.fillStyle = '#6F6';
-      var linePos = 2 * this.fontSize;
-      var coords = this.mainText(this.text, this.fontSize, linePos);
-
-      if (this.changes) {
-        linePos = coords.yPos + this.lineHeight * 2;
-        coords = this.changeText(this.changes, this.fontSize, linePos);
-      }
-
-      linePos = coords.yPos + this.lineHeight * 2;
-      this.buttons = this.buttonText(this.buttons, linePos, this.selected);
-
-      this.ctx.fillStyle = '#6F6';
-      linePos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-      this.mainText(this.prompt, this.fontSize, linePos);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      this.ctx.fillStyle = 'black';
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-      var story = this.connect.story;
-      if (story) {
-        this.refresh(story); // Comment out to disable live text adjustment on resize
-        this.renderStoryText();
-      } else {
-        this.buttons = [];
-      }
-    }
-  }]);
-
-  return StoryView;
-}();
-
-exports.default = StoryView;
-
-/***/ }),
 /* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5805,27 +5794,23 @@ var TitleView = function () {
   }, {
     key: 'updateAnimation',
     value: function updateAnimation(delta) {
-      this.animateBottom.update(delta);
-      this.animateTop.update(delta);
+      this.animateBottom.tick(delta);
+      this.animateTop.tick(delta);
     }
   }, {
     key: 'handleClick',
-    value: function handleClick() {
-      var _connect$click = this.connect.click,
-          xClick = _connect$click.xClick,
-          yClick = _connect$click.yClick;
-
-      if (xClick && yClick) {
+    value: function handleClick(x, y) {
+      if (x && y) {
         this.store.dispatch((0, _actions.clicked)());
-        var button = !this.dim && (0, _utils.screenToTextButton)(xClick, yClick, this.buttons);
+        var button = !this.dim && (0, _utils.screenToTextButton)(x, y, this.buttons);
         button && button.onClick(this.store, this.setDim);
       }
     }
   }, {
     key: 'update',
-    value: function update(delta) {
+    value: function update(delta, keys, x, y) {
       this.updateAnimation(delta);
-      this.handleClick();
+      this.handleClick(x, y);
     }
   }, {
     key: 'renderBackground',

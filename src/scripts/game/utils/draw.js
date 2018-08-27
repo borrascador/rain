@@ -80,16 +80,16 @@ export function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos)
   };
 }
 
-export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, start, selected) {
-  let x = fontSize * 3;
-  let y = start;
+export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, selected) {
+  let x = xPos + fontSize * 2;
+  let y = yPos;
   return buttons.map((button, idx) => {
     ctx.fillStyle = (selected && selected.id === button.id) ? '#FF0' : '#6F6';
-    ctx.fillText(`${button.oneIndex}.`, fontSize, y);
+    ctx.fillText(`${button.oneIndex}.`, xPos, y);
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;
     return Object.assign({}, button, coords, {
-      xPos: fontSize,
+      xPos: xPos,
       width: coords.width + fontSize * 2
     });
   });

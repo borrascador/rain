@@ -23,7 +23,7 @@ export default class Inventory {
   }
 
   update(delta, x, y) {
-    this.animate.update(delta);
+    this.animate.tick(delta);
     const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
     clickedButton && clickedButton.onClick();
   }
