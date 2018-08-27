@@ -40,14 +40,12 @@ export default class Story {
     this.maxButtonWidth = this.width - this.fontSize * 4;
     this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
     this.changes = story.changes;
-    if (story && story.buttons) {
-      this.buttons = story && story.buttons.map((button, idx) => {
-        return Object.assign({}, button, {
-          text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth),
-          oneIndex: idx + 1
-        });
+    this.buttons = story && story.buttons.map((button, idx) => {
+      return Object.assign({}, button, {
+        text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth),
+        oneIndex: idx + 1
       });
-    }
+    });
     const promptText = `What is your choice? ${this.selected && this.selected.oneIndex || ''}`;
     const cursor = this.blink.getValue() ? '' : '_';
     this.prompt = splitIntoLines(this.ctx, promptText + cursor, this.maxMainWidth);
@@ -74,7 +72,6 @@ export default class Story {
 
   updateClick(x, y) {
     if (x && y) {
-      this.store.dispatch(clicked());
       const button = screenToTextButton(x, y, this.buttons);
       if (button) {
         if (this.selected && this.selected.id === button.id) {
@@ -113,9 +110,11 @@ export default class Story {
     yPos = coords.yPos + this.lineHeight * 2;
     this.buttons = this.buttonText(this.buttons, xPos, yPos, this.selected);
 
-    this.ctx.fillStyle = '#6F6';
-    yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-    this.mainText(this.prompt, xPos, yPos);
+    if (this.buttons.length > 1) {
+      this.ctx.fillStyle = '#6F6';
+      yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+      this.mainText(this.prompt, xPos, yPos);
+    }
   }
 
   render(story) {

@@ -28,8 +28,8 @@ export default class Vehicle {
   }
 
   update(delta, x, y) {
-    const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
-    clickedButton && clickedButton.onClick();
+    const button = x && y && screenToImageButton(x, y, this.buttons);
+    button && button.onClick();
   }
 
   renderVehicle(vehicle) {

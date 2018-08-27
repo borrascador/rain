@@ -27,27 +27,34 @@ export default class ActionBar {
 
   update(delta, x, y) {
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
-      this.current = button.target;
-    } else if (button && button.tag === 'seed') {
-      this.store.dispatch(sendEvent('plant', button.id));
-      this.current = 'main';
-    } else if (button && button.tag === 'harvest') {
-      const currentTile = this.connect.currentTile;
-      const currentCrop = currentTile.crops.find(crop => crop.name === button.name);
-      if (currentCrop.stage === 0) {
-        this.store.dispatch(sendEvent('harvest', button.id));
+    if (button) {
+      if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
+        this.current = button.target;
+      } else if (button.tag) {
         this.current = 'main';
+        switch (button.tag) {
+          case 'seed':
+            this.store.dispatch(sendEvent('plant', button.id))
+            break;
+          case 'harvest':
+            const currentTile = this.connect.currentTile;
+            const currentCrop = currentTile.crops.find(crop => crop.name === button.name);
+            currentCrop.stage <= 0 && this.store.dispatch(sendEvent('harvest', button.id));
+            break;
+          case 'hunting':
+            this.store.dispatch(sendEvent('hunt', button.id))
+            break;
+          case 'fishing':
+            this.store.dispatch(sendEvent('fish', button.id))
+            break;
+          case 'food':
+            this.store.dispatch(sendEvent('eat', button.id))
+            break;
+          default:
+            this.store.dispatch(sendEvent(button.tag, button.id))
+            break;
+        }
       }
-    } else if (button && button.tag === 'hunting') {
-      this.store.dispatch(sendEvent('hunt', button.id));
-      this.current = 'main';
-    } else if (button && button.tag === 'fishing') {
-      this.store.dispatch(sendEvent('fish', button.id));
-      this.current = 'main';
-    } else if (button && button.tag === 'food') {
-      this.store.dispatch(sendEvent('eat', button.id));
-      this.current = 'main';
     }
   }
 
