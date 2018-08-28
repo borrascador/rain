@@ -4673,13 +4673,12 @@ var Camera = function () {
   }, {
     key: 'updateClick',
     value: function updateClick(x, y) {
-      var clickId = x && y && (0, _utils.screenToImageButtonId)(x, y, this.clickTiles);
-      if (clickId) {
+      var tile = x && y && (0, _utils.screenToImageButton)(x, y, this.clickTiles);
+      if (tile) {
         var pos = this.connect.map.pos;
 
-        var tile = (0, _utils.getItemById)(this.clickTiles, clickId);
         if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-          this.store.dispatch((0, _requests.sendEvent)('move', clickId));
+          this.store.dispatch((0, _requests.sendEvent)('move', tile.id));
         }
       }
     }
@@ -4891,11 +4890,11 @@ var Overlay = function () {
 
   _createClass(Overlay, [{
     key: 'update',
-    value: function update(delta, xClick, yClick) {
-      this.zoom.update(delta, xClick, yClick);
-      this.party.update(delta, xClick, yClick);
-      this.vehicle.update(delta, xClick, yClick);
-      this.inventory.update(delta, xClick, yClick);
+    value: function update(delta, x, y) {
+      this.zoom.update(delta, x, y);
+      this.party.update(delta, x, y);
+      this.vehicle.update(delta, x, y);
+      this.inventory.update(delta, x, y);
     }
   }, {
     key: 'render',
@@ -4976,8 +4975,8 @@ var Zoom = function () {
   _createClass(Zoom, [{
     key: 'update',
     value: function update(delta, x, y) {
-      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && this.store.dispatch(clickedButton.onClick());
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      button && this.store.dispatch(button.onClick());
     }
   }, {
     key: 'render',
@@ -5072,8 +5071,8 @@ var Party = function () {
   _createClass(Party, [{
     key: 'update',
     value: function update(delta, x, y) {
-      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && console.log(clickedButton.name);
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      button && console.log(button.name);
     }
   }, {
     key: 'render',
@@ -5166,8 +5165,8 @@ var Vehicle = function () {
   _createClass(Vehicle, [{
     key: 'update',
     value: function update(delta, x, y) {
-      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && clickedButton.onClick();
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      button && button.onClick();
     }
   }, {
     key: 'renderVehicle',
@@ -5257,8 +5256,8 @@ var Inventory = function () {
     key: 'update',
     value: function update(delta, x, y) {
       this.animate.tick(delta);
-      var clickedButton = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      clickedButton && clickedButton.onClick();
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      button && button.onClick();
     }
   }, {
     key: 'render',
@@ -5452,14 +5451,12 @@ var Story = function () {
       this.maxButtonWidth = this.width - this.fontSize * 4;
       this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
       this.changes = story.changes;
-      if (story && story.buttons) {
-        this.buttons = story && story.buttons.map(function (button, idx) {
-          return Object.assign({}, button, {
-            text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
-            oneIndex: idx + 1
-          });
+      this.buttons = story && story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, {
+          text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
+          oneIndex: idx + 1
         });
-      }
+      });
       var promptText = 'What is your choice? ' + (this.selected && this.selected.oneIndex || '');
       var cursor = this.blink.getValue() ? '' : '_';
       this.prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, this.maxMainWidth);
@@ -5491,7 +5488,6 @@ var Story = function () {
     key: 'updateClick',
     value: function updateClick(x, y) {
       if (x && y) {
-        this.store.dispatch((0, _actions.clicked)());
         var button = (0, _utils.screenToTextButton)(x, y, this.buttons);
         if (button) {
           if (this.selected && this.selected.id === button.id) {
@@ -5532,9 +5528,11 @@ var Story = function () {
       yPos = coords.yPos + this.lineHeight * 2;
       this.buttons = this.buttonText(this.buttons, xPos, yPos, this.selected);
 
-      this.ctx.fillStyle = '#6F6';
-      yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
-      this.mainText(this.prompt, xPos, yPos);
+      if (this.buttons.length > 1) {
+        this.ctx.fillStyle = '#6F6';
+        yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
+        this.mainText(this.prompt, xPos, yPos);
+      }
     }
   }, {
     key: 'render',
@@ -5612,29 +5610,36 @@ var ActionBar = function () {
     key: 'update',
     value: function update(delta, x, y) {
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      if (button && button.target && Object.keys(this.connect.actions).includes(button.target)) {
-        this.current = button.target;
-      } else if (button && button.tag === 'seed') {
-        this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
-        this.current = 'main';
-      } else if (button && button.tag === 'harvest') {
-        var currentTile = this.connect.currentTile;
-        var currentCrop = currentTile.crops.find(function (crop) {
-          return crop.name === button.name;
-        });
-        if (currentCrop.stage === 0) {
-          this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
+      if (button) {
+        if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
+          this.current = button.target;
+        } else if (button.tag) {
           this.current = 'main';
+          switch (button.tag) {
+            case 'seed':
+              this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
+              break;
+            case 'harvest':
+              var currentTile = this.connect.currentTile;
+              var currentCrop = currentTile.crops.find(function (crop) {
+                return crop.name === button.name;
+              });
+              currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
+              break;
+            case 'hunting':
+              this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
+              break;
+            case 'fishing':
+              this.store.dispatch((0, _requests.sendEvent)('fish', button.id));
+              break;
+            case 'food':
+              this.store.dispatch((0, _requests.sendEvent)('eat', button.id));
+              break;
+            default:
+              this.store.dispatch((0, _requests.sendEvent)(button.tag, button.id));
+              break;
+          }
         }
-      } else if (button && button.tag === 'hunting') {
-        this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
-        this.current = 'main';
-      } else if (button && button.tag === 'fishing') {
-        this.store.dispatch((0, _requests.sendEvent)('fish', button.id));
-        this.current = 'main';
-      } else if (button && button.tag === 'food') {
-        this.store.dispatch((0, _requests.sendEvent)('eat', button.id));
-        this.current = 'main';
       }
     }
   }, {

@@ -1,7 +1,7 @@
 import Connect from '../../store/Connect';
 import { sendEvent } from '../../store/actions/requests';
 import { LAYER } from '../constants'
-import { screenToImageButtonId, getItemById } from './utils';
+import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
 const {BOTTOM, MIDDLE} = LAYER;
@@ -35,12 +35,11 @@ export default class Camera {
   }
 
   updateClick(x, y) {
-    const clickId = x && y && screenToImageButtonId(x, y, this.clickTiles);
-    if (clickId) {
+    const tile = x && y && screenToImageButton(x, y, this.clickTiles);
+    if (tile) {
       const { pos } = this.connect.map;
-      const tile = getItemById(this.clickTiles, clickId);
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-        this.store.dispatch(sendEvent('move', clickId));
+        this.store.dispatch(sendEvent('move', tile.id));
       }
     }
   }

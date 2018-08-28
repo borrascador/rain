@@ -20,8 +20,8 @@ export default class Party {
   }
 
   update(delta, x, y) {
-    const clickedButton = x && y && screenToImageButton(x, y, this.buttons);
-    clickedButton && console.log(clickedButton.name);
+    const button = x && y && screenToImageButton(x, y, this.buttons);
+    button && console.log(button.name);
   }
 
   render() {
