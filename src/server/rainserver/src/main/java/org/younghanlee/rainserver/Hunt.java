@@ -73,22 +73,53 @@ public class Hunt{
 		JSONObject story = new JSONObject();
 		story.put("buttons", d.buttons(p));
 		JSONArray drops;
+		JSONArray party;
+		String death = "";
 		
-		if (Player.randomInt(100) < animal.getAggression()) {
+		// if (Player.randomInt(100) < animal.getAggression()) {
+		if (true) {
 			if (animal.fight(p)) {
 				story.put("text", "You have defeated " + animal.getName());
 				drops = animal.rollDrop(p, 1);
+				party = null;
 			} else {
-				story.put("text",  animal.getName() + " has fought back and injured your party member");
 				drops = null;
+				party = null;
+				int members_injured = 0;
+				JSONArray damage = new JSONArray();
+				for (int i=0; i<p.partySize(); i++) {
+					int id = p.getPartyMember(i);
+					Member m = World.getMember(id);
+					if (Math.random() > 0.6) {
+						members_injured++;
+						int health_loss = -1 * (Player.randomInt(2) + 1);
+						JSONObject jo = m.change(id, p, health_loss, 0);
+						if (jo.getInt("health") == 0) {
+							death = m.getName() + " has perished.";
+						}
+						damage.put(jo);
+					}
+				}
+				if (members_injured == 0) {
+					story.put("text",  animal.getName() + " has fought back, but you manage to retreat safely.");
+				} else {
+					party = damage;
+					String plural = "s";
+					if (members_injured == 1) {
+						plural = "";
+					}	
+					story.put("text",  animal.getName() + " has fought back and injured your party member" + plural + ". " + death);
+				}
 			}
 		} else {
 			if (animal.flee(p)) {
 				story.put("text", animal.getName() + " attempts to flee " + "but you chased it down");
 				drops = animal.rollDrop(p, 1);
+				party = null;
 			} else {
 				story.put("text",  animal.getName() + " has escaped your party");
 				drops = null;
+				party = null;
 			}
 		}
 		
@@ -98,7 +129,7 @@ public class Hunt{
 			queue.remove(queue.size()-1);
 		}
 		
-		return Message.EVENT_RESPONSE(null, drops, null, null, story);
+		return Message.EVENT_RESPONSE(party, drops, null, null, story);
 	}
 	
 	public JSONObject escape() {

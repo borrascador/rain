@@ -18,6 +18,7 @@ public class Player {
 	private int position;
 	private int x;
 	private int y;
+	private int respawnPosition;
 	
 	private int pace;
 	private int speed;
@@ -26,7 +27,7 @@ public class Player {
 	private int sight;
 	private HashSet<Integer> tilesSeen;
 	
-	private HashSet<Integer> party;
+	private ArrayList<Integer> party;
 	private HashMap<Integer, Integer> backpack;
 	
 	private Hunt hunt;
@@ -52,18 +53,21 @@ public class Player {
 		this.x = randomInt(Constants.MAPWIDTH/2);
 		this.y = randomInt(Constants.MAPHEIGHT - 1);
 		this.position = Constants.MAPWIDTH * y + x;	
+		this.respawnPosition = position;
 		Tile t = World.getTile(position);
 		this.tilesSeen = t.inSight(sight);	
 		
-		this.party = new HashSet<Integer>();	
-		addMember("test", Player.randomInt(3));
+		this.party = new ArrayList<Integer>();	
+		addMember("Alice", Player.randomInt(2));
+		addMember("Bob", Player.randomInt(2));
+		addMember("Carol", Player.randomInt(2));
 		
 		this.hunt = null;
 		
 		this.backpack = new HashMap<Integer, Integer>();
 		// Give stick
 		setQuantity(10, 1);
-		// Give potatos
+		// Give potatoes
 		setQuantity(2, 100);
 		// Give beans
 		setQuantity(8, 100);
@@ -257,6 +261,18 @@ public class Player {
 		Member m = new Member(name, icon);
 		int id = World.addMember(m);
 		party.add(id);
+	}
+	
+	public void removeMember(Integer id) {
+		party.remove(id);
+	}
+	
+	public int partySize(){
+		return party.size();
+	}
+	
+	public int getPartyMember(int index) {
+		return party.get(index);
 	}
 	
 	public JSONArray partyToJSONArray() {
