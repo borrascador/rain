@@ -26,7 +26,7 @@ public class World {
 	
 	private static int memberID;
 	
-	World() {
+	public World() {
 		
 		// Read map.json
 		JSONObject m = null;
@@ -36,6 +36,10 @@ public class World {
 			System.out.println("Map file "+ "map.json" + " not found.");
 			System.exit(1);
 		}
+		
+		mapWidth = m.getInt("height");
+		mapHeight = m.getInt("width");
+		numTiles = mapWidth * mapHeight;
 		
 		// Read items.json
 		JSONArray itemList = null;
@@ -116,11 +120,6 @@ public class World {
 			habitats.put(id, new Habitat(habitatObject));
 		}
 		
-		// Map dimensions
-		mapWidth = Constants.MAPWIDTH;
-		mapHeight = Constants.MAPHEIGHT;
-		numTiles = mapWidth * mapHeight;
-		
 		// Initialize tiles without layers
 		map = new Tile[numTiles];
 		for (int i=0; i<numTiles; i++) {
@@ -142,11 +141,11 @@ public class World {
 					}
 				}
 			} else {
-				// Add event
+				// Add habitat
 				for (int j=0; j<data.length(); j++) {
 					int value = data.getInt(j);
 					if (value != 0) {
-						map[j].addEvent(layerName, value); 
+						map[j].addHabitat(layerName, value - 76); 
 					}
 				}
 			}

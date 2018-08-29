@@ -29,6 +29,10 @@ public class Habitat {
 		return id;
 	}
 	
+	public String getPublicType() {
+		return public_type;
+	}
+	
 	public double getAnimalRarity(int id){
 		return animals.get(id);
 	}

@@ -53,11 +53,11 @@ public class Decision {
 	public static Choice stopHunting = new Choice() {
 		public String getText(Player p) {
 			String huntOrFish = p.getHunt().huntOrFish();
-			return "Stop " + huntOrFish + "ing";
+			return "Stop " + huntOrFish;
 		}
 		public JSONObject result(Player p) {
 			JSONObject story = new JSONObject();
-			story.put("text", "You have stopped " + p.stopHunting() +"ing");
+			story.put("text", "You have stopped " + p.stopHunting());
 			return Message.EVENT_RESPONSE(null, null, null, null, story);
 		}
 	};
@@ -65,7 +65,7 @@ public class Decision {
 	public static Choice continueHunting = new Choice() {
 		public String getText(Player p) {
 			String huntOrFish = p.getHunt().huntOrFish();
-			return "Continue " + huntOrFish + "ing";
+			return "Continue " + huntOrFish + " in " + p.getHunt().publicHabitat();
 		}
 		public JSONObject result(Player p) {
 			return p.getHunt().getNext();
@@ -104,7 +104,9 @@ public class Decision {
 			return "Fish in Deeper waters";
 		}
 		public JSONObject result(Player p) {
-			p.startHunting(0, 2000);
+			Tile t = World.getTile(p.getPosition());
+			int habitat_id = t.getHabitat("fishing");
+			p.startHunting("fishing", 0, habitat_id);
 			return p.getHunt().getNext();
 		}
 	};
@@ -114,7 +116,9 @@ public class Decision {
 			return "Fish in Shallow waters";
 		}
 		public JSONObject result(Player p) {
-			p.startHunting(0, 1000);
+			Tile t = World.getTile(p.getPosition());
+			int habitat_id = t.getHabitat("fishing");
+			p.startHunting("fishing", 0, habitat_id);
 			return p.getHunt().getNext();
 		}
 	};

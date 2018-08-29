@@ -8,8 +8,8 @@ public class EventHandler {
 	public static void handleRequest (JSONObject event, Connection connection){
 		String event_type = event.getString("type");
 		Player p = connection.getPlayer();
+		Tile t;
 		int id;
-		Habitat h;
 		JSONArray tiles;
 		JSONObject story;
 		JSONObject response;
@@ -56,21 +56,28 @@ public class EventHandler {
 				break;
 			case "hunt":
 				id = event.getInt("id");
-				p.startHunting(id, 0);
-				response = p.getHunt().getNext();
-				connection.send(response.toString());
+				t = World.getTile(p.getPosition());
+				if (t.hasHabitat("hunting")){
+					int habitat_id = t.getHabitat("hunting");
+					p.startHunting("hunting", id, habitat_id);
+					response = p.getHunt().getNext();
+					connection.send(response.toString());
+				}
 				break;
 			case "fish":
 				id = event.getInt("id");
-				int depth = World.getTile(p.getPosition()).getDepth();
-				story = new JSONObject();
-				String[] choiceNames = {"fishDeep", "fishShallow"};
-				Decision d = new Decision(choiceNames);
-				p.setDecision(d);;
-				story.put("text", "You estimate the water here to be at least " + depth +" deep.");
-				story.put("buttons", p.getDecision().buttons(p));
-				response = Message.EVENT_RESPONSE(null, null, null, null, story);
-				connection.send(response.toString());
+				t = World.getTile(p.getPosition());
+				if (t.hasHabitat("fishing")){
+					int depth = t.getDepth();
+					story = new JSONObject();
+					String[] choiceNames = {"fishDeep", "fishShallow"};
+					Decision d = new Decision(choiceNames);
+					p.setDecision(d);;
+					story.put("text", "You estimate the water here to be at least " + depth +" deep.");
+					story.put("buttons", p.getDecision().buttons(p));
+					response = Message.EVENT_RESPONSE(null, null, null, null, story);
+					connection.send(response.toString());
+				}
 				break;
 			case "decision":
 				id = event.getInt("id");

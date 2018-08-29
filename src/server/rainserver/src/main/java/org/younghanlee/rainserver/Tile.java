@@ -16,11 +16,9 @@ public class Tile {
 	private HashMap<String, Integer> layers;
 	private HashMap<String, Integer> events;
 	private HashMap<Integer, Integer> crops;
+	private HashMap<String, Integer> habitats;
 	
 	private int waterDepth = 10;
-	private Habitat land;
-	private Habitat shallow;
-	private Habitat deep;
 	
 	private double wildlife;
 	
@@ -35,20 +33,28 @@ public class Tile {
 		this.events = new HashMap<String, Integer>();
 		this.crops = new HashMap<Integer, Integer>();
 		this.visitors = new HashSet<String>();
+		this.habitats = new HashMap<String, Integer>();
 		
 		wildlife = 1.0;
-		land = World.getHabitat(0);
-		shallow = World.getHabitat(1000);
-		deep = World.getHabitat(2000);
+
 	}
 	
 	public void addLayer(String name, int value) {
 		this.layers.put(name, value);
 	}
 	
-	public void addEvent(String name, int value) {
-		this.events.put(name, value);
+	public void addHabitat(String name, int id) {
+		habitats.put(name, id);
 	}
+	
+	public boolean hasHabitat(String name) {
+		return habitats.containsKey(name);
+	}
+	
+	public int getHabitat(String name) {
+		return habitats.get(name);
+	}
+	
 	
 	public void addVisitor(String name) {
 		this.visitors.add(name);
