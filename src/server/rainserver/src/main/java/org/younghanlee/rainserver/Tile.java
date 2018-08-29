@@ -27,8 +27,8 @@ public class Tile {
 	
 	public Tile(int id) {
 		this.id = id;
-		this.x = id % Constants.MAPWIDTH;
-		this.y = (id - x)/Constants.MAPWIDTH;
+		this.x = id % World.getWidth();
+		this.y = (id - x)/World.getWidth();
 		this.layers = new HashMap<String, Integer>();
 		this.events = new HashMap<String, Integer>();
 		this.crops = new HashMap<Integer, Integer>();
@@ -104,7 +104,7 @@ public class Tile {
 	}
 	
 	public int getID(int x, int y) {
-		return x * Constants.MAPWIDTH + y;
+		return x * World.getWidth() + y;
 	}
 	
 	public int distance(Tile t) {
@@ -120,8 +120,8 @@ public class Tile {
 		if (ymin < 0) {
 			ymin = 0;
 		}
-		if (ymax >= Constants.MAPHEIGHT) {
-			ymax = Constants.MAPHEIGHT - 1;
+		if (ymax >= World.getHeight()) {
+			ymax = World.getHeight()- 1;
 		}
 		
 		for (int i = ymin; i<= ymax; i++) {
@@ -132,8 +132,8 @@ public class Tile {
 			if (xmin < 0) {
 				xmin = 0;
 			}
-			if (xmax >= Constants.MAPWIDTH) {
-				xmax = Constants.MAPWIDTH - 1;
+			if (xmax >= World.getWidth()) {
+				xmax = World.getWidth() - 1;
 			}
 			for (int j = xmin; j <= xmax; j++) {
 				// System.out.println(i + "," + j);

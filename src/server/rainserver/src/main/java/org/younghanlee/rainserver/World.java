@@ -160,6 +160,14 @@ public class World {
 		return map;
 	}
 	
+	public static int getHeight() {
+		return mapHeight;
+	}
+	
+	public static int getWidth() {
+		return mapWidth;
+	}
+	
 	public static void onlineInc() {
 		online++;
 	}
