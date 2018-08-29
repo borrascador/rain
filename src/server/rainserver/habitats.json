@@ -1,8 +1,8 @@
 [
 	{
-		"type": "land",
+		"type": "young forest 1",
 		"id": 0,
-		"public type": "wet forest",
+		"public type": "young forest",
 		"animals": [
 			{"id": 0, "rarity": 0.1},
 			{"id": 1, "rarity": 0.1},
@@ -12,20 +12,232 @@
 		]
 	},
 	{
-		"type": "shallow water",
-		"id": 1000,
-		"public type": "riverside",
-		"animals": [	
+		"type": "young forest 2",
+		"id": 1,
+		"public type": "young forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "young forest 3",
+		"id": 2,
+		"public type": "young forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "regenerating forest 1",
+		"id": 3,
+		"public type": "regenerating forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "regenerating forest 2",
+		"id": 4,
+		"public type": "regenerating forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "regenerating forest 3",
+		"id": 5,
+		"public type": "regenerating forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "mature forest 1",
+		"id": 6,
+		"public type": "mature forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "mature forest 2",
+		"id": 7,
+		"public type": "mature forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "mature forest 3",
+		"id": 8,
+		"public type": "mature forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "primeval forest 1",
+		"id": 9,
+		"public type": "primeval forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "primeval forest 2",
+		"id": 10,
+		"public type": "primeval forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "clear cut forest 1",
+		"id": 11,
+		"public type": "clear cut forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "clear cut forest 2",
+		"id": 12,
+		"public type": "clear cut forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "isolated forest 1",
+		"id": 13,
+		"public type": "isolated forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "burned forest 1",
+		"id": 14,
+		"public type": "burned forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "flooded forest 1",
+		"id": 15,
+		"public type": "flooded forest",
+		"animals": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.6},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.2}
+		]
+	},
+	{
+		"type": "river 1",
+		"id": 16,
+		"public type": "river",
+		"animals": [
 			{"id": 4, "rarity": 0.1},
 			{"id": 5, "rarity": 0.2},
 			{"id": 6, "rarity": 0.6},
 			{"id": 8, "rarity": 0.8}
 		]
 	},
-	
 	{
-		"type": "deep water",
-		"id": 2000,
+		"type": "river 2",
+		"id": 17,
+		"public type": "river",
+		"animals": [
+			{"id": 4, "rarity": 0.1},
+			{"id": 5, "rarity": 0.2},
+			{"id": 6, "rarity": 0.6},
+			{"id": 8, "rarity": 0.8}
+		]
+	},
+	{
+		"type": "river 2",
+		"id": 18,
+		"public type": "river",
+		"animals": [
+			{"id": 4, "rarity": 0.1},
+			{"id": 5, "rarity": 0.2},
+			{"id": 6, "rarity": 0.6},
+			{"id": 8, "rarity": 0.8}
+		]
+	},
+	{
+		"type": "lake 1",
+		"id": 18,
+		"public type": "lake",
+		"animals": [
+			{"id": 6, "rarity": 0.8},
+			{"id": 7, "rarity": 0.6},
+			{"id": 8, "rarity": 0.3},
+			{"id": 9, "rarity": 0.8}
+		]
+	},
+	{
+		"type": "river rapids 1",
+		"id": 19,
 		"public type": "river rapids",
 		"animals": [
 			{"id": 6, "rarity": 0.8},
