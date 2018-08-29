@@ -2,6 +2,7 @@ package org.younghanlee.rainserver;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
@@ -75,6 +76,8 @@ public class Hunt{
 		JSONArray drops;
 		JSONArray party;
 		String death = "";
+		HashMap<String, Integer> position = null;
+		JSONArray tiles = null;
 		
 		// if (Player.randomInt(100) < animal.getAggression()) {
 		if (true) {
@@ -95,7 +98,16 @@ public class Hunt{
 						int health_loss = -1 * (Player.randomInt(2) + 1);
 						JSONObject jo = m.change(id, p, health_loss, 0);
 						if (jo.getInt("health") == 0) {
-							death = m.getName() + " has perished.";
+							if (p.partySize() == 0) {
+								death += "Despite all odds, your last member " + m.getName() + " manages to survive and return home.";
+								position = new HashMap<String, Integer>();
+								position.put("position", p.respawn(id));
+								tiles = p.inSightArray();
+								jo.put("health", 1);
+								story.remove("buttons");
+							} else {
+								death += m.getName() + " has perished. ";
+							}
 						}
 						damage.put(jo);
 					}
@@ -129,7 +141,7 @@ public class Hunt{
 			queue.remove(queue.size()-1);
 		}
 		
-		return Message.EVENT_RESPONSE(party, drops, null, null, story);
+		return Message.EVENT_RESPONSE(party, drops, tiles, position, story);
 	}
 	
 	public JSONObject escape() {

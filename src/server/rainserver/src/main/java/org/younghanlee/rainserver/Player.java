@@ -178,6 +178,13 @@ public class Player {
 		return position;
 	}
 	
+	public int respawn(int survivor) {
+		party.add(survivor);
+		World.getMember(survivor).setHealth(1);
+		move(100, respawnPosition);
+		return respawnPosition;
+	}
+	
 	public int getSight() {
 		return sight;
 	}
