@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Hunt{
+	private String huntOrFish;
 	private int weapon;
 	private Habitat h;
 	private Animal animal;
@@ -19,7 +20,8 @@ public class Hunt{
 	
 	private ArrayList<Integer> queue;
 	
-	public Hunt(Player p, int weapon, int habitat_id) {
+	public Hunt(String huntOrFish, Player p, int weapon, int habitat_id) {
+		this.huntOrFish = huntOrFish;
 		this.h = World.getHabitat(habitat_id);
 		this.weapon = weapon;
 		this.p = p;
@@ -29,11 +31,11 @@ public class Hunt{
 	}
 	
 	public String huntOrFish() {
-		if (h.getId() < 1000) {
-			return "hunt";
-		} else {
-			return "fish";
-		}
+		return huntOrFish;
+	}
+	
+	public String publicHabitat() {
+		return h.getPublicType();
 	}
 	
 	public JSONObject processFish() {
@@ -175,7 +177,7 @@ public class Hunt{
 					Decision d = new Decision(choiceNames);
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
-					story.put("text", "You catch " + catchAmount + " x " + animal.getName());
+					story.put("text", "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName());
 					story.put("buttons", d.buttons(p));
 					return Message.EVENT_RESPONSE(null, null, null, null, story);
 				} else {
@@ -183,7 +185,7 @@ public class Hunt{
 					Decision d = new Decision(choiceNames);
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
-					story.put("text", "You encounter a wild " + animal.getName());
+					story.put("text", "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName());
 					story.put("buttons", d.buttons(p));
 					return Message.EVENT_RESPONSE(null, null, null, null, story);
 				}
@@ -192,7 +194,7 @@ public class Hunt{
 			}
 		}
 		JSONObject story = new JSONObject();
-		story.put("text", "You fail to find anything and conclude your " + huntOrFish() + "ing endeavor." );
+		story.put("text", "You fail to find anything and conclude your " + huntOrFish() + " endeavor." );
 		return Message.EVENT_RESPONSE(null, null, null, null, story);
 	}
 

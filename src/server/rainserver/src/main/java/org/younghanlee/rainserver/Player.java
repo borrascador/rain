@@ -203,8 +203,8 @@ public class Player {
 		rations = n;
 	}
 	
-	public void startHunting(int weapon, int habitat_id) {
-		hunt = new Hunt(this, weapon, habitat_id);
+	public void startHunting(String huntOrFish, int weapon, int habitat_id) {
+		hunt = new Hunt(huntOrFish, this, weapon, habitat_id);
 	}
 	
 	public String stopHunting() {
