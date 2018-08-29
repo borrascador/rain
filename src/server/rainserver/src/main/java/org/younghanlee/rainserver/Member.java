@@ -73,6 +73,7 @@ public class Member {
 		if (health <= 0) {
 			health = 0;
 			p.removeMember(id);
+
 		}
 		jo.put("health", health);
 		jo.put("jeito", jeito);
