@@ -50,9 +50,9 @@ public class Player {
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
 		
-		this.x = randomInt(Constants.MAPWIDTH/2);
-		this.y = randomInt(Constants.MAPHEIGHT - 1);
-		this.position = Constants.MAPWIDTH * y + x;	
+		this.x = randomInt(World.getWidth()/10);
+		this.y = randomInt(World.getHeight() - 1);
+		this.position = World.getWidth() * y + x;	
 		this.respawnPosition = position;
 		Tile t = World.getTile(position);
 		this.tilesSeen = t.inSight(sight);	
@@ -130,16 +130,16 @@ public class Player {
 	
 	public boolean legalMove(int range, int x, int y) {
 		boolean xl = x >= 0;
-		boolean xu = x < Constants.MAPWIDTH;
+		boolean xu = x < World.getWidth();
 		boolean yl = y >= 0;
-		boolean yu = x < Constants.MAPHEIGHT;
+		boolean yu = x < World.getHeight();
 		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
 		return xl && xu && yl && yu && dist <= range && dist > 0;
 	}
 	
 	public boolean move(int range, int destination) {
-		int x = destination % Constants.MAPWIDTH;
-		int y = (destination - x)/Constants.MAPWIDTH;
+		int x = destination % World.getWidth();
+		int y = (destination - x)/World.getWidth();
 		if (legalMove(range, x, y)) {
 			System.out.println("Legal Move");
 			this.x = x;
