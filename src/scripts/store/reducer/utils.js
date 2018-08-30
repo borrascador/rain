@@ -37,11 +37,15 @@ export function mergeArrays(oldArray, newArray) {
 };
 
 export function makeStory(state, action) {
-  const story = action.payload.story || state.story;
-  return Object.assign({}, story, {
-    inventoryChanges: action.payload.inventory || [],
-    partyChanges: action.payload.party || []
-  });
+  if (action.payload.story) {
+    return Object.assign({}, action.payload.story, {
+      inventoryChanges: action.payload.inventory || [],
+      partyChanges: action.payload.party || [],
+      buttons: action.payload.story.buttons || [ { text: 'OK', id: 1 } ]
+    });
+  } else {
+    return state.story;
+  }
 }
 
 export function getActions(inventory, tiles, position) {

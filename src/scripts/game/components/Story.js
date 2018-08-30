@@ -79,6 +79,9 @@ export default class Story {
         if (this.selected && this.selected.id === button.id) {
           this.select(this.selected);
           this.selected = null;
+        } else if (this.buttons.length === 1) {
+          this.select(button);
+          this.selected = null;
         } else {
           this.selected = button;
         }

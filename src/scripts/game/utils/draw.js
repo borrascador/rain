@@ -86,6 +86,7 @@ export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, 
     let x = xPos;
     y = yPos + idx * lineHeight;
     let text = `${line.name}:`;
+    ctx.fillStyle = '#6F6';
     ctx.fillText(text, x, y);
     x += ctx.measureText(text).width;
     if (line.health_change !== 0) {
@@ -110,6 +111,7 @@ export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, 
     }
     return x;
   });
+  ctx.fillStyle = '#6F6';
   return {
     xPos: xPos,
     yPos: y,

@@ -230,32 +230,32 @@ var Connect = function () {
   }
 
   _createClass(Connect, [{
-    key: 'connected',
+    key: "connected",
     get: function get() {
       return this.store.getState().connected;
     }
   }, {
-    key: 'loggedIn',
+    key: "loggedIn",
     get: function get() {
       return this.store.getState().loggedIn;
     }
   }, {
-    key: 'error',
+    key: "error",
     get: function get() {
       return this.store.getState().error;
     }
   }, {
-    key: 'mode',
+    key: "mode",
     get: function get() {
       return this.store.getState().mode;
     }
   }, {
-    key: 'actions',
+    key: "actions",
     get: function get() {
       return this.store.getState().actions;
     }
   }, {
-    key: 'click',
+    key: "click",
     get: function get() {
       var _store$getState = this.store.getState(),
           xClick = _store$getState.xClick,
@@ -264,7 +264,7 @@ var Connect = function () {
       return { xClick: xClick, yClick: yClick };
     }
   }, {
-    key: 'keys',
+    key: "keys",
     get: function get() {
       var allKeys = this.store.getState().keys;
       var trueKeys = Object.keys(allKeys).filter(function (x) {
@@ -273,7 +273,7 @@ var Connect = function () {
       return trueKeys;
     }
   }, {
-    key: 'drag',
+    key: "drag",
     get: function get() {
       var _store$getState2 = this.store.getState(),
           xDragging = _store$getState2.xDragging,
@@ -282,27 +282,18 @@ var Connect = function () {
       return { xDragging: xDragging, yDragging: yDragging };
     }
   }, {
-    key: 'story',
+    key: "story",
     get: function get() {
-      var _store$getState3 = this.store.getState(),
-          story = _store$getState3.story;
-
-      if (story) {
-        return Object.assign({}, story, {
-          buttons: story.buttons || [{ text: 'OK', id: 1 }]
-        });
-      } else {
-        return null;
-      }
+      return this.store.getState().story;
     }
   }, {
-    key: 'map',
+    key: "map",
     get: function get() {
-      var _store$getState4 = this.store.getState(),
-          position = _store$getState4.position,
-          tiles = _store$getState4.tiles,
-          sight = _store$getState4.sight,
-          zoom = _store$getState4.zoom;
+      var _store$getState3 = this.store.getState(),
+          position = _store$getState3.position,
+          tiles = _store$getState3.tiles,
+          sight = _store$getState3.sight,
+          zoom = _store$getState3.zoom;
 
       var _tiles$find = tiles.find(function (tile) {
         return tile.id === position;
@@ -316,38 +307,38 @@ var Connect = function () {
       return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
     }
   }, {
-    key: 'currentTile',
+    key: "currentTile",
     get: function get() {
-      var _store$getState5 = this.store.getState(),
-          position = _store$getState5.position,
-          tiles = _store$getState5.tiles;
+      var _store$getState4 = this.store.getState(),
+          position = _store$getState4.position,
+          tiles = _store$getState4.tiles;
 
       return tiles.find(function (tile) {
         return tile.id === position;
       });
     }
   }, {
-    key: 'inventory',
+    key: "inventory",
     get: function get() {
       return this.store.getState().inventory;
     }
   }, {
-    key: 'party',
+    key: "party",
     get: function get() {
       return this.store.getState().party;
     }
   }, {
-    key: 'vehicle',
+    key: "vehicle",
     get: function get() {
       return this.store.getState().vehicle;
     }
   }, {
-    key: 'pace',
+    key: "pace",
     get: function get() {
       return this.store.getState().pace;
     }
   }, {
-    key: 'rations',
+    key: "rations",
     get: function get() {
       return this.store.getState().rations;
     }
@@ -547,6 +538,7 @@ function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     var x = xPos;
     y = yPos + idx * lineHeight;
     var text = line.name + ':';
+    ctx.fillStyle = '#6F6';
     ctx.fillText(text, x, y);
     x += ctx.measureText(text).width;
     if (line.health_change !== 0) {
@@ -571,6 +563,7 @@ function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     }
     return x;
   });
+  ctx.fillStyle = '#6F6';
   return {
     xPos: xPos,
     yPos: y,
@@ -1697,11 +1690,15 @@ function mergeArrays(oldArray, newArray) {
 };
 
 function makeStory(state, action) {
-  var story = action.payload.story || state.story;
-  return Object.assign({}, story, {
-    inventoryChanges: action.payload.inventory || [],
-    partyChanges: action.payload.party || []
-  });
+  if (action.payload.story) {
+    return Object.assign({}, action.payload.story, {
+      inventoryChanges: action.payload.inventory || [],
+      partyChanges: action.payload.party || [],
+      buttons: action.payload.story.buttons || [{ text: 'OK', id: 1 }]
+    });
+  } else {
+    return state.story;
+  }
 }
 
 function getActions(inventory, tiles, position) {
@@ -5536,6 +5533,9 @@ var Story = function () {
         if (button) {
           if (this.selected && this.selected.id === button.id) {
             this.select(this.selected);
+            this.selected = null;
+          } else if (this.buttons.length === 1) {
+            this.select(button);
             this.selected = null;
           } else {
             this.selected = button;
