@@ -23,6 +23,7 @@ public class Player {
 	private int pace;
 	private int speed;
 	private int rations;
+	private int[] eating;
 	
 	private int sight;
 	private HashSet<Integer> tilesSeen;
@@ -55,12 +56,16 @@ public class Player {
 		this.position = World.getWidth() * y + x;	
 		this.respawnPosition = position;
 		Tile t = World.getTile(position);
-		this.tilesSeen = t.inSight(sight);	
+		this.tilesSeen = t.inSight(sight);
 		
 		this.party = new ArrayList<Integer>();	
 		addMember("Alice", Player.randomInt(2));
 		addMember("Bob", Player.randomInt(2));
 		addMember("Carol", Player.randomInt(2));
+		
+		this.pace = 2;
+		this.speed = 1;
+		this.rations = 2;
 		
 		this.hunt = null;
 		
