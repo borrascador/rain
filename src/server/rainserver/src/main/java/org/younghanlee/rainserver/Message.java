@@ -79,9 +79,9 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject TILE_UPDATE(JSONArray tiles) {
+	public static JSONObject UPDATE(JSONArray tiles) {
 		JSONObject jo = new JSONObject(); 
-		jo.accumulate("type", "TILE_UPDATE");
+		jo.accumulate("type", "UPDATE");
 		JSONObject payload = new JSONObject();
 		payload.put("tiles", tiles);
 		jo.accumulate("payload", payload);

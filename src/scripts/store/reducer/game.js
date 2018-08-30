@@ -69,11 +69,26 @@ export function logoutResponse(state) {
   });
 }
 
-export function tileUpdate(state, action) {
+export function update(state, action) {
+  const inventory = mergeArrays(state.inventory, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
+  const party = mergeArrays(state.party, action.payload.party);
+  const position = action.payload.position || state.position;
+  const story = makeStory(state, action);
+  const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
+  const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
+  const mode = action.payload.story ? MODE.STORY : MODE.MAP;
+  const actions = getActions(inventory, tiles, position);
   return Object.assign({}, state, {
-    tiles: tiles,
-    actions: getActions(state.inventory, tiles, state.position)
+    inventory,
+    tiles,
+    party,
+    position,
+    story,
+    pace,
+    rations,
+    actions,
+    mode
   });
 }
 

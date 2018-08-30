@@ -122,8 +122,8 @@ public class Player {
 				buffer.remove(i);
 				tiles.put(World.getTile(i).toJSONObject());
 			}
-			System.out.println(Message.TILE_UPDATE(tiles).toString());
-			connection.send(Message.TILE_UPDATE(tiles).toString());
+			System.out.println(Message.UPDATE(tiles).toString());
+			connection.send(Message.UPDATE(tiles).toString());
 		}
 		return;
 	}
