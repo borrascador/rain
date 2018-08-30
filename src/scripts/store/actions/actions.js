@@ -91,7 +91,7 @@ export const logoutRequest = (user) => ({
   payload: { user }
 });
 
-export const TILE_UPDATE = 'TILE_UPDATE';
+export const UPDATE = 'UPDATE';
 
 export const EVENT_REQUEST = 'EVENT_REQUEST';
 export const EVENT_RESPONSE = 'EVENT_RESPONSE';
