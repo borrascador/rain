@@ -42,14 +42,7 @@ export default class Connect {
   }
 
   get story() {
-    const {story} = this.store.getState();
-    if (story) {
-      return Object.assign({}, story, {
-        buttons: story.buttons || [ { text: 'OK', id: 1 } ]
-      });
-    } else {
-      return null;
-    }
+    return this.store.getState().story;
   }
 
   get map() {

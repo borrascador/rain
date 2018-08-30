@@ -230,32 +230,32 @@ var Connect = function () {
   }
 
   _createClass(Connect, [{
-    key: 'connected',
+    key: "connected",
     get: function get() {
       return this.store.getState().connected;
     }
   }, {
-    key: 'loggedIn',
+    key: "loggedIn",
     get: function get() {
       return this.store.getState().loggedIn;
     }
   }, {
-    key: 'error',
+    key: "error",
     get: function get() {
       return this.store.getState().error;
     }
   }, {
-    key: 'mode',
+    key: "mode",
     get: function get() {
       return this.store.getState().mode;
     }
   }, {
-    key: 'actions',
+    key: "actions",
     get: function get() {
       return this.store.getState().actions;
     }
   }, {
-    key: 'click',
+    key: "click",
     get: function get() {
       var _store$getState = this.store.getState(),
           xClick = _store$getState.xClick,
@@ -264,7 +264,7 @@ var Connect = function () {
       return { xClick: xClick, yClick: yClick };
     }
   }, {
-    key: 'keys',
+    key: "keys",
     get: function get() {
       var allKeys = this.store.getState().keys;
       var trueKeys = Object.keys(allKeys).filter(function (x) {
@@ -273,7 +273,7 @@ var Connect = function () {
       return trueKeys;
     }
   }, {
-    key: 'drag',
+    key: "drag",
     get: function get() {
       var _store$getState2 = this.store.getState(),
           xDragging = _store$getState2.xDragging,
@@ -282,27 +282,18 @@ var Connect = function () {
       return { xDragging: xDragging, yDragging: yDragging };
     }
   }, {
-    key: 'story',
+    key: "story",
     get: function get() {
-      var _store$getState3 = this.store.getState(),
-          story = _store$getState3.story;
-
-      if (story) {
-        return Object.assign({}, story, {
-          buttons: story.buttons || [{ text: 'OK', id: 1 }]
-        });
-      } else {
-        return null;
-      }
+      return this.store.getState().story;
     }
   }, {
-    key: 'map',
+    key: "map",
     get: function get() {
-      var _store$getState4 = this.store.getState(),
-          position = _store$getState4.position,
-          tiles = _store$getState4.tiles,
-          sight = _store$getState4.sight,
-          zoom = _store$getState4.zoom;
+      var _store$getState3 = this.store.getState(),
+          position = _store$getState3.position,
+          tiles = _store$getState3.tiles,
+          sight = _store$getState3.sight,
+          zoom = _store$getState3.zoom;
 
       var _tiles$find = tiles.find(function (tile) {
         return tile.id === position;
@@ -316,38 +307,38 @@ var Connect = function () {
       return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
     }
   }, {
-    key: 'currentTile',
+    key: "currentTile",
     get: function get() {
-      var _store$getState5 = this.store.getState(),
-          position = _store$getState5.position,
-          tiles = _store$getState5.tiles;
+      var _store$getState4 = this.store.getState(),
+          position = _store$getState4.position,
+          tiles = _store$getState4.tiles;
 
       return tiles.find(function (tile) {
         return tile.id === position;
       });
     }
   }, {
-    key: 'inventory',
+    key: "inventory",
     get: function get() {
       return this.store.getState().inventory;
     }
   }, {
-    key: 'party',
+    key: "party",
     get: function get() {
       return this.store.getState().party;
     }
   }, {
-    key: 'vehicle',
+    key: "vehicle",
     get: function get() {
       return this.store.getState().vehicle;
     }
   }, {
-    key: 'pace',
+    key: "pace",
     get: function get() {
       return this.store.getState().pace;
     }
   }, {
-    key: 'rations',
+    key: "rations",
     get: function get() {
       return this.store.getState().rations;
     }
@@ -454,7 +445,8 @@ exports.trace = trace;
 exports.roundToZoom = roundToZoom;
 exports.centerText = centerText;
 exports.mainText = mainText;
-exports.changeText = changeText;
+exports.itemChangeText = itemChangeText;
+exports.partyChangeText = partyChangeText;
 exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
 function drawById(ctx, img, id, zoom, x, y) {
@@ -519,7 +511,7 @@ function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
-function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+function itemChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   var y = void 0;
   var lengths = lines.map(function (line, idx) {
     y = yPos + idx * lineHeight;
@@ -530,6 +522,48 @@ function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     ctx.fillText(text, xPos, y);
     return ctx.measureText(text).width;
   });
+  return {
+    xPos: xPos,
+    yPos: y,
+    width: lengths.reduce(function (a, b) {
+      return Math.max(a, b);
+    }),
+    height: lineHeight * lines.length
+  };
+}
+
+function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+  var y = void 0;
+  var lengths = lines.map(function (line, idx) {
+    var x = xPos;
+    y = yPos + idx * lineHeight;
+    var text = line.name + ':';
+    ctx.fillStyle = '#6F6';
+    ctx.fillText(text, x, y);
+    x += ctx.measureText(text).width;
+    if (line.health_change !== 0) {
+      text = ' ' + (line.health_change < 0 ? line.health_change : '+' + line.health_change) + ' health';
+      if (line.health_change < 0) {
+        ctx.fillStyle = '#F00';
+      } else {
+        ctx.fillStyle = '#0F0';
+      }
+      ctx.fillText(text, x, y);
+      x += ctx.measureText(text).width;
+    }
+    if (line.jeito_change !== 0) {
+      text = ' ' + (line.health_change < 0 ? line.health_change : '+' + line.health_change) + ' health';
+      if (line.health_change < 0) {
+        ctx.fillStyle = '#F00';
+      } else {
+        ctx.fillStyle = '#0F0';
+      }
+      ctx.fillText(text, x, y);
+      x += ctx.measureText(text).width;
+    }
+    return x;
+  });
+  ctx.fillStyle = '#6F6';
   return {
     xPos: xPos,
     yPos: y,
@@ -1656,10 +1690,15 @@ function mergeArrays(oldArray, newArray) {
 };
 
 function makeStory(state, action) {
-  var story = action.payload.story || state.story;
-  if (!action.payload.inventory) return story;
-
-  return Object.assign({}, story, { changes: action.payload.inventory });
+  if (action.payload.story) {
+    return Object.assign({}, action.payload.story, {
+      inventoryChanges: action.payload.inventory || [],
+      partyChanges: action.payload.party || [],
+      buttons: action.payload.story.buttons || [{ text: 'OK', id: 1 }]
+    });
+  } else {
+    return state.story;
+  }
 }
 
 function getActions(inventory, tiles, position) {
@@ -5437,7 +5476,8 @@ var Story = function () {
     }
 
     this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.changeText = _draw.changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.itemChangeText = _draw.itemChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.partyChangeText = _draw.partyChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -5450,7 +5490,8 @@ var Story = function () {
       this.maxMainWidth = this.width - this.fontSize * 2;
       this.maxButtonWidth = this.width - this.fontSize * 4;
       this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
-      this.changes = story.changes;
+      this.inventoryChanges = story.inventoryChanges;
+      this.partyChanges = story.partyChanges;
       this.buttons = story && story.buttons.map(function (button, idx) {
         return Object.assign({}, button, {
           text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
@@ -5493,6 +5534,9 @@ var Story = function () {
           if (this.selected && this.selected.id === button.id) {
             this.select(this.selected);
             this.selected = null;
+          } else if (this.buttons.length === 1) {
+            this.select(button);
+            this.selected = null;
           } else {
             this.selected = button;
           }
@@ -5520,9 +5564,14 @@ var Story = function () {
       var yPos = this.height / 2 + this.fontSize * 2;
       var coords = this.mainText(this.text, xPos, yPos);
 
-      if (this.changes) {
+      if (this.inventoryChanges.length > 0) {
         yPos = coords.yPos + this.lineHeight * 2;
-        coords = this.changeText(this.changes, xPos, yPos);
+        coords = this.itemChangeText(this.inventoryChanges, xPos, yPos);
+      }
+
+      if (this.partyChanges.length > 0) {
+        yPos = coords.yPos + this.lineHeight * 2;
+        coords = this.partyChangeText(this.partyChanges, xPos, yPos);
       }
 
       yPos = coords.yPos + this.lineHeight * 2;

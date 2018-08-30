@@ -61,7 +61,7 @@ export function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
-export function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+export function itemChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   let y;
   const lengths = lines.map((line, idx) => {
     y = yPos + idx * lineHeight;
@@ -72,6 +72,46 @@ export function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos)
     ctx.fillText(text, xPos, y);
     return ctx.measureText(text).width;
   });
+  return {
+    xPos: xPos,
+    yPos: y,
+    width: lengths.reduce((a, b) => Math.max(a, b)),
+    height: lineHeight * lines.length
+  };
+}
+
+export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+  let y;
+  const lengths = lines.map((line, idx) => {
+    let x = xPos;
+    y = yPos + idx * lineHeight;
+    let text = `${line.name}:`;
+    ctx.fillStyle = '#6F6';
+    ctx.fillText(text, x, y);
+    x += ctx.measureText(text).width;
+    if (line.health_change !== 0) {
+      text = ` ${line.health_change < 0 ? line.health_change : '+' + line.health_change} health`
+      if (line.health_change < 0) {
+        ctx.fillStyle = '#F00';
+      } else {
+        ctx.fillStyle = '#0F0';
+      }
+      ctx.fillText(text, x, y)
+      x += ctx.measureText(text).width;
+    }
+    if (line.jeito_change !== 0) {
+      text = ` ${line.health_change < 0 ? line.health_change : '+' + line.health_change} health`
+      if (line.health_change < 0) {
+        ctx.fillStyle = '#F00';
+      } else {
+        ctx.fillStyle = '#0F0';
+      }
+      ctx.fillText(text, x, y)
+      x += ctx.measureText(text).width;
+    }
+    return x;
+  });
+  ctx.fillStyle = '#6F6';
   return {
     xPos: xPos,
     yPos: y,
