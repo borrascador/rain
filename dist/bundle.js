@@ -194,7 +194,7 @@ var logoutRequest = exports.logoutRequest = function logoutRequest(user) {
   };
 };
 
-var TILE_UPDATE = exports.TILE_UPDATE = 'TILE_UPDATE';
+var UPDATE = exports.UPDATE = 'UPDATE';
 
 var EVENT_REQUEST = exports.EVENT_REQUEST = 'EVENT_REQUEST';
 var EVENT_RESPONSE = exports.EVENT_RESPONSE = 'EVENT_RESPONSE';
@@ -3158,8 +3158,9 @@ function reducer(state, action) {
       return (0, _game.loginResponse)(state, action);
     case _actions.LOGOUT_RESPONSE:
       return (0, _game.logoutResponse)(state);
-    case _actions.TILE_UPDATE:
-      return (0, _game.tileUpdate)(state, action);
+    case _actions.UPDATE:
+      console.log('foo');
+      return (0, _game.update)(state, action);
     case _actions.EVENT_RESPONSE:
       return (0, _game.eventResponse)(state, action);
     case '@@websocket/' + _reduxWebsocketBridge.OPEN:
@@ -3230,7 +3231,7 @@ exports.error = error;
 exports.registerResponse = registerResponse;
 exports.loginResponse = loginResponse;
 exports.logoutResponse = logoutResponse;
-exports.tileUpdate = tileUpdate;
+exports.update = update;
 exports.eventResponse = eventResponse;
 exports.openSocket = openSocket;
 exports.closeSocket = closeSocket;
@@ -3307,11 +3308,26 @@ function logoutResponse(state) {
   });
 }
 
-function tileUpdate(state, action) {
+function update(state, action) {
+  var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
+  var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
+  var position = action.payload.position || state.position;
+  var story = (0, _utils.makeStory)(state, action);
+  var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
+  var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
+  var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
+  var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
+    inventory: inventory,
     tiles: tiles,
-    actions: (0, _utils.getActions)(state.inventory, tiles, state.position)
+    party: party,
+    position: position,
+    story: story,
+    pace: pace,
+    rations: rations,
+    actions: actions,
+    mode: mode
   });
 }
 
