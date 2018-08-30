@@ -454,7 +454,8 @@ exports.trace = trace;
 exports.roundToZoom = roundToZoom;
 exports.centerText = centerText;
 exports.mainText = mainText;
-exports.changeText = changeText;
+exports.itemChangeText = itemChangeText;
+exports.partyChangeText = partyChangeText;
 exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
 function drawById(ctx, img, id, zoom, x, y) {
@@ -519,7 +520,7 @@ function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   };
 }
 
-function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+function itemChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   var y = void 0;
   var lengths = lines.map(function (line, idx) {
     y = yPos + idx * lineHeight;
@@ -529,6 +530,46 @@ function changeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     ctx.fillStyle = color;
     ctx.fillText(text, xPos, y);
     return ctx.measureText(text).width;
+  });
+  return {
+    xPos: xPos,
+    yPos: y,
+    width: lengths.reduce(function (a, b) {
+      return Math.max(a, b);
+    }),
+    height: lineHeight * lines.length
+  };
+}
+
+function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
+  var y = void 0;
+  var lengths = lines.map(function (line, idx) {
+    var x = xPos;
+    y = yPos + idx * lineHeight;
+    var text = line.name + ':';
+    ctx.fillText(text, x, y);
+    x += ctx.measureText(text).width;
+    if (line.health_change !== 0) {
+      text = ' ' + (line.health_change < 0 ? line.health_change : '+' + line.health_change) + ' health';
+      if (line.health_change < 0) {
+        ctx.fillStyle = '#F00';
+      } else {
+        ctx.fillStyle = '#0F0';
+      }
+      ctx.fillText(text, x, y);
+      x += ctx.measureText(text).width;
+    }
+    if (line.jeito_change !== 0) {
+      text = ' ' + (line.health_change < 0 ? line.health_change : '+' + line.health_change) + ' health';
+      if (line.health_change < 0) {
+        ctx.fillStyle = '#F00';
+      } else {
+        ctx.fillStyle = '#0F0';
+      }
+      ctx.fillText(text, x, y);
+      x += ctx.measureText(text).width;
+    }
+    return x;
   });
   return {
     xPos: xPos,
@@ -1657,9 +1698,10 @@ function mergeArrays(oldArray, newArray) {
 
 function makeStory(state, action) {
   var story = action.payload.story || state.story;
-  if (!action.payload.inventory) return story;
-
-  return Object.assign({}, story, { changes: action.payload.inventory });
+  return Object.assign({}, story, {
+    inventoryChanges: action.payload.inventory || [],
+    partyChanges: action.payload.party || []
+  });
 }
 
 function getActions(inventory, tiles, position) {
@@ -5437,7 +5479,8 @@ var Story = function () {
     }
 
     this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.changeText = _draw.changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.itemChangeText = _draw.itemChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.partyChangeText = _draw.partyChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -5450,7 +5493,8 @@ var Story = function () {
       this.maxMainWidth = this.width - this.fontSize * 2;
       this.maxButtonWidth = this.width - this.fontSize * 4;
       this.text = (0, _draw.splitIntoLines)(this.ctx, story.text, this.maxMainWidth);
-      this.changes = story.changes;
+      this.inventoryChanges = story.inventoryChanges;
+      this.partyChanges = story.partyChanges;
       this.buttons = story && story.buttons.map(function (button, idx) {
         return Object.assign({}, button, {
           text: (0, _draw.splitIntoLines)(_this.ctx, button.text, _this.maxButtonWidth),
@@ -5520,9 +5564,14 @@ var Story = function () {
       var yPos = this.height / 2 + this.fontSize * 2;
       var coords = this.mainText(this.text, xPos, yPos);
 
-      if (this.changes) {
+      if (this.inventoryChanges.length > 0) {
         yPos = coords.yPos + this.lineHeight * 2;
-        coords = this.changeText(this.changes, xPos, yPos);
+        coords = this.itemChangeText(this.inventoryChanges, xPos, yPos);
+      }
+
+      if (this.partyChanges.length > 0) {
+        yPos = coords.yPos + this.lineHeight * 2;
+        coords = this.partyChangeText(this.partyChanges, xPos, yPos);
       }
 
       yPos = coords.yPos + this.lineHeight * 2;

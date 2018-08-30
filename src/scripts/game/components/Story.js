@@ -3,7 +3,7 @@ import { clicked, changeMode } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
 import Connect from '../../store/Connect';
 import { screenToTextButton, getItemById } from './utils';
-import { mainText, changeText, buttonText, splitIntoLines } from '../utils/draw';
+import { mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';
 
 export default class Story {
@@ -30,7 +30,8 @@ export default class Story {
     }
 
     this.mainText = mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.changeText = changeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.itemChangeText = itemChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.partyChangeText = partyChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
     this.buttonText = buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
@@ -39,7 +40,8 @@ export default class Story {
     this.maxMainWidth = this.width - this.fontSize * 2;
     this.maxButtonWidth = this.width - this.fontSize * 4;
     this.text = splitIntoLines(this.ctx, story.text, this.maxMainWidth);
-    this.changes = story.changes;
+    this.inventoryChanges = story.inventoryChanges;
+    this.partyChanges = story.partyChanges;
     this.buttons = story && story.buttons.map((button, idx) => {
       return Object.assign({}, button, {
         text: splitIntoLines(this.ctx, button.text, this.maxButtonWidth),
@@ -102,9 +104,14 @@ export default class Story {
     let yPos = this.height / 2 + this.fontSize * 2;
     let coords = this.mainText(this.text, xPos, yPos);
 
-    if (this.changes) {
+    if (this.inventoryChanges.length > 0) {
       yPos = coords.yPos + this.lineHeight * 2;
-      coords = this.changeText(this.changes, xPos, yPos);
+      coords = this.itemChangeText(this.inventoryChanges, xPos, yPos);
+    }
+
+    if (this.partyChanges.length > 0) {
+      yPos = coords.yPos + this.lineHeight * 2;
+      coords = this.partyChangeText(this.partyChanges, xPos, yPos);
     }
 
     yPos = coords.yPos + this.lineHeight * 2;

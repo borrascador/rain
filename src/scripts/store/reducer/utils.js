@@ -38,9 +38,10 @@ export function mergeArrays(oldArray, newArray) {
 
 export function makeStory(state, action) {
   const story = action.payload.story || state.story;
-  if (!action.payload.inventory) return story;
-
-  return Object.assign({}, story, { changes: action.payload.inventory });
+  return Object.assign({}, story, {
+    inventoryChanges: action.payload.inventory || [],
+    partyChanges: action.payload.party || []
+  });
 }
 
 export function getActions(inventory, tiles, position) {
