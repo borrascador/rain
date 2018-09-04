@@ -58,7 +58,9 @@ public class Decision {
 		public JSONObject result(Player p) {
 			JSONObject story = new JSONObject();
 			story.put("text", "You have stopped " + p.stopHunting());
-			return Message.EVENT_RESPONSE(null, null, null, null, story);
+			JSONObject payload = new JSONObject();
+			payload.put("story", story);
+			return Message.EVENT_RESPONSE(payload);
 		}
 	};
 	

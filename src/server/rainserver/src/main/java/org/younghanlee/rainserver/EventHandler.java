@@ -12,6 +12,7 @@ public class EventHandler {
 		int id;
 		JSONArray tiles;
 		JSONObject story;
+		JSONObject payload;
 		JSONObject response;
 		switch (event_type) {
 			case "plant":
@@ -30,9 +31,10 @@ public class EventHandler {
 				
 				if (p.move(range, destination)) {
 					tiles = p.inSightArray();
-					HashMap<String, Integer> positionHashMap = new HashMap<String, Integer>();
-					positionHashMap.put("position", destination);
-					response = Message.EVENT_RESPONSE(null, null, tiles, positionHashMap, null);
+					payload = new JSONObject();
+					payload.put("position", destination);
+					payload.put("tiles", tiles);
+					response = Message.EVENT_RESPONSE(payload);
 				} else {
 					response = Message.ERROR(308, null);
 				}
@@ -42,16 +44,17 @@ public class EventHandler {
 				int pace = event.getInt("id");
 				p.setPace(pace);
 				HashMap<String, Integer> paceHashMap = new HashMap<String, Integer>();
-				paceHashMap.put("pace", p.getPace());
-				response = Message.EVENT_RESPONSE(null, null, null, paceHashMap, null);
+				payload = new JSONObject();
+				payload.put("pace", p.getPace());
+				response = Message.EVENT_RESPONSE(payload);
 				connection.send(response.toString());
 				break;
 			case "rations":
 				int rations = event.getInt("id");
 				p.setRations(rations);
-				HashMap<String, Integer> rationsHashMap = new HashMap<String, Integer>();
-				rationsHashMap.put("rations", p.getRations());
-				response = Message.EVENT_RESPONSE(null, null, null, rationsHashMap, null);
+				payload = new JSONObject();
+				payload.put("rations", p.getRations());
+				response = Message.EVENT_RESPONSE(payload);
 				connection.send(response.toString());
 				break;
 			case "hunt":
@@ -75,7 +78,9 @@ public class EventHandler {
 					p.setDecision(d);;
 					story.put("text", "You estimate the water here to be at least " + depth +" deep.");
 					story.put("buttons", p.getDecision().buttons(p));
-					response = Message.EVENT_RESPONSE(null, null, null, null, story);
+					payload = new JSONObject();
+					payload.put("story", story);
+					response = Message.EVENT_RESPONSE(payload);
 					connection.send(response.toString());
 				}
 				break;
@@ -83,6 +88,10 @@ public class EventHandler {
 				id = event.getInt("id");
 				response = p.getDecision().choose(p, id);
 				connection.send(response.toString());
+				break;
+			case "add_food":
+				break;
+			case "remove_food":
 				break;
 			default:
 				System.out.println("Error: unrecognized event type");

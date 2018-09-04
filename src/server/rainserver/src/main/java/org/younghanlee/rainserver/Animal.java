@@ -104,7 +104,7 @@ public class Animal {
 				}		
 			}
 			if (value > 0) {
-				JSONObject itemObject = World.getItem(item).change(item, value, p);
+				JSONObject itemObject = World.getItem(item).change(item, value, p, false);
 				items.put(itemObject);
 			}
 		}

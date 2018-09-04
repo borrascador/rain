@@ -60,6 +60,7 @@ public class Message {
 		System.out.println("test");
 		payload.put("inventory", p.backpackToJSONArray());
 		payload.put("party", p.partyToJSONArray());
+		payload.put("eating", p.eatingToJSONArray());
 		jo.accumulate("payload", payload);
 		return jo;
 	}
@@ -88,27 +89,9 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject EVENT_RESPONSE(JSONArray party, JSONArray inventory, JSONArray tiles, HashMap<String, Integer> values, JSONObject story) {
+	public static JSONObject EVENT_RESPONSE(JSONObject payload) {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "EVENT_RESPONSE");
-		JSONObject payload = new JSONObject();
-		if (party != null) {
-			payload.put("party", party);
-		}
-		if (inventory != null) {
-			payload.put("inventory", inventory);
-		}
-		if (tiles != null) {
-			payload.put("tiles", tiles);
-		}
-		if (values != null) {
-			for (String key : values.keySet()) {
-				payload.put(key, values.get(key));
-			}
-		}
-		if (story != null) {
-			payload.put("story", story);
-		}
 		jo.accumulate("payload", payload);
 		System.out.println(jo.toString());
 		return jo;

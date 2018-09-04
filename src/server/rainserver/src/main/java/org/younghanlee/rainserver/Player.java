@@ -23,6 +23,7 @@ public class Player {
 	private int pace;
 	private int speed;
 	private int rations;
+	private int[] eating;
 	
 	private int sight;
 	private HashSet<Integer> tilesSeen;
@@ -45,7 +46,7 @@ public class Player {
 		this.passwordSalt = Password.generateSalt();
 		this.passwordHash = Password.multiHash(password, passwordSalt);
 		
-		this.sight = 2;
+		this.sight = 1;
 		
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
@@ -55,12 +56,16 @@ public class Player {
 		this.position = World.getWidth() * y + x;	
 		this.respawnPosition = position;
 		Tile t = World.getTile(position);
-		this.tilesSeen = t.inSight(sight);	
+		this.tilesSeen = t.inSight(sight);
 		
 		this.party = new ArrayList<Integer>();	
 		addMember("Alice", Player.randomInt(2));
 		addMember("Bob", Player.randomInt(2));
 		addMember("Carol", Player.randomInt(2));
+		
+		this.pace = 2;
+		this.speed = 1;
+		this.rations = 2;
 		
 		this.hunt = null;
 		
@@ -74,6 +79,7 @@ public class Player {
 		// Give tomato seeds
 		setQuantity(1, 100);
 		
+		eating = new int[3];
 		
 		this.decision = null;
 		
@@ -286,6 +292,20 @@ public class Player {
 		JSONArray ja = new JSONArray();
 		for (int id: party) {
 			ja.put(World.getMember(id).toJSONObject(id));
+		}
+		return ja;
+	}
+	
+	public void eat() {
+		for (int id: eating) {
+			World.getItem(id).change(id, -1, this, true);
+		}
+	}
+	
+	public JSONArray eatingToJSONArray() {
+		JSONArray ja = new JSONArray();
+		for (int id: eating) {
+			ja.put(id);
 		}
 		return ja;
 	}
