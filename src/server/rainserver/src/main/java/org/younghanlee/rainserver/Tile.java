@@ -173,13 +173,15 @@ public class Tile {
 		if (n >= 1) {
 			int yield_id = World.getItem(seed_id).getYield();
 			
-			JSONObject inventory_change = World.getItem(seed_id).change(seed_id, -1, p);
+			JSONObject inventory_change = World.getItem(seed_id).change(seed_id, -1, p, true);
 			JSONArray inventory_changes = new JSONArray();
 			inventory_changes.put(inventory_change);
 
 			this.crops.put(yield_id, 10);
 			updateNeighbors(null, 0);
-			return Message.EVENT_RESPONSE(null, inventory_changes, null, null, null);
+			JSONObject payload = new JSONObject();
+			payload.put("inventory", inventory_changes);
+			return Message.EVENT_RESPONSE(payload);
 		} else {
 			return Message.ERROR(312, "Missing" + World.getItem(seed_id).getName());
 		}
@@ -194,14 +196,16 @@ public class Tile {
 		}
 		int yield = 2 + Player.randomInt(10);
 			
-		JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p);
+		JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p, false);
 		JSONArray inventory_changes = new JSONArray();
 		inventory_changes.put(inventory_change);
 			
 		this.crops.remove(crop_id);
 		updateNeighbors(null, 0);
-
-		return Message.EVENT_RESPONSE(null, inventory_changes, null, null, null);
+		
+		JSONObject payload = new JSONObject();
+		payload.put("inventory", inventory_changes);
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public void decGrowthStage(int i) {

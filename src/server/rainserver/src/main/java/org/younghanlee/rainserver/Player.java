@@ -79,6 +79,7 @@ public class Player {
 		// Give tomato seeds
 		setQuantity(1, 100);
 		
+		eating = new int[3];
 		
 		this.decision = null;
 		
@@ -291,6 +292,20 @@ public class Player {
 		JSONArray ja = new JSONArray();
 		for (int id: party) {
 			ja.put(World.getMember(id).toJSONObject(id));
+		}
+		return ja;
+	}
+	
+	public void eat() {
+		for (int id: eating) {
+			World.getItem(id).change(id, -1, this, true);
+		}
+	}
+	
+	public JSONArray eatingToJSONArray() {
+		JSONArray ja = new JSONArray();
+		for (int id: eating) {
+			ja.put(id);
 		}
 		return ja;
 	}

@@ -53,7 +53,10 @@ public class Hunt{
 			queue.remove(queue.size()-1);
 		}
 		
-		return Message.EVENT_RESPONSE(null, drops, null, null, story);
+		JSONObject payload = new JSONObject();
+		payload.put("drops", drops);
+		payload.put("story", story);
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public JSONObject discardFish() {
@@ -66,7 +69,9 @@ public class Hunt{
 		
 		queue.remove(queue.size()-1);
 		
-		return Message.EVENT_RESPONSE(null, null, null, null, story);
+		JSONObject payload = new JSONObject();
+		payload.put("story", story);
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public JSONObject attack() {
@@ -78,8 +83,8 @@ public class Hunt{
 		JSONArray drops;
 		JSONArray party;
 		String death = "";
-		HashMap<String, Integer> position = null;
 		JSONArray tiles = null;
+		JSONObject payload = new JSONObject();
 		
 		// if (Player.randomInt(100) < animal.getAggression()) {
 		if (true) {
@@ -102,8 +107,7 @@ public class Hunt{
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
 								death += "Despite all odds, your last member " + m.getName() + " manages to survive and return home.";
-								position = new HashMap<String, Integer>();
-								position.put("position", p.respawn(id));
+								payload.put("position", p.respawn(id));
 								tiles = p.inSightArray();
 								jo.put("health", 1);
 								story.remove("buttons");
@@ -143,7 +147,11 @@ public class Hunt{
 			queue.remove(queue.size()-1);
 		}
 		
-		return Message.EVENT_RESPONSE(party, drops, tiles, position, story);
+		payload.put("drops", drops);
+		payload.put("story", story);
+		payload.put("party", party);
+		payload.put("tiles", tiles);
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public JSONObject escape() {
@@ -156,8 +164,10 @@ public class Hunt{
 		story.put("buttons", d.buttons(p));
 		
 		queue.remove(queue.size()-1);
-		
-		return Message.EVENT_RESPONSE(null, null, null, null, story);
+
+		JSONObject payload = new JSONObject();
+		payload.put("story", story);
+		return Message.EVENT_RESPONSE(payload);
 		
 	}
 	
@@ -179,7 +189,9 @@ public class Hunt{
 					JSONObject story = new JSONObject();
 					story.put("text", "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName());
 					story.put("buttons", d.buttons(p));
-					return Message.EVENT_RESPONSE(null, null, null, null, story);
+					JSONObject payload = new JSONObject();
+					payload.put("story", story);
+					return Message.EVENT_RESPONSE(payload);
 				} else {
 					String[] choiceNames = {"attack", "escape"};
 					Decision d = new Decision(choiceNames);
@@ -187,7 +199,9 @@ public class Hunt{
 					JSONObject story = new JSONObject();
 					story.put("text", "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName());
 					story.put("buttons", d.buttons(p));
-					return Message.EVENT_RESPONSE(null, null, null, null, story);
+					JSONObject payload = new JSONObject();
+					payload.put("story", story);
+					return Message.EVENT_RESPONSE(payload);
 				}
 			} else {
 				queue.remove(last);
@@ -195,7 +209,9 @@ public class Hunt{
 		}
 		JSONObject story = new JSONObject();
 		story.put("text", "You fail to find anything and conclude your " + huntOrFish() + " endeavor." );
-		return Message.EVENT_RESPONSE(null, null, null, null, story);
+		JSONObject payload = new JSONObject();
+		payload.put("story", story);
+		return Message.EVENT_RESPONSE(payload);
 	}
 
 }

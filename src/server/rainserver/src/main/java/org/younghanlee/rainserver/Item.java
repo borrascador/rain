@@ -36,7 +36,7 @@ public class Item {
 	}
 	
 	// id, name, new_quantity, change
-	public JSONObject change(int id, int change, Player p) {
+	public JSONObject change(int id, int change, Player p, boolean requireFull) {
 		JSONObject jo = new JSONObject();
 		
 		int quantity = p.getQuantity(id);
