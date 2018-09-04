@@ -100,6 +100,10 @@ public class Tile {
 		}
 		jo.put("crops", crops);
 		
+		
+		for (String habitatName: habitats.keySet()){
+			jo.put(habitatName, World.getHabitat(habitats.get(habitatName)).getPublicType());
+		}
 		return jo;
 	}
 	

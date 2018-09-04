@@ -46,7 +46,7 @@ public class Player {
 		this.passwordSalt = Password.generateSalt();
 		this.passwordHash = Password.multiHash(password, passwordSalt);
 		
-		this.sight = 2;
+		this.sight = 1;
 		
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
