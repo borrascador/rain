@@ -4,6 +4,7 @@ import Connect from '../../store/Connect';
 import Zoom from './Zoom';
 import Party from './Party';
 import Vehicle from './Vehicle';
+import Habitat from './Habitat';
 import Inventory from './Inventory';
 
 export default class Overlay {
@@ -16,6 +17,7 @@ export default class Overlay {
     this.zoom = new Zoom(this.store, this.canvas, this.ctx, this.loader);
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
     this.vehicle = new Vehicle(this.store, this.canvas, this.ctx, this.loader);
+    this.habitat = new Habitat(this.store, this.canvas, this.ctx, this.loader);
     this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader, setDim);
   }
 
@@ -23,6 +25,7 @@ export default class Overlay {
     this.zoom.update(delta, x, y);
     this.party.update(delta, x, y);
     this.vehicle.update(delta, x, y);
+    this.habitat.update(delta, x, y);
     this.inventory.update(delta, x, y);
   }
 
@@ -30,6 +33,7 @@ export default class Overlay {
     this.zoom.render();
     this.party.render();
     this.vehicle.render();
+    this.habitat.render();
     this.inventory.render();
   }
 }
