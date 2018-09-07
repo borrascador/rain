@@ -5,6 +5,7 @@ import java.util.List;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.WebSocketListener;
 import org.java_websocket.drafts.Draft;
+import org.json.JSONObject;
 
 public class Connection extends WebSocketImpl {
 	private Player player;
@@ -29,6 +30,11 @@ public class Connection extends WebSocketImpl {
 	
 	public void setPlayer(Player player){
 		this.player = player;
+	}
+	
+	public void sendJSON(JSONObject jo) {
+		System.out.println(jo.toString(3));
+		send(jo.toString());
 	}
 	
 

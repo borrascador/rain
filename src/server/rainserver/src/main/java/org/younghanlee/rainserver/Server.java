@@ -20,7 +20,7 @@ import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
-	private int tick;
+	private static int tick;
 
 	public Server(InetSocketAddress address) {
 		super(address);
@@ -40,7 +40,7 @@ public class Server extends WebSocketServer {
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		conn.send("Welcome to the server!"); //This method sends a message to the new client
+		// conn.send("Welcome to the server!"); //This method sends a message to the new client
 		// broadcast( "new connection: " + handshake.getResourceDescriptor() ); //This method sends a message to all clients connected
 		System.out.println("new connection to " + conn.getRemoteSocketAddress());
 	}
@@ -81,13 +81,13 @@ public class Server extends WebSocketServer {
 		dump();
 	}
 	
-	public void flush() {
+	public void flush(int tick) {
 		for (WebSocket w: getConnections()) {
 			// System.out.println(w.toString());
 			Connection c = (Connection) w;
 			Player p = c.getPlayer();
 			if (p != null) {
-				p.flushBuffer(c);
+				p.playerTick(c, tick);
 			}
 		}
 	}
@@ -150,7 +150,7 @@ public class Server extends WebSocketServer {
 			@Override
 			public void run() {
 				// System.out.println("Sending updates: tick "+ server.getTick());
-				server.flush();
+				server.flush(tick);
 				server.tickInc();
 				server.growthTick();
 				return;

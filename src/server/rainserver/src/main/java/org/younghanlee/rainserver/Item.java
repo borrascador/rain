@@ -40,6 +40,10 @@ public class Item {
 		JSONObject jo = new JSONObject();
 		
 		int quantity = p.getQuantity(id);
+		
+		if (quantity + change < 0 && requireFull) {
+			return null;
+		}
 		if (quantity == 0) {
 			jo.put("yield", yield);
 			JSONArray tagArray = new JSONArray();

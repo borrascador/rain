@@ -18,12 +18,12 @@ public class EventHandler {
 			case "plant":
 				id = event.getInt("id");
 				response = World.getTile(p.getPosition()).plant(id, p);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			case "harvest":
 				id = event.getInt("id");
 				response = World.getTile(p.getPosition()).harvest(id, p);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			case "move":
 				int destination = event.getInt("id");
@@ -38,7 +38,7 @@ public class EventHandler {
 				} else {
 					response = Message.ERROR(308, null);
 				}
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			case "pace":
 				int pace = event.getInt("id");
@@ -47,7 +47,7 @@ public class EventHandler {
 				payload = new JSONObject();
 				payload.put("pace", p.getPace());
 				response = Message.EVENT_RESPONSE(payload);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			case "rations":
 				int rations = event.getInt("id");
@@ -55,7 +55,7 @@ public class EventHandler {
 				payload = new JSONObject();
 				payload.put("rations", p.getRations());
 				response = Message.EVENT_RESPONSE(payload);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			case "hunt":
 				id = event.getInt("id");
@@ -64,7 +64,7 @@ public class EventHandler {
 					int habitat_id = t.getHabitat("hunting");
 					p.startHunting("hunting", id, habitat_id);
 					response = p.getHunt().getNext();
-					connection.send(response.toString());
+					connection.sendJSON(response);
 				}
 				break;
 			case "fish":
@@ -81,17 +81,25 @@ public class EventHandler {
 					payload = new JSONObject();
 					payload.put("story", story);
 					response = Message.EVENT_RESPONSE(payload);
-					connection.send(response.toString());
+					connection.sendJSON(response);
 				}
 				break;
 			case "decision":
 				id = event.getInt("id");
 				response = p.getDecision().choose(p, id);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			case "add_food":
+				payload = new JSONObject();
+				payload.put("eating", p.add_food(event.getInt("id")));
+				response = Message.EVENT_RESPONSE(payload);
+				connection.sendJSON(response);
 				break;
 			case "remove_food":
+				payload = new JSONObject();
+				payload.put("eating", p.remove_food(event.getInt("id")));
+				response = Message.EVENT_RESPONSE(payload);
+				connection.sendJSON(response);
 				break;
 			default:
 				System.out.println("Error: unrecognized event type");
