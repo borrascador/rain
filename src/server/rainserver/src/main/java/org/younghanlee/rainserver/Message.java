@@ -57,7 +57,6 @@ public class Message {
 		payload.put("sight", p.getSight());
 		payload.put("pace", p.getPace());
 		payload.put("rations", p.getRations());
-		System.out.println("test");
 		payload.put("inventory", p.backpackToJSONArray());
 		payload.put("party", p.partyToJSONArray());
 		payload.put("eating", p.eatingToJSONArray());
@@ -80,11 +79,9 @@ public class Message {
 		return jo;
 	}
 	
-	public static JSONObject UPDATE(JSONArray tiles) {
+	public static JSONObject UPDATE(JSONObject payload) {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "UPDATE");
-		JSONObject payload = new JSONObject();
-		payload.put("tiles", tiles);
 		jo.accumulate("payload", payload);
 		return jo;
 	}
@@ -93,7 +90,6 @@ public class Message {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "EVENT_RESPONSE");
 		jo.accumulate("payload", payload);
-		System.out.println(jo.toString());
 		return jo;
 	}
 	

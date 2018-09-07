@@ -37,7 +37,7 @@ public class MessageHandler {
 				System.out.println("Attempting to add " + user + " " + email);
 				
 				response = World.addPlayer(user, email, password);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 				
 			case "LOGIN_REQUEST":
@@ -47,14 +47,14 @@ public class MessageHandler {
 				// Check if player exists
 				if (p == null) {
 					response = Message.ERROR(107, "User does not exist");
-					connection.send(response.toString());
+					connection.sendJSON(response);
 					break;
 				}
 				
 				// Check if there is already a login on this connection
 				if (connection.getPlayer() != null) {
 					response = Message.ERROR(118, null);
-					connection.send(response.toString());
+					connection.sendJSON(response);
 					break;
 				} 
 				
@@ -63,7 +63,7 @@ public class MessageHandler {
 				if (!hash.equals(p.getHash())) {
 					response = Message.ERROR(114, null);
 					// System.out.println("wrong password");
-					connection.send(response.toString());
+					connection.sendJSON(response);
 					break;
 				} else {
 					// System.out.println("right password");
@@ -72,7 +72,7 @@ public class MessageHandler {
 				// Check if player is online
 				if (p.isOnline()) {
 					response = Message.ERROR(115, null);
-					connection.send(response.toString());
+					connection.sendJSON(response);
 					break;
 				}
 				
@@ -81,7 +81,7 @@ public class MessageHandler {
 				// Send ordinary response
 				tiles = p.tilesSeenArray();
 				response = Message.LOGIN_RESPONSE(p, tiles);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 				
 			case "LOGOUT_REQUEST":
@@ -91,7 +91,7 @@ public class MessageHandler {
 				} else {
 					response = World.getPlayer(username).logoff(connection);
 				}
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				break;
 			
 			case "EVENT_REQUEST":
@@ -102,7 +102,7 @@ public class MessageHandler {
 			default:
 				System.out.println("Unrecognized message type:" + message_type);
 				response = Message.ERROR(202, "Unrecognized message type: " + message_type);
-				connection.send(response.toString());
+				connection.sendJSON(response);
 				
 		}
 	}

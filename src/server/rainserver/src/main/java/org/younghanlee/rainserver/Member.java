@@ -6,6 +6,7 @@ public class Member {
 	private String name;
 	private int icon;
 	private int health;
+	private int regen;
 	private int strength;
 	private int speed;
 	private int jeito;
@@ -16,6 +17,7 @@ public class Member {
 		this.speed = 50;
 		this.strength = 50;
 		this.health = 5;
+		this.regen = 10;
 		this.jeito = 5;
 	}
 	
@@ -33,6 +35,14 @@ public class Member {
 	
 	public void setHealth(int n) {
 		this.health = n;
+	}
+	
+	public int getRegen() {
+		return this.regen;
+	}
+	
+	public void setRegen(int n) {
+		this.regen = n;
 	}
 	
 	public int getJeito() {

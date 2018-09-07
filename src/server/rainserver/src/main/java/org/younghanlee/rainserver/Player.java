@@ -3,6 +3,7 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ public class Player {
 	private int pace;
 	private int speed;
 	private int rations;
-	private int[] eating;
+	private ArrayList<Integer> eating;
 	
 	private int sight;
 	private HashSet<Integer> tilesSeen;
@@ -65,7 +66,7 @@ public class Player {
 		
 		this.pace = 2;
 		this.speed = 1;
-		this.rations = 2;
+		this.rations = 1;
 		
 		this.hunt = null;
 		
@@ -73,13 +74,15 @@ public class Player {
 		// Give stick
 		setQuantity(10, 1);
 		// Give potatoes
-		setQuantity(2, 100);
+		setQuantity(2, 20);
 		// Give beans
-		setQuantity(8, 100);
+		setQuantity(8, 10);
 		// Give tomato seeds
 		setQuantity(1, 100);
 		
-		eating = new int[3];
+		eating = new ArrayList<Integer>();
+		add_food(2);
+		add_food(8);
 		
 		this.decision = null;
 		
@@ -118,7 +121,11 @@ public class Player {
 		buffer.add(n);
 	}
 	
-	public void flushBuffer(Connection connection) {
+	public void playerTick(Connection connection, int tick) {
+		System.out.println(tick);
+		JSONObject payload = new JSONObject();
+		
+		// Check tiles buffer
 		if (!buffer.isEmpty()) {
 			JSONArray tiles = new JSONArray();
 			// Copy buffer
@@ -128,8 +135,40 @@ public class Player {
 				buffer.remove(i);
 				tiles.put(World.getTile(i).toJSONObject());
 			}
-			System.out.println(Message.UPDATE(tiles).toString());
-			connection.send(Message.UPDATE(tiles).toString());
+			payload.put("tiles", tiles);
+		}
+		
+		if (tick % 10 == 0) {
+			ArrayList<Integer> copy = new ArrayList<Integer>();
+			for (Integer i: eating) {
+				copy.add(new Integer(i));
+			}
+			JSONArray inventory = eat(copy);
+			if (inventory.length() > 0) {
+				payload.put("inventory", inventory);
+			} 
+			if (copy.size() > eating.size()) {
+				JSONObject story = new JSONObject();
+				String message = "";
+				// Find out which food ran out and remove from eating
+				for (int i: copy) {
+					if (!eating.contains(i)) {
+						message += "You don't have enough " + World.getItem(i).getName() + " left to eat. ";
+					}
+				}
+				payload.put("eating", eatingToJSONArray());
+				story.put("text", message);
+				payload.put("story", story);
+			}
+		}
+		
+		JSONArray partyArray = regen(tick);
+		if (partyArray.length() > 0) {
+			payload.put("party", partyArray);
+		}
+		
+		if (payload.length() > 0) {
+			connection.sendJSON(Message.UPDATE(payload));
 		}
 		return;
 	}
@@ -147,7 +186,7 @@ public class Player {
 		int x = destination % World.getWidth();
 		int y = (destination - x)/World.getWidth();
 		if (legalMove(range, x, y)) {
-			System.out.println("Legal Move");
+			// System.out.println("Legal Move");
 			this.x = x;
 			this.y = y;
 			
@@ -296,18 +335,60 @@ public class Player {
 		return ja;
 	}
 	
-	public void eat() {
-		for (int id: eating) {
-			World.getItem(id).change(id, -1, this, true);
+	public int Portion(int id) {
+		return - rations * 6/eating.size();
+	}
+	
+	public JSONArray eat(ArrayList<Integer> copy) {
+		JSONArray changes = new JSONArray();
+		for (Integer id: copy) {
+			JSONObject item = World.getItem(id).change(id, Portion(id), this, true);
+			if (item == null) {
+				eating.remove(id);
+			} else {
+				changes.put(item);
+			}
 		}
+		return changes;
+	}
+	
+	public JSONArray add_food(int id) {
+		if (eating.size() < 3 && !eating.contains(id) && backpack.containsKey(id)) {
+			eating.add(id);
+		}
+		return eatingToJSONArray();
+	}
+	
+	public JSONArray remove_food(int id) {
+		if (eating.contains(id)) {
+			eating.remove(id);
+		}
+		return eatingToJSONArray();
 	}
 	
 	public JSONArray eatingToJSONArray() {
 		JSONArray ja = new JSONArray();
 		for (int id: eating) {
-			ja.put(id);
+			JSONObject jo = new JSONObject();
+			jo.put("id", id);
+			jo.put("quantity", Portion(id));
+			ja.put(jo);
 		}
 		return ja;
+	}
+	
+	public JSONArray regen(int tick) {
+		JSONArray partyArray = new JSONArray();
+		for (Integer id: party) {
+			Member m = World.getMember(id);
+			int health = m.getHealth();
+			if (health < 5) {
+				if (tick % m.getRegen() == 0) {
+					partyArray.put(m.change(id, this, 1, 0));
+				}
+			}
+		}
+		return partyArray;
 	}
 	
 	
