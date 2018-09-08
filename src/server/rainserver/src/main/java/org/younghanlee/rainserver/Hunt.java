@@ -54,7 +54,7 @@ public class Hunt{
 		}
 		
 		JSONObject payload = new JSONObject();
-		payload.put("drops", drops);
+		payload.put("inventory", drops);
 		payload.put("story", story);
 		return Message.EVENT_RESPONSE(payload);
 	}
@@ -147,7 +147,7 @@ public class Hunt{
 			queue.remove(queue.size()-1);
 		}
 		
-		payload.put("drops", drops);
+		payload.put("inventory", drops);
 		payload.put("story", story);
 		payload.put("party", party);
 		payload.put("tiles", tiles);

@@ -31,27 +31,35 @@ export default class ActionBar {
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
         this.current = button.target;
       } else if (button.tag) {
-        this.current = 'main';
         switch (button.tag) {
           case 'seed':
             this.store.dispatch(sendEvent('plant', button.id))
+            this.current = 'main';
             break;
           case 'harvest':
             const currentTile = this.connect.currentTile;
             const currentCrop = currentTile.crops.find(crop => crop.name === button.name);
-            currentCrop.stage <= 0 && this.store.dispatch(sendEvent('harvest', button.id));
+            currentCrop.stage <= 0 && this.store.dispatch(sendEvent('harvest', button.id)); // TODO <= to ===
+            this.current = 'main';
             break;
           case 'hunting':
             this.store.dispatch(sendEvent('hunt', button.id))
+            this.current = 'main';
             break;
           case 'fishing':
             this.store.dispatch(sendEvent('fish', button.id))
+            this.current = 'main';
             break;
-          case 'food':
-            this.store.dispatch(sendEvent('eat', button.id))
+          case 'add_food':
+            this.store.dispatch(sendEvent('add_food', button.id))
+            this.current = 'main'; // COMBAK 'eating' instead?
+            break;
+          case 'remove_food':
+            this.store.dispatch(sendEvent('remove_food', button.id))
+            this.current = 'main'; // COMBAK 'eating' instead?
             break;
           default:
-            this.store.dispatch(sendEvent(button.tag, button.id))
+            this.store.dispatch(sendEvent(button.tag, button.id)) // DEBUG
             break;
         }
       }
@@ -92,9 +100,9 @@ export default class ActionBar {
     const buttonY = this.canvas.height - this.barSize + this.gutter;
     this.buttons = this.buttons.map((button, index) => {
       const x = buttonX + this.barSize * index;
-      if (this.current === 'main' || index === 0 || !(button.tag || button.target)) {
+      if (button.tileset === 'icons') {
         drawById(this.ctx, this.icons, button.id, this.scale, x, buttonY);
-      } else {
+      } else if (button.tileset === 'items') {
         drawById(this.ctx, this.items, button.id, this.scale, x, buttonY);
       }
       return Object.assign({}, button, {

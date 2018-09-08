@@ -51,7 +51,6 @@ export default function reducer(state, action) {
     case LOGOUT_RESPONSE:
       return logoutResponse(state);
     case UPDATE:
-      console.log('foo');
       return update(state, action);
     case EVENT_RESPONSE:
       return eventResponse(state, action);

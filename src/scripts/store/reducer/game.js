@@ -36,7 +36,13 @@ export function loginResponse(state, action) {
     tiles: action.payload.tiles,
     party: action.payload.party,
     inventory: action.payload.inventory,
-    actions: getActions(action.payload.inventory, action.payload.tiles, action.payload.position),
+    eating: action.payload.eating,
+    actions: getActions(
+      action.payload.inventory,
+      action.payload.eating,
+      action.payload.tiles,
+      action.payload.position
+    ),
     vehicle: action.payload.vehicle || null,
     story: action.payload.story || null,
     position: action.payload.position,
@@ -54,6 +60,7 @@ export function logoutResponse(state) {
     tiles: [],
     party: [],
     inventory: [],
+    eating: [],
     actions: { 'main': [] },
     vehicle: null,
     story: null,
@@ -73,16 +80,18 @@ export function update(state, action) {
   const inventory = mergeArrays(state.inventory, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
+  const eating = action.payload.eating || state.eating;
   const position = action.payload.position || state.position;
   const story = makeStory(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   const mode = action.payload.story ? MODE.STORY : MODE.MAP;
-  const actions = getActions(inventory, tiles, position);
+  const actions = getActions(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     inventory,
     tiles,
     party,
+    eating,
     position,
     story,
     pace,
@@ -96,12 +105,13 @@ export function eventResponse(state, action) {
   const inventory = mergeArrays(state.inventory, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
+  const eating = action.payload.eating || state.eating;
   const position = action.payload.position || state.position;
   const story = makeStory(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   const mode = action.payload.story ? MODE.STORY : MODE.MAP;
-  const actions = getActions(inventory, tiles, position);
+  const actions = getActions(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     sending: false,
     error: null,
@@ -109,6 +119,7 @@ export function eventResponse(state, action) {
     inventory,
     tiles,
     party,
+    eating,
     position,
     story,
     pace,
@@ -125,6 +136,7 @@ export function openSocket(state) {
     tiles: [],
     party: [],
     inventory: [],
+    eating: [],
     actions: { 'main': [] },
     vehicle: null,
     story: null,
@@ -144,6 +156,7 @@ export function closeSocket(state) {
     tiles: [],
     party: [],
     inventory: [],
+    eating: [],
     actions: { 'main': [] },
     vehicle: null,
     story: null,
