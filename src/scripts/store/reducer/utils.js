@@ -48,49 +48,87 @@ export function makeStory(state, action) {
   }
 }
 
-export function getActions(inventory, tiles, position) {
-  const currentTile = tiles.find(tile => tile.id === position);
+export function getActions(inventory, eating, tiles, position) {
   let actions = { 'main': [] };
 
-  if (currentTile.crops && currentTile.crops.length > 0) {
-    actions['main'].push({ target: 'harvest', id: 14 });
-    actions['harvest'] = [ { target: 'main', id: 18 } ];
-    actions['harvest'].push(...currentTile.crops.map(crop => {
-      if (crop.stage === 0) {
-        return Object.assign({}, crop, { tag: 'harvest' });
+  let itemsByTag = {};
+  inventory.forEach(item => {
+    item.tags.forEach((tag, index) => {
+      if (itemsByTag[tag]) {
+        itemsByTag[tag].push(item);
       } else {
-        return Object.assign({}, crop, { id: 12 })
+        itemsByTag[tag] = Array(item);
+      }
+    });
+  });
+
+  actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
+  actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
+  .concat(eating.map(food => {
+    const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
+    return Object.assign({}, food, {
+      tag: 'remove_food',
+      name: `remove ${matchedFood.name}`,
+      tileset: 'items'
+    });
+  }));
+  if (eating.length < 3 && itemsByTag['food']) {
+    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
+  }
+
+  if (itemsByTag['food']) {
+    actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
+    .concat(
+      itemsByTag['food']
+      .map(item => {
+        return { tag: 'add_food', name: `add ${item.name}`, id: item.id, tileset: 'items' }
+      })
+    );
+  }
+
+  if (itemsByTag['seed']) {
+    actions['main'].push({ target: 'seed', id: 10, tileset: 'icons' });
+    actions['seed'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
+    .concat(
+      itemsByTag['seed']
+      .map(item => {
+        return { tag: 'seed', name: `plant ${item.name}`, id: item.id, tileset: 'items' }
+      })
+    );
+  }
+
+  const currentTile = tiles.find(tile => tile.id === position);
+  if (currentTile.crops && currentTile.crops.length > 0) {
+    actions['main'].push({ target: 'harvest', id: 14, tileset: 'icons' });
+    actions['harvest'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
+    .concat(currentTile.crops.map(crop => {
+      if (crop.stage === 0) {
+        return Object.assign({}, crop, { tag: 'harvest', tileset: 'items' });
+      } else {
+        return Object.assign({}, crop, { id: 12, tileset: 'icons' });
       }
     }));
   }
 
-  const getIconFromTag = (tag) => {
-    switch(tag) {
-      case 'seed': return 10;
-      case 'harvest': return 14;
-      case 'food': return 15;
-      case 'hunting': return 16;
-      case 'fishing': return 17;
-    }
-    return 9;
+  if (currentTile.fishing) {
+    actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
+    actions['fishing'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
+    .concat(
+      inventory
+      .filter(item => item.tags.includes('fishing'))
+      .map(item => ({ tag: 'fishing', name: item.name, id: item.id, tileset: 'items' }))
+    );
   }
 
-  inventory.forEach(item => {
-    item.tags.forEach((tag, index) => {
-      if(!actions[tag]) {
-        actions['main'].push({
-          target: tag,
-          id: getIconFromTag(tag)
-        });
-        actions[tag] = [
-          { target: 'main', id: 18 },
-          { tag, name: item.name, id: item.id }
-        ];
-      } else {
-        actions[tag].push({ tag, name: item.name, id: item.id });
-      }
-    });
-  });
+  if (currentTile.hunting) {
+    actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
+    actions['hunting'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
+    .concat(
+      inventory
+      .filter(item => item.tags.includes('hunting'))
+      .map(item => ({ tag: 'hunting', name: item.name, id: item.id, tileset: 'items' }))
+    );
+  }
 
   return actions;
 }

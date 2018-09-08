@@ -1648,9 +1648,6 @@ exports.updateItemInArray = updateItemInArray;
 exports.mergeArrays = mergeArrays;
 exports.makeStory = makeStory;
 exports.getActions = getActions;
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 };
@@ -1700,55 +1697,79 @@ function makeStory(state, action) {
   }
 }
 
-function getActions(inventory, tiles, position) {
-  var currentTile = tiles.find(function (tile) {
-    return tile.id === position;
-  });
+function getActions(inventory, eating, tiles, position) {
   var actions = { 'main': [] };
 
-  if (currentTile.crops && currentTile.crops.length > 0) {
-    var _actions$harvest;
-
-    actions['main'].push({ target: 'harvest', id: 14 });
-    actions['harvest'] = [{ target: 'main', id: 18 }];
-    (_actions$harvest = actions['harvest']).push.apply(_actions$harvest, _toConsumableArray(currentTile.crops.map(function (crop) {
-      if (crop.stage === 0) {
-        return Object.assign({}, crop, { tag: 'harvest' });
-      } else {
-        return Object.assign({}, crop, { id: 12 });
-      }
-    })));
-  }
-
-  var getIconFromTag = function getIconFromTag(tag) {
-    switch (tag) {
-      case 'seed':
-        return 10;
-      case 'harvest':
-        return 14;
-      case 'food':
-        return 15;
-      case 'hunting':
-        return 16;
-      case 'fishing':
-        return 17;
-    }
-    return 9;
-  };
-
+  var itemsByTag = {};
   inventory.forEach(function (item) {
     item.tags.forEach(function (tag, index) {
-      if (!actions[tag]) {
-        actions['main'].push({
-          target: tag,
-          id: getIconFromTag(tag)
-        });
-        actions[tag] = [{ target: 'main', id: 18 }, { tag: tag, name: item.name, id: item.id }];
+      if (itemsByTag[tag]) {
+        itemsByTag[tag].push(item);
       } else {
-        actions[tag].push({ tag: tag, name: item.name, id: item.id });
+        itemsByTag[tag] = Array(item);
       }
     });
   });
+
+  actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
+  actions['eating'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(eating.map(function (food) {
+    var matchedFood = itemsByTag['food'].find(function (item) {
+      return item.id === food.id;
+    });
+    return Object.assign({}, food, {
+      tag: 'remove_food',
+      name: 'remove ' + matchedFood.name,
+      tileset: 'items'
+    });
+  }));
+  if (eating.length < 3 && itemsByTag['food']) {
+    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' });
+  }
+
+  if (itemsByTag['food']) {
+    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].map(function (item) {
+      return { tag: 'add_food', name: 'add ' + item.name, id: item.id, tileset: 'items' };
+    }));
+  }
+
+  if (itemsByTag['seed']) {
+    actions['main'].push({ target: 'seed', id: 10, tileset: 'icons' });
+    actions['seed'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['seed'].map(function (item) {
+      return { tag: 'seed', name: 'plant ' + item.name, id: item.id, tileset: 'items' };
+    }));
+  }
+
+  var currentTile = tiles.find(function (tile) {
+    return tile.id === position;
+  });
+  if (currentTile.crops && currentTile.crops.length > 0) {
+    actions['main'].push({ target: 'harvest', id: 14, tileset: 'icons' });
+    actions['harvest'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(currentTile.crops.map(function (crop) {
+      if (crop.stage === 0) {
+        return Object.assign({}, crop, { tag: 'harvest', tileset: 'items' });
+      } else {
+        return Object.assign({}, crop, { id: 12, tileset: 'icons' });
+      }
+    }));
+  }
+
+  if (currentTile.fishing) {
+    actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
+    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
+      return item.tags.includes('fishing');
+    }).map(function (item) {
+      return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
+    }));
+  }
+
+  if (currentTile.hunting) {
+    actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
+    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
+      return item.tags.includes('hunting');
+    }).map(function (item) {
+      return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
+    }));
+  }
 
   return actions;
 }
@@ -3141,7 +3162,6 @@ function reducer(state, action) {
     case _actions.LOGOUT_RESPONSE:
       return (0, _game.logoutResponse)(state);
     case _actions.UPDATE:
-      console.log('foo');
       return (0, _game.update)(state, action);
     case _actions.EVENT_RESPONSE:
       return (0, _game.eventResponse)(state, action);
@@ -3257,7 +3277,8 @@ function loginResponse(state, action) {
     tiles: action.payload.tiles,
     party: action.payload.party,
     inventory: action.payload.inventory,
-    actions: (0, _utils.getActions)(action.payload.inventory, action.payload.tiles, action.payload.position),
+    eating: action.payload.eating,
+    actions: (0, _utils.getActions)(action.payload.inventory, action.payload.eating, action.payload.tiles, action.payload.position),
     vehicle: action.payload.vehicle || null,
     story: action.payload.story || null,
     position: action.payload.position,
@@ -3275,6 +3296,7 @@ function logoutResponse(state) {
     tiles: [],
     party: [],
     inventory: [],
+    eating: [],
     actions: { 'main': [] },
     vehicle: null,
     story: null,
@@ -3294,16 +3316,18 @@ function update(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
+  var eating = action.payload.eating || state.eating;
   var position = action.payload.position || state.position;
   var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
-  var actions = (0, _utils.getActions)(inventory, tiles, position);
+  var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     inventory: inventory,
     tiles: tiles,
     party: party,
+    eating: eating,
     position: position,
     story: story,
     pace: pace,
@@ -3317,12 +3341,13 @@ function eventResponse(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
+  var eating = action.payload.eating || state.eating;
   var position = action.payload.position || state.position;
   var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
-  var actions = (0, _utils.getActions)(inventory, tiles, position);
+  var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     sending: false,
     error: null,
@@ -3330,6 +3355,7 @@ function eventResponse(state, action) {
     inventory: inventory,
     tiles: tiles,
     party: party,
+    eating: eating,
     position: position,
     story: story,
     pace: pace,
@@ -3346,6 +3372,7 @@ function openSocket(state) {
     tiles: [],
     party: [],
     inventory: [],
+    eating: [],
     actions: { 'main': [] },
     vehicle: null,
     story: null,
@@ -3365,6 +3392,7 @@ function closeSocket(state) {
     tiles: [],
     party: [],
     inventory: [],
+    eating: [],
     actions: { 'main': [] },
     vehicle: null,
     story: null,
@@ -4283,7 +4311,7 @@ var _MapView = __webpack_require__(68);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _TitleView = __webpack_require__(80);
+var _TitleView = __webpack_require__(81);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -4569,11 +4597,11 @@ var _Overlay = __webpack_require__(72);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _Story = __webpack_require__(78);
+var _Story = __webpack_require__(79);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _ActionBar = __webpack_require__(79);
+var _ActionBar = __webpack_require__(80);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
@@ -4902,11 +4930,11 @@ var _Vehicle = __webpack_require__(75);
 
 var _Vehicle2 = _interopRequireDefault(_Vehicle);
 
-var _Habitat = __webpack_require__(83);
+var _Habitat = __webpack_require__(76);
 
 var _Habitat2 = _interopRequireDefault(_Habitat);
 
-var _Inventory = __webpack_require__(76);
+var _Inventory = __webpack_require__(77);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
@@ -5259,6 +5287,67 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Habitat = function () {
+  function Habitat(store, canvas, ctx, loader) {
+    _classCallCheck(this, Habitat);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.connect = new _Connect2.default(this.store);
+    this.fontSize = 24;
+    this.ctx.font = this.fontSize + 'px MECC';
+  }
+
+  _createClass(Habitat, [{
+    key: 'update',
+    value: function update(delta, x, y) {}
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this = this;
+
+      var currentTile = this.connect.currentTile;
+      var text = [];
+      currentTile.hunting && text.push(currentTile.hunting);
+      currentTile.fishing && text.push(currentTile.fishing);
+      text.forEach(function (line, index) {
+        _this.ctx.fillStyle = "#FFF";
+        _this.ctx.font = _this.fontSize + 'px MECC';
+        var lineWidth = _this.ctx.measureText(line).width;
+        var x = _this.canvas.width - lineWidth - _this.fontSize;
+        var y = _this.canvas.height - 1.25 * _this.fontSize * (text.length - index);
+        _this.ctx.fillText(line, x, y);
+      });
+    }
+  }]);
+
+  return Habitat;
+}();
+
+exports.default = Habitat;
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
@@ -5267,7 +5356,7 @@ var _utils = __webpack_require__(3);
 
 var _draw = __webpack_require__(4);
 
-var _inventory = __webpack_require__(77);
+var _inventory = __webpack_require__(78);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5328,7 +5417,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5421,7 +5510,7 @@ function inventoryDialog(store, setDim) {
 }
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5609,7 +5698,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5668,29 +5757,37 @@ var ActionBar = function () {
         if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
           this.current = button.target;
         } else if (button.tag) {
-          this.current = 'main';
           switch (button.tag) {
             case 'seed':
               this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
+              this.current = 'main';
               break;
             case 'harvest':
               var currentTile = this.connect.currentTile;
               var currentCrop = currentTile.crops.find(function (crop) {
                 return crop.name === button.name;
               });
-              currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
+              currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
+              this.current = 'main';
               break;
             case 'hunting':
               this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
+              this.current = 'main';
               break;
             case 'fishing':
               this.store.dispatch((0, _requests.sendEvent)('fish', button.id));
+              this.current = 'main';
               break;
-            case 'food':
-              this.store.dispatch((0, _requests.sendEvent)('eat', button.id));
+            case 'add_food':
+              this.store.dispatch((0, _requests.sendEvent)('add_food', button.id));
+              this.current = 'main'; // COMBAK 'eating' instead?
+              break;
+            case 'remove_food':
+              this.store.dispatch((0, _requests.sendEvent)('remove_food', button.id));
+              this.current = 'main'; // COMBAK 'eating' instead?
               break;
             default:
-              this.store.dispatch((0, _requests.sendEvent)(button.tag, button.id));
+              this.store.dispatch((0, _requests.sendEvent)(button.tag, button.id)); // DEBUG
               break;
           }
         }
@@ -5721,9 +5818,9 @@ var ActionBar = function () {
       var buttonY = this.canvas.height - this.barSize + this.gutter;
       this.buttons = this.buttons.map(function (button, index) {
         var x = buttonX + _this.barSize * index;
-        if (_this.current === 'main' || index === 0 || !(button.tag || button.target)) {
+        if (button.tileset === 'icons') {
           (0, _draw.drawById)(_this.ctx, _this.icons, button.id, _this.scale, x, buttonY);
-        } else {
+        } else if (button.tileset === 'items') {
           (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, buttonY);
         }
         return Object.assign({}, button, {
@@ -5785,7 +5882,7 @@ var ActionBar = function () {
 exports.default = ActionBar;
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5799,9 +5896,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(4);
 
-var _register = __webpack_require__(81);
+var _register = __webpack_require__(82);
 
-var _login = __webpack_require__(82);
+var _login = __webpack_require__(83);
 
 var _utils = __webpack_require__(3);
 
@@ -5924,7 +6021,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5993,7 +6090,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6047,67 +6144,6 @@ function loginDialog(store, setDim) {
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
 }
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Habitat = function () {
-  function Habitat(store, canvas, ctx, loader) {
-    _classCallCheck(this, Habitat);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.connect = new _Connect2.default(this.store);
-    this.fontSize = 24;
-    this.ctx.font = this.fontSize + 'px MECC';
-  }
-
-  _createClass(Habitat, [{
-    key: 'update',
-    value: function update(delta, x, y) {}
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this = this;
-
-      var currentTile = this.connect.currentTile;
-      var text = [];
-      currentTile.hunting && text.push(currentTile.hunting);
-      currentTile.fishing && text.push(currentTile.fishing);
-      text.forEach(function (line, index) {
-        _this.ctx.fillStyle = "#FFF";
-        _this.ctx.font = _this.fontSize + 'px MECC';
-        var lineWidth = _this.ctx.measureText(line).width;
-        var x = _this.canvas.width - lineWidth - _this.fontSize;
-        var y = _this.canvas.height - 1.25 * _this.fontSize * (text.length - index);
-        _this.ctx.fillText(line, x, y);
-      });
-    }
-  }]);
-
-  return Habitat;
-}();
-
-exports.default = Habitat;
 
 /***/ })
 /******/ ]);
