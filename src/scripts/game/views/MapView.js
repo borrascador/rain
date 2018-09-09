@@ -4,6 +4,7 @@ import Camera from '../components/Camera';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import ActionBar from '../components/ActionBar';
+import InventoryWindow from '../components/InventoryWindow';
 import { clicked } from '../../store/actions/actions';
 
 export default class MapView {
@@ -20,6 +21,7 @@ export default class MapView {
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader, this.setDim);
     this.story = new Story(this.store, this.canvas, this.ctx, this.setDim);
     this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
+    this.inventoryWindow = new InventoryWindow(this.store, this.canvas, this.ctx, this.loader);
   }
 
   setDim(dim) {
@@ -47,6 +49,7 @@ export default class MapView {
     this.overlay.render();
     this.connect.mode === MODE.STORY && this.story.render(this.connect.story);
     this.actionBar.render();
+    // this.inventoryWindow.render();
 
     if (this.dim) {
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
