@@ -80,6 +80,7 @@ export function getActions(inventory, eating, tiles, position) {
     actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
       itemsByTag['food']
+      .filter(invItem => !eating.find(eatItem => invItem.id === eatItem.id))
       .map(item => {
         return { tag: 'add_food', name: `add ${item.name}`, id: item.id, tileset: 'items' }
       })
@@ -114,9 +115,10 @@ export function getActions(inventory, eating, tiles, position) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
-      inventory
-      .filter(item => item.tags.includes('fishing'))
-      .map(item => ({ tag: 'fishing', name: item.name, id: item.id, tileset: 'items' }))
+      itemsByTag['fishing']
+      .map(item => {
+        return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' }
+      })
     );
   }
 
@@ -124,9 +126,10 @@ export function getActions(inventory, eating, tiles, position) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
-      inventory
-      .filter(item => item.tags.includes('hunting'))
-      .map(item => ({ tag: 'hunting', name: item.name, id: item.id, tileset: 'items' }))
+      itemsByTag['hunting']
+      .map(item => {
+        return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' }
+      })
     );
   }
 

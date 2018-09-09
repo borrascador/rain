@@ -73,6 +73,148 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Connect = function () {
+  function Connect(store) {
+    _classCallCheck(this, Connect);
+
+    this.store = store;
+  }
+
+  _createClass(Connect, [{
+    key: "connected",
+    get: function get() {
+      return this.store.getState().connected;
+    }
+  }, {
+    key: "loggedIn",
+    get: function get() {
+      return this.store.getState().loggedIn;
+    }
+  }, {
+    key: "error",
+    get: function get() {
+      return this.store.getState().error;
+    }
+  }, {
+    key: "mode",
+    get: function get() {
+      return this.store.getState().mode;
+    }
+  }, {
+    key: "actions",
+    get: function get() {
+      return this.store.getState().actions;
+    }
+  }, {
+    key: "click",
+    get: function get() {
+      var _store$getState = this.store.getState(),
+          xClick = _store$getState.xClick,
+          yClick = _store$getState.yClick;
+
+      return { xClick: xClick, yClick: yClick };
+    }
+  }, {
+    key: "keys",
+    get: function get() {
+      var allKeys = this.store.getState().keys;
+      var trueKeys = Object.keys(allKeys).filter(function (x) {
+        return allKeys[x] === true;
+      });
+      return trueKeys;
+    }
+  }, {
+    key: "drag",
+    get: function get() {
+      var _store$getState2 = this.store.getState(),
+          xDragging = _store$getState2.xDragging,
+          yDragging = _store$getState2.yDragging;
+
+      return { xDragging: xDragging, yDragging: yDragging };
+    }
+  }, {
+    key: "story",
+    get: function get() {
+      return this.store.getState().story;
+    }
+  }, {
+    key: "map",
+    get: function get() {
+      var _store$getState3 = this.store.getState(),
+          position = _store$getState3.position,
+          tiles = _store$getState3.tiles,
+          sight = _store$getState3.sight,
+          zoom = _store$getState3.zoom;
+
+      var _tiles$find = tiles.find(function (tile) {
+        return tile.id === position;
+      }),
+          x = _tiles$find.x,
+          y = _tiles$find.y;
+
+      var pos = {};
+      pos.x = x;
+      pos.y = y;
+      return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
+    }
+  }, {
+    key: "currentTile",
+    get: function get() {
+      var _store$getState4 = this.store.getState(),
+          position = _store$getState4.position,
+          tiles = _store$getState4.tiles;
+
+      return tiles.find(function (tile) {
+        return tile.id === position;
+      });
+    }
+  }, {
+    key: "inventory",
+    get: function get() {
+      return this.store.getState().inventory;
+    }
+  }, {
+    key: "party",
+    get: function get() {
+      return this.store.getState().party;
+    }
+  }, {
+    key: "vehicle",
+    get: function get() {
+      return this.store.getState().vehicle;
+    }
+  }, {
+    key: "pace",
+    get: function get() {
+      return this.store.getState().pace;
+    }
+  }, {
+    key: "rations",
+    get: function get() {
+      return this.store.getState().rations;
+    }
+  }]);
+
+  return Connect;
+}();
+
+exports.default = Connect;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 // Type and action definitions
 
 var KEYDOWN = exports.KEYDOWN = 'KEYDOWN';
@@ -206,148 +348,6 @@ var eventRequest = exports.eventRequest = function eventRequest(type, id) {
     payload: { type: type, id: id }
   };
 };
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Connect = function () {
-  function Connect(store) {
-    _classCallCheck(this, Connect);
-
-    this.store = store;
-  }
-
-  _createClass(Connect, [{
-    key: "connected",
-    get: function get() {
-      return this.store.getState().connected;
-    }
-  }, {
-    key: "loggedIn",
-    get: function get() {
-      return this.store.getState().loggedIn;
-    }
-  }, {
-    key: "error",
-    get: function get() {
-      return this.store.getState().error;
-    }
-  }, {
-    key: "mode",
-    get: function get() {
-      return this.store.getState().mode;
-    }
-  }, {
-    key: "actions",
-    get: function get() {
-      return this.store.getState().actions;
-    }
-  }, {
-    key: "click",
-    get: function get() {
-      var _store$getState = this.store.getState(),
-          xClick = _store$getState.xClick,
-          yClick = _store$getState.yClick;
-
-      return { xClick: xClick, yClick: yClick };
-    }
-  }, {
-    key: "keys",
-    get: function get() {
-      var allKeys = this.store.getState().keys;
-      var trueKeys = Object.keys(allKeys).filter(function (x) {
-        return allKeys[x] === true;
-      });
-      return trueKeys;
-    }
-  }, {
-    key: "drag",
-    get: function get() {
-      var _store$getState2 = this.store.getState(),
-          xDragging = _store$getState2.xDragging,
-          yDragging = _store$getState2.yDragging;
-
-      return { xDragging: xDragging, yDragging: yDragging };
-    }
-  }, {
-    key: "story",
-    get: function get() {
-      return this.store.getState().story;
-    }
-  }, {
-    key: "map",
-    get: function get() {
-      var _store$getState3 = this.store.getState(),
-          position = _store$getState3.position,
-          tiles = _store$getState3.tiles,
-          sight = _store$getState3.sight,
-          zoom = _store$getState3.zoom;
-
-      var _tiles$find = tiles.find(function (tile) {
-        return tile.id === position;
-      }),
-          x = _tiles$find.x,
-          y = _tiles$find.y;
-
-      var pos = {};
-      pos.x = x;
-      pos.y = y;
-      return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
-    }
-  }, {
-    key: "currentTile",
-    get: function get() {
-      var _store$getState4 = this.store.getState(),
-          position = _store$getState4.position,
-          tiles = _store$getState4.tiles;
-
-      return tiles.find(function (tile) {
-        return tile.id === position;
-      });
-    }
-  }, {
-    key: "inventory",
-    get: function get() {
-      return this.store.getState().inventory;
-    }
-  }, {
-    key: "party",
-    get: function get() {
-      return this.store.getState().party;
-    }
-  }, {
-    key: "vehicle",
-    get: function get() {
-      return this.store.getState().vehicle;
-    }
-  }, {
-    key: "pace",
-    get: function get() {
-      return this.store.getState().pace;
-    }
-  }, {
-    key: "rations",
-    get: function get() {
-      return this.store.getState().rations;
-    }
-  }]);
-
-  return Connect;
-}();
-
-exports.default = Connect;
 
 /***/ }),
 /* 2 */
@@ -630,7 +630,7 @@ exports.login = login;
 exports.logout = logout;
 exports.sendEvent = sendEvent;
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _store = __webpack_require__(9);
 
@@ -892,7 +892,7 @@ var _reduxSubscriber2 = _interopRequireDefault(_reduxSubscriber);
 
 var _errors = __webpack_require__(54);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1727,7 +1727,11 @@ function getActions(inventory, eating, tiles, position) {
   }
 
   if (itemsByTag['food']) {
-    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].map(function (item) {
+    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].filter(function (invItem) {
+      return !eating.find(function (eatItem) {
+        return invItem.id === eatItem.id;
+      });
+    }).map(function (item) {
       return { tag: 'add_food', name: 'add ' + item.name, id: item.id, tileset: 'items' };
     }));
   }
@@ -1755,18 +1759,14 @@ function getActions(inventory, eating, tiles, position) {
 
   if (currentTile.fishing) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
-    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
-      return item.tags.includes('fishing');
-    }).map(function (item) {
+    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['fishing'].map(function (item) {
       return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
 
   if (currentTile.hunting) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
-    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
-      return item.tags.includes('hunting');
-    }).map(function (item) {
+    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['hunting'].map(function (item) {
       return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
@@ -3115,7 +3115,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = reducer;
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _reduxWebsocketBridge = __webpack_require__(15);
 
@@ -4259,7 +4259,7 @@ var _addInputListeners = __webpack_require__(56);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4311,11 +4311,11 @@ var _MapView = __webpack_require__(68);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _TitleView = __webpack_require__(81);
+var _TitleView = __webpack_require__(82);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _constants = __webpack_require__(2);
 
@@ -4412,7 +4412,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = addInputListeners;
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
@@ -4585,7 +4585,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(2);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4605,7 +4605,7 @@ var _ActionBar = __webpack_require__(80);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4684,7 +4684,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4912,9 +4912,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(2);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4996,13 +4996,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(5);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _utils = __webpack_require__(3);
 
@@ -5107,7 +5107,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5195,7 +5195,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5287,7 +5287,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5428,7 +5428,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.inventoryDialog = inventoryDialog;
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5524,11 +5524,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(2);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _requests = __webpack_require__(5);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5710,7 +5710,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5720,7 +5720,7 @@ var _utils = __webpack_require__(3);
 
 var _requests = __webpack_require__(5);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5882,7 +5882,8 @@ var ActionBar = function () {
 exports.default = ActionBar;
 
 /***/ }),
-/* 81 */
+/* 81 */,
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5896,13 +5897,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(4);
 
-var _register = __webpack_require__(82);
+var _register = __webpack_require__(83);
 
-var _login = __webpack_require__(83);
+var _login = __webpack_require__(84);
 
 var _utils = __webpack_require__(3);
 
-var _Connect = __webpack_require__(1);
+var _Connect = __webpack_require__(0);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5910,7 +5911,7 @@ var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6021,7 +6022,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6036,7 +6037,7 @@ var _utils = __webpack_require__(6);
 
 var _requests = __webpack_require__(5);
 
-var _actions = __webpack_require__(0);
+var _actions = __webpack_require__(1);
 
 var _failure = __webpack_require__(18);
 
@@ -6090,7 +6091,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
