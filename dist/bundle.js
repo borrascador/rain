@@ -73,148 +73,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Connect = function () {
-  function Connect(store) {
-    _classCallCheck(this, Connect);
-
-    this.store = store;
-  }
-
-  _createClass(Connect, [{
-    key: "connected",
-    get: function get() {
-      return this.store.getState().connected;
-    }
-  }, {
-    key: "loggedIn",
-    get: function get() {
-      return this.store.getState().loggedIn;
-    }
-  }, {
-    key: "error",
-    get: function get() {
-      return this.store.getState().error;
-    }
-  }, {
-    key: "mode",
-    get: function get() {
-      return this.store.getState().mode;
-    }
-  }, {
-    key: "actions",
-    get: function get() {
-      return this.store.getState().actions;
-    }
-  }, {
-    key: "click",
-    get: function get() {
-      var _store$getState = this.store.getState(),
-          xClick = _store$getState.xClick,
-          yClick = _store$getState.yClick;
-
-      return { xClick: xClick, yClick: yClick };
-    }
-  }, {
-    key: "keys",
-    get: function get() {
-      var allKeys = this.store.getState().keys;
-      var trueKeys = Object.keys(allKeys).filter(function (x) {
-        return allKeys[x] === true;
-      });
-      return trueKeys;
-    }
-  }, {
-    key: "drag",
-    get: function get() {
-      var _store$getState2 = this.store.getState(),
-          xDragging = _store$getState2.xDragging,
-          yDragging = _store$getState2.yDragging;
-
-      return { xDragging: xDragging, yDragging: yDragging };
-    }
-  }, {
-    key: "story",
-    get: function get() {
-      return this.store.getState().story;
-    }
-  }, {
-    key: "map",
-    get: function get() {
-      var _store$getState3 = this.store.getState(),
-          position = _store$getState3.position,
-          tiles = _store$getState3.tiles,
-          sight = _store$getState3.sight,
-          zoom = _store$getState3.zoom;
-
-      var _tiles$find = tiles.find(function (tile) {
-        return tile.id === position;
-      }),
-          x = _tiles$find.x,
-          y = _tiles$find.y;
-
-      var pos = {};
-      pos.x = x;
-      pos.y = y;
-      return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
-    }
-  }, {
-    key: "currentTile",
-    get: function get() {
-      var _store$getState4 = this.store.getState(),
-          position = _store$getState4.position,
-          tiles = _store$getState4.tiles;
-
-      return tiles.find(function (tile) {
-        return tile.id === position;
-      });
-    }
-  }, {
-    key: "inventory",
-    get: function get() {
-      return this.store.getState().inventory;
-    }
-  }, {
-    key: "party",
-    get: function get() {
-      return this.store.getState().party;
-    }
-  }, {
-    key: "vehicle",
-    get: function get() {
-      return this.store.getState().vehicle;
-    }
-  }, {
-    key: "pace",
-    get: function get() {
-      return this.store.getState().pace;
-    }
-  }, {
-    key: "rations",
-    get: function get() {
-      return this.store.getState().rations;
-    }
-  }]);
-
-  return Connect;
-}();
-
-exports.default = Connect;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 // Type and action definitions
 
 var KEYDOWN = exports.KEYDOWN = 'KEYDOWN';
@@ -350,6 +208,148 @@ var eventRequest = exports.eventRequest = function eventRequest(type, id) {
 };
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Connect = function () {
+  function Connect(store) {
+    _classCallCheck(this, Connect);
+
+    this.store = store;
+  }
+
+  _createClass(Connect, [{
+    key: "connected",
+    get: function get() {
+      return this.store.getState().connected;
+    }
+  }, {
+    key: "loggedIn",
+    get: function get() {
+      return this.store.getState().loggedIn;
+    }
+  }, {
+    key: "error",
+    get: function get() {
+      return this.store.getState().error;
+    }
+  }, {
+    key: "mode",
+    get: function get() {
+      return this.store.getState().mode;
+    }
+  }, {
+    key: "actions",
+    get: function get() {
+      return this.store.getState().actions;
+    }
+  }, {
+    key: "click",
+    get: function get() {
+      var _store$getState = this.store.getState(),
+          xClick = _store$getState.xClick,
+          yClick = _store$getState.yClick;
+
+      return { xClick: xClick, yClick: yClick };
+    }
+  }, {
+    key: "keys",
+    get: function get() {
+      var allKeys = this.store.getState().keys;
+      var trueKeys = Object.keys(allKeys).filter(function (x) {
+        return allKeys[x] === true;
+      });
+      return trueKeys;
+    }
+  }, {
+    key: "drag",
+    get: function get() {
+      var _store$getState2 = this.store.getState(),
+          xDragging = _store$getState2.xDragging,
+          yDragging = _store$getState2.yDragging;
+
+      return { xDragging: xDragging, yDragging: yDragging };
+    }
+  }, {
+    key: "story",
+    get: function get() {
+      return this.store.getState().story;
+    }
+  }, {
+    key: "map",
+    get: function get() {
+      var _store$getState3 = this.store.getState(),
+          position = _store$getState3.position,
+          tiles = _store$getState3.tiles,
+          sight = _store$getState3.sight,
+          zoom = _store$getState3.zoom;
+
+      var _tiles$find = tiles.find(function (tile) {
+        return tile.id === position;
+      }),
+          x = _tiles$find.x,
+          y = _tiles$find.y;
+
+      var pos = {};
+      pos.x = x;
+      pos.y = y;
+      return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
+    }
+  }, {
+    key: "currentTile",
+    get: function get() {
+      var _store$getState4 = this.store.getState(),
+          position = _store$getState4.position,
+          tiles = _store$getState4.tiles;
+
+      return tiles.find(function (tile) {
+        return tile.id === position;
+      });
+    }
+  }, {
+    key: "inventory",
+    get: function get() {
+      return this.store.getState().inventory;
+    }
+  }, {
+    key: "party",
+    get: function get() {
+      return this.store.getState().party;
+    }
+  }, {
+    key: "vehicle",
+    get: function get() {
+      return this.store.getState().vehicle;
+    }
+  }, {
+    key: "pace",
+    get: function get() {
+      return this.store.getState().pace;
+    }
+  }, {
+    key: "rations",
+    get: function get() {
+      return this.store.getState().rations;
+    }
+  }]);
+
+  return Connect;
+}();
+
+exports.default = Connect;
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -368,6 +368,7 @@ var LAYER = exports.LAYER = {
 var MODE = exports.MODE = {
   MAP: "MAP",
   STORY: "STORY",
+  INVENTORY: "INVENTORY",
   TITLE: "TITLE"
 };
 var VEHICLE = exports.VEHICLE = {
@@ -630,7 +631,7 @@ exports.login = login;
 exports.logout = logout;
 exports.sendEvent = sendEvent;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _store = __webpack_require__(9);
 
@@ -892,7 +893,7 @@ var _reduxSubscriber2 = _interopRequireDefault(_reduxSubscriber);
 
 var _errors = __webpack_require__(54);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3115,7 +3116,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = reducer;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _reduxWebsocketBridge = __webpack_require__(15);
 
@@ -3321,7 +3322,7 @@ function update(state, action) {
   var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
+  var mode = action.payload.story ? _constants.MODE.STORY : state.mode;
   var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     inventory: inventory,
@@ -3346,7 +3347,7 @@ function eventResponse(state, action) {
   var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
+  var mode = action.payload.story ? _constants.MODE.STORY : state.mode;
   var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     sending: false,
@@ -4259,7 +4260,7 @@ var _addInputListeners = __webpack_require__(56);
 
 var _addInputListeners2 = _interopRequireDefault(_addInputListeners);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4315,7 +4316,7 @@ var _TitleView = __webpack_require__(82);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _constants = __webpack_require__(2);
 
@@ -4373,16 +4374,14 @@ var RainGame = function () {
 				this.mapView = new _MapView2.default(this.store, this.canvas, this.ctx, this.loader);
 			}
 
-			this.mode = this.connect.mode;
 			var keys = this.connect.keys;
 			var _connect$click = this.connect.click,
 			    xClick = _connect$click.xClick,
 			    yClick = _connect$click.yClick;
 
-
-			var mode = this.connect.mode;
-			switch (mode) {
+			switch (this.connect.mode) {
 				case _constants.MODE.STORY:
+				case _constants.MODE.INVENTORY:
 				case _constants.MODE.MAP:
 					this.mapView.update(delta, keys, xClick, yClick);
 					this.mapView.render();
@@ -4412,7 +4411,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = addInputListeners;
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
@@ -4585,7 +4584,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(2);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4609,7 +4608,7 @@ var _InventoryWindow = __webpack_require__(81);
 
 var _InventoryWindow2 = _interopRequireDefault(_InventoryWindow);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4646,6 +4645,8 @@ var MapView = function () {
       if (!this.dim) {
         if (this.connect.mode === _constants.MODE.STORY) {
           this.story.update(delta, keys, x, y);
+        } else if (this.connect.mode === _constants.MODE.INVENTORY) {
+          this.inventoryWindow.update(delta, x, y);
         } else {
           this.camera.update(delta, x, y);
           this.overlay.update(delta, x, y);
@@ -4661,9 +4662,15 @@ var MapView = function () {
 
       this.camera.render();
       this.overlay.render();
-      this.connect.mode === _constants.MODE.STORY && this.story.render(this.connect.story);
       this.actionBar.render();
-      // this.inventoryWindow.render();
+      switch (this.connect.mode) {
+        case _constants.MODE.STORY:
+          this.story.render(this.connect.story);
+          break;
+        case _constants.MODE.INVENTORY:
+          this.inventoryWindow.render();
+          break;
+      }
 
       if (this.dim) {
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
@@ -4690,7 +4697,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -4918,9 +4925,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(2);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5002,13 +5009,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(5);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _utils = __webpack_require__(3);
 
@@ -5113,7 +5120,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5201,7 +5208,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5293,7 +5300,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5362,7 +5369,9 @@ var _utils = __webpack_require__(3);
 
 var _draw = __webpack_require__(4);
 
-var _inventory = __webpack_require__(78);
+var _actions = __webpack_require__(0);
+
+var _constants = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5370,8 +5379,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Inventory = function () {
   function Inventory(store, canvas, ctx, loader, setDim) {
-    var _this = this;
-
     _classCallCheck(this, Inventory);
 
     this.store = store;
@@ -5383,35 +5390,31 @@ var Inventory = function () {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
 
-    this.buttons = [{
-      name: 'pack-big',
-      onClick: function onClick() {
-        return (0, _inventory.inventoryDialog)(_this.store, setDim);
-      }
-    }];
+    this.buttons = [{ name: 'pack-big' }];
   }
 
   _createClass(Inventory, [{
     key: 'update',
     value: function update(delta, x, y) {
       this.animate.tick(delta);
-      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      button && button.onClick();
+      if (x && y && (0, _utils.screenToImageButton)(x, y, this.buttons)) {
+        this.store.dispatch((0, _actions.changeMode)(_constants.MODE.INVENTORY));
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this = this;
 
       this.buttons = this.buttons.map(function (button) {
-        var x = _this2.canvas.width - _this2.size;
-        var y = _this2.canvas.height / 2 - _this2.size / 2;
-        (0, _draw.drawByName)(_this2.ctx, _this2.iconsXl, button.name, _this2.scale, x, y + _this2.animate.getValue());
+        var x = _this.canvas.width - _this.size;
+        var y = _this.canvas.height / 2 - _this.size / 2;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
         return Object.assign({}, button, {
           xPos: x,
           yPos: y,
-          width: _this2.size,
-          height: _this2.size
+          width: _this.size,
+          height: _this.size
         });
       });
     }
@@ -5423,99 +5426,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.inventoryDialog = inventoryDialog;
-
-var _Connect = __webpack_require__(0);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(6);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function inventoryDialog(store, setDim) {
-  var connect = new _Connect2.default(store);
-
-  var container = document.getElementById('container');
-  var dialog = (0, _utils.create)('div', 'dialog', 'inventory');
-  container.append(dialog);
-
-  var title = (0, _utils.create)('div', 'title');
-  title.innerHTML = 'INVENTORY';
-
-  var items = (0, _utils.create)('div', 'items');
-
-  var total = 0;
-  connect.inventory.forEach(function (item) {
-    var line = (0, _utils.create)('div', 'item');
-    var name = (0, _utils.create)('span', 'left');
-    name.innerHTML = item.name;
-    var quantity = (0, _utils.create)('span', 'right');
-    quantity.innerHTML = item.quantity / 10 + '#';
-    var clear = (0, _utils.create)('div', 'clear');
-    line.append(name, quantity, clear);
-    items.append(line);
-    total += item.quantity;
-  });
-
-  if (connect.inventory.length === 0) {
-    var line = (0, _utils.create)('div', 'item');
-    line.innerHTML = 'Empty!';
-    items.append(line);
-  } else {
-    var party = connect.party;
-    var limit = void 0;
-    if (party.length > 1) {
-      limit = party.length * party.reduce(function (a, b) {
-        return a.jeito + b.jeito;
-      });
-    } else if (party.length === 1) {
-      limit = party[0].jeito;
-    } else {
-      limit = 0;
-    }
-    var newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS SCALING! XXX
-    var color = newTotal / limit > 1 ? "red" : newTotal / limit > 0.9 ? "yellow" : "green";
-    var hr = (0, _utils.create)('hr');
-    hr.style.border = '1px solid white';
-    var ratio = (0, _utils.create)('span', 'right');
-    ratio.innerHTML = total / 10 + '/' + limit + '#';
-    ratio.style.color = color;
-    items.append(hr, ratio);
-  }
-
-  var submit = (0, _utils.create)('button', 'submit');
-  submit.innerHTML = 'OK';
-  var buttons = (0, _utils.create)('div', 'buttons');
-  buttons.append(submit);
-
-  var dimCallback = function dimCallback(dim) {
-    setDim(dim);
-    // dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
-  };
-
-  dimCallback(true);
-
-  submit.onclick = function () {
-    dimCallback(false);
-    container.contains(dialog) && container.removeChild(dialog);
-  };
-
-  var content = (0, _utils.create)('div', 'content');
-  content.append(title, items, buttons);
-  dialog.append(content);
-}
-
-/***/ }),
+/* 78 */,
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5530,11 +5441,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _constants = __webpack_require__(2);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _requests = __webpack_require__(5);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5716,7 +5627,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5726,7 +5637,7 @@ var _utils = __webpack_require__(3);
 
 var _requests = __webpack_require__(5);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5900,9 +5811,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
+
+var _draw = __webpack_require__(4);
+
+var _utils = __webpack_require__(3);
+
+var _actions = __webpack_require__(0);
+
+var _constants = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5921,43 +5840,122 @@ var InventoryWindow = function () {
     this.items = loader.getImage('items');
 
     this.fontSize = 16;
-    this.width = this.canvas.width / 2;
-    this.height = this.canvas.height / 2;
 
     this.scale = 4;
     this.buttonSize = this.icons.tileset.tilewidth * this.scale;
-    this.barSize = this.buttonSize * 1.5;
-    this.gutter = (this.barSize - this.buttonSize) / 2;
+    this.gutter = this.buttonSize / this.scale;
+
+    this.unitWidth = 9;
+    this.unitHeight = 3;
+    this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
   }
 
   _createClass(InventoryWindow, [{
-    key: 'renderBar',
-    value: function renderBar() {
+    key: 'update',
+    value: function update(delta, x, y) {
+      if (x && y) {
+        var xMin = (this.canvas.width - this.width) / 2;
+        var xMax = xMin + this.width;
+        var yMin = (this.canvas.height - this.height) / 2;
+        var yMax = yMin + this.height;
+        if (x > xMin && x < xMax && y > yMin && y < yMax) {
+          console.log('hit');
+        } else {
+          this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+        }
+      }
+    }
+  }, {
+    key: 'renderWindow',
+    value: function renderWindow() {
+      var _this = this;
+
       this.ctx.textAlign = 'alphabetical';
       this.ctx.font = this.fontSize + 'px MECC';
       var titleWidth = this.ctx.measureText('INVENTORY').width;
 
-      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
-      this.ctx.fillRect((this.canvas.width - this.barWidth) / 2, this.canvas.height - this.barSize, this.barWidth, this.barSize);
+      var x = (this.canvas.width - this.width) / 2;
+      var y = (this.canvas.height - this.height) / 2;
 
       this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
-      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - 8, this.canvas.height - (this.barSize + this.fontSize + 4), titleWidth + 16, this.fontSize + 4);
+      this.ctx.fillRect(x, y, this.width, this.height);
+
+      this.ctx.fillStyle = "rgb(33, 5, 11, 0.9)";
+      for (var xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
+        for (var yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
+          this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
+        }
+      }
+
+      this.ctx.fillStyle = '#FFF';
+      this.buttons = this.connect.inventory.map(function (button, index) {
+        var buttonX = x + _this.gutter + (_this.buttonSize + _this.gutter) * (index % _this.unitWidth);
+        var buttonY = y + _this.gutter + (_this.buttonSize + _this.gutter) * Math.floor(index / _this.unitWidth);
+        (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, buttonX, buttonY);
+        _this.ctx.fillText(button.quantity, buttonX, buttonY + _this.fontSize);
+        return Object.assign({}, button, {
+          xPos: buttonX,
+          yPos: buttonY,
+          width: _this.buttonSize,
+          height: _this.buttonSize
+        });
+      });
+
+      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - this.gutter, this.canvas.height / 2 - this.height / 2 - this.fontSize - 4, titleWidth + this.gutter * 2, this.fontSize + 4);
 
       this.ctx.fillStyle = "#FFF";
-      this.ctx.fillText(this.current, (this.canvas.width - titleWidth) / 2, this.canvas.height - this.barSize);
+      this.ctx.fillText('INVENTORY', (this.canvas.width - titleWidth) / 2, (this.canvas.height - this.height) / 2);
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover() {
+      var _connect$drag = this.connect.drag,
+          xDragging = _connect$drag.xDragging,
+          yDragging = _connect$drag.yDragging;
 
-      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
-      this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
+      if (xDragging && yDragging) {
+        var button = (0, _utils.screenToImageButton)(xDragging, yDragging, this.buttons);
+        if (button) {
+          var text = button.name;
+          var textWidth = this.ctx.measureText(text).width;
+          var padding = 8;
+
+          this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - this.buttonSize / 2 - this.scale - padding, textWidth + padding * 2, this.fontSize + padding * 2);
+
+          this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+          var y = button.yPos - this.buttonSize / 2 - this.scale + this.fontSize + padding;
+          this.ctx.beginPath();
+          this.ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
+          this.ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
+          this.ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
+          this.ctx.closePath();
+          this.ctx.fill();
+
+          this.ctx.fillStyle = "#FFF";
+          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - this.buttonSize / 2 - this.scale + this.fontSize);
+        }
+      }
+    }
+  }, {
+    key: 'renderDrag',
+    value: function renderDrag() {
+      var _connect$drag2 = this.connect.drag,
+          xDragging = _connect$drag2.xDragging,
+          yDragging = _connect$drag2.yDragging;
+      var _connect$click = this.connect.click,
+          xClick = _connect$click.xClick,
+          yClick = _connect$click.yClick;
+      // Find a way to test drag behavior, maybe this should be in the update method
     }
   }, {
     key: 'render',
     value: function render() {
-      this.renderBar();
-      // this.buttons = this.connect.actions[this.current];
-      // this.barWidth = this.barSize * this.buttons.length;
-      // this.buttons.length > 0 && this.renderBar();
-      // this.renderButtons();
-      // this.renderHover();
+      this.renderWindow();
+      this.renderHover();
+      this.renderDrag();
     }
   }]);
 
@@ -5987,7 +5985,7 @@ var _login = __webpack_require__(84);
 
 var _utils = __webpack_require__(3);
 
-var _Connect = __webpack_require__(0);
+var _Connect = __webpack_require__(1);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
@@ -5995,7 +5993,7 @@ var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6121,7 +6119,7 @@ var _utils = __webpack_require__(6);
 
 var _requests = __webpack_require__(5);
 
-var _actions = __webpack_require__(1);
+var _actions = __webpack_require__(0);
 
 var _failure = __webpack_require__(18);
 

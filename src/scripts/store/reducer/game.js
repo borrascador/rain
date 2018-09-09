@@ -85,7 +85,7 @@ export function update(state, action) {
   const story = makeStory(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  const mode = action.payload.story ? MODE.STORY : MODE.MAP;
+  const mode = action.payload.story ? MODE.STORY : state.mode;
   const actions = getActions(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     inventory,
@@ -110,7 +110,7 @@ export function eventResponse(state, action) {
   const story = makeStory(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  const mode = action.payload.story ? MODE.STORY : MODE.MAP;
+  const mode = action.payload.story ? MODE.STORY : state.mode;
   const actions = getActions(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     sending: false,

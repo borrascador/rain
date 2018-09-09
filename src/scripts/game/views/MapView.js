@@ -33,6 +33,8 @@ export default class MapView {
     if (!this.dim) {
       if (this.connect.mode === MODE.STORY) {
         this.story.update(delta, keys, x, y);
+      } else if (this.connect.mode === MODE.INVENTORY) {
+        this.inventoryWindow.update(delta, x, y);
       } else {
         this.camera.update(delta, x, y);
         this.overlay.update(delta, x, y);
@@ -47,9 +49,15 @@ export default class MapView {
 
     this.camera.render();
     this.overlay.render();
-    this.connect.mode === MODE.STORY && this.story.render(this.connect.story);
     this.actionBar.render();
-    // this.inventoryWindow.render();
+    switch (this.connect.mode) {
+      case MODE.STORY:
+        this.story.render(this.connect.story);
+        break;
+      case MODE.INVENTORY:
+        this.inventoryWindow.render();
+        break;
+    }
 
     if (this.dim) {
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
