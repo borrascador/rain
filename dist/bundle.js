@@ -4312,7 +4312,7 @@ var _MapView = __webpack_require__(68);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _TitleView = __webpack_require__(82);
+var _TitleView = __webpack_require__(81);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -4596,15 +4596,15 @@ var _Overlay = __webpack_require__(72);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _Story = __webpack_require__(79);
+var _Story = __webpack_require__(78);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _ActionBar = __webpack_require__(80);
+var _ActionBar = __webpack_require__(79);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
-var _InventoryWindow = __webpack_require__(81);
+var _InventoryWindow = __webpack_require__(80);
 
 var _InventoryWindow2 = _interopRequireDefault(_InventoryWindow);
 
@@ -5426,8 +5426,7 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
-/* 78 */,
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5615,7 +5614,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5799,7 +5798,7 @@ var ActionBar = function () {
 exports.default = ActionBar;
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5965,7 +5964,7 @@ var InventoryWindow = function () {
 exports.default = InventoryWindow;
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5979,9 +5978,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(4);
 
-var _register = __webpack_require__(83);
+var _register = __webpack_require__(82);
 
-var _login = __webpack_require__(84);
+var _login = __webpack_require__(83);
 
 var _utils = __webpack_require__(3);
 
@@ -6104,7 +6103,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6173,7 +6172,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
