@@ -352,14 +352,17 @@ public class Player {
 		return changes;
 	}
 	
-	public JSONArray add_food(int id) {
+	public JSONArray add_food(Integer id) {
 		if (eating.size() < 3 && !eating.contains(id) && backpack.containsKey(id)) {
 			eating.add(id);
 		}
 		return eatingToJSONArray();
 	}
 	
-	public JSONArray remove_food(int id) {
+	public JSONArray remove_food(Integer id) {
+		System.out.println("test");
+		System.out.println(id);
+		System.out.println(eating);
 		if (eating.contains(id)) {
 			eating.remove(id);
 		}
