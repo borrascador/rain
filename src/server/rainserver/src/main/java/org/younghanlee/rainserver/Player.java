@@ -138,7 +138,7 @@ public class Player {
 			payload.put("tiles", tiles);
 		}
 		
-		if (tick % 10 == 0) {
+		if (tick % 5 == 0) {
 			ArrayList<Integer> copy = new ArrayList<Integer>();
 			for (Integer i: eating) {
 				copy.add(new Integer(i));
@@ -342,12 +342,12 @@ public class Player {
 	public JSONArray eat(ArrayList<Integer> copy) {
 		JSONArray changes = new JSONArray();
 		for (Integer id: copy) {
-			JSONObject item = World.getItem(id).change(id, Portion(id), this, true);
-			if (item == null) {
+			JSONObject item = World.getItem(id).change(id, Portion(id), this, false);
+			if (item.getInt("quantity") == 0) {
 				eating.remove(id);
-			} else {
-				changes.put(item);
 			}
+			
+			changes.put(item);
 		}
 		return changes;
 	}
@@ -374,7 +374,7 @@ public class Player {
 		for (int id: eating) {
 			JSONObject jo = new JSONObject();
 			jo.put("id", id);
-			jo.put("quantity", Portion(id));
+			jo.put("portion", Portion(id));
 			ja.put(jo);
 		}
 		return ja;
