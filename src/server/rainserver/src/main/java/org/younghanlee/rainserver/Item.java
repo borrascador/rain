@@ -41,10 +41,16 @@ public class Item {
 		
 		int quantity = p.getQuantity(id);
 		
-		if (quantity + change < 0 && requireFull) {
-			return null;
+		int actual_change = change;
+		
+		if (quantity + change < 0) {
+			if (requireFull) {
+				return null;
+			} else actual_change = -quantity;
 		}
-		if (quantity == 0) {
+
+		// Case when we add an item not yet owned
+		if (quantity == 0 && change >=0 ) {
 			jo.put("yield", yield);
 			JSONArray tagArray = new JSONArray();
 			for (String s: tags) {
@@ -56,11 +62,11 @@ public class Item {
 		jo.put("id", id);
 		jo.put("name", name);
 		
-		quantity += change;
+		quantity += actual_change;
 		p.setQuantity(id, quantity);
 		
 		jo.put("quantity", quantity);
-		jo.put("change", change);
+		jo.put("change", actual_change);
 		return jo;
 	}
 	

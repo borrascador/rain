@@ -1727,7 +1727,11 @@ function getActions(inventory, eating, tiles, position) {
   }
 
   if (itemsByTag['food']) {
-    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].map(function (item) {
+    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].filter(function (invItem) {
+      return !eating.find(function (eatItem) {
+        return invItem.id === eatItem.id;
+      });
+    }).map(function (item) {
       return { tag: 'add_food', name: 'add ' + item.name, id: item.id, tileset: 'items' };
     }));
   }
@@ -1755,18 +1759,14 @@ function getActions(inventory, eating, tiles, position) {
 
   if (currentTile.fishing) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
-    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
-      return item.tags.includes('fishing');
-    }).map(function (item) {
+    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['fishing'].map(function (item) {
       return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
 
   if (currentTile.hunting) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
-    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
-      return item.tags.includes('hunting');
-    }).map(function (item) {
+    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['hunting'].map(function (item) {
       return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
     }));
   }

@@ -91,13 +91,13 @@ public class EventHandler {
 				break;
 			case "add_food":
 				payload = new JSONObject();
-				payload.put("eating", p.add_food(event.getInt("id")));
+				payload.put("eating", p.add_food(new Integer(event.getInt("id"))));
 				response = Message.EVENT_RESPONSE(payload);
 				connection.sendJSON(response);
 				break;
 			case "remove_food":
 				payload = new JSONObject();
-				payload.put("eating", p.remove_food(event.getInt("id")));
+				payload.put("eating", p.remove_food(new Integer(event.getInt("id"))));
 				response = Message.EVENT_RESPONSE(payload);
 				connection.sendJSON(response);
 				break;
