@@ -1,7 +1,8 @@
 import Animation from '../utils/Animation';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
-import { inventoryDialog } from '../dialogs/inventory';
+import { changeMode } from '../../store/actions/actions';
+import { MODE } from '../constants';
 
 export default class Inventory {
   constructor (store, canvas, ctx, loader, setDim) {
@@ -14,18 +15,14 @@ export default class Inventory {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new Animation(this.scale, this.scale, 0.5);
 
-    this.buttons = [
-      {
-        name: 'pack-big',
-        onClick: () => inventoryDialog(this.store, setDim)
-      }
-    ];
+    this.buttons = [ { name: 'pack-big' } ];
   }
 
   update(delta, x, y) {
     this.animate.tick(delta);
-    const button = x && y && screenToImageButton(x, y, this.buttons);
-    button && button.onClick();
+    if (x && y && screenToImageButton(x, y, this.buttons)) {
+      this.store.dispatch(changeMode(MODE.INVENTORY));
+    }
   }
 
   render() {

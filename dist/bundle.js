@@ -368,6 +368,7 @@ var LAYER = exports.LAYER = {
 var MODE = exports.MODE = {
   MAP: "MAP",
   STORY: "STORY",
+  INVENTORY: "INVENTORY",
   TITLE: "TITLE"
 };
 var VEHICLE = exports.VEHICLE = {
@@ -1727,7 +1728,11 @@ function getActions(inventory, eating, tiles, position) {
   }
 
   if (itemsByTag['food']) {
-    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].map(function (item) {
+    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].filter(function (invItem) {
+      return !eating.find(function (eatItem) {
+        return invItem.id === eatItem.id;
+      });
+    }).map(function (item) {
       return { tag: 'add_food', name: 'add ' + item.name, id: item.id, tileset: 'items' };
     }));
   }
@@ -1755,18 +1760,14 @@ function getActions(inventory, eating, tiles, position) {
 
   if (currentTile.fishing) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
-    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
-      return item.tags.includes('fishing');
-    }).map(function (item) {
+    actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['fishing'].map(function (item) {
       return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
 
   if (currentTile.hunting) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
-    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(inventory.filter(function (item) {
-      return item.tags.includes('hunting');
-    }).map(function (item) {
+    actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['hunting'].map(function (item) {
       return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
@@ -3321,7 +3322,7 @@ function update(state, action) {
   var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
+  var mode = action.payload.story ? _constants.MODE.STORY : state.mode;
   var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     inventory: inventory,
@@ -3346,7 +3347,7 @@ function eventResponse(state, action) {
   var story = (0, _utils.makeStory)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  var mode = action.payload.story ? _constants.MODE.STORY : _constants.MODE.MAP;
+  var mode = action.payload.story ? _constants.MODE.STORY : state.mode;
   var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
   return Object.assign({}, state, {
     sending: false,
@@ -4373,16 +4374,14 @@ var RainGame = function () {
 				this.mapView = new _MapView2.default(this.store, this.canvas, this.ctx, this.loader);
 			}
 
-			this.mode = this.connect.mode;
 			var keys = this.connect.keys;
 			var _connect$click = this.connect.click,
 			    xClick = _connect$click.xClick,
 			    yClick = _connect$click.yClick;
 
-
-			var mode = this.connect.mode;
-			switch (mode) {
+			switch (this.connect.mode) {
 				case _constants.MODE.STORY:
+				case _constants.MODE.INVENTORY:
 				case _constants.MODE.MAP:
 					this.mapView.update(delta, keys, xClick, yClick);
 					this.mapView.render();
@@ -4597,13 +4596,17 @@ var _Overlay = __webpack_require__(72);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _Story = __webpack_require__(79);
+var _Story = __webpack_require__(78);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _ActionBar = __webpack_require__(80);
+var _ActionBar = __webpack_require__(79);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
+
+var _InventoryWindow = __webpack_require__(80);
+
+var _InventoryWindow2 = _interopRequireDefault(_InventoryWindow);
 
 var _actions = __webpack_require__(0);
 
@@ -4627,6 +4630,7 @@ var MapView = function () {
     this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
     this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.setDim);
     this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.inventoryWindow = new _InventoryWindow2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
   _createClass(MapView, [{
@@ -4641,6 +4645,8 @@ var MapView = function () {
       if (!this.dim) {
         if (this.connect.mode === _constants.MODE.STORY) {
           this.story.update(delta, keys, x, y);
+        } else if (this.connect.mode === _constants.MODE.INVENTORY) {
+          this.inventoryWindow.update(delta, x, y);
         } else {
           this.camera.update(delta, x, y);
           this.overlay.update(delta, x, y);
@@ -4656,8 +4662,15 @@ var MapView = function () {
 
       this.camera.render();
       this.overlay.render();
-      this.connect.mode === _constants.MODE.STORY && this.story.render(this.connect.story);
       this.actionBar.render();
+      switch (this.connect.mode) {
+        case _constants.MODE.STORY:
+          this.story.render(this.connect.story);
+          break;
+        case _constants.MODE.INVENTORY:
+          this.inventoryWindow.render();
+          break;
+      }
 
       if (this.dim) {
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
@@ -5356,7 +5369,9 @@ var _utils = __webpack_require__(3);
 
 var _draw = __webpack_require__(4);
 
-var _inventory = __webpack_require__(78);
+var _actions = __webpack_require__(0);
+
+var _constants = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5364,8 +5379,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Inventory = function () {
   function Inventory(store, canvas, ctx, loader, setDim) {
-    var _this = this;
-
     _classCallCheck(this, Inventory);
 
     this.store = store;
@@ -5377,35 +5390,31 @@ var Inventory = function () {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
 
-    this.buttons = [{
-      name: 'pack-big',
-      onClick: function onClick() {
-        return (0, _inventory.inventoryDialog)(_this.store, setDim);
-      }
-    }];
+    this.buttons = [{ name: 'pack-big' }];
   }
 
   _createClass(Inventory, [{
     key: 'update',
     value: function update(delta, x, y) {
       this.animate.tick(delta);
-      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      button && button.onClick();
+      if (x && y && (0, _utils.screenToImageButton)(x, y, this.buttons)) {
+        this.store.dispatch((0, _actions.changeMode)(_constants.MODE.INVENTORY));
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this = this;
 
       this.buttons = this.buttons.map(function (button) {
-        var x = _this2.canvas.width - _this2.size;
-        var y = _this2.canvas.height / 2 - _this2.size / 2;
-        (0, _draw.drawByName)(_this2.ctx, _this2.iconsXl, button.name, _this2.scale, x, y + _this2.animate.getValue());
+        var x = _this.canvas.width - _this.size;
+        var y = _this.canvas.height / 2 - _this.size / 2;
+        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
         return Object.assign({}, button, {
           xPos: x,
           yPos: y,
-          width: _this2.size,
-          height: _this2.size
+          width: _this.size,
+          height: _this.size
         });
       });
     }
@@ -5418,99 +5427,6 @@ exports.default = Inventory;
 
 /***/ }),
 /* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.inventoryDialog = inventoryDialog;
-
-var _Connect = __webpack_require__(1);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(6);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function inventoryDialog(store, setDim) {
-  var connect = new _Connect2.default(store);
-
-  var container = document.getElementById('container');
-  var dialog = (0, _utils.create)('div', 'dialog', 'inventory');
-  container.append(dialog);
-
-  var title = (0, _utils.create)('div', 'title');
-  title.innerHTML = 'INVENTORY';
-
-  var items = (0, _utils.create)('div', 'items');
-
-  var total = 0;
-  connect.inventory.forEach(function (item) {
-    var line = (0, _utils.create)('div', 'item');
-    var name = (0, _utils.create)('span', 'left');
-    name.innerHTML = item.name;
-    var quantity = (0, _utils.create)('span', 'right');
-    quantity.innerHTML = item.quantity / 10 + '#';
-    var clear = (0, _utils.create)('div', 'clear');
-    line.append(name, quantity, clear);
-    items.append(line);
-    total += item.quantity;
-  });
-
-  if (connect.inventory.length === 0) {
-    var line = (0, _utils.create)('div', 'item');
-    line.innerHTML = 'Empty!';
-    items.append(line);
-  } else {
-    var party = connect.party;
-    var limit = void 0;
-    if (party.length > 1) {
-      limit = party.length * party.reduce(function (a, b) {
-        return a.jeito + b.jeito;
-      });
-    } else if (party.length === 1) {
-      limit = party[0].jeito;
-    } else {
-      limit = 0;
-    }
-    var newTotal = total / 10; // XXX TALK TO DAN ABOUT THIS SCALING! XXX
-    var color = newTotal / limit > 1 ? "red" : newTotal / limit > 0.9 ? "yellow" : "green";
-    var hr = (0, _utils.create)('hr');
-    hr.style.border = '1px solid white';
-    var ratio = (0, _utils.create)('span', 'right');
-    ratio.innerHTML = total / 10 + '/' + limit + '#';
-    ratio.style.color = color;
-    items.append(hr, ratio);
-  }
-
-  var submit = (0, _utils.create)('button', 'submit');
-  submit.innerHTML = 'OK';
-  var buttons = (0, _utils.create)('div', 'buttons');
-  buttons.append(submit);
-
-  var dimCallback = function dimCallback(dim) {
-    setDim(dim);
-    // dialog.style.filter = dim && 'brightness(0.2)' || 'brightness(1)';
-  };
-
-  dimCallback(true);
-
-  submit.onclick = function () {
-    dimCallback(false);
-    container.contains(dialog) && container.removeChild(dialog);
-  };
-
-  var content = (0, _utils.create)('div', 'content');
-  content.append(title, items, buttons);
-  dialog.append(content);
-}
-
-/***/ }),
-/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5698,7 +5614,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5880,6 +5796,172 @@ var ActionBar = function () {
 }();
 
 exports.default = ActionBar;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(1);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _draw = __webpack_require__(4);
+
+var _utils = __webpack_require__(3);
+
+var _actions = __webpack_require__(0);
+
+var _constants = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var InventoryWindow = function () {
+  function InventoryWindow(store, canvas, ctx, loader) {
+    _classCallCheck(this, InventoryWindow);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.connect = new _Connect2.default(this.store);
+
+    this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
+
+    this.fontSize = 16;
+
+    this.scale = 4;
+    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
+    this.gutter = this.buttonSize / this.scale;
+
+    this.unitWidth = 9;
+    this.unitHeight = 3;
+    this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
+  }
+
+  _createClass(InventoryWindow, [{
+    key: 'update',
+    value: function update(delta, x, y) {
+      if (x && y) {
+        var xMin = (this.canvas.width - this.width) / 2;
+        var xMax = xMin + this.width;
+        var yMin = (this.canvas.height - this.height) / 2;
+        var yMax = yMin + this.height;
+        if (x > xMin && x < xMax && y > yMin && y < yMax) {
+          console.log('hit');
+        } else {
+          this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
+        }
+      }
+    }
+  }, {
+    key: 'renderWindow',
+    value: function renderWindow() {
+      var _this = this;
+
+      this.ctx.textAlign = 'alphabetical';
+      this.ctx.font = this.fontSize + 'px MECC';
+      var titleWidth = this.ctx.measureText('INVENTORY').width;
+
+      var x = (this.canvas.width - this.width) / 2;
+      var y = (this.canvas.height - this.height) / 2;
+
+      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+      this.ctx.fillRect(x, y, this.width, this.height);
+
+      this.ctx.fillStyle = "rgb(33, 5, 11, 0.9)";
+      for (var xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
+        for (var yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
+          this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
+        }
+      }
+
+      this.ctx.fillStyle = '#FFF';
+      this.buttons = this.connect.inventory.map(function (button, index) {
+        var buttonX = x + _this.gutter + (_this.buttonSize + _this.gutter) * (index % _this.unitWidth);
+        var buttonY = y + _this.gutter + (_this.buttonSize + _this.gutter) * Math.floor(index / _this.unitWidth);
+        (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, buttonX, buttonY);
+        _this.ctx.fillText(button.quantity, buttonX, buttonY + _this.fontSize);
+        return Object.assign({}, button, {
+          xPos: buttonX,
+          yPos: buttonY,
+          width: _this.buttonSize,
+          height: _this.buttonSize
+        });
+      });
+
+      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - this.gutter, this.canvas.height / 2 - this.height / 2 - this.fontSize - 4, titleWidth + this.gutter * 2, this.fontSize + 4);
+
+      this.ctx.fillStyle = "#FFF";
+      this.ctx.fillText('INVENTORY', (this.canvas.width - titleWidth) / 2, (this.canvas.height - this.height) / 2);
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover() {
+      var _connect$drag = this.connect.drag,
+          xDragging = _connect$drag.xDragging,
+          yDragging = _connect$drag.yDragging;
+
+      if (xDragging && yDragging) {
+        var button = (0, _utils.screenToImageButton)(xDragging, yDragging, this.buttons);
+        if (button) {
+          var text = button.name;
+          var textWidth = this.ctx.measureText(text).width;
+          var padding = 8;
+
+          this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - this.buttonSize / 2 - this.scale - padding, textWidth + padding * 2, this.fontSize + padding * 2);
+
+          this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+          var y = button.yPos - this.buttonSize / 2 - this.scale + this.fontSize + padding;
+          this.ctx.beginPath();
+          this.ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
+          this.ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
+          this.ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
+          this.ctx.closePath();
+          this.ctx.fill();
+
+          this.ctx.fillStyle = "#FFF";
+          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - this.buttonSize / 2 - this.scale + this.fontSize);
+        }
+      }
+    }
+  }, {
+    key: 'renderDrag',
+    value: function renderDrag() {
+      var _connect$drag2 = this.connect.drag,
+          xDragging = _connect$drag2.xDragging,
+          yDragging = _connect$drag2.yDragging;
+      var _connect$click = this.connect.click,
+          xClick = _connect$click.xClick,
+          yClick = _connect$click.yClick;
+      // Find a way to test drag behavior, maybe this should be in the update method
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      this.renderWindow();
+      this.renderHover();
+      this.renderDrag();
+    }
+  }]);
+
+  return InventoryWindow;
+}();
+
+exports.default = InventoryWindow;
 
 /***/ }),
 /* 81 */

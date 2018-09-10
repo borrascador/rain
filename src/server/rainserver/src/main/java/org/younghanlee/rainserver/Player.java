@@ -138,7 +138,7 @@ public class Player {
 			payload.put("tiles", tiles);
 		}
 		
-		if (tick % 5 == 0) {
+		if (tick % 60 == 0) {
 			ArrayList<Integer> copy = new ArrayList<Integer>();
 			for (Integer i: eating) {
 				copy.add(new Integer(i));

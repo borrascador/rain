@@ -66,13 +66,11 @@ export default class RainGame {
 			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
 		}
 
-		this.mode = this.connect.mode;
 		const keys = this.connect.keys;
 		const { xClick, yClick } = this.connect.click;
-
-		const mode = this.connect.mode;
-		switch (mode) {
+		switch (this.connect.mode) {
 			case MODE.STORY:
+			case MODE.INVENTORY:
 			case MODE.MAP:
 				this.mapView.update(delta, keys, xClick, yClick);
 				this.mapView.render();
