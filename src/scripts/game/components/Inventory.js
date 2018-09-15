@@ -18,14 +18,14 @@ export default class Inventory {
     this.buttons = [ { name: 'pack-big' } ];
   }
 
-  update(delta, x, y) {
-    this.animate.tick(delta);
+  update(x, y) {
     if (x && y && screenToImageButton(x, y, this.buttons)) {
       this.store.dispatch(changeMode(MODE.INVENTORY));
     }
   }
 
-  render() {
+  render(delta) {
+    this.animate.tick(delta);
     this.buttons = this.buttons.map(button => {
       const x = this.canvas.width - this.size;
       const y = this.canvas.height / 2 - this.size / 2;

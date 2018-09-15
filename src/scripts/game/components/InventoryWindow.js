@@ -26,7 +26,7 @@ export default class InventoryWindow {
     this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
   }
 
-  update(delta, x, y) {
+  update(x, y) {
     if (x && y) {
       const xMin = (this.canvas.width - this.width) / 2;
       const xMax = xMin + this.width;
@@ -130,7 +130,7 @@ export default class InventoryWindow {
     // Find a way to test drag behavior, maybe this should be in the update method
   }
 
-  render() {
+  render(delta) {
     this.renderWindow();
     this.renderHover();
     this.renderDrag();

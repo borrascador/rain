@@ -25,7 +25,7 @@ export default class ActionBar {
     this.ctx.font = this.fontSize + 'px MECC';
   }
 
-  update(delta, x, y) {
+  update(x, y) {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
@@ -150,7 +150,7 @@ export default class ActionBar {
     }
   }
 
-  render() {
+  render(delta) {
     if (!this.connect.actions[this.current]) {
       this.current = 'main';
     }

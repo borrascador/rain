@@ -27,7 +27,7 @@ export default class Vehicle {
     }
   }
 
-  update(delta, x, y) {
+  update(x, y) {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     button && button.onClick();
   }
@@ -54,7 +54,7 @@ export default class Vehicle {
     });
   }
 
-  render() {
+  render(delta) {
     const vehicle = this.connect.vehicle;
     vehicle && this.renderVehicle(vehicle);
   }

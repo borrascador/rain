@@ -10,9 +10,9 @@ export default class Habitat {
     this.ctx.font = this.fontSize + 'px MECC';
   }
 
-  update(delta, x, y) {}
+  update(x, y) {}
 
-  render() {
+  render(delta) {
     const currentTile = this.connect.currentTile;
     let text = [];
     currentTile.hunting && text.push(currentTile.hunting);

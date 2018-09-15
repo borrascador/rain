@@ -44,11 +44,11 @@ export default class Camera {
     }
   }
 
-  update(delta, x, y) {
+  update(x, y) {
     this.updateClick(x, y);
   }
 
-  render() {
+  render(delta) {
     const { pos, tiles, sight, zoom } = this.connect.map;
     const tileSize = this.atlas.tileset.tilewidth * zoom;
     const iconSize = this.icons.tileset.tilewidth * zoom;

@@ -41,11 +41,6 @@ export default class TitleView {
     this.dim = dim;
   }
 
-  updateAnimation(delta) {
-    this.animateBottom.tick(delta);
-    this.animateTop.tick(delta);
-  }
-
   handleClick(x, y) {
     if (x && y) {
       this.store.dispatch(clicked());
@@ -54,29 +49,28 @@ export default class TitleView {
     }
   }
 
-  update(delta, keys, x, y) {
-    this.updateAnimation(delta);
+  update(keys, x, y) {
     this.handleClick(x, y);
   }
 
   renderBackground() {
     const endCol = Math.floor((this.canvas.width / this.size));
     const endRow = Math.floor((this.canvas.height / this.size));
-    const deltaX = this.animateBottom.getValue();
-    const deltaTop = this.animateTop.getValue();
+    const offsetBottom = this.animateBottom.getValue();
+    const offsetTop = this.animateTop.getValue();
 
     for (let col = -1; col <= endCol; col++) {
       for (let row = 0; row <= endRow; row++) {
         const x = col * this.size;
         const y = row * this.size;
-        drawByName(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
+        drawByName(this.ctx, this.water, 'bottom', this.zoom, x + offsetBottom, y);
       }
     }
     for (let col = 0; col <= endCol; col++) {
       for (let row = 0; row <= endRow; row++) {
         const x = col * this.size;
         const y = row * this.size;
-        drawById(this.ctx, this.water, deltaTop.toString(), this.zoom, x, y);
+        drawById(this.ctx, this.water, offsetTop.toString(), this.zoom, x, y);
       }
     }
   }
@@ -92,7 +86,9 @@ export default class TitleView {
     this.buttons = this.centerText(this.buttons, 32, 3/4);
   }
 
-  render() {
+  render(delta) {
+    this.animateBottom.tick(delta);
+    this.animateTop.tick(delta);
     this.renderBackground();
     this.renderText();
     if (this.dim) {

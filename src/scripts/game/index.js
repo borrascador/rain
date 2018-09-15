@@ -72,12 +72,12 @@ export default class RainGame {
 			case MODE.STORY:
 			case MODE.INVENTORY:
 			case MODE.MAP:
-				this.mapView.update(delta, keys, xClick, yClick);
-				this.mapView.render();
+				this.mapView.update(keys, xClick, yClick);
+				this.mapView.render(delta);
 				break;
 			case MODE.TITLE:
-				this.titleView.update(delta, keys, xClick, yClick);
-				this.titleView.render();
+				this.titleView.update(keys, xClick, yClick);
+				this.titleView.render(delta);
 				break;
 		}
 	}

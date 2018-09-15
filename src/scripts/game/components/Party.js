@@ -19,12 +19,12 @@ export default class Party {
     this.buttons = this.connect.party.slice();
   }
 
-  update(delta, x, y) {
+  update(x, y) {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     button && console.log(button.name);
   }
 
-  render() {
+  render(delta) {
     const party = this.connect.party;
 
     // Makes a NEW set of buttons each time
