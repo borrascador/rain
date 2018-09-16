@@ -21,19 +21,19 @@ export default class Overlay {
     this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader, setDim);
   }
 
-  update(delta, x, y) {
-    this.zoom.update(delta, x, y);
-    this.party.update(delta, x, y);
-    this.vehicle.update(delta, x, y);
-    this.habitat.update(delta, x, y);
-    this.inventory.update(delta, x, y);
+  update(x, y) {
+    this.zoom.update(x, y);
+    this.party.update(x, y);
+    this.vehicle.update(x, y);
+    this.habitat.update(x, y);
+    this.inventory.update(x, y);
   }
 
-  render() {
-    this.zoom.render();
-    this.party.render();
-    this.vehicle.render();
-    this.habitat.render();
-    this.inventory.render();
+  render(delta) {
+    this.zoom.render(delta);
+    this.party.render(delta);
+    this.vehicle.render(delta);
+    this.habitat.render(delta);
+    this.inventory.render(delta);
   }
 }

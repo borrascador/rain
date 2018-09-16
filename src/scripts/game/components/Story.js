@@ -91,10 +91,9 @@ export default class Story {
     }
   }
 
-  update(delta, keys, x, y) {
+  update(keys, x, y) {
     this.width = this.canvas.width / 2;
     this.height = this.canvas.height / 2;
-    this.blink.tick(delta);
     this.updateKeys(keys);
     this.updateClick(x, y);
   }
@@ -127,10 +126,13 @@ export default class Story {
     }
   }
 
-  render(story) {
+  render(delta) {
+    this.blink.tick(delta);
+
     this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
     this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
 
+    const story = this.connect.story;
     if (story) {
       this.refresh(story); // Comment out to disable live text adjustment on resize
       this.renderStoryText();

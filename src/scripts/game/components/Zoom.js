@@ -32,12 +32,12 @@ export default class Zoom {
     ];
   }
 
-  update(delta, x, y) {
+  update(x, y) {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     button && this.store.dispatch(button.onClick());
   }
 
-  render() {
+  render(delta) {
     const pace = this.connect.pace;
     const rations = this.connect.rations;
     this.buttons = this.buttons.map((button, index) => {

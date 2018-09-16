@@ -4383,12 +4383,12 @@ var RainGame = function () {
 				case _constants.MODE.STORY:
 				case _constants.MODE.INVENTORY:
 				case _constants.MODE.MAP:
-					this.mapView.update(delta, keys, xClick, yClick);
-					this.mapView.render();
+					this.mapView.update(keys, xClick, yClick);
+					this.mapView.render(delta);
 					break;
 				case _constants.MODE.TITLE:
-					this.titleView.update(delta, keys, xClick, yClick);
-					this.titleView.render();
+					this.titleView.update(keys, xClick, yClick);
+					this.titleView.render(delta);
 					break;
 			}
 		}
@@ -4640,35 +4640,35 @@ var MapView = function () {
     }
   }, {
     key: 'update',
-    value: function update(delta, keys, x, y) {
+    value: function update(keys, x, y) {
       x && y && this.store.dispatch((0, _actions.clicked)());
       if (!this.dim) {
         if (this.connect.mode === _constants.MODE.STORY) {
-          this.story.update(delta, keys, x, y);
+          this.story.update(keys, x, y);
         } else if (this.connect.mode === _constants.MODE.INVENTORY) {
-          this.inventoryWindow.update(delta, x, y);
+          this.inventoryWindow.update(x, y);
         } else {
-          this.camera.update(delta, x, y);
-          this.overlay.update(delta, x, y);
-          this.actionBar.update(delta, x, y);
+          this.camera.update(x, y);
+          this.overlay.update(x, y);
+          this.actionBar.update(x, y);
         }
       }
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       this.ctx.fillStyle = 'rgb(0, 20, 0)';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      this.camera.render();
-      this.overlay.render();
-      this.actionBar.render();
+      this.camera.render(delta);
+      this.overlay.render(delta);
+      this.actionBar.render(delta);
       switch (this.connect.mode) {
         case _constants.MODE.STORY:
-          this.story.render(this.connect.story);
+          this.story.render(delta);
           break;
         case _constants.MODE.INVENTORY:
-          this.inventoryWindow.render();
+          this.inventoryWindow.render(delta);
           break;
       }
 
@@ -4762,12 +4762,12 @@ var Camera = function () {
     }
   }, {
     key: 'update',
-    value: function update(delta, x, y) {
+    value: function update(x, y) {
       this.updateClick(x, y);
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       var _this = this;
 
       var _connect$map = this.connect.map,
@@ -4973,21 +4973,21 @@ var Overlay = function () {
 
   _createClass(Overlay, [{
     key: 'update',
-    value: function update(delta, x, y) {
-      this.zoom.update(delta, x, y);
-      this.party.update(delta, x, y);
-      this.vehicle.update(delta, x, y);
-      this.habitat.update(delta, x, y);
-      this.inventory.update(delta, x, y);
+    value: function update(x, y) {
+      this.zoom.update(x, y);
+      this.party.update(x, y);
+      this.vehicle.update(x, y);
+      this.habitat.update(x, y);
+      this.inventory.update(x, y);
     }
   }, {
     key: 'render',
-    value: function render() {
-      this.zoom.render();
-      this.party.render();
-      this.vehicle.render();
-      this.habitat.render();
-      this.inventory.render();
+    value: function render(delta) {
+      this.zoom.render(delta);
+      this.party.render(delta);
+      this.vehicle.render(delta);
+      this.habitat.render(delta);
+      this.inventory.render(delta);
     }
   }]);
 
@@ -5059,13 +5059,13 @@ var Zoom = function () {
 
   _createClass(Zoom, [{
     key: 'update',
-    value: function update(delta, x, y) {
+    value: function update(x, y) {
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
       button && this.store.dispatch(button.onClick());
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       var _this = this;
 
       var pace = this.connect.pace;
@@ -5155,13 +5155,13 @@ var Party = function () {
 
   _createClass(Party, [{
     key: 'update',
-    value: function update(delta, x, y) {
+    value: function update(x, y) {
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
       button && console.log(button.name);
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       var _this = this;
 
       var party = this.connect.party;
@@ -5249,7 +5249,7 @@ var Vehicle = function () {
 
   _createClass(Vehicle, [{
     key: 'update',
-    value: function update(delta, x, y) {
+    value: function update(x, y) {
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
       button && button.onClick();
     }
@@ -5276,7 +5276,7 @@ var Vehicle = function () {
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       var vehicle = this.connect.vehicle;
       vehicle && this.renderVehicle(vehicle);
     }
@@ -5322,10 +5322,10 @@ var Habitat = function () {
 
   _createClass(Habitat, [{
     key: 'update',
-    value: function update(delta, x, y) {}
+    value: function update(x, y) {}
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       var _this = this;
 
       var currentTile = this.connect.currentTile;
@@ -5395,17 +5395,17 @@ var Inventory = function () {
 
   _createClass(Inventory, [{
     key: 'update',
-    value: function update(delta, x, y) {
-      this.animate.tick(delta);
+    value: function update(x, y) {
       if (x && y && (0, _utils.screenToImageButton)(x, y, this.buttons)) {
         this.store.dispatch((0, _actions.changeMode)(_constants.MODE.INVENTORY));
       }
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       var _this = this;
 
+      this.animate.tick(delta);
       this.buttons = this.buttons.map(function (button) {
         var x = _this.canvas.width - _this.size;
         var y = _this.canvas.height / 2 - _this.size / 2;
@@ -5557,10 +5557,9 @@ var Story = function () {
     }
   }, {
     key: 'update',
-    value: function update(delta, keys, x, y) {
+    value: function update(keys, x, y) {
       this.width = this.canvas.width / 2;
       this.height = this.canvas.height / 2;
-      this.blink.tick(delta);
       this.updateKeys(keys);
       this.updateClick(x, y);
     }
@@ -5595,10 +5594,13 @@ var Story = function () {
     }
   }, {
     key: 'render',
-    value: function render(story) {
+    value: function render(delta) {
+      this.blink.tick(delta);
+
       this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
       this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
 
+      var story = this.connect.story;
       if (story) {
         this.refresh(story); // Comment out to disable live text adjustment on resize
         this.renderStoryText();
@@ -5667,7 +5669,7 @@ var ActionBar = function () {
 
   _createClass(ActionBar, [{
     key: 'update',
-    value: function update(delta, x, y) {
+    value: function update(x, y) {
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
       if (button) {
         if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
@@ -5780,7 +5782,7 @@ var ActionBar = function () {
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       if (!this.connect.actions[this.current]) {
         this.current = 'main';
       }
@@ -5852,7 +5854,7 @@ var InventoryWindow = function () {
 
   _createClass(InventoryWindow, [{
     key: 'update',
-    value: function update(delta, x, y) {
+    value: function update(x, y) {
       if (x && y) {
         var xMin = (this.canvas.width - this.width) / 2;
         var xMax = xMin + this.width;
@@ -5951,7 +5953,7 @@ var InventoryWindow = function () {
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
       this.renderWindow();
       this.renderHover();
       this.renderDrag();
@@ -6030,12 +6032,6 @@ var TitleView = function () {
       this.dim = dim;
     }
   }, {
-    key: 'updateAnimation',
-    value: function updateAnimation(delta) {
-      this.animateBottom.tick(delta);
-      this.animateTop.tick(delta);
-    }
-  }, {
     key: 'handleClick',
     value: function handleClick(x, y) {
       if (x && y) {
@@ -6046,8 +6042,7 @@ var TitleView = function () {
     }
   }, {
     key: 'update',
-    value: function update(delta, keys, x, y) {
-      this.updateAnimation(delta);
+    value: function update(keys, x, y) {
       this.handleClick(x, y);
     }
   }, {
@@ -6055,21 +6050,21 @@ var TitleView = function () {
     value: function renderBackground() {
       var endCol = Math.floor(this.canvas.width / this.size);
       var endRow = Math.floor(this.canvas.height / this.size);
-      var deltaX = this.animateBottom.getValue();
-      var deltaTop = this.animateTop.getValue();
+      var offsetBottom = this.animateBottom.getValue();
+      var offsetTop = this.animateTop.getValue();
 
       for (var col = -1; col <= endCol; col++) {
         for (var row = 0; row <= endRow; row++) {
           var x = col * this.size;
           var y = row * this.size;
-          (0, _draw.drawByName)(this.ctx, this.water, 'bottom', this.zoom, x + deltaX, y);
+          (0, _draw.drawByName)(this.ctx, this.water, 'bottom', this.zoom, x + offsetBottom, y);
         }
       }
       for (var _col = 0; _col <= endCol; _col++) {
         for (var _row = 0; _row <= endRow; _row++) {
           var _x = _col * this.size;
           var _y = _row * this.size;
-          (0, _draw.drawById)(this.ctx, this.water, deltaTop.toString(), this.zoom, _x, _y);
+          (0, _draw.drawById)(this.ctx, this.water, offsetTop.toString(), this.zoom, _x, _y);
         }
       }
     }
@@ -6087,7 +6082,9 @@ var TitleView = function () {
     }
   }, {
     key: 'render',
-    value: function render() {
+    value: function render(delta) {
+      this.animateBottom.tick(delta);
+      this.animateTop.tick(delta);
       this.renderBackground();
       this.renderText();
       if (this.dim) {
