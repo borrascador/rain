@@ -26,10 +26,12 @@ const gameState = {
 };
 
 const inputState = {
-  offsetX: 0,
-  offsetY: 0,
-  xDragging: null,
-  yDragging: null,
+  xDown: null,
+  yDown: null,
+  xOffset: null,
+  yOffset: null,
+  xMouse: null,
+  yMouse: null,
   xClick: null,
   yClick: null,
   keys: makeKeys()

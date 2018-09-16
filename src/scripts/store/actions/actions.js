@@ -18,9 +18,9 @@ export const mouseDown = (x, y) => ({
   payload: { x, y }
 });
 
-export const DRAG = 'DRAG';
-export const drag = (x, y) => ({
-  type: DRAG,
+export const MOUSEMOVE = 'MOUSEMOVE';
+export const mouseMove = (x, y) => ({
+  type: MOUSEMOVE,
   payload: { x, y }
 });
 

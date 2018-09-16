@@ -36,9 +36,14 @@ export default class Connect {
     return trueKeys;
   }
 
-  get drag() {
-    const {xDragging, yDragging} = this.store.getState();
-    return {xDragging, yDragging,};
+  get offset() {
+    const {xOffset, yOffset} = this.store.getState();
+    return {xOffset, yOffset,};
+  }
+
+  get mouse() {
+    const {xMouse, yMouse} = this.store.getState();
+    return {xMouse, yMouse,};
   }
 
   get story() {

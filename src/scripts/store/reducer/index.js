@@ -1,12 +1,12 @@
 import {
-  KEYDOWN, KEYUP, MOUSEDOWN, DRAG, MOUSEUP, CLICKED,
+  KEYDOWN, KEYUP, MOUSEDOWN, MOUSEMOVE, MOUSEUP, CLICKED,
   ZOOM_IN, ZOOM_OUT, CHANGE_MODE, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import {
-  keyDown, keyUp, mouseDown, drag, mouseUp, clicked,zoomIn, zoomOut, changeMode
+  keyDown, keyUp, mouseDown, mouseMove, mouseUp, clicked,zoomIn, zoomOut, changeMode
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
@@ -25,8 +25,8 @@ export default function reducer(state, action) {
       return keyUp(state, action);
     case MOUSEDOWN:
       return mouseDown(state, action);
-    case DRAG:
-      return drag(state, action);
+    case MOUSEMOVE:
+      return mouseMove(state, action);
     case MOUSEUP:
       return mouseUp(state, action);
     case CLICKED:
