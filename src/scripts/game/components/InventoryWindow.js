@@ -41,10 +41,6 @@ export default class InventoryWindow {
   }
 
   renderWindow() {
-    this.ctx.textAlign = 'alphabetical';
-    this.ctx.font = this.fontSize + 'px MECC';
-    const titleWidth = this.ctx.measureText('INVENTORY').width;
-
     let x = (this.canvas.width - this.width) / 2;
     let y = (this.canvas.height - this.height) / 2;
 
@@ -57,7 +53,33 @@ export default class InventoryWindow {
         this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
       }
     }
+  }
 
+  renderTitle() {
+    const INVENTORY = 'INVENTORY';
+    const titleWidth = this.ctx.measureText(INVENTORY).width;
+    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    this.ctx.fillRect(
+      (this.canvas.width - titleWidth) / 2 - this.gutter,
+      this.canvas.height / 2 - this.height / 2 - this.fontSize - 4,
+      titleWidth + this.gutter * 2,
+      this.fontSize + 4
+    );
+
+    this.ctx.fillStyle = "#FFF";
+    this.ctx.fillText(
+      INVENTORY,
+      (this.canvas.width - titleWidth) / 2,
+      (this.canvas.height - this.height) / 2
+    );
+  }
+
+  renderButtons() {
+    let x = (this.canvas.width - this.width) / 2;
+    let y = (this.canvas.height - this.height) / 2;
+
+    this.ctx.textAlign = 'alphabetical';
+    this.ctx.font = this.fontSize + 'px MECC';
     this.ctx.fillStyle = '#FFF'
     this.buttons = this.connect.inventory.map((button, index) => {
       const buttonX = x + this.gutter + (this.buttonSize + this.gutter) * (index % this.unitWidth);
@@ -71,27 +93,12 @@ export default class InventoryWindow {
         height: this.buttonSize
       });
     });
-
-    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
-    this.ctx.fillRect(
-      (this.canvas.width - titleWidth) / 2 - this.gutter,
-      this.canvas.height / 2 - this.height / 2 - this.fontSize - 4,
-      titleWidth + this.gutter * 2,
-      this.fontSize + 4
-    );
-
-    this.ctx.fillStyle = "#FFF";
-    this.ctx.fillText(
-      'INVENTORY',
-      (this.canvas.width - titleWidth) / 2,
-      (this.canvas.height - this.height) / 2
-    );
   }
 
   renderHover() {
-    const { xDragging, yDragging } = this.connect.drag;
-    if (xDragging && yDragging) {
-      const button = screenToImageButton(xDragging, yDragging, this.buttons);
+    const { xMouse, yMouse } = this.connect.mouse;
+    if (xMouse && yMouse) {
+      const button = screenToImageButton(xMouse, yMouse, this.buttons);
       if (button) {
         const text = button.name;
         const textWidth = this.ctx.measureText(text).width;
@@ -125,13 +132,25 @@ export default class InventoryWindow {
   }
 
   renderDrag() {
-    const { xDragging, yDragging } = this.connect.drag;
-    const { xClick, yClick } = this.connect.click;
-    // Find a way to test drag behavior, maybe this should be in the update method
+    const { xMouse, yMouse } = this.connect.mouse;
+    const { xOffset, yOffset } = this.connect.offset;
+    
+    if (xOffset !== null && yOffset !== null) {
+      this.dragged = this.dragged || xMouse && yMouse && screenToImageButton(xMouse, yMouse, this.buttons);
+      if (this.dragged) {
+        const x = this.dragged.xPos + xOffset;
+        const y = this.dragged.yPos + yOffset;
+        drawById(this.ctx, this.items, this.dragged.id, this.scale, x, y);
+      }
+    } else {
+      this.dragged = null;
+    }
   }
 
   render(delta) {
     this.renderWindow();
+    this.renderTitle();
+    this.renderButtons();
     this.renderHover();
     this.renderDrag();
   }

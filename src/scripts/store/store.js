@@ -6,11 +6,12 @@ import ReduxWebSocketBridge from 'redux-websocket-bridge';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import initSubscriber from 'redux-subscriber';
 import { errorLogger } from './errors';
-import { KEYDOWN, KEYUP, DRAG, MOUSEDOWN, MOUSEUP, CLICKED } from './actions/actions';
+import { KEYDOWN, KEYUP, MOUSEDOWN, MOUSEMOVE, MOUSEUP, CLICKED } from './actions/actions';
 
 function configureStore () {
+	const BLACKLIST = [KEYDOWN, KEYUP, MOUSEDOWN, MOUSEMOVE, MOUSEUP, CLICKED];
 	const loggerMiddleware = createLogger({
-	  predicate: (getState, action) => ![KEYDOWN, KEYUP, DRAG, MOUSEDOWN, MOUSEUP, CLICKED].includes(action.type)
+		predicate: (getState, action) => !BLACKLIST.includes(action.type)
 	});
 	return createStore(
 		reducer,

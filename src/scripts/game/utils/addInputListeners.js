@@ -2,7 +2,7 @@ import {
   keyDown,
   keyUp,
   mouseDown,
-  drag,
+  mouseMove,
   mouseUp,
 } from '../../store/actions/actions';
 
@@ -16,11 +16,17 @@ export default function addInputListeners (dispatch, canvas) {
   }, false);
 
   canvas.addEventListener('mousedown', (event) => {
-    dispatch(mouseDown(event.x, event.y));
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    dispatch(mouseDown(x, y));
   }, false);
 
   canvas.addEventListener('mousemove', (event) => {
-    dispatch(drag(event.x, event.y));
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    dispatch(mouseMove(x, y));
   }, false);
 
   canvas.addEventListener('mouseup', (event) => {
