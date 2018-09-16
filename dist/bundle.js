@@ -99,10 +99,10 @@ var mouseDown = exports.mouseDown = function mouseDown(x, y) {
   };
 };
 
-var DRAG = exports.DRAG = 'DRAG';
-var drag = exports.drag = function drag(x, y) {
+var MOUSEMOVE = exports.MOUSEMOVE = 'MOUSEMOVE';
+var mouseMove = exports.mouseMove = function mouseMove(x, y) {
   return {
-    type: DRAG,
+    type: MOUSEMOVE,
     payload: { x: x, y: y }
   };
 };
@@ -273,13 +273,22 @@ var Connect = function () {
       return trueKeys;
     }
   }, {
-    key: "drag",
+    key: "offset",
     get: function get() {
       var _store$getState2 = this.store.getState(),
-          xDragging = _store$getState2.xDragging,
-          yDragging = _store$getState2.yDragging;
+          xOffset = _store$getState2.xOffset,
+          yOffset = _store$getState2.yOffset;
 
-      return { xDragging: xDragging, yDragging: yDragging };
+      return { xOffset: xOffset, yOffset: yOffset };
+    }
+  }, {
+    key: "mouse",
+    get: function get() {
+      var _store$getState3 = this.store.getState(),
+          xMouse = _store$getState3.xMouse,
+          yMouse = _store$getState3.yMouse;
+
+      return { xMouse: xMouse, yMouse: yMouse };
     }
   }, {
     key: "story",
@@ -289,11 +298,11 @@ var Connect = function () {
   }, {
     key: "map",
     get: function get() {
-      var _store$getState3 = this.store.getState(),
-          position = _store$getState3.position,
-          tiles = _store$getState3.tiles,
-          sight = _store$getState3.sight,
-          zoom = _store$getState3.zoom;
+      var _store$getState4 = this.store.getState(),
+          position = _store$getState4.position,
+          tiles = _store$getState4.tiles,
+          sight = _store$getState4.sight,
+          zoom = _store$getState4.zoom;
 
       var _tiles$find = tiles.find(function (tile) {
         return tile.id === position;
@@ -309,9 +318,9 @@ var Connect = function () {
   }, {
     key: "currentTile",
     get: function get() {
-      var _store$getState4 = this.store.getState(),
-          position = _store$getState4.position,
-          tiles = _store$getState4.tiles;
+      var _store$getState5 = this.store.getState(),
+          position = _store$getState5.position,
+          tiles = _store$getState5.tiles;
 
       return tiles.find(function (tile) {
         return tile.id === position;
@@ -898,9 +907,10 @@ var _actions = __webpack_require__(0);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function configureStore() {
+	var BLACKLIST = [_actions.KEYDOWN, _actions.KEYUP, _actions.MOUSEDOWN, _actions.MOUSEMOVE, _actions.MOUSEUP, _actions.CLICKED];
 	var loggerMiddleware = (0, _reduxLogger.createLogger)({
 		predicate: function predicate(getState, action) {
-			return ![_actions.KEYDOWN, _actions.KEYUP, _actions.DRAG, _actions.MOUSEDOWN, _actions.MOUSEUP, _actions.CLICKED].includes(action.type);
+			return !BLACKLIST.includes(action.type);
 		}
 	});
 	return (0, _redux.createStore)(_reducer2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxWebsocketBridge2.default)(function () {
@@ -1512,7 +1522,7 @@ exports.makeKeys = makeKeys;
 exports.keyDown = keyDown;
 exports.keyUp = keyUp;
 exports.mouseDown = mouseDown;
-exports.drag = drag;
+exports.mouseMove = mouseMove;
 exports.mouseUp = mouseUp;
 exports.clicked = clicked;
 exports.zoomIn = zoomIn;
@@ -1570,42 +1580,56 @@ function keyUp(state, action) {
 
 function mouseDown(state, action) {
   return (0, _utils.updateObject)(state, {
-    xDragging: action.payload.x,
-    yDragging: action.payload.y
+    xDown: action.payload.x,
+    yDown: action.payload.y
   });
 }
 
-function drag(state, action) {
-  return (0, _utils.updateObject)(state, {
-    offsetX: state.offsetX + action.payload.x - state.xDragging,
-    offsetY: state.offsetY + action.payload.y - state.yDragging,
-    xDragging: action.payload.x,
-    yDragging: action.payload.y
-  });
+function mouseMove(state, action) {
+  if (state.xDown && state.yDown) {
+    return (0, _utils.updateObject)(state, {
+      xOffset: state.xOffset + action.payload.x - state.xMouse,
+      yOffset: state.yOffset + action.payload.y - state.yMouse,
+      xMouse: action.payload.x,
+      yMouse: action.payload.y
+    });
+  } else {
+    return (0, _utils.updateObject)(state, {
+      xOffset: null,
+      yOffset: null,
+      xMouse: action.payload.x,
+      yMouse: action.payload.y
+    });
+  }
 }
 
 function mouseUp(state, action) {
-  if (state.xDragging !== null || state.yDragging !== null) {
+  if (Math.abs(state.xDown - action.payload.x) < 15 && Math.abs(state.yDown - action.payload.y) < 15) {
     return (0, _utils.updateObject)(state, {
-      xDragging: null,
-      yDragging: null,
+      xOffset: null,
+      yOffset: null,
+      xDown: null,
+      yDown: null,
       xClick: action.payload.x,
       yClick: action.payload.y
     });
   } else {
-    return state;
+    return (0, _utils.updateObject)(state, {
+      xOffset: null,
+      yOffset: null,
+      xDown: null,
+      yDown: null,
+      xDrop: action.payload.x,
+      yDrop: action.payload.y
+    });
   }
 }
 
 function clicked(state) {
-  if (state.xClick !== null && state.yClick !== null) {
-    return (0, _utils.updateObject)(state, {
-      xClick: null,
-      yClick: null
-    });
-  } else {
-    return state;
-  }
+  return (0, _utils.updateObject)(state, {
+    xClick: null,
+    yClick: null
+  });
 }
 
 function zoomIn(state) {
@@ -3137,8 +3161,8 @@ function reducer(state, action) {
       return (0, _ui.keyUp)(state, action);
     case _actions.MOUSEDOWN:
       return (0, _ui.mouseDown)(state, action);
-    case _actions.DRAG:
-      return (0, _ui.drag)(state, action);
+    case _actions.MOUSEMOVE:
+      return (0, _ui.mouseMove)(state, action);
     case _actions.MOUSEUP:
       return (0, _ui.mouseUp)(state, action);
     case _actions.CLICKED:
@@ -3452,10 +3476,12 @@ var gameState = {
 };
 
 var inputState = {
-  offsetX: 0,
-  offsetY: 0,
-  xDragging: null,
-  yDragging: null,
+  xDown: null,
+  yDown: null,
+  xOffset: null,
+  yOffset: null,
+  xMouse: null,
+  yMouse: null,
   xClick: null,
   yClick: null,
   keys: (0, _ui.makeKeys)()
@@ -4423,11 +4449,17 @@ function addInputListeners(dispatch, canvas) {
   }, false);
 
   canvas.addEventListener('mousedown', function (event) {
-    dispatch((0, _actions.mouseDown)(event.x, event.y));
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    dispatch((0, _actions.mouseDown)(x, y));
   }, false);
 
   canvas.addEventListener('mousemove', function (event) {
-    dispatch((0, _actions.drag)(event.x, event.y));
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+    dispatch((0, _actions.mouseMove)(x, y));
   }, false);
 
   canvas.addEventListener('mouseup', function (event) {
@@ -5752,12 +5784,12 @@ var ActionBar = function () {
   }, {
     key: 'renderHover',
     value: function renderHover() {
-      var _connect$drag = this.connect.drag,
-          xDragging = _connect$drag.xDragging,
-          yDragging = _connect$drag.yDragging;
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
 
-      if (xDragging && yDragging) {
-        var button = (0, _utils.screenToImageButton)(xDragging, yDragging, this.buttons);
+      if (xMouse && yMouse) {
+        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
         if (button) {
           var text = button.name || button.target || 'no text';
           var textWidth = this.ctx.measureText(text).width;
@@ -5870,12 +5902,6 @@ var InventoryWindow = function () {
   }, {
     key: 'renderWindow',
     value: function renderWindow() {
-      var _this = this;
-
-      this.ctx.textAlign = 'alphabetical';
-      this.ctx.font = this.fontSize + 'px MECC';
-      var titleWidth = this.ctx.measureText('INVENTORY').width;
-
       var x = (this.canvas.width - this.width) / 2;
       var y = (this.canvas.height - this.height) / 2;
 
@@ -5888,7 +5914,28 @@ var InventoryWindow = function () {
           this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
         }
       }
+    }
+  }, {
+    key: 'renderTitle',
+    value: function renderTitle() {
+      var INVENTORY = 'INVENTORY';
+      var titleWidth = this.ctx.measureText(INVENTORY).width;
+      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - this.gutter, this.canvas.height / 2 - this.height / 2 - this.fontSize - 4, titleWidth + this.gutter * 2, this.fontSize + 4);
 
+      this.ctx.fillStyle = "#FFF";
+      this.ctx.fillText(INVENTORY, (this.canvas.width - titleWidth) / 2, (this.canvas.height - this.height) / 2);
+    }
+  }, {
+    key: 'renderButtons',
+    value: function renderButtons() {
+      var _this = this;
+
+      var x = (this.canvas.width - this.width) / 2;
+      var y = (this.canvas.height - this.height) / 2;
+
+      this.ctx.textAlign = 'alphabetical';
+      this.ctx.font = this.fontSize + 'px MECC';
       this.ctx.fillStyle = '#FFF';
       this.buttons = this.connect.inventory.map(function (button, index) {
         var buttonX = x + _this.gutter + (_this.buttonSize + _this.gutter) * (index % _this.unitWidth);
@@ -5902,22 +5949,16 @@ var InventoryWindow = function () {
           height: _this.buttonSize
         });
       });
-
-      this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
-      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - this.gutter, this.canvas.height / 2 - this.height / 2 - this.fontSize - 4, titleWidth + this.gutter * 2, this.fontSize + 4);
-
-      this.ctx.fillStyle = "#FFF";
-      this.ctx.fillText('INVENTORY', (this.canvas.width - titleWidth) / 2, (this.canvas.height - this.height) / 2);
     }
   }, {
     key: 'renderHover',
     value: function renderHover() {
-      var _connect$drag = this.connect.drag,
-          xDragging = _connect$drag.xDragging,
-          yDragging = _connect$drag.yDragging;
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
 
-      if (xDragging && yDragging) {
-        var button = (0, _utils.screenToImageButton)(xDragging, yDragging, this.buttons);
+      if (xMouse && yMouse) {
+        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
         if (button) {
           var text = button.name;
           var textWidth = this.ctx.measureText(text).width;
@@ -5943,18 +5984,31 @@ var InventoryWindow = function () {
   }, {
     key: 'renderDrag',
     value: function renderDrag() {
-      var _connect$drag2 = this.connect.drag,
-          xDragging = _connect$drag2.xDragging,
-          yDragging = _connect$drag2.yDragging;
-      var _connect$click = this.connect.click,
-          xClick = _connect$click.xClick,
-          yClick = _connect$click.yClick;
-      // Find a way to test drag behavior, maybe this should be in the update method
+      var _connect$mouse2 = this.connect.mouse,
+          xMouse = _connect$mouse2.xMouse,
+          yMouse = _connect$mouse2.yMouse;
+      var _connect$offset = this.connect.offset,
+          xOffset = _connect$offset.xOffset,
+          yOffset = _connect$offset.yOffset;
+
+
+      if (xOffset !== null && yOffset !== null) {
+        this.dragged = this.dragged || xMouse && yMouse && (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
+        if (this.dragged) {
+          var x = this.dragged.xPos + xOffset;
+          var y = this.dragged.yPos + yOffset;
+          (0, _draw.drawById)(this.ctx, this.items, this.dragged.id, this.scale, x, y);
+        }
+      } else {
+        this.dragged = null;
+      }
     }
   }, {
     key: 'render',
     value: function render(delta) {
       this.renderWindow();
+      this.renderTitle();
+      this.renderButtons();
       this.renderHover();
       this.renderDrag();
     }

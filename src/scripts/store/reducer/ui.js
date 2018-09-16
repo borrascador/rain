@@ -50,42 +50,59 @@ export function keyUp(state, action) {
 
 export function mouseDown(state, action) {
   return updateObject(state, {
-    xDragging: action.payload.x,
-    yDragging: action.payload.y,
+    xDown: action.payload.x,
+    yDown: action.payload.y,
   });
 }
 
-export function drag(state, action) {
-  return updateObject(state, {
-    offsetX: state.offsetX + action.payload.x - state.xDragging,
-    offsetY: state.offsetY + action.payload.y - state.yDragging,
-    xDragging: action.payload.x,
-    yDragging: action.payload.y,
-  });
+export function mouseMove(state, action) {
+  if (state.xDown && state.yDown) {
+    return updateObject(state, {
+      xOffset: state.xOffset + action.payload.x - state.xMouse,
+      yOffset: state.yOffset + action.payload.y - state.yMouse,
+      xMouse: action.payload.x,
+      yMouse: action.payload.y,
+    });
+  } else {
+    return updateObject(state, {
+      xOffset: null,
+      yOffset: null,
+      xMouse: action.payload.x,
+      yMouse: action.payload.y,
+    });
+  }
 }
 
 export function mouseUp(state, action) {
-  if (state.xDragging !== null || state.yDragging !== null) {
+  if (
+    Math.abs(state.xDown - action.payload.x) < 15 &&
+    Math.abs(state.yDown - action.payload.y) < 15
+  ) {
     return updateObject(state, {
-      xDragging: null,
-      yDragging: null,
+      xOffset: null,
+      yOffset: null,
+      xDown: null,
+      yDown: null,
       xClick: action.payload.x,
       yClick: action.payload.y,
     });
   } else {
-    return state;
+    return updateObject(state, {
+      xOffset: null,
+      yOffset: null,
+      xDown: null,
+      yDown: null,
+      xDrop: action.payload.x,
+      yDrop: action.payload.y,
+    });
   }
 }
 
 export function clicked(state) {
-  if (state.xClick !== null && state.yClick !== null) {
-    return updateObject(state, {
-      xClick: null,
-      yClick: null,
-    });
-  } else {
-    return state;
-  }
+  return updateObject(state, {
+    xClick: null,
+    yClick: null,
+  });
 }
 
 export function zoomIn(state) {

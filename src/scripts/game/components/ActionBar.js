@@ -115,9 +115,9 @@ export default class ActionBar {
   }
 
   renderHover() {
-    const { xDragging, yDragging } = this.connect.drag;
-    if (xDragging && yDragging) {
-      const button = screenToImageButton(xDragging, yDragging, this.buttons);
+    const { xMouse, yMouse } = this.connect.mouse;
+    if (xMouse && yMouse) {
+      const button = screenToImageButton(xMouse, yMouse, this.buttons);
       if (button) {
         const text = button.name || button.target || 'no text';
         const textWidth = this.ctx.measureText(text).width;
