@@ -5,40 +5,82 @@ import { changeMode } from '../../store/actions/actions';
 import { MODE } from '../constants';
 import { DARK_RED, MEDIUM_RED, HOVER_GREEN, SOLID_WHITE } from '../colors';
 
-export default class InventoryWindow {
+export default class PartyWindow {
   constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
     this.connect = new Connect(this.store);
 
+    this.iconsXl = loader.getImage('icons-xl');
     this.icons = loader.getImage('icons');
     this.items = loader.getImage('items');
 
     this.fontSize = 16;
 
+    this.scaleXl = 2;
     this.scale = 4;
     this.buttonSize = this.icons.tileset.tilewidth * this.scale;
     this.gutter = this.buttonSize / this.scale;
 
-    this.unitWidth = 9;
+    this.unitWidth = 5;
     this.unitHeight = 3;
     this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
     this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
   }
 
   update(x, y) {
+    if (!this.active) {
+      this.active = this.connect.party[0];
+    }
     if (x && y) {
       const xMin = (this.canvas.width - this.width) / 2;
       const xMax = xMin + this.width;
       const yMin = (this.canvas.height - this.height) / 2;
       const yMax = yMin + this.height;
+      const button = screenToImageButton(x, y, this.party)
       if (x > xMin && x < xMax && y > yMin && y < yMax) {
         console.log('hit');
+      } else if (button) {
+        this.active = button;
       } else {
         this.store.dispatch(changeMode(MODE.MAP));
       }
     }
+  }
+
+  renderTab(button, color, x, y, xPos, yPos) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+    this.ctx.lineTo(x + this.buttonSize * 0.25, y - this.buttonSize);
+    this.ctx.lineTo(x + this.buttonSize * 1.25, y - this.buttonSize);
+    this.ctx.lineTo(x + this.buttonSize * 1.5, y);
+    this.ctx.fillStyle = color;
+    this.ctx.fill();
+    drawById(this.ctx, this.iconsXl, button.id, this.scaleXl, xPos, yPos);
+  }
+
+  renderTabs() {
+    let x = (this.canvas.width - this.width) / 2;
+    let y = (this.canvas.height - this.height) / 2;
+    let renderLast;
+    this.party = this.connect.party.map(button => {
+      const xPos = x + this.buttonSize * 0.25;
+      const yPos = y - this.buttonSize;
+      if (button.id === (this.active && this.active.id)) {
+        renderLast = this.renderTab.bind(this, button, MEDIUM_RED, x, y, xPos, yPos);
+      } else {
+        this.renderTab(button, DARK_RED, x, y, xPos, yPos);
+      }
+      x = x + this.buttonSize * 1.25;
+      return Object.assign({}, button, {
+        xPos: xPos,
+        yPos: yPos,
+        width: this.buttonSize,
+        height: this.buttonSize
+      });
+    });
+    this.active && renderLast();
   }
 
   renderWindow() {
@@ -47,59 +89,13 @@ export default class InventoryWindow {
 
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(x, y, this.width, this.height);
-
-    this.ctx.fillStyle = DARK_RED;
-    for (let xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
-      for (let yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
-        this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
-      }
-    }
-  }
-
-  renderTitle() {
-    const titleWidth = this.ctx.measureText(MODE.INVENTORY).width;
-    this.ctx.fillStyle = MEDIUM_RED;
-    this.ctx.fillRect(
-      (this.canvas.width - titleWidth) / 2 - this.gutter,
-      this.canvas.height / 2 - this.height / 2 - this.fontSize - 4,
-      titleWidth + this.gutter * 2,
-      this.fontSize + 4
-    );
-
-    this.ctx.fillStyle = SOLID_WHITE;
-    this.ctx.fillText(
-      MODE.INVENTORY,
-      (this.canvas.width - titleWidth) / 2,
-      (this.canvas.height - this.height) / 2
-    );
-  }
-
-  renderButtons() {
-    let x = (this.canvas.width - this.width) / 2;
-    let y = (this.canvas.height - this.height) / 2;
-
-    this.ctx.textAlign = 'alphabetical';
-    this.ctx.font = this.fontSize + 'px MECC';
-    this.ctx.fillStyle = SOLID_WHITE;
-    this.buttons = this.connect.inventory.map((button, index) => {
-      const buttonX = x + this.gutter + (this.buttonSize + this.gutter) * (index % this.unitWidth);
-      const buttonY = y + this.gutter + (this.buttonSize + this.gutter) * Math.floor(index/this.unitWidth);
-      drawById(this.ctx, this.items, button.id, this.scale, buttonX, buttonY);
-      this.ctx.fillText(button.quantity, buttonX, buttonY + this.fontSize);
-      return Object.assign({}, button, {
-        xPos: buttonX,
-        yPos: buttonY,
-        width: this.buttonSize,
-        height: this.buttonSize
-      });
-    });
   }
 
   renderHover() {
     const { xMouse, yMouse } = this.connect.mouse;
     if (xMouse && yMouse) {
-      const button = screenToImageButton(xMouse, yMouse, this.buttons);
-      if (button) {
+      const button = screenToImageButton(xMouse, yMouse, this.party);
+      if (button && button.id !== (this.active && this.active.id)) {
         const text = button.name;
         const textWidth = this.ctx.measureText(text).width;
         const padding = 8;
@@ -129,27 +125,9 @@ export default class InventoryWindow {
     }
   }
 
-  renderDrag() {
-    const { xMouse, yMouse } = this.connect.mouse;
-    const { xOffset, yOffset } = this.connect.offset;
-
-    if (xOffset !== null && yOffset !== null) {
-      this.dragged = this.dragged || xMouse && yMouse && screenToImageButton(xMouse, yMouse, this.buttons);
-      if (this.dragged) {
-        const x = this.dragged.xPos + xOffset;
-        const y = this.dragged.yPos + yOffset;
-        drawById(this.ctx, this.items, this.dragged.id, this.scale, x, y);
-      }
-    } else {
-      this.dragged = null;
-    }
-  }
-
   render(delta) {
     this.renderWindow();
-    this.renderTitle();
-    this.renderButtons();
+    this.renderTabs();
     this.renderHover();
-    this.renderDrag();
   }
 }

@@ -69,15 +69,13 @@ export default class RainGame {
 		const keys = this.connect.keys;
 		const { xClick, yClick } = this.connect.click;
 		switch (this.connect.mode) {
-			case MODE.STORY:
-			case MODE.INVENTORY:
-			case MODE.MAP:
-				this.mapView.update(keys, xClick, yClick);
-				this.mapView.render(delta);
-				break;
 			case MODE.TITLE:
 				this.titleView.update(keys, xClick, yClick);
 				this.titleView.render(delta);
+				break;
+			default:
+				this.mapView.update(keys, xClick, yClick);
+				this.mapView.render(delta);
 				break;
 		}
 	}

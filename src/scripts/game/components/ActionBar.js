@@ -3,6 +3,7 @@ import { drawById, drawByName } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
 import { sendError } from '../../store/actions/actions';
+import { DARK_RED, MEDIUM_RED, HOVER_GREEN, SOLID_WHITE } from '../colors';
 
 export default class ActionBar {
   constructor (store, canvas, ctx, loader) {
@@ -71,7 +72,7 @@ export default class ActionBar {
     this.ctx.font = this.fontSize + 'px MECC';
     const titleWidth = this.ctx.measureText(this.current).width;
 
-    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(
       (this.canvas.width - this.barWidth) / 2,
       this.canvas.height - this.barSize,
@@ -79,7 +80,7 @@ export default class ActionBar {
       this.barSize
     );
 
-    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(
       (this.canvas.width - titleWidth) / 2 - 8,
       this.canvas.height - (this.barSize + this.fontSize + 4),
@@ -87,7 +88,7 @@ export default class ActionBar {
       this.fontSize + 4
     );
 
-    this.ctx.fillStyle = "#FFF";
+    this.ctx.fillStyle = SOLID_WHITE;
     this.ctx.fillText(
       this.current,
       (this.canvas.width - titleWidth) / 2,
@@ -123,15 +124,13 @@ export default class ActionBar {
         const textWidth = this.ctx.measureText(text).width;
         const padding = 8;
 
-        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+        this.ctx.fillStyle = HOVER_GREEN;
         this.ctx.fillRect(
           button.xPos + button.width / 2 - textWidth / 2 - padding,
           this.canvas.height - 1.2 * this.barSize - padding,
           textWidth + padding * 2,
           this.fontSize + padding * 2
         );
-
-        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
         const y = this.canvas.height - 1.2 * this.barSize + this.fontSize + padding;
         this.ctx.beginPath();
         this.ctx.moveTo(button.xPos + 1/3 * button.width, y);
@@ -140,7 +139,7 @@ export default class ActionBar {
         this.ctx.closePath();
         this.ctx.fill();
 
-        this.ctx.fillStyle = "#FFF";
+        this.ctx.fillStyle = SOLID_WHITE;
         this.ctx.fillText(
           text,
           button.xPos + button.width / 2 - textWidth / 2,

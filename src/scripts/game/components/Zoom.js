@@ -3,6 +3,7 @@ import { logout, sendEvent } from '../../store/actions/requests';
 import { zoomIn, zoomOut } from '../../store/actions/actions';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
+import { SOLID_WHITE, BRIGHT_YELLOW } from '../colors';
 
 export default class Zoom {
   constructor (store, canvas, ctx, loader) {
@@ -46,16 +47,16 @@ export default class Zoom {
 
       if (typeof button.id === "number") {
         if ((button.name === "PACE" && button.id === pace) || (button.name === "RATIONS" && button.id === rations)) {
-          this.ctx.fillStyle = "#FF0";
+          this.ctx.fillStyle = BRIGHT_YELLOW;
         } else {
-          this.ctx.fillStyle = "#FFF";
+          this.ctx.fillStyle = SOLID_WHITE;
         }
         this.ctx.font = this.fontSize + 'px MECC';
         const textWidth = this.ctx.measureText(button.id.toString()).width;
         this.ctx.fillText(button.id, x + (this.size - textWidth) / 2, y + (this.size + this.fontSize) / 2);
         if (button.id === 0) {
           const labelWidth = this.ctx.measureText(button.name).width;
-          this.ctx.fillStyle = "#FFF";
+          this.ctx.fillStyle = SOLID_WHITE;
           this.ctx.fillText(button.name, x - labelWidth - this.size / 4, y + (this.size + this.fontSize) / 2);
         }
       } else {

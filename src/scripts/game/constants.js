@@ -7,6 +7,7 @@ export const LAYER = {
 export const MODE = {
   MAP: "MAP",
   STORY: "STORY",
+  PARTY: "PARTY",
   INVENTORY: "INVENTORY",
   TITLE: "TITLE"
 };

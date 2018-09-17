@@ -3,6 +3,7 @@ import { sendEvent } from '../../store/actions/requests';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
+import { MEDIUM_OPAQUE } from '../colors';
 
 const {BOTTOM, MIDDLE} = LAYER;
 
@@ -92,7 +93,7 @@ export default class Camera {
           }
 
           if (dim) {
-            this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            this.ctx.fillStyle = MEDIUM_OPAQUE;
             this.ctx.fillRect(x, y, tileSize, tileSize);
           }
         }
