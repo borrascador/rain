@@ -15,6 +15,10 @@ export default class Connect {
     return this.store.getState().error;
   }
 
+  get partyTab() {
+    return this.store.getState().partyTab;
+  }
+
   get mode() {
     return this.store.getState().mode;
   }

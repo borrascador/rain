@@ -1,7 +1,7 @@
 import Connect from '../../store/Connect';
 import { drawById } from '../utils/draw';
 import { screenToImageButton } from './utils';
-import { changeMode } from '../../store/actions/actions';
+import { setPartyTab, changeMode } from '../../store/actions/actions';
 import { MODE } from '../constants';
 import { DARK_RED, MEDIUM_RED, HOVER_GREEN, SOLID_WHITE } from '../colors';
 
@@ -30,9 +30,6 @@ export default class PartyWindow {
   }
 
   update(x, y) {
-    if (!this.active) {
-      this.active = this.connect.party[0];
-    }
     if (x && y) {
       const xMin = (this.canvas.width - this.width) / 2;
       const xMax = xMin + this.width;
@@ -42,7 +39,7 @@ export default class PartyWindow {
       if (x > xMin && x < xMax && y > yMin && y < yMax) {
         console.log('hit');
       } else if (button) {
-        this.active = button;
+        this.store.dispatch(setPartyTab(button.id));
       } else {
         this.store.dispatch(changeMode(MODE.MAP));
       }
@@ -57,17 +54,18 @@ export default class PartyWindow {
     this.ctx.lineTo(x + this.buttonSize * 1.5, y);
     this.ctx.fillStyle = color;
     this.ctx.fill();
-    drawById(this.ctx, this.iconsXl, button.id, this.scaleXl, xPos, yPos);
+    drawById(this.ctx, this.iconsXl, button.icon, this.scaleXl, xPos, yPos);
   }
 
   renderTabs() {
     let x = (this.canvas.width - this.width) / 2;
     let y = (this.canvas.height - this.height) / 2;
     let renderLast;
+    const activeTab = this.connect.partyTab;
     this.party = this.connect.party.map(button => {
       const xPos = x + this.buttonSize * 0.25;
       const yPos = y - this.buttonSize;
-      if (button.id === (this.active && this.active.id)) {
+      if (button.id === activeTab) {
         renderLast = this.renderTab.bind(this, button, MEDIUM_RED, x, y, xPos, yPos);
       } else {
         this.renderTab(button, DARK_RED, x, y, xPos, yPos);
@@ -80,7 +78,7 @@ export default class PartyWindow {
         height: this.buttonSize
       });
     });
-    this.active && renderLast();
+    renderLast();
   }
 
   renderWindow() {
@@ -95,7 +93,7 @@ export default class PartyWindow {
     const { xMouse, yMouse } = this.connect.mouse;
     if (xMouse && yMouse) {
       const button = screenToImageButton(xMouse, yMouse, this.party);
-      if (button && button.id !== (this.active && this.active.id)) {
+      if (button && button.id !== this.connect.partyTab) {
         const text = button.name;
         const textWidth = this.ctx.measureText(text).width;
         const padding = 8;

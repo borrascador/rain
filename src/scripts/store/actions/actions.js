@@ -45,6 +45,12 @@ export const zoomOut = () => ({
   type: ZOOM_OUT
 });
 
+export const SET_PARTY_TAB = 'SET_PARTY_TAB';
+export const setPartyTab = (partyTab) => ({
+  type: SET_PARTY_TAB,
+  payload: { partyTab }
+});
+
 export const CHANGE_MODE = 'CHANGE_MODE';
 export const changeMode = (mode) => ({
   type: CHANGE_MODE,
