@@ -5941,7 +5941,14 @@ var _colors = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NAME = 'NAME';
+var HEALTH = 'HEALTH';
+var JEITO = 'JEITO';
+var MODIFIERS = 'MODIFIERS';
 
 var PartyWindow = function () {
   function PartyWindow(store, canvas, ctx, loader) {
@@ -5958,15 +5965,15 @@ var PartyWindow = function () {
 
     this.fontSize = 16;
 
-    this.scaleXl = 2;
-    this.scale = 4;
-    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
-    this.gutter = this.buttonSize / this.scale;
+    this.scale = 2;
+    this.sizeXl = this.iconsXl.tileset.tilewidth * this.scale;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.gutter = this.sizeXl / 4;
 
     this.unitWidth = 5;
     this.unitHeight = 3;
-    this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
-    this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
+    this.width = this.unitWidth * (this.sizeXl + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.sizeXl + this.gutter) + this.gutter;
   }
 
   _createClass(PartyWindow, [{
@@ -5992,12 +5999,12 @@ var PartyWindow = function () {
     value: function renderTab(button, color, x, y, xPos, yPos) {
       this.ctx.beginPath();
       this.ctx.moveTo(x, y);
-      this.ctx.lineTo(x + this.buttonSize * 0.25, y - this.buttonSize);
-      this.ctx.lineTo(x + this.buttonSize * 1.25, y - this.buttonSize);
-      this.ctx.lineTo(x + this.buttonSize * 1.5, y);
+      this.ctx.lineTo(x + this.sizeXl * 0.25, y - this.sizeXl);
+      this.ctx.lineTo(x + this.sizeXl * 1.25, y - this.sizeXl);
+      this.ctx.lineTo(x + this.sizeXl * 1.5, y);
       this.ctx.fillStyle = color;
       this.ctx.fill();
-      (0, _draw.drawById)(this.ctx, this.iconsXl, button.icon, this.scaleXl, xPos, yPos);
+      (0, _draw.drawById)(this.ctx, this.iconsXl, button.icon, this.scale, xPos, yPos);
     }
   }, {
     key: 'renderTabs',
@@ -6009,19 +6016,19 @@ var PartyWindow = function () {
       var renderLast = void 0;
       var activeTab = this.connect.partyTab;
       this.party = this.connect.party.map(function (button) {
-        var xPos = x + _this.buttonSize * 0.25;
-        var yPos = y - _this.buttonSize;
+        var xPos = x + _this.sizeXl * 0.25;
+        var yPos = y - _this.sizeXl;
         if (button.id === activeTab) {
           renderLast = _this.renderTab.bind(_this, button, _colors.MEDIUM_RED, x, y, xPos, yPos);
         } else {
           _this.renderTab(button, _colors.DARK_RED, x, y, xPos, yPos);
         }
-        x = x + _this.buttonSize * 1.25;
+        x = x + _this.sizeXl * 1.25;
         return Object.assign({}, button, {
           xPos: xPos,
           yPos: yPos,
-          width: _this.buttonSize,
-          height: _this.buttonSize
+          width: _this.sizeXl,
+          height: _this.sizeXl
         });
       });
       renderLast();
@@ -6050,8 +6057,8 @@ var PartyWindow = function () {
           var padding = 8;
 
           this.ctx.fillStyle = _colors.HOVER_GREEN;
-          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - this.buttonSize / 2 - this.scale - padding, textWidth + padding * 2, this.fontSize + padding * 2);
-          var y = button.yPos - this.buttonSize / 2 - this.scale + this.fontSize + padding;
+          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - this.sizeXl / 2 - this.scale - padding, textWidth + padding * 2, this.fontSize + padding * 2);
+          var y = button.yPos - this.sizeXl / 2 - this.scale + this.fontSize + padding;
           this.ctx.beginPath();
           this.ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
           this.ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
@@ -6060,9 +6067,39 @@ var PartyWindow = function () {
           this.ctx.fill();
 
           this.ctx.fillStyle = _colors.SOLID_WHITE;
-          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - this.buttonSize / 2 - this.scale + this.fontSize);
+          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - this.sizeXl / 2 - this.scale + this.fontSize);
         }
       }
+    }
+  }, {
+    key: 'renderInfo',
+    value: function renderInfo() {
+      var _this2 = this;
+
+      var member = (0, _utils.getItemById)(this.connect.party, this.connect.partyTab);
+      this.ctx.font = this.fontSize + 'px MECC';
+      this.ctx.fillStyle = _colors.PALE_GREEN;
+      var xPos = (this.canvas.width - this.width) / 2 + this.fontSize;
+      var yPos = (this.canvas.height - this.height) / 2 + this.fontSize * 2;
+      var lineWidth = this.ctx.measureText(HEALTH).width;
+
+      this.ctx.fillText(NAME, xPos, yPos);
+      this.ctx.fillText(member.name, xPos + lineWidth + 8, yPos);
+
+      yPos += this.fontSize * 2.5;
+      this.ctx.fillText(HEALTH, xPos, yPos);
+      [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'heart', _this2.scale, xPos + lineWidth + 8 + i * (_this2.sizeXl / 2 + 8), yPos - _this2.fontSize * 1.5);
+      });
+
+      yPos += this.fontSize * 2.5;
+      this.ctx.fillText(JEITO, xPos, yPos);
+      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'bolt', _this2.scale, xPos + lineWidth + 8 + i * (_this2.sizeXl / 2 + 8), yPos - _this2.fontSize * 1.5);
+      });
+
+      yPos += this.fontSize * 2.5;
+      this.ctx.fillText(MODIFIERS, xPos, yPos);
     }
   }, {
     key: 'render',
@@ -6070,6 +6107,7 @@ var PartyWindow = function () {
       this.renderWindow();
       this.renderTabs();
       this.renderHover();
+      this.renderInfo();
     }
   }]);
 
