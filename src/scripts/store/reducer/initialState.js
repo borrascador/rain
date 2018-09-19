@@ -9,6 +9,7 @@ import { makeKeys } from './ui';
 
 const uiState = {
   mode: MODE.TITLE,
+  partyTab: 0,
   actions: { 'main': [] },
   zoom: 3
 };

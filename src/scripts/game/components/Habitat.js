@@ -1,4 +1,5 @@
 import Connect from '../../store/Connect';
+import { SOLID_WHITE } from '../colors';
 
 export default class Habitat {
   constructor (store, canvas, ctx, loader) {
@@ -18,7 +19,7 @@ export default class Habitat {
     currentTile.hunting && text.push(currentTile.hunting);
     currentTile.fishing && text.push(currentTile.fishing);
     text.forEach( (line, index) => {
-      this.ctx.fillStyle = "#FFF";
+      this.ctx.fillStyle = SOLID_WHITE;
       this.ctx.font = this.fontSize + 'px MECC';
       const lineWidth = this.ctx.measureText(line).width;
       const x = this.canvas.width - lineWidth - this.fontSize;

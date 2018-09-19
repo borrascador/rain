@@ -125,6 +125,12 @@ export function zoomOut(state) {
   }
 }
 
+export function setPartyTab(state, action) {
+  return updateObject(state, {
+    partyTab: action.payload.partyTab,
+  });
+}
+
 export function changeMode(state, action) {
   return updateObject(state, {
     mode: action.payload.mode,

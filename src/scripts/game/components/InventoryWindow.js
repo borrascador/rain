@@ -3,6 +3,7 @@ import { drawById } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { changeMode } from '../../store/actions/actions';
 import { MODE } from '../constants';
+import { DARK_RED, MEDIUM_RED, HOVER_GREEN, SOLID_WHITE } from '../colors';
 
 export default class InventoryWindow {
   constructor (store, canvas, ctx, loader) {
@@ -44,10 +45,10 @@ export default class InventoryWindow {
     let x = (this.canvas.width - this.width) / 2;
     let y = (this.canvas.height - this.height) / 2;
 
-    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(x, y, this.width, this.height);
 
-    this.ctx.fillStyle = "rgb(33, 5, 11, 0.9)";
+    this.ctx.fillStyle = DARK_RED;
     for (let xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
       for (let yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
         this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
@@ -56,9 +57,8 @@ export default class InventoryWindow {
   }
 
   renderTitle() {
-    const INVENTORY = 'INVENTORY';
-    const titleWidth = this.ctx.measureText(INVENTORY).width;
-    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    const titleWidth = this.ctx.measureText(MODE.INVENTORY).width;
+    this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(
       (this.canvas.width - titleWidth) / 2 - this.gutter,
       this.canvas.height / 2 - this.height / 2 - this.fontSize - 4,
@@ -66,9 +66,9 @@ export default class InventoryWindow {
       this.fontSize + 4
     );
 
-    this.ctx.fillStyle = "#FFF";
+    this.ctx.fillStyle = SOLID_WHITE;
     this.ctx.fillText(
-      INVENTORY,
+      MODE.INVENTORY,
       (this.canvas.width - titleWidth) / 2,
       (this.canvas.height - this.height) / 2
     );
@@ -80,7 +80,7 @@ export default class InventoryWindow {
 
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = this.fontSize + 'px MECC';
-    this.ctx.fillStyle = '#FFF'
+    this.ctx.fillStyle = SOLID_WHITE;
     this.buttons = this.connect.inventory.map((button, index) => {
       const buttonX = x + this.gutter + (this.buttonSize + this.gutter) * (index % this.unitWidth);
       const buttonY = y + this.gutter + (this.buttonSize + this.gutter) * Math.floor(index/this.unitWidth);
@@ -104,15 +104,13 @@ export default class InventoryWindow {
         const textWidth = this.ctx.measureText(text).width;
         const padding = 8;
 
-        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
+        this.ctx.fillStyle = HOVER_GREEN;
         this.ctx.fillRect(
           button.xPos + button.width / 2 - textWidth / 2 - padding,
           button.yPos - this.buttonSize / 2 - this.scale - padding,
           textWidth + padding * 2,
           this.fontSize + padding * 2
         );
-
-        this.ctx.fillStyle = "rgb(10, 100, 15, 0.95)";
         const y = button.yPos - this.buttonSize / 2 - this.scale + this.fontSize + padding;
         this.ctx.beginPath();
         this.ctx.moveTo(button.xPos + 1/3 * button.width, y);
@@ -121,7 +119,7 @@ export default class InventoryWindow {
         this.ctx.closePath();
         this.ctx.fill();
 
-        this.ctx.fillStyle = "#FFF";
+        this.ctx.fillStyle = SOLID_WHITE;
         this.ctx.fillText(
           text,
           button.xPos + button.width / 2 - textWidth / 2,
@@ -134,7 +132,7 @@ export default class InventoryWindow {
   renderDrag() {
     const { xMouse, yMouse } = this.connect.mouse;
     const { xOffset, yOffset } = this.connect.offset;
-    
+
     if (xOffset !== null && yOffset !== null) {
       this.dragged = this.dragged || xMouse && yMouse && screenToImageButton(xMouse, yMouse, this.buttons);
       if (this.dragged) {

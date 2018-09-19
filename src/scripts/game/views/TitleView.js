@@ -6,6 +6,7 @@ import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import {clicked} from '../../store/actions/actions';
 import { drawById, drawByName, centerText } from '../utils/draw';
+import { CONNECT_GREEN, DISCONNECT_RED, SOLID_WHITE, DARK_OPAQUE } from '../colors';
 
 export default class TitleView {
   constructor (store, canvas, ctx, loader) {
@@ -76,13 +77,13 @@ export default class TitleView {
   }
 
   renderText() {
-    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillStyle = SOLID_WHITE;
     this.title = this.centerText(this.title, 64, 1/4);
 
-    this.ctx.fillStyle = this.connect.connected ? '#3F6' : '#F36';
+    this.ctx.fillStyle = this.connect.connected ? CONNECT_GREEN : DISCONNECT_RED;
     this.centerText([{ text: this.connect.connected ? 'CONNECTED' : 'DISCONNECTED' }], 32, 9/10);
 
-    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillStyle = SOLID_WHITE;
     this.buttons = this.centerText(this.buttons, 32, 3/4);
   }
 
@@ -92,7 +93,7 @@ export default class TitleView {
     this.renderBackground();
     this.renderText();
     if (this.dim) {
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+      this.ctx.fillStyle = DARK_OPAQUE;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }

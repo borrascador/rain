@@ -5,6 +5,7 @@ import Connect from '../../store/Connect';
 import { screenToTextButton, getItemById } from './utils';
 import { mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines } from '../utils/draw';
 import Animation from '../utils/Animation';
+import { PALE_GREEN, MEDIUM_RED } from '../colors';
 
 export default class Story {
   constructor (store, canvas, ctx) {
@@ -101,7 +102,7 @@ export default class Story {
   renderStoryText() {
     this.ctx.font = this.fontSize + 'px MECC';
 
-    this.ctx.fillStyle = '#6F6';
+    this.ctx.fillStyle = PALE_GREEN;
     let xPos = this.width / 2 + this.fontSize;
     let yPos = this.height / 2 + this.fontSize * 2;
     let coords = this.mainText(this.text, xPos, yPos);
@@ -120,7 +121,7 @@ export default class Story {
     this.buttons = this.buttonText(this.buttons, xPos, yPos, this.selected);
 
     if (this.buttons.length > 1) {
-      this.ctx.fillStyle = '#6F6';
+      this.ctx.fillStyle = PALE_GREEN;
       yPos = this.buttons[this.buttons.length - 1].yPos + this.lineHeight * 2;
       this.mainText(this.prompt, xPos, yPos);
     }
@@ -129,7 +130,7 @@ export default class Story {
   render(delta) {
     this.blink.tick(delta);
 
-    this.ctx.fillStyle = "rgb(100, 11, 33, 0.9)";
+    this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
 
     const story = this.connect.story;

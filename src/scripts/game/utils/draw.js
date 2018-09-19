@@ -1,3 +1,5 @@
+import { BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, PALE_GREEN } from '../colors';
+
 export function drawById (ctx, img, id, zoom, x, y) {
   const {tileheight, tilewidth, columns} = img.tileset;
   ctx.drawImage(
@@ -66,7 +68,7 @@ export function itemChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, y
   const lengths = lines.map((line, idx) => {
     y = yPos + idx * lineHeight;
     const change = line.change < 0 ? line.change : '+' + line.change;
-    const color = line.change < 0 ? '#F00' : '#0F0';
+    const color = line.change < 0 ? BRIGHT_RED : BRIGHT_GREEN;
     const text = `${change} ${line.name}`;
     ctx.fillStyle = color;
     ctx.fillText(text, xPos, y);
@@ -86,15 +88,15 @@ export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, 
     let x = xPos;
     y = yPos + idx * lineHeight;
     let text = `${line.name}:`;
-    ctx.fillStyle = '#6F6';
+    ctx.fillStyle = PALE_GREEN;
     ctx.fillText(text, x, y);
     x += ctx.measureText(text).width;
     if (line.health_change !== 0) {
       text = ` ${line.health_change < 0 ? line.health_change : '+' + line.health_change} health`
       if (line.health_change < 0) {
-        ctx.fillStyle = '#F00';
+        ctx.fillStyle = BRIGHT_RED;
       } else {
-        ctx.fillStyle = '#0F0';
+        ctx.fillStyle = BRIGHT_GREEN;
       }
       ctx.fillText(text, x, y)
       x += ctx.measureText(text).width;
@@ -102,16 +104,16 @@ export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, 
     if (line.jeito_change !== 0) {
       text = ` ${line.health_change < 0 ? line.health_change : '+' + line.health_change} health`
       if (line.health_change < 0) {
-        ctx.fillStyle = '#F00';
+        ctx.fillStyle = BRIGHT_RED;
       } else {
-        ctx.fillStyle = '#0F0';
+        ctx.fillStyle = BRIGHT_GREEN;
       }
       ctx.fillText(text, x, y)
       x += ctx.measureText(text).width;
     }
     return x;
   });
-  ctx.fillStyle = '#6F6';
+  ctx.fillStyle = PALE_GREEN;
   return {
     xPos: xPos,
     yPos: y,
@@ -124,7 +126,7 @@ export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPo
   let x = xPos + fontSize * 2;
   let y = yPos;
   return buttons.map((button, idx) => {
-    ctx.fillStyle = (selected && selected.id === button.id) ? '#FF0' : '#6F6';
+    ctx.fillStyle = (selected && selected.id === button.id) ? BRIGHT_YELLOW : PALE_GREEN;
     ctx.fillText(`${button.oneIndex}.`, xPos, y);
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     y = coords.yPos + lineHeight;

@@ -1,5 +1,7 @@
+import { MODE } from '../constants';
 import Connect from '../../store/Connect';
 import { screenToImageButton } from './utils';
+import { setPartyTab, changeMode } from '../../store/actions/actions';
 import { drawById, drawByName } from '../utils/draw';
 
 export default class Party {
@@ -21,7 +23,10 @@ export default class Party {
 
   update(x, y) {
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    button && console.log(button.name);
+    if (button) {
+      this.store.dispatch(setPartyTab(button.id));
+      this.store.dispatch(changeMode(MODE.PARTY));
+    }
   }
 
   render(delta) {
