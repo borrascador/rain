@@ -1,6 +1,6 @@
 import Animation from '../utils/Animation';
 import { screenToImageButton } from './utils';
-import { drawByName } from '../utils/draw';
+import { drawByName, slideText } from '../utils/draw';
 import { changeMode } from '../../store/actions/actions';
 import { MODE } from '../constants';
 
@@ -15,12 +15,16 @@ export default class Inventory {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new Animation(this.scale, this.scale, 0.5);
 
+    this.totalTime = 2;
+    this.currentTime = 0;
+
     this.buttons = [ { name: 'pack-big' } ];
   }
 
   update(x, y) {
     if (x && y && screenToImageButton(x, y, this.buttons)) {
       this.store.dispatch(changeMode(MODE.INVENTORY));
+      this.currentTime = .0001;
     }
   }
 
@@ -29,6 +33,14 @@ export default class Inventory {
     this.buttons = this.buttons.map(button => {
       const x = this.canvas.width - this.size;
       const y = this.canvas.height / 2 - this.size / 2;
+
+      if (this.currentTime > 0 && this.currentTime < this.totalTime) {
+        this.currentTime += delta;
+        slideText(this.ctx, this.currentTime, this.totalTime, 32, '+1 testing', x, y + this.size / 2);
+      } else if (this.currentTime >= this.totalTime) {
+        this.currentTime = 0;
+      }
+
       drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y + this.animate.getValue());
       return Object.assign({}, button, {
         xPos: x,

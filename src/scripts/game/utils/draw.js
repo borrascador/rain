@@ -202,3 +202,13 @@ export function drawDurability(ctx, buttonSize, scale, durability, x, y) {
   ctx.lineTo(xPos + length, yPos);
   ctx.stroke();
 }
+
+export function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
+  ctx.font = fontSize + 'MECC';
+  const alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2)
+  ctx.fillStyle = `rgba(0, 256, 0, ${alpha})`
+  const yDistance = 150;
+  const yOffset = (currentTime / totalTime) * yDistance - yDistance / 2;
+  const textWidth = ctx.measureText(text).width;
+  ctx.fillText(text, x - textWidth, y + yOffset);
+}

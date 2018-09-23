@@ -475,6 +475,7 @@ exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
 exports.drawHover = drawHover;
 exports.drawDurability = drawDurability;
+exports.slideText = slideText;
 
 var _colors = __webpack_require__(5);
 
@@ -673,6 +674,16 @@ function drawDurability(ctx, buttonSize, scale, durability, x, y) {
   ctx.moveTo(xPos, yPos);
   ctx.lineTo(xPos + length, yPos);
   ctx.stroke();
+}
+
+function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
+  ctx.font = fontSize + 'MECC';
+  var alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
+  ctx.fillStyle = 'rgba(0, 256, 0, ' + alpha + ')';
+  var yDistance = 150;
+  var yOffset = currentTime / totalTime * yDistance - yDistance / 2;
+  var textWidth = ctx.measureText(text).width;
+  ctx.fillText(text, x - textWidth, y + yOffset);
 }
 
 /***/ }),
@@ -5534,6 +5545,9 @@ var Inventory = function () {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
 
+    this.totalTime = 2;
+    this.currentTime = 0;
+
     this.buttons = [{ name: 'pack-big' }];
   }
 
@@ -5542,6 +5556,7 @@ var Inventory = function () {
     value: function update(x, y) {
       if (x && y && (0, _utils.screenToImageButton)(x, y, this.buttons)) {
         this.store.dispatch((0, _actions.changeMode)(_constants.MODE.INVENTORY));
+        this.currentTime = .0001;
       }
     }
   }, {
@@ -5553,6 +5568,14 @@ var Inventory = function () {
       this.buttons = this.buttons.map(function (button) {
         var x = _this.canvas.width - _this.size;
         var y = _this.canvas.height / 2 - _this.size / 2;
+
+        if (_this.currentTime > 0 && _this.currentTime < _this.totalTime) {
+          _this.currentTime += delta;
+          (0, _draw.slideText)(_this.ctx, _this.currentTime, _this.totalTime, 32, '+1 testing', x, y + _this.size / 2);
+        } else if (_this.currentTime >= _this.totalTime) {
+          _this.currentTime = 0;
+        }
+
         (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
         return Object.assign({}, button, {
           xPos: x,
