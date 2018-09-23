@@ -1,4 +1,6 @@
-import { BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, PALE_GREEN } from '../colors';
+import {
+  BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN, SOLID_WHITE
+} from '../colors';
 
 export function drawById (ctx, img, id, zoom, x, y) {
   const {tileheight, tilewidth, columns} = img.tileset;
@@ -159,4 +161,44 @@ export function splitIntoLines(ctx, text, maxWidth) {
     });
   });
   return lines;
+}
+
+export function drawHover(ctx, fontSize, button) {
+  const text = button.name || button.target || 'no text';
+  const textWidth = ctx.measureText(text).width;
+  const padding = 8;
+
+  ctx.fillStyle = HOVER_GREEN;
+  ctx.fillRect(
+    button.xPos + button.width / 2 - textWidth / 2 - padding,
+    button.yPos - button.height / 2 - padding * 1.5,
+    textWidth + padding * 2,
+    fontSize + padding * 2
+  );
+  const y = button.yPos - button.height / 2 + fontSize + padding / 2;
+  ctx.beginPath();
+  ctx.moveTo(button.xPos + 1/3 * button.width, y);
+  ctx.lineTo(button.xPos + 2/3 * button.width, y);
+  ctx.lineTo(button.xPos + 1/2 * button.width, y + padding);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = SOLID_WHITE;
+  ctx.fillText(
+    text,
+    button.xPos + button.width / 2 - textWidth / 2,
+    button.yPos - button.height / 2 + fontSize - padding / 2
+  );
+}
+
+export function drawDurability(ctx, buttonSize, scale, durability, x, y) {
+  const length = (buttonSize - scale * 2) * (durability / 100);
+  const xPos = x + scale;
+  const yPos = y + buttonSize - scale * 1.5;
+  ctx.lineWidth = scale;
+  ctx.strokeStyle = durability > 50 ? BRIGHT_GREEN : durability > 25 ? BRIGHT_YELLOW : BRIGHT_RED;
+  ctx.beginPath();
+  ctx.moveTo(xPos, yPos);
+  ctx.lineTo(xPos + length, yPos);
+  ctx.stroke();
 }

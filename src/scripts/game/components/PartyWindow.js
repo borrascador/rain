@@ -1,9 +1,9 @@
 import Connect from '../../store/Connect';
-import { drawById, drawByName, mainText } from '../utils/draw';
+import { drawById, drawByName, mainText, drawHover } from '../utils/draw';
 import { screenToImageButton, getItemById } from './utils';
 import { setPartyTab, changeMode } from '../../store/actions/actions';
 import { MODE } from '../constants';
-import { DARK_RED, MEDIUM_RED, HOVER_GREEN, PALE_GREEN, SOLID_WHITE } from '../colors';
+import { DARK_RED, MEDIUM_RED, PALE_GREEN } from '../colors';
 
 const NAME = 'NAME';
 const HEALTH = 'HEALTH';
@@ -181,31 +181,7 @@ export default class PartyWindow {
       const buttonList = this.party.concat(this.skills, this.modifiers);
       const button = screenToImageButton(xMouse, yMouse, buttonList);
       if (button && button.id !== this.connect.partyTab) {
-        const text = button.name;
-        const textWidth = this.ctx.measureText(text).width;
-        const padding = 8;
-
-        this.ctx.fillStyle = HOVER_GREEN;
-        this.ctx.fillRect(
-          button.xPos + button.width / 2 - textWidth / 2 - padding,
-          button.yPos - this.size - this.scale - padding,
-          textWidth + padding * 2,
-          this.fontSize + padding * 2
-        );
-        const y = button.yPos - this.size - this.scale + this.fontSize + padding;
-        this.ctx.beginPath();
-        this.ctx.moveTo(button.xPos + 1/3 * button.width, y);
-        this.ctx.lineTo(button.xPos + 2/3 * button.width, y);
-        this.ctx.lineTo(button.xPos + 1/2 * button.width, y + padding);
-        this.ctx.closePath();
-        this.ctx.fill();
-
-        this.ctx.fillStyle = SOLID_WHITE;
-        this.ctx.fillText(
-          text,
-          button.xPos + button.width / 2 - textWidth / 2,
-          button.yPos - this.size - this.scale + this.fontSize
-        );
+        drawHover(this.ctx, this.fontSize, button);
       }
     }
   }

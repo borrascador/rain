@@ -473,6 +473,8 @@ exports.itemChangeText = itemChangeText;
 exports.partyChangeText = partyChangeText;
 exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
+exports.drawHover = drawHover;
+exports.drawDurability = drawDurability;
 
 var _colors = __webpack_require__(5);
 
@@ -640,6 +642,37 @@ function splitIntoLines(ctx, text, maxWidth) {
     });
   });
   return lines;
+}
+
+function drawHover(ctx, fontSize, button) {
+  var text = button.name || button.target || 'no text';
+  var textWidth = ctx.measureText(text).width;
+  var padding = 8;
+
+  ctx.fillStyle = _colors.HOVER_GREEN;
+  ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - button.height / 2 - padding * 1.5, textWidth + padding * 2, fontSize + padding * 2);
+  var y = button.yPos - button.height / 2 + fontSize + padding / 2;
+  ctx.beginPath();
+  ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
+  ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
+  ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = _colors.SOLID_WHITE;
+  ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - button.height / 2 + fontSize - padding / 2);
+}
+
+function drawDurability(ctx, buttonSize, scale, durability, x, y) {
+  var length = (buttonSize - scale * 2) * (durability / 100);
+  var xPos = x + scale;
+  var yPos = y + buttonSize - scale * 1.5;
+  ctx.lineWidth = scale;
+  ctx.strokeStyle = durability > 50 ? _colors.BRIGHT_GREEN : durability > 25 ? _colors.BRIGHT_YELLOW : _colors.BRIGHT_RED;
+  ctx.beginPath();
+  ctx.moveTo(xPos, yPos);
+  ctx.lineTo(xPos + length, yPos);
+  ctx.stroke();
 }
 
 /***/ }),
@@ -5873,24 +5906,7 @@ var ActionBar = function () {
 
       if (xMouse && yMouse) {
         var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
-        if (button) {
-          var text = button.name || button.target || 'no text';
-          var textWidth = this.ctx.measureText(text).width;
-          var padding = 8;
-
-          this.ctx.fillStyle = _colors.HOVER_GREEN;
-          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, this.canvas.height - 1.2 * this.barSize - padding, textWidth + padding * 2, this.fontSize + padding * 2);
-          var y = this.canvas.height - 1.2 * this.barSize + this.fontSize + padding;
-          this.ctx.beginPath();
-          this.ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
-          this.ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
-          this.ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
-          this.ctx.closePath();
-          this.ctx.fill();
-
-          this.ctx.fillStyle = _colors.SOLID_WHITE;
-          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, this.canvas.height - 1.2 * this.barSize + this.fontSize);
-        }
+        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
       }
     }
   }, {
@@ -6121,22 +6137,7 @@ var PartyWindow = function () {
         var buttonList = this.party.concat(this.skills, this.modifiers);
         var button = (0, _utils.screenToImageButton)(xMouse, yMouse, buttonList);
         if (button && button.id !== this.connect.partyTab) {
-          var text = button.name;
-          var textWidth = this.ctx.measureText(text).width;
-          var padding = 8;
-
-          this.ctx.fillStyle = _colors.HOVER_GREEN;
-          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - this.size - this.scale - padding, textWidth + padding * 2, this.fontSize + padding * 2);
-          var y = button.yPos - this.size - this.scale + this.fontSize + padding;
-          this.ctx.beginPath();
-          this.ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
-          this.ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
-          this.ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
-          this.ctx.closePath();
-          this.ctx.fill();
-
-          this.ctx.fillStyle = _colors.SOLID_WHITE;
-          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - this.size - this.scale + this.fontSize);
+          (0, _draw.drawHover)(this.ctx, this.fontSize, button);
         }
       }
     }
@@ -6258,7 +6259,6 @@ var InventoryWindow = function () {
 
       var x = (this.canvas.width - this.width) / 2;
       var y = (this.canvas.height - this.height) / 2;
-
       this.ctx.textAlign = 'alphabetical';
       this.ctx.font = this.fontSize + 'px MECC';
       this.ctx.fillStyle = _colors.SOLID_WHITE;
@@ -6267,6 +6267,7 @@ var InventoryWindow = function () {
         var buttonY = y + _this.gutter + (_this.buttonSize + _this.gutter) * Math.floor(index / _this.unitWidth);
         (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, buttonX, buttonY);
         _this.ctx.fillText(button.quantity, buttonX, buttonY + _this.fontSize);
+        button.durability && (0, _draw.drawDurability)(_this.ctx, _this.buttonSize, _this.scale, button.durability, buttonX, buttonY);
         return Object.assign({}, button, {
           xPos: buttonX,
           yPos: buttonY,
@@ -6284,24 +6285,7 @@ var InventoryWindow = function () {
 
       if (xMouse && yMouse) {
         var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
-        if (button) {
-          var text = button.name;
-          var textWidth = this.ctx.measureText(text).width;
-          var padding = 8;
-
-          this.ctx.fillStyle = _colors.HOVER_GREEN;
-          this.ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - this.buttonSize / 2 - this.scale - padding, textWidth + padding * 2, this.fontSize + padding * 2);
-          var y = button.yPos - this.buttonSize / 2 - this.scale + this.fontSize + padding;
-          this.ctx.beginPath();
-          this.ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
-          this.ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
-          this.ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
-          this.ctx.closePath();
-          this.ctx.fill();
-
-          this.ctx.fillStyle = _colors.SOLID_WHITE;
-          this.ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - this.buttonSize / 2 - this.scale + this.fontSize);
-        }
+        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
       }
     }
   }, {
