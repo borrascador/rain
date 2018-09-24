@@ -1,5 +1,5 @@
 import { MODE } from '../../game/constants';
-import { updateObject } from './utils';
+import { updateObject, removeStory } from './utils';
 
 export function makeKeys() {
   let keys = {
@@ -135,4 +135,14 @@ export function changeMode(state, action) {
   return updateObject(state, {
     mode: action.payload.mode,
   });
+}
+
+export function closeStory(state) {
+  if (state.stories.length > 0) {
+    return updateObject(state, {
+      stories: state.stories.slice(0, state.stories.length - 1)
+    });
+  } else {
+    return state;
+  }
 }

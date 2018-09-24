@@ -50,8 +50,8 @@ export default class Connect {
     return {xMouse, yMouse,};
   }
 
-  get story() {
-    return this.store.getState().story;
+  get stories() {
+    return this.store.getState().stories;
   }
 
   get map() {

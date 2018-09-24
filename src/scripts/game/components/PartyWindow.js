@@ -31,8 +31,6 @@ export default class PartyWindow {
     this.size = this.icons.tileset.tilewidth * this.scale;
     this.gutter = this.sizeXl / 4;
 
-    console.log(this.sizeXl, this.size, this.gutter);
-
     this.unitWidth = 5;
     this.unitHeight = 7;
     this.width = this.unitWidth * (this.sizeXl + this.gutter) + this.gutter;

@@ -1,13 +1,13 @@
 import {
   KEYDOWN, KEYUP, MOUSEDOWN, MOUSEMOVE, MOUSEUP, CLICKED,
-  ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, CHANGE_MODE, ERROR,
+  ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, CHANGE_MODE, CLOSE_STORY, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
 } from '../actions/actions';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import {
-  keyDown, keyUp, mouseDown, mouseMove, mouseUp, clicked,zoomIn, zoomOut,
-  setPartyTab, changeMode
+  keyDown, keyUp, mouseDown, mouseMove, mouseUp, clicked, zoomIn, zoomOut,
+  setPartyTab, changeMode, closeStory
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
@@ -40,6 +40,8 @@ export default function reducer(state, action) {
       return setPartyTab(state, action);
     case CHANGE_MODE:
       return changeMode(state, action);
+    case CLOSE_STORY:
+      return closeStory(state);
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:

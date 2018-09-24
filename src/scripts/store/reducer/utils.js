@@ -36,16 +36,23 @@ export function mergeArrays(oldArray, newArray) {
   return result;
 };
 
-export function makeStory(state, action) {
+export function updateStory(state, action) {
   if (action.payload.story) {
-    return Object.assign({}, action.payload.story, {
-      inventoryChanges: action.payload.inventory || [],
-      partyChanges: action.payload.party || [],
-      buttons: action.payload.story.buttons || [ { text: 'OK', id: 1 } ]
-    });
+    return state.stories.concat([
+      Object.assign({}, action.payload.story, {
+        inventoryChanges: action.payload.inventory || [],
+        partyChanges: action.payload.party || [],
+        buttons: action.payload.story.buttons || [ { text: 'OK', id: 1 } ],
+        timestamp: Date.now()
+      })
+    ]);
   } else {
-    return state.story;
+    return state.stories;
   }
+}
+
+export function updateChanges(state, action) {
+
 }
 
 export function getActions(inventory, eating, tiles, position) {
