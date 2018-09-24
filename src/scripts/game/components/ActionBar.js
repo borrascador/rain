@@ -1,9 +1,9 @@
 import Connect from '../../store/Connect';
-import { drawById, drawByName } from '../utils/draw';
+import { drawById, drawByName, drawHover } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
 import { sendError } from '../../store/actions/actions';
-import { DARK_RED, MEDIUM_RED, HOVER_GREEN, SOLID_WHITE } from '../colors';
+import { DARK_RED, MEDIUM_RED, SOLID_WHITE } from '../colors';
 
 export default class ActionBar {
   constructor (store, canvas, ctx, loader) {
@@ -119,33 +119,7 @@ export default class ActionBar {
     const { xMouse, yMouse } = this.connect.mouse;
     if (xMouse && yMouse) {
       const button = screenToImageButton(xMouse, yMouse, this.buttons);
-      if (button) {
-        const text = button.name || button.target || 'no text';
-        const textWidth = this.ctx.measureText(text).width;
-        const padding = 8;
-
-        this.ctx.fillStyle = HOVER_GREEN;
-        this.ctx.fillRect(
-          button.xPos + button.width / 2 - textWidth / 2 - padding,
-          this.canvas.height - 1.2 * this.barSize - padding,
-          textWidth + padding * 2,
-          this.fontSize + padding * 2
-        );
-        const y = this.canvas.height - 1.2 * this.barSize + this.fontSize + padding;
-        this.ctx.beginPath();
-        this.ctx.moveTo(button.xPos + 1/3 * button.width, y);
-        this.ctx.lineTo(button.xPos + 2/3 * button.width, y);
-        this.ctx.lineTo(button.xPos + 1/2 * button.width, y + padding);
-        this.ctx.closePath();
-        this.ctx.fill();
-
-        this.ctx.fillStyle = SOLID_WHITE;
-        this.ctx.fillText(
-          text,
-          button.xPos + button.width / 2 - textWidth / 2,
-          this.canvas.height - 1.2 * this.barSize + this.fontSize
-        );
-      }
+      button && drawHover(this.ctx, this.fontSize, button);
     }
   }
 

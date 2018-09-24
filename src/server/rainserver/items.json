@@ -94,9 +94,59 @@
 		"name": "fish heads",
 		"tags":["food"]
 	},
-		{
+	{
 		"id": 18,
 		"name": "feathers",
 		"tags":["crafting"]
-	}
+	},
+	{
+		"id": 20,
+		"name": "big white feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 21,
+		"name": "big blue feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 22,
+		"name": "big yellow feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 23,
+		"name": "big red feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 24,
+		"name": "big green feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 25,
+		"name": "small white feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 26,
+		"name": "small blue feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 27,
+		"name": "small yellow feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 28,
+		"name": "small red feather",
+		"tags":["crafting"]
+	},
+	{
+		"id": 29,
+		"name": "small green feather",
+		"tags":["crafting"]
+	},
 ]
