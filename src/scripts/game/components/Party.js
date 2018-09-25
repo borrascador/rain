@@ -1,8 +1,8 @@
-import { MODE } from '../constants';
+import { MODE, UPDATE_TEXT_DURATION } from '../constants';
 import Connect from '../../store/Connect';
 import { screenToImageButton } from './utils';
 import { setPartyTab, changeMode } from '../../store/actions/actions';
-import { drawById, drawByName } from '../utils/draw';
+import { drawById, drawByName, fadeText } from '../utils/draw';
 
 export default class Party {
   constructor (store, canvas, ctx, loader) {
@@ -52,6 +52,28 @@ export default class Party {
           (index * 2 + 1.1) * this.portraitSize / 2 // TODO: Eliminate hardcoded values
         );
       });
+
+      const partyChanges = this.connect.partyChanges;
+      const currentTime = Date.now();
+      const xPos = this.portraitSize + 5 * (this.statSize + 8)
+      partyChanges.forEach(item => {
+        const elapsed = currentTime - item.timestamp;
+        if (elapsed > 0 && elapsed < UPDATE_TEXT_DURATION && item.id === member.id) {
+          let change, propertyName;
+          if (item.hasOwnProperty('health_change')) {
+            change = item.health_change;
+            propertyName = 'health';
+          }
+          if (item.hasOwnProperty('jeito_change')) {
+            change = item.jeito_change;
+            propertyName = 'jeito';
+          }
+          const text = `${change > 0 ? '+' : ''}${change} ${propertyName}`;
+          const yPos = y + (32 + this.portraitSize) / 2;
+          fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, 32, text, xPos, yPos);
+        }
+      });
+
       return Object.assign({}, member, {
         xPos: x,
         yPos: y,

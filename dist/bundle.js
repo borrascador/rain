@@ -233,8 +233,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
-var DURATION = exports.DURATION = 2000; // ms of each slideText
-var UPDATE_TEXT_OFFSET = exports.UPDATE_TEXT_OFFSET = 500; // minimum ms between each slideText
+var UPDATE_TEXT_DURATION = exports.UPDATE_TEXT_DURATION = 2000; // ms duration of each update text
+var UPDATE_TEXT_OFFSET = exports.UPDATE_TEXT_OFFSET = 500; // minimum ms between each update text
 
 var LAYER = exports.LAYER = {
   BOTTOM: "BOTTOM",
@@ -306,6 +306,11 @@ var Connect = function () {
     key: 'inventoryChanges',
     get: function get() {
       return this.store.getState().inventoryChanges;
+    }
+  }, {
+    key: 'partyChanges',
+    get: function get() {
+      return this.store.getState().partyChanges;
     }
   }, {
     key: 'actions',
@@ -492,7 +497,8 @@ exports.buttonText = buttonText;
 exports.splitIntoLines = splitIntoLines;
 exports.drawHover = drawHover;
 exports.drawDurability = drawDurability;
-exports.slideText = slideText;
+exports.slideFadeText = slideFadeText;
+exports.fadeText = fadeText;
 
 var _colors = __webpack_require__(5);
 
@@ -693,7 +699,7 @@ function drawDurability(ctx, buttonSize, scale, durability, x, y) {
   ctx.stroke();
 }
 
-function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
+function slideFadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   ctx.font = fontSize + 'MECC';
   var alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
   ctx.fillStyle = text[0] === '+' ? (0, _colors.alphaGreen)(alpha) : (0, _colors.alphaRed)(alpha);
@@ -701,6 +707,13 @@ function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   var yOffset = currentTime / totalTime * yDistance - yDistance / 2;
   var textWidth = ctx.measureText(text).width;
   ctx.fillText(text, x - textWidth, y + yOffset);
+}
+
+function fadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
+  ctx.font = fontSize + 'MECC';
+  var alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
+  ctx.fillStyle = text[0] === '+' ? (0, _colors.alphaGreen)(alpha) : (0, _colors.alphaRed)(alpha);
+  ctx.fillText(text, x, y);
 }
 
 /***/ }),
@@ -1864,12 +1877,11 @@ function updateStory(state, action) {
 }
 
 // Helper function that enforces minimum offset between update text timestamps
-function getTimestamp(state) {
-  var now = Date.now();
-  if (state.inventoryChanges.length > 0) {
-    var latest = state.inventoryChanges[state.inventoryChanges.length - 1];
-    if (now - latest.timestamp < _constants.UPDATE_TEXT_OFFSET) {
-      return latest.timestamp - _constants.UPDATE_TEXT_OFFSET;
+function getTimestamp(changes, offset, now) {
+  if (changes.length > 0) {
+    var latest = changes[changes.length - 1];
+    if (now - latest.timestamp < offset) {
+      return latest.timestamp - offset;
     }
   }
   return now;
@@ -1878,7 +1890,8 @@ function getTimestamp(state) {
 function updateInventoryChanges(state, action) {
   var inventory = action.payload.inventory;
   if (inventory && inventory.length > 0) {
-    var timestamp = getTimestamp(state);
+    var now = Date.now();
+    var timestamp = getTimestamp(state.inventoryChanges, _constants.UPDATE_TEXT_OFFSET, now);
     return state.inventoryChanges.concat(inventory.filter(function (item) {
       return item.hasOwnProperty('change');
     }).map(function (item, index) {
@@ -1891,15 +1904,36 @@ function updateInventoryChanges(state, action) {
   }
 }
 
-// TODO COMBAK XXX
 function updatePartyChanges(state, action) {
   var party = action.payload.party;
-  if (action.payload.story && party && party.length > 0) {
-    return state.partyChanges.concat(party.map(function (change) {
-      return Object.assign({}, change, {
-        timestamp: Date.now()
+  if (party && party.length > 0) {
+    var changes = [];
+    var now = Date.now();
+    var timestampsByMember = Array.from({ length: 5 }, function (_, index) {
+      var filtered = state.partyChanges.filter(function (item) {
+        return item.id === index;
       });
-    }));
+      return getTimestamp(filtered, _constants.UPDATE_TEXT_DURATION, now);
+    });
+    party.forEach(function (item) {
+      if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
+        changes.push(Object.assign({}, {
+          id: item.id,
+          health_change: item.health_change,
+          timestamp: timestampsByMember[item.id]
+        }));
+        timestampsByMember[item.id] -= _constants.UPDATE_TEXT_DURATION;
+      }
+      if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
+        changes.push(Object.assign({}, {
+          id: item.id,
+          jeito_change: item.jeito_change,
+          timestamp: timestampsByMember[item.id]
+        }));
+        timestampsByMember[item.id] -= _constants.UPDATE_TEXT_DURATION;
+      }
+    });
+    return state.partyChanges.concat(changes);
   } else {
     return state.partyChanges;
   }
@@ -5433,6 +5467,29 @@ var Party = function () {
           (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
           );
         });
+
+        var partyChanges = _this.connect.partyChanges;
+        var currentTime = Date.now();
+        var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
+        partyChanges.forEach(function (item) {
+          var elapsed = currentTime - item.timestamp;
+          if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION && item.id === member.id) {
+            var change = void 0,
+                propertyName = void 0;
+            if (item.hasOwnProperty('health_change')) {
+              change = item.health_change;
+              propertyName = 'health';
+            }
+            if (item.hasOwnProperty('jeito_change')) {
+              change = item.jeito_change;
+              propertyName = 'jeito';
+            }
+            var text = '' + (change > 0 ? '+' : '') + change + ' ' + propertyName;
+            var yPos = y + (32 + _this.portraitSize) / 2;
+            (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, 32, text, xPos, yPos);
+          }
+        });
+
         return Object.assign({}, member, {
           xPos: x,
           yPos: y,
@@ -5673,9 +5730,9 @@ var Inventory = function () {
       var currentTime = Date.now();
       inventoryChanges.forEach(function (item) {
         var elapsed = currentTime - item.timestamp;
-        if (elapsed > 0 && elapsed < _constants.DURATION) {
+        if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION) {
           var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
-          (0, _draw.slideText)(_this.ctx, elapsed, _constants.DURATION, 32, text, x, y + _this.size / 2);
+          (0, _draw.slideFadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, 32, text, x, y + _this.size / 2);
         }
       });
 

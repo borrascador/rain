@@ -1,4 +1,4 @@
-import { DURATION } from '../game/constants';
+import { UPDATE_TEXT_DURATION } from '../game/constants';
 
 export default class Connect {
   constructor (store) {
@@ -27,6 +27,10 @@ export default class Connect {
 
   get inventoryChanges() {
     return this.store.getState().inventoryChanges;
+  }
+
+  get partyChanges() {
+    return this.store.getState().partyChanges;
   }
 
   get actions() {

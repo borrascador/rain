@@ -1,4 +1,4 @@
-import { UPDATE_TEXT_OFFSET } from '../../game/constants';
+import { UPDATE_TEXT_OFFSET, UPDATE_TEXT_DURATION } from '../../game/constants';
 
 export function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
@@ -54,12 +54,11 @@ export function updateStory(state, action) {
 }
 
 // Helper function that enforces minimum offset between update text timestamps
-function getTimestamp (state) {
-  const now = Date.now();
-  if (state.inventoryChanges.length > 0) {
-    const latest = state.inventoryChanges[state.inventoryChanges.length - 1];
-    if (now - latest.timestamp < UPDATE_TEXT_OFFSET) {
-      return latest.timestamp - UPDATE_TEXT_OFFSET;
+function getTimestamp (changes, offset, now) {
+  if (changes.length > 0) {
+    const latest = changes[changes.length - 1];
+    if (now - latest.timestamp < offset) {
+      return latest.timestamp - offset;
     }
   }
   return now;
@@ -68,7 +67,8 @@ function getTimestamp (state) {
 export function updateInventoryChanges(state, action) {
   const inventory = action.payload.inventory;
   if (inventory && inventory.length > 0) {
-    const timestamp = getTimestamp(state);
+    const now = Date.now();
+    const timestamp = getTimestamp(state.inventoryChanges, UPDATE_TEXT_OFFSET, now);
     return state.inventoryChanges.concat(
       inventory
       .filter(item => {
@@ -85,17 +85,34 @@ export function updateInventoryChanges(state, action) {
   }
 }
 
-// TODO COMBAK XXX
 export function updatePartyChanges(state, action) {
   const party = action.payload.party;
-  if (action.payload.story && party && party.length > 0) {
-    return state.partyChanges.concat(
-      party.map(change => {
-        return Object.assign({}, change, {
-          timestamp: Date.now()
-        })
-      })
-    );
+  if (party && party.length > 0) {
+    let changes = [];
+    const now = Date.now();
+    let timestampsByMember = Array.from({length: 5}, (_, index) => {
+      const filtered = state.partyChanges.filter(item => item.id === index);
+      return getTimestamp(filtered, UPDATE_TEXT_DURATION, now);
+    });
+    party.forEach(item => {
+      if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
+        changes.push(Object.assign({}, {
+          id: item.id,
+          health_change: item.health_change,
+          timestamp: timestampsByMember[item.id]
+        }));
+        timestampsByMember[item.id] -= UPDATE_TEXT_DURATION;
+      }
+      if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
+        changes.push(Object.assign({}, {
+          id: item.id,
+          jeito_change: item.jeito_change,
+          timestamp: timestampsByMember[item.id]
+        }));
+        timestampsByMember[item.id] -= UPDATE_TEXT_DURATION;
+      }
+    });
+    return state.partyChanges.concat(changes);
   } else {
     return state.partyChanges;
   }

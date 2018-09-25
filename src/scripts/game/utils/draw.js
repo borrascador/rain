@@ -204,7 +204,7 @@ export function drawDurability(ctx, buttonSize, scale, durability, x, y) {
   ctx.stroke();
 }
 
-export function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
+export function slideFadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   ctx.font = fontSize + 'MECC';
   const alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
   ctx.fillStyle = text[0] === '+' ? alphaGreen(alpha) : alphaRed(alpha);
@@ -212,4 +212,11 @@ export function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   const yOffset = (currentTime / totalTime) * yDistance - yDistance / 2;
   const textWidth = ctx.measureText(text).width;
   ctx.fillText(text, x - textWidth, y + yOffset);
+}
+
+export function fadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
+  ctx.font = fontSize + 'MECC';
+  const alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
+  ctx.fillStyle = text[0] === '+' ? alphaGreen(alpha) : alphaRed(alpha);
+  ctx.fillText(text, x, y);
 }

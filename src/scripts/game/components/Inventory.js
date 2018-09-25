@@ -1,9 +1,9 @@
 import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import { screenToImageButton } from './utils';
-import { drawByName, slideText } from '../utils/draw';
+import { drawByName, slideFadeText } from '../utils/draw';
 import { changeMode } from '../../store/actions/actions';
-import { MODE, DURATION } from '../constants';
+import { MODE, UPDATE_TEXT_DURATION } from '../constants';
 
 export default class Inventory {
   constructor (store, canvas, ctx, loader, setDim) {
@@ -35,9 +35,9 @@ export default class Inventory {
     const currentTime = Date.now();
     inventoryChanges.forEach(item => {
       const elapsed = currentTime - item.timestamp;
-      if (elapsed > 0 && elapsed < DURATION) {
+      if (elapsed > 0 && elapsed < UPDATE_TEXT_DURATION) {
         const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
-        slideText(this.ctx, elapsed, DURATION, 32, text, x, y + this.size / 2);
+        slideFadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, 32, text, x, y + this.size / 2);
       }
     });
 

@@ -1,6 +1,6 @@
 export const CAMERA_SPEED = 500; // pixels per second
-export const DURATION = 2000; // ms of each slideText
-export const UPDATE_TEXT_OFFSET = 500; // minimum ms between each slideText
+export const UPDATE_TEXT_DURATION = 2000; // ms duration of each update text
+export const UPDATE_TEXT_OFFSET = 500; // minimum ms between each update text
 
 export const LAYER = {
   BOTTOM: "BOTTOM",
