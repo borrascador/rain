@@ -1,8 +1,9 @@
+import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import { screenToImageButton } from './utils';
 import { drawByName, slideText } from '../utils/draw';
 import { changeMode } from '../../store/actions/actions';
-import { MODE } from '../constants';
+import { MODE, DURATION } from '../constants';
 
 export default class Inventory {
   constructor (store, canvas, ctx, loader, setDim) {
@@ -10,13 +11,11 @@ export default class Inventory {
     this.canvas = canvas;
     this.ctx = ctx;
     this.iconsXl = loader.getImage('icons-xl');
+    this.connect = new Connect(this.store);
 
     this.scale = 4;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new Animation(this.scale, this.scale, 0.5);
-
-    this.totalTime = 2;
-    this.currentTime = 0;
 
     this.buttons = [ { name: 'pack-big' } ];
   }
@@ -24,23 +23,25 @@ export default class Inventory {
   update(x, y) {
     if (x && y && screenToImageButton(x, y, this.buttons)) {
       this.store.dispatch(changeMode(MODE.INVENTORY));
-      this.currentTime = .0001;
     }
   }
 
   render(delta) {
     this.animate.tick(delta);
-    this.buttons = this.buttons.map(button => {
-      const x = this.canvas.width - this.size;
-      const y = this.canvas.height / 2 - this.size / 2;
+    const x = this.canvas.width - this.size;
+    const y = this.canvas.height / 2 - this.size / 2;
 
-      if (this.currentTime > 0 && this.currentTime < this.totalTime) {
-        this.currentTime += delta;
-        slideText(this.ctx, this.currentTime, this.totalTime, 32, '+1 testing', x, y + this.size / 2);
-      } else if (this.currentTime >= this.totalTime) {
-        this.currentTime = 0;
+    const inventoryChanges = this.connect.inventoryChanges;
+    const currentTime = Date.now();
+    inventoryChanges.forEach(item => {
+      const elapsed = currentTime - item.timestamp;
+      if (elapsed > 0 && elapsed < DURATION) {
+        const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
+        slideText(this.ctx, elapsed, DURATION, 32, text, x, y + this.size / 2);
       }
+    });
 
+    this.buttons = this.buttons.map(button => {
       drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y + this.animate.getValue());
       return Object.assign({}, button, {
         xPos: x,

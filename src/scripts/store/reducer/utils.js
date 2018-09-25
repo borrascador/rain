@@ -1,3 +1,5 @@
+import { UPDATE_TEXT_OFFSET } from '../../game/constants';
+
 export function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 };
@@ -51,8 +53,52 @@ export function updateStory(state, action) {
   }
 }
 
-export function updateChanges(state, action) {
+// Helper function that enforces minimum offset between update text timestamps
+function getTimestamp (state) {
+  const now = Date.now();
+  if (state.inventoryChanges.length > 0) {
+    const latest = state.inventoryChanges[state.inventoryChanges.length - 1];
+    if (now - latest.timestamp < UPDATE_TEXT_OFFSET) {
+      return latest.timestamp - UPDATE_TEXT_OFFSET;
+    }
+  }
+  return now;
+}
 
+export function updateInventoryChanges(state, action) {
+  const inventory = action.payload.inventory;
+  if (inventory && inventory.length > 0) {
+    const timestamp = getTimestamp(state);
+    return state.inventoryChanges.concat(
+      inventory
+      .filter(item => {
+        return item.hasOwnProperty('change');
+      })
+      .map((item, index) => {
+        return Object.assign({}, item, {
+          timestamp: timestamp - index * UPDATE_TEXT_OFFSET
+        })
+      })
+    );
+  } else {
+    return state.inventoryChanges;
+  }
+}
+
+// TODO COMBAK XXX
+export function updatePartyChanges(state, action) {
+  const party = action.payload.party;
+  if (action.payload.story && party && party.length > 0) {
+    return state.partyChanges.concat(
+      party.map(change => {
+        return Object.assign({}, change, {
+          timestamp: Date.now()
+        })
+      })
+    );
+  } else {
+    return state.partyChanges;
+  }
 }
 
 export function getActions(inventory, eating, tiles, position) {

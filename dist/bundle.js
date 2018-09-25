@@ -233,6 +233,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var CAMERA_SPEED = exports.CAMERA_SPEED = 500; // pixels per second
+var DURATION = exports.DURATION = 2000; // ms of each slideText
+var UPDATE_TEXT_OFFSET = exports.UPDATE_TEXT_OFFSET = 500; // minimum ms between each slideText
+
 var LAYER = exports.LAYER = {
   BOTTOM: "BOTTOM",
   MIDDLE: "MIDDLE",
@@ -263,6 +266,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _constants = __webpack_require__(1);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Connect = function () {
@@ -273,37 +278,42 @@ var Connect = function () {
   }
 
   _createClass(Connect, [{
-    key: "connected",
+    key: 'connected',
     get: function get() {
       return this.store.getState().connected;
     }
   }, {
-    key: "loggedIn",
+    key: 'loggedIn',
     get: function get() {
       return this.store.getState().loggedIn;
     }
   }, {
-    key: "error",
+    key: 'error',
     get: function get() {
       return this.store.getState().error;
     }
   }, {
-    key: "partyTab",
+    key: 'partyTab',
     get: function get() {
       return this.store.getState().partyTab;
     }
   }, {
-    key: "mode",
+    key: 'mode',
     get: function get() {
       return this.store.getState().mode;
     }
   }, {
-    key: "actions",
+    key: 'inventoryChanges',
+    get: function get() {
+      return this.store.getState().inventoryChanges;
+    }
+  }, {
+    key: 'actions',
     get: function get() {
       return this.store.getState().actions;
     }
   }, {
-    key: "click",
+    key: 'click',
     get: function get() {
       var _store$getState = this.store.getState(),
           xClick = _store$getState.xClick,
@@ -312,7 +322,7 @@ var Connect = function () {
       return { xClick: xClick, yClick: yClick };
     }
   }, {
-    key: "keys",
+    key: 'keys',
     get: function get() {
       var allKeys = this.store.getState().keys;
       var trueKeys = Object.keys(allKeys).filter(function (x) {
@@ -321,7 +331,7 @@ var Connect = function () {
       return trueKeys;
     }
   }, {
-    key: "offset",
+    key: 'offset',
     get: function get() {
       var _store$getState2 = this.store.getState(),
           xOffset = _store$getState2.xOffset,
@@ -330,7 +340,7 @@ var Connect = function () {
       return { xOffset: xOffset, yOffset: yOffset };
     }
   }, {
-    key: "mouse",
+    key: 'mouse',
     get: function get() {
       var _store$getState3 = this.store.getState(),
           xMouse = _store$getState3.xMouse,
@@ -339,12 +349,12 @@ var Connect = function () {
       return { xMouse: xMouse, yMouse: yMouse };
     }
   }, {
-    key: "stories",
+    key: 'stories',
     get: function get() {
       return this.store.getState().stories;
     }
   }, {
-    key: "map",
+    key: 'map',
     get: function get() {
       var _store$getState4 = this.store.getState(),
           position = _store$getState4.position,
@@ -364,7 +374,7 @@ var Connect = function () {
       return { pos: pos, tiles: tiles, sight: sight, zoom: zoom };
     }
   }, {
-    key: "currentTile",
+    key: 'currentTile',
     get: function get() {
       var _store$getState5 = this.store.getState(),
           position = _store$getState5.position,
@@ -375,27 +385,27 @@ var Connect = function () {
       });
     }
   }, {
-    key: "inventory",
+    key: 'inventory',
     get: function get() {
       return this.store.getState().inventory;
     }
   }, {
-    key: "party",
+    key: 'party',
     get: function get() {
       return this.store.getState().party;
     }
   }, {
-    key: "vehicle",
+    key: 'vehicle',
     get: function get() {
       return this.store.getState().vehicle;
     }
   }, {
-    key: "pace",
+    key: 'pace',
     get: function get() {
       return this.store.getState().pace;
     }
   }, {
-    key: "rations",
+    key: 'rations',
     get: function get() {
       return this.store.getState().rations;
     }
@@ -686,7 +696,7 @@ function drawDurability(ctx, buttonSize, scale, durability, x, y) {
 function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   ctx.font = fontSize + 'MECC';
   var alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
-  ctx.fillStyle = 'rgba(0, 256, 0, ' + alpha + ')';
+  ctx.fillStyle = text[0] === '+' ? (0, _colors.alphaGreen)(alpha) : (0, _colors.alphaRed)(alpha);
   var yDistance = 150;
   var yOffset = currentTime / totalTime * yDistance - yDistance / 2;
   var textWidth = ctx.measureText(text).width;
@@ -703,6 +713,8 @@ function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.alphaGreen = alphaGreen;
+exports.alphaRed = alphaRed;
 var BRIGHT_RED = exports.BRIGHT_RED = "#F00";
 var DISCONNECT_RED = exports.DISCONNECT_RED = "#F36";
 var MEDIUM_RED = exports.MEDIUM_RED = "rgba(100, 11, 33, 0.9)";
@@ -721,6 +733,14 @@ var FOREST_BLACK = exports.FOREST_BLACK = "#010";
 
 var MEDIUM_OPAQUE = exports.MEDIUM_OPAQUE = "rgba(0, 0, 0, 0.6)";
 var DARK_OPAQUE = exports.DARK_OPAQUE = "rgba(0, 0, 0, 0.8)";
+
+function alphaGreen(alpha) {
+  return "rgba(0, 256, 0, " + alpha + ")";
+}
+
+function alphaRed(alpha) {
+  return "rgba(256, 0, 0, " + alpha + ")";
+}
 
 /***/ }),
 /* 6 */
@@ -1787,8 +1807,12 @@ exports.updateObject = updateObject;
 exports.updateItemInArray = updateItemInArray;
 exports.mergeArrays = mergeArrays;
 exports.updateStory = updateStory;
-exports.updateChanges = updateChanges;
+exports.updateInventoryChanges = updateInventoryChanges;
+exports.updatePartyChanges = updatePartyChanges;
 exports.getActions = getActions;
+
+var _constants = __webpack_require__(1);
+
 function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 };
@@ -1839,7 +1863,47 @@ function updateStory(state, action) {
   }
 }
 
-function updateChanges(state, action) {}
+// Helper function that enforces minimum offset between update text timestamps
+function getTimestamp(state) {
+  var now = Date.now();
+  if (state.inventoryChanges.length > 0) {
+    var latest = state.inventoryChanges[state.inventoryChanges.length - 1];
+    if (now - latest.timestamp < _constants.UPDATE_TEXT_OFFSET) {
+      return latest.timestamp - _constants.UPDATE_TEXT_OFFSET;
+    }
+  }
+  return now;
+}
+
+function updateInventoryChanges(state, action) {
+  var inventory = action.payload.inventory;
+  if (inventory && inventory.length > 0) {
+    var timestamp = getTimestamp(state);
+    return state.inventoryChanges.concat(inventory.filter(function (item) {
+      return item.hasOwnProperty('change');
+    }).map(function (item, index) {
+      return Object.assign({}, item, {
+        timestamp: timestamp - index * _constants.UPDATE_TEXT_OFFSET
+      });
+    }));
+  } else {
+    return state.inventoryChanges;
+  }
+}
+
+// TODO COMBAK XXX
+function updatePartyChanges(state, action) {
+  var party = action.payload.party;
+  if (action.payload.story && party && party.length > 0) {
+    return state.partyChanges.concat(party.map(function (change) {
+      return Object.assign({}, change, {
+        timestamp: Date.now()
+      });
+    }));
+  } else {
+    return state.partyChanges;
+  }
+}
 
 function getActions(inventory, eating, tiles, position) {
   var actions = { 'main': [] };
@@ -3429,6 +3493,8 @@ function loginResponse(state, action) {
     actions: (0, _utils.getActions)(action.payload.inventory, action.payload.eating, action.payload.tiles, action.payload.position),
     vehicle: action.payload.vehicle || null,
     stories: (0, _utils.updateStory)(state, action),
+    inventoryChanges: (0, _utils.updateInventoryChanges)(state, action),
+    partyChanges: (0, _utils.updatePartyChanges)(state, action),
     position: action.payload.position,
     sight: action.payload.sight,
     pace: action.payload.pace,
@@ -3448,6 +3514,8 @@ function logoutResponse(state) {
     actions: { 'main': [] },
     vehicle: null,
     stories: [],
+    inventoryChanges: [],
+    partyChanges: [],
     position: null,
     sight: null,
     pace: null,
@@ -3467,6 +3535,8 @@ function update(state, action) {
   var eating = action.payload.eating || state.eating;
   var position = action.payload.position || state.position;
   var stories = (0, _utils.updateStory)(state, action);
+  var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
+  var partyChanges = (0, _utils.updatePartyChanges)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
@@ -3477,6 +3547,8 @@ function update(state, action) {
     eating: eating,
     position: position,
     stories: stories,
+    inventoryChanges: inventoryChanges,
+    partyChanges: partyChanges,
     pace: pace,
     rations: rations,
     actions: actions
@@ -3490,6 +3562,8 @@ function eventResponse(state, action) {
   var eating = action.payload.eating || state.eating;
   var position = action.payload.position || state.position;
   var stories = (0, _utils.updateStory)(state, action);
+  var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
+  var partyChanges = (0, _utils.updatePartyChanges)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
@@ -3503,6 +3577,8 @@ function eventResponse(state, action) {
     eating: eating,
     position: position,
     stories: stories,
+    inventoryChanges: inventoryChanges,
+    partyChanges: partyChanges,
     pace: pace,
     rations: rations,
     actions: actions
@@ -3520,6 +3596,8 @@ function openSocket(state) {
     actions: { 'main': [] },
     vehicle: null,
     stories: [],
+    inventoryChanges: [],
+    partyChanges: [],
     position: null,
     sight: null,
     pace: null,
@@ -3540,6 +3618,8 @@ function closeSocket(state) {
     actions: { 'main': [] },
     vehicle: null,
     stories: [],
+    inventoryChanges: [],
+    partyChanges: [],
     position: null,
     sight: null,
     pace: null,
@@ -3589,6 +3669,8 @@ var gameState = {
   inventory: [], // DEBUG with inventory
   vehicle: null, // DEBUG with vehicle
   stories: [], // DEBUG with story TODO update to stories in example
+  inventoryChanges: [],
+  partyChanges: [],
   position: null,
   sight: null,
   pace: null,
@@ -4800,7 +4882,9 @@ var MapView = function () {
     value: function update(keys, x, y) {
       x && y && this.store.dispatch((0, _actions.clicked)());
       if (!this.dim) {
-        if (this.connect.mode === _constants.MODE.PARTY) {
+        if (this.connect.stories.length > 0) {
+          this.story.update(keys, x, y);
+        } else if (this.connect.mode === _constants.MODE.PARTY) {
           this.partyWindow.update(x, y);
         } else if (this.connect.mode === _constants.MODE.INVENTORY) {
           this.inventoryWindow.update(x, y);
@@ -4808,7 +4892,6 @@ var MapView = function () {
           this.camera.update(x, y);
           this.overlay.update(x, y);
           this.actionBar.update(x, y);
-          this.story.update(keys, x, y);
         }
       }
     }
@@ -5533,6 +5616,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
 var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
@@ -5557,13 +5644,11 @@ var Inventory = function () {
     this.canvas = canvas;
     this.ctx = ctx;
     this.iconsXl = loader.getImage('icons-xl');
+    this.connect = new _Connect2.default(this.store);
 
     this.scale = 4;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
-
-    this.totalTime = 2;
-    this.currentTime = 0;
 
     this.buttons = [{ name: 'pack-big' }];
   }
@@ -5573,7 +5658,6 @@ var Inventory = function () {
     value: function update(x, y) {
       if (x && y && (0, _utils.screenToImageButton)(x, y, this.buttons)) {
         this.store.dispatch((0, _actions.changeMode)(_constants.MODE.INVENTORY));
-        this.currentTime = .0001;
       }
     }
   }, {
@@ -5582,17 +5666,20 @@ var Inventory = function () {
       var _this = this;
 
       this.animate.tick(delta);
-      this.buttons = this.buttons.map(function (button) {
-        var x = _this.canvas.width - _this.size;
-        var y = _this.canvas.height / 2 - _this.size / 2;
+      var x = this.canvas.width - this.size;
+      var y = this.canvas.height / 2 - this.size / 2;
 
-        if (_this.currentTime > 0 && _this.currentTime < _this.totalTime) {
-          _this.currentTime += delta;
-          (0, _draw.slideText)(_this.ctx, _this.currentTime, _this.totalTime, 32, '+1 testing', x, y + _this.size / 2);
-        } else if (_this.currentTime >= _this.totalTime) {
-          _this.currentTime = 0;
+      var inventoryChanges = this.connect.inventoryChanges;
+      var currentTime = Date.now();
+      inventoryChanges.forEach(function (item) {
+        var elapsed = currentTime - item.timestamp;
+        if (elapsed > 0 && elapsed < _constants.DURATION) {
+          var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
+          (0, _draw.slideText)(_this.ctx, elapsed, _constants.DURATION, 32, text, x, y + _this.size / 2);
         }
+      });
 
+      this.buttons = this.buttons.map(function (button) {
         (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
         return Object.assign({}, button, {
           xPos: x,

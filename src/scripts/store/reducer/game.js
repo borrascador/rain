@@ -1,4 +1,6 @@
-import { getActions, mergeArrays, updateStory } from './utils';
+import {
+  getActions, mergeArrays, updateStory, updateInventoryChanges, updatePartyChanges
+} from './utils';
 import { MODE } from '../../game/constants';
 
 export function request(state) {
@@ -45,6 +47,8 @@ export function loginResponse(state, action) {
     ),
     vehicle: action.payload.vehicle || null,
     stories: updateStory(state, action),
+    inventoryChanges: updateInventoryChanges(state, action),
+    partyChanges: updatePartyChanges(state, action),
     position: action.payload.position,
     sight: action.payload.sight,
     pace: action.payload.pace,
@@ -64,6 +68,8 @@ export function logoutResponse(state) {
     actions: { 'main': [] },
     vehicle: null,
     stories: [],
+    inventoryChanges: [],
+    partyChanges: [],
     position: null,
     sight: null,
     pace: null,
@@ -83,6 +89,8 @@ export function update(state, action) {
   const eating = action.payload.eating || state.eating;
   const position = action.payload.position || state.position;
   const stories = updateStory(state, action);
+  const inventoryChanges = updateInventoryChanges(state, action);
+  const partyChanges = updatePartyChanges(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   const actions = getActions(inventory, eating, tiles, position);
@@ -93,6 +101,8 @@ export function update(state, action) {
     eating,
     position,
     stories,
+    inventoryChanges,
+    partyChanges,
     pace,
     rations,
     actions,
@@ -106,6 +116,8 @@ export function eventResponse(state, action) {
   const eating = action.payload.eating || state.eating;
   const position = action.payload.position || state.position;
   const stories = updateStory(state, action);
+  const inventoryChanges = updateInventoryChanges(state, action);
+  const partyChanges = updatePartyChanges(state, action);
   const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
   const actions = getActions(inventory, eating, tiles, position);
@@ -119,6 +131,8 @@ export function eventResponse(state, action) {
     eating,
     position,
     stories,
+    inventoryChanges,
+    partyChanges,
     pace,
     rations,
     actions,
@@ -136,6 +150,8 @@ export function openSocket(state) {
     actions: { 'main': [] },
     vehicle: null,
     stories: [],
+    inventoryChanges: [],
+    partyChanges: [],
     position: null,
     sight: null,
     pace: null,
@@ -156,6 +172,8 @@ export function closeSocket(state) {
     actions: { 'main': [] },
     vehicle: null,
     stories: [],
+    inventoryChanges: [],
+    partyChanges: [],
     position: null,
     sight: null,
     pace: null,

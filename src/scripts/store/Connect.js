@@ -1,3 +1,5 @@
+import { DURATION } from '../game/constants';
+
 export default class Connect {
   constructor (store) {
     this.store = store;
@@ -21,6 +23,10 @@ export default class Connect {
 
   get mode() {
     return this.store.getState().mode;
+  }
+
+  get inventoryChanges() {
+    return this.store.getState().inventoryChanges;
   }
 
   get actions() {

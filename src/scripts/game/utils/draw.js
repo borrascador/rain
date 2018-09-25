@@ -1,5 +1,6 @@
 import {
-  BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN, SOLID_WHITE
+  BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN, SOLID_WHITE,
+  alphaGreen, alphaRed
 } from '../colors';
 
 export function drawById (ctx, img, id, zoom, x, y) {
@@ -205,8 +206,8 @@ export function drawDurability(ctx, buttonSize, scale, durability, x, y) {
 
 export function slideText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   ctx.font = fontSize + 'MECC';
-  const alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2)
-  ctx.fillStyle = `rgba(0, 256, 0, ${alpha})`
+  const alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
+  ctx.fillStyle = text[0] === '+' ? alphaGreen(alpha) : alphaRed(alpha);
   const yDistance = 150;
   const yOffset = (currentTime / totalTime) * yDistance - yDistance / 2;
   const textWidth = ctx.measureText(text).width;
