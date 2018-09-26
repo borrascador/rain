@@ -34,7 +34,7 @@ export default class MapView {
   update(keys, x, y) {
     x && y && this.store.dispatch(clicked());
     if (!this.dim) {
-      if (this.connect.mode === MODE.STORY) {
+      if (this.connect.stories.length > 0) {
         this.story.update(keys, x, y);
       } else if (this.connect.mode === MODE.PARTY) {
         this.partyWindow.update(x, y);
@@ -55,10 +55,8 @@ export default class MapView {
     this.camera.render(delta);
     this.overlay.render(delta);
     this.actionBar.render(delta);
+    this.story.render(delta);
     switch (this.connect.mode) {
-      case MODE.STORY:
-        this.story.render(delta);
-        break;
       case MODE.PARTY:
         this.partyWindow.render(delta);
         break;

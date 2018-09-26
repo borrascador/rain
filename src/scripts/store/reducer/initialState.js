@@ -19,7 +19,9 @@ const gameState = {
   party: [], // DEBUG with party
   inventory: [], // DEBUG with inventory
   vehicle: null, // DEBUG with vehicle
-  story: null, // DEBUG with story
+  stories: [], // DEBUG with story TODO update to stories in example
+  inventoryChanges: [],
+  partyChanges: [],
   position: null,
   sight: null,
   pace: null,

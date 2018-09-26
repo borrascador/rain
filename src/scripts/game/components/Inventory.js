@@ -1,8 +1,9 @@
+import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import { screenToImageButton } from './utils';
-import { drawByName } from '../utils/draw';
+import { drawByName, slideFadeText } from '../utils/draw';
 import { changeMode } from '../../store/actions/actions';
-import { MODE } from '../constants';
+import { MODE, UPDATE_TEXT_DURATION } from '../constants';
 
 export default class Inventory {
   constructor (store, canvas, ctx, loader, setDim) {
@@ -10,6 +11,7 @@ export default class Inventory {
     this.canvas = canvas;
     this.ctx = ctx;
     this.iconsXl = loader.getImage('icons-xl');
+    this.connect = new Connect(this.store);
 
     this.scale = 4;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
@@ -26,9 +28,20 @@ export default class Inventory {
 
   render(delta) {
     this.animate.tick(delta);
+    const x = this.canvas.width - this.size;
+    const y = this.canvas.height / 2 - this.size / 2;
+
+    const inventoryChanges = this.connect.inventoryChanges;
+    const currentTime = Date.now();
+    inventoryChanges.forEach(item => {
+      const elapsed = currentTime - item.timestamp;
+      if (elapsed > 0 && elapsed < UPDATE_TEXT_DURATION) {
+        const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
+        slideFadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, 32, text, x, y + this.size / 2);
+      }
+    });
+
     this.buttons = this.buttons.map(button => {
-      const x = this.canvas.width - this.size;
-      const y = this.canvas.height / 2 - this.size / 2;
       drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y + this.animate.getValue());
       return Object.assign({}, button, {
         xPos: x,

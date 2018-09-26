@@ -1,3 +1,5 @@
+import { UPDATE_TEXT_DURATION } from '../game/constants';
+
 export default class Connect {
   constructor (store) {
     this.store = store;
@@ -21,6 +23,14 @@ export default class Connect {
 
   get mode() {
     return this.store.getState().mode;
+  }
+
+  get inventoryChanges() {
+    return this.store.getState().inventoryChanges;
+  }
+
+  get partyChanges() {
+    return this.store.getState().partyChanges;
   }
 
   get actions() {
@@ -50,8 +60,8 @@ export default class Connect {
     return {xMouse, yMouse,};
   }
 
-  get story() {
-    return this.store.getState().story;
+  get stories() {
+    return this.store.getState().stories;
   }
 
   get map() {

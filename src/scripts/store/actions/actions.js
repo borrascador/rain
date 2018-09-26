@@ -57,6 +57,11 @@ export const changeMode = (mode) => ({
   payload: { mode }
 });
 
+export const CLOSE_STORY = 'CLOSE_STORY';
+export const closeStory = () => ({
+  type: CLOSE_STORY
+})
+
 export const ERROR = 'ERROR';
 
 export const error = (code, message) => ({
