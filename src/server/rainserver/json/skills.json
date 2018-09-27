@@ -1,0 +1,23 @@
+[
+	{
+		"id": 0,
+		"name": "hunting",
+		"description": "Increases success chance by 5%"
+	},
+	{
+		"id": 1,
+		"name": "tracking",
+		"description": "Increases hunting encounter chance by 5%"
+	},
+	{
+		"id": 2,
+		"name": "agriculture",
+		"description": "Increases success chance by 50%, increase harvest by 20%"
+	},
+		{
+		"id": 3,
+		"name": "fishing",
+		"description": "Increases success chance by 5%"
+	}
+]
+	

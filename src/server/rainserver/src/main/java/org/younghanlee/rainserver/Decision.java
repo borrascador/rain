@@ -39,6 +39,28 @@ public class Decision {
 		choiceMap.put("continueHunting", continueHunting);
 		choiceMap.put("fishDeep", fishDeep);
 		choiceMap.put("fishShallow", fishShallow);
+		
+		for (int i=0; i<World.numTribes(); i++) {
+			final int index = i;
+			Choice t = new Choice() {
+				public String getText(Player p) {
+
+					return World.getTribe(index).toString();
+				}
+				public JSONObject result(Player p) {
+					p.setTribe(index);
+					JSONArray inventory = World.getTribe(index).generateInventory(p);
+					World.getTribe(index).generateParty(p);
+					JSONObject payload = new JSONObject();
+					JSONObject story = new JSONObject();
+					story.put("text", "You have chosen " + World.getTribe(index).getName());
+					payload.put("story", story);
+					payload.put("inventory", inventory);
+					return Message.EVENT_RESPONSE(payload);
+				}
+			};
+			choiceMap.put("selectTribe"+ i, t);
+		}
 	}
 	
 	public static Choice attack = new Choice() {

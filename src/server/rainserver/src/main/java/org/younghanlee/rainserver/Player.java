@@ -19,7 +19,7 @@ public class Player {
 	private int position;
 	private int x;
 	private int y;
-	private int respawnPosition;
+	private int tribe;
 	
 	private int pace;
 	private int speed;
@@ -55,14 +55,10 @@ public class Player {
 		this.x = randomInt(World.getWidth()/10);
 		this.y = randomInt(World.getHeight() - 1);
 		this.position = World.getWidth() * y + x;	
-		this.respawnPosition = position;
 		Tile t = World.getTile(position);
 		this.tilesSeen = t.inSight(sight);
 		
 		this.party = new ArrayList<Integer>();	
-		addMember("Alice", Player.randomInt(2));
-		addMember("Bob", Player.randomInt(2));
-		addMember("Carol", Player.randomInt(2));
 		
 		this.pace = 2;
 		this.speed = 1;
@@ -73,19 +69,16 @@ public class Player {
 		this.backpack = new HashMap<Integer, Integer>();
 		// Give stick
 		setQuantity(10, 1);
-		// Give potatoes
-		setQuantity(2, 20);
-		// Give beans
-		setQuantity(8, 10);
-		// Give tomato seeds
-		setQuantity(1, 100);
 		
 		eating = new ArrayList<Integer>();
-		add_food(2);
-		add_food(8);
 		
-		this.decision = null;
-		
+		String [] choiceNames = new String[World.numTribes()];
+		for (int i=0; i<World.numTribes(); i++) {
+			choiceNames[i] = "selectTribe"+ i;
+		}
+		Decision d = new Decision(choiceNames);
+		this.decision = d;
+
 		this.buffer = new HashSet<Integer>();
 	}
 	
@@ -112,9 +105,20 @@ public class Player {
 		Tile t = World.getTile(position);
 		t.removeVisitor(this.name);
 		t.updateNeighbors(this.name, Constants.MAXSIGHT);
-		decision = null;
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
+	}
+	
+	public void sendDecision(Connection connection) {
+		if (decision == null) {
+			return;
+		}
+		JSONObject payload = new JSONObject();
+		JSONObject story = new JSONObject();
+		story.put("text", "Choose");
+		story.put("buttons", decision.buttons(this));
+		payload.put("story", story);
+		connection.sendJSON(Message.UPDATE(payload));
 	}
 	
 	public void addToBuffer(int n) {
@@ -226,8 +230,9 @@ public class Player {
 	public int respawn(int survivor) {
 		party.add(survivor);
 		World.getMember(survivor).setHealth(1);
-		move(100, respawnPosition);
-		return respawnPosition;
+		int rp = World.getTribe(tribe).getRespawnPosition();
+		move(100, rp);
+		return rp;
 	}
 	
 	public int getSight() {
@@ -378,6 +383,14 @@ public class Player {
 			ja.put(jo);
 		}
 		return ja;
+	}
+	
+	public void setTribe(int id) {
+		tribe = id;
+	}
+	
+	public Tribe getTribe(int id) {
+		return World.getTribe(id);
 	}
 	
 	public JSONArray regen(int tick) {

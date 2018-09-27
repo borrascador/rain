@@ -82,6 +82,7 @@ public class MessageHandler {
 				tiles = p.tilesSeenArray();
 				response = Message.LOGIN_RESPONSE(p, tiles);
 				connection.sendJSON(response);
+				p.sendDecision(connection);
 				break;
 				
 			case "LOGOUT_REQUEST":

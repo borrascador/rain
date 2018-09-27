@@ -1,5 +1,10 @@
 package org.younghanlee.rainserver;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Member {
@@ -10,6 +15,8 @@ public class Member {
 	private int strength;
 	private int speed;
 	private int jeito;
+	private HashMap<Integer, Integer> skills;
+	private HashMap<Integer, Integer> modifiers;
 	
 	public Member(String name, int icon) {
 		this.name = name;
@@ -19,6 +26,8 @@ public class Member {
 		this.health = 5;
 		this.regen = 10;
 		this.jeito = 5;
+		this.skills = new HashMap<Integer, Integer>();
+		this.modifiers = new HashMap<Integer, Integer>();
 	}
 	
 	public String getName() {
@@ -67,6 +76,19 @@ public class Member {
 	
 	public void setSpeed(int n) {
 		this.speed = n;
+	}
+	
+	public void addSkill(int id) {
+		skills.put(id, 0);
+	}
+	
+	public void addModifier(int n, int time) {
+		modifiers.put(n, time);
+	}
+	
+	public JSONArray getModifiers() {
+		JSONArray ja = new JSONArray();
+		return ja;
 	}
 	
 	public JSONObject change(int id, Player p, int health_change, int jeito_change) {
