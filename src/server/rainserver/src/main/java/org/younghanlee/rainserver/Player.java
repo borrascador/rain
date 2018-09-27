@@ -255,6 +255,10 @@ public class Player {
 		hunt = new Hunt(huntOrFish, this, weapon, habitat_id);
 	}
 	
+	public void removeDecision() {
+		decision = null;
+	}
+	
 	public String stopHunting() {
 		String s =  hunt.huntOrFish();
 		hunt = null;

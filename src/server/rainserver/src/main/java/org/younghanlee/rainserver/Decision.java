@@ -26,6 +26,7 @@ public class Decision {
 	}
 	
 	public JSONObject choose(Player p, int n) {
+		p.removeDecision();
 		return choices[n].result(p);
 	}
 	
