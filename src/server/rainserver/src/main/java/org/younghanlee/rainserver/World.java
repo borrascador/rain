@@ -18,6 +18,8 @@ public class World {
 	private static HashMap<Integer, Animal> animals;
 	private static HashMap<Integer, Member> members;
 	private static HashMap<Integer, Habitat> habitats;
+	private static HashMap<Integer, Skill> skills;
+	private static HashMap<Integer, Tribe> tribes;
 	
 	private static int mapWidth;
 	private static int mapHeight;
@@ -76,6 +78,10 @@ public class World {
 		members = new HashMap<Integer, Member>();
 		animals = new HashMap<Integer, Animal>();
 		habitats = new HashMap<Integer, Habitat>();
+		skills = Skill.readFile();
+		tribes = Tribe.readFile();
+
+		
 		Decision.createDecisionHashMap();
 		
 		// indexing
@@ -212,6 +218,10 @@ public class World {
 		return habitats.get(id);
 	}
 	
+	public static Skill getSkill(int id) {
+		return skills.get(id);
+	}
+	
 	public static void dump() {
 		System.out.println("REGISTERED USERS:" + numPlayers);
 		System.out.println("PLAYERS ONLINE:" + online);
@@ -237,6 +247,14 @@ public class World {
 		if (players.containsKey(name)) {
 			return players.get(name);
 		} else return null;
+	}
+	
+	public static Tribe getTribe(int id) {
+		return tribes.get(id);
+	}
+	
+	public static int numTribes() {
+		return tribes.size();
 	}
 	
 	public static HashMap<String, Player> getPlayers(){
