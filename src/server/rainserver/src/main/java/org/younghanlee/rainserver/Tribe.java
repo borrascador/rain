@@ -64,16 +64,21 @@ public class Tribe {
 		return respawnPosition;
 	}
 
-	public void generateParty(Player p) {
+	public JSONArray generateParty(Player p) {
+		JSONArray party = new JSONArray();
 		for (int i=0; i<partySize; i++) {
-			p.addMember("Party Member " + i, Player.randomInt(2));
+			int member_id = p.addMember("Party Member " + i, Player.randomInt(2));
+			HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
 			for (int id: skills.keySet()) {
 				if (Player.randomInt(100) < skills.get(id)) {
-					World.getMember(p.getPartyMember(i)).addSkill(id);
-				}
+					newSkills.put(id, 0);
+				} 
 			}
-
+			Member m = World.getMember(member_id);
+			JSONObject memberObject = m.change(member_id, p, 0, 0, newSkills, null, null);
+			party.put(memberObject);
 		}
+		return party;
 	}
 
 	

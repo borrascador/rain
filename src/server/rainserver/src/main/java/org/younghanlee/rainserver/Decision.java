@@ -50,13 +50,21 @@ public class Decision {
 				}
 				public JSONObject result(Player p) {
 					p.setTribe(index);
-					JSONArray inventory = World.getTribe(index).generateInventory(p);
-					World.getTribe(index).generateParty(p);
+					Tribe tribe = World.getTribe(index);
+					JSONArray inventory = tribe.generateInventory(p);
+					JSONArray party = tribe.generateParty(p);
+					tribe.generateParty(p);
+					p.move(World.getHeight() * World.getWidth(), tribe.getRespawnPosition());
 					JSONObject payload = new JSONObject();
+					p.setSight(1);
+					JSONArray tiles = p.inSightArray();
+					payload.put("position", p.getPosition());
+					payload.put("tiles", tiles);
 					JSONObject story = new JSONObject();
 					story.put("text", "You have chosen " + World.getTribe(index).getName());
 					payload.put("story", story);
 					payload.put("inventory", inventory);
+					payload.put("party", party);
 					return Message.EVENT_RESPONSE(payload);
 				}
 			};

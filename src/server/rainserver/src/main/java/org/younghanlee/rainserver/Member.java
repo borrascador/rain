@@ -78,8 +78,8 @@ public class Member {
 		this.speed = n;
 	}
 	
-	public void addSkill(int id) {
-		skills.put(id, 0);
+	public void addSkill(int id, int rank) {
+		skills.put(id, rank);
 	}
 	
 	public void addModifier(int n, int time) {
@@ -91,9 +91,11 @@ public class Member {
 		return ja;
 	}
 	
-	public JSONObject change(int id, Player p, int health_change, int jeito_change) {
+	public JSONObject change(int id, Player p, int health_change, int jeito_change, 
+			HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);
+		jo.put("icon", icon);
 		jo.put("name", name);
 		jo.put("health_change", health_change);
 		jo.put("jeito_change", jeito_change);
@@ -107,6 +109,29 @@ public class Member {
 			p.removeMember(id);
 
 		}
+		
+		JSONArray skillsArray = new JSONArray();
+		JSONArray skillsChangeArray = new JSONArray();
+		for (int skill_id: skills_add.keySet()) {
+			int rank = skills_add.get(skill_id);
+			addSkill(skill_id, rank);
+			JSONObject skillObject = new JSONObject();
+			skillObject.put("id", skill_id);
+			skillObject.put("rank", rank);
+			skillsArray.put(skillObject);
+			
+			Skill s = World.getSkill(skill_id);
+			JSONObject newSkillObject = new JSONObject();
+			newSkillObject.put("id", skill_id);
+			newSkillObject.put("rank", rank);
+			newSkillObject.put("name", s.getName());
+			newSkillObject.put("description", s.getDescription());
+			skillsChangeArray.put(newSkillObject);	
+		}
+		
+		jo.put("skills", skillsArray);
+		jo.put("skill_changes", skillsChangeArray);
+		
 		jo.put("health", health);
 		jo.put("jeito", jeito);
 		return jo;
