@@ -47,7 +47,7 @@ public class Player {
 		this.passwordSalt = Password.generateSalt();
 		this.passwordHash = Password.multiHash(password, passwordSalt);
 		
-		this.sight = 1;
+		this.sight = 0;
 		
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
@@ -181,7 +181,7 @@ public class Player {
 		boolean yl = y >= 0;
 		boolean yu = x < World.getHeight();
 		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
-		return xl && xu && yl && yu && dist <= range && dist > 0;
+		return xl && xu && yl && yu && dist <= range;
 	}
 	
 	public boolean move(int range, int destination) {
@@ -229,12 +229,16 @@ public class Player {
 		party.add(survivor);
 		World.getMember(survivor).setHealth(1);
 		int rp = World.getTribe(tribe).getRespawnPosition();
-		move(100, rp);
+		move(World.getHeight() * World.getWidth(), rp);
 		return rp;
 	}
 	
 	public int getSight() {
 		return sight;
+	}
+	
+	public void setSight(int sight) {
+		this.sight =  sight;
 	}
 	
 	public int getPace() {
@@ -316,10 +320,11 @@ public class Player {
 		return ja;
 	}
 	
-	public void addMember(String name, int icon) {
+	public int addMember(String name, int icon) {
 		Member m = new Member(name, icon);
 		int id = World.addMember(m);
 		party.add(id);
+		return id;
 	}
 	
 	public void removeMember(Integer id) {
@@ -402,7 +407,7 @@ public class Player {
 			int health = m.getHealth();
 			if (health < 5) {
 				if (tick % m.getRegen() == 0) {
-					partyArray.put(m.change(id, this, 1, 0));
+					partyArray.put(m.change(id, this, 1, 0, null, null, null));
 				}
 			}
 		}

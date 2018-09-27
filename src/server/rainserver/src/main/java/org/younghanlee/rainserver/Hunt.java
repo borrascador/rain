@@ -103,7 +103,7 @@ public class Hunt{
 					if (Math.random() > 0.6) {
 						members_injured++;
 						int health_loss = -1 * (Player.randomInt(2) + 1);
-						JSONObject jo = m.change(id, p, health_loss, 0);
+						JSONObject jo = m.change(id, p, health_loss, 0, null, null, null);
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
 								death += "Despite all odds, your last member " + m.getName() + " manages to survive and return home.";
