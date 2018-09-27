@@ -67,8 +67,6 @@ public class Player {
 		this.hunt = null;
 		
 		this.backpack = new HashMap<Integer, Integer>();
-		// Give stick
-		setQuantity(10, 1);
 		
 		eating = new ArrayList<Integer>();
 		
