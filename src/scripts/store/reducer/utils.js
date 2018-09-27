@@ -122,7 +122,7 @@ export function getActions(inventory, eating, tiles, position) {
   let actions = { 'main': [] };
 
   let itemsByTag = {};
-  inventory.forEach(item => {
+  inventory.length > 0 && inventory.forEach(item => {
     item.tags.forEach((tag, index) => {
       if (itemsByTag[tag]) {
         itemsByTag[tag].push(item);
@@ -133,20 +133,19 @@ export function getActions(inventory, eating, tiles, position) {
   });
 
   actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
-  actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
-  .concat(eating.map(food => {
-    const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
-    return Object.assign({}, food, {
-      tag: 'remove_food',
-      name: `remove ${matchedFood.name}`,
-      tileset: 'items'
-    });
-  }));
-  if (eating.length < 3 && itemsByTag['food']) {
-    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
-  }
-
+  actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ];
   if (itemsByTag['food']) {
+    actions['eating'].concat(eating.map(food => {
+      const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
+      return Object.assign({}, food, {
+        tag: 'remove_food',
+        name: `remove ${matchedFood.name}`,
+        tileset: 'items'
+      });
+    }));
+    if (eating.length < 3) {
+      actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
+    }
     actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
       itemsByTag['food']
@@ -181,7 +180,7 @@ export function getActions(inventory, eating, tiles, position) {
     }));
   }
 
-  if (currentTile.fishing) {
+  if (currentTile.fishing && itemsByTag['fishing']) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
@@ -192,7 +191,7 @@ export function getActions(inventory, eating, tiles, position) {
     );
   }
 
-  if (currentTile.hunting) {
+  if (currentTile.hunting && itemsByTag['hunting']) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(

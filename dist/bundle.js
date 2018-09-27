@@ -1943,7 +1943,7 @@ function getActions(inventory, eating, tiles, position) {
   var actions = { 'main': [] };
 
   var itemsByTag = {};
-  inventory.forEach(function (item) {
+  inventory.length > 0 && inventory.forEach(function (item) {
     item.tags.forEach(function (tag, index) {
       if (itemsByTag[tag]) {
         itemsByTag[tag].push(item);
@@ -1954,21 +1954,21 @@ function getActions(inventory, eating, tiles, position) {
   });
 
   actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
-  actions['eating'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(eating.map(function (food) {
-    var matchedFood = itemsByTag['food'].find(function (item) {
-      return item.id === food.id;
-    });
-    return Object.assign({}, food, {
-      tag: 'remove_food',
-      name: 'remove ' + matchedFood.name,
-      tileset: 'items'
-    });
-  }));
-  if (eating.length < 3 && itemsByTag['food']) {
-    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' });
-  }
-
+  actions['eating'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }];
   if (itemsByTag['food']) {
+    actions['eating'].concat(eating.map(function (food) {
+      var matchedFood = itemsByTag['food'].find(function (item) {
+        return item.id === food.id;
+      });
+      return Object.assign({}, food, {
+        tag: 'remove_food',
+        name: 'remove ' + matchedFood.name,
+        tileset: 'items'
+      });
+    }));
+    if (eating.length < 3) {
+      actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' });
+    }
     actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].filter(function (invItem) {
       return !eating.find(function (eatItem) {
         return invItem.id === eatItem.id;
@@ -1999,14 +1999,14 @@ function getActions(inventory, eating, tiles, position) {
     }));
   }
 
-  if (currentTile.fishing) {
+  if (currentTile.fishing && itemsByTag['fishing']) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['fishing'].map(function (item) {
       return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
 
-  if (currentTile.hunting) {
+  if (currentTile.hunting && itemsByTag['hunting']) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['hunting'].map(function (item) {
       return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
