@@ -16,7 +16,7 @@ public class Player {
 	private String passwordSalt;
 	
 	private boolean online;
-	private int position;
+	private Integer position;
 	private int x;
 	private int y;
 	private int tribe;
@@ -27,7 +27,7 @@ public class Player {
 	private ArrayList<Integer> eating;
 	
 	private int sight;
-	private HashSet<Integer> tilesSeen;
+	private ArrayList<Integer> tilesSeen;
 	
 	private ArrayList<Integer> party;
 	private HashMap<Integer, Integer> backpack;
@@ -47,16 +47,12 @@ public class Player {
 		this.passwordSalt = Password.generateSalt();
 		this.passwordHash = Password.multiHash(password, passwordSalt);
 		
-		this.sight = 0;
+		this.sight = 1;
 		
 		// Player is offline upon registration. Call Login afterwards
 		this.online = false;
-		
-		this.x = randomInt(World.getWidth()/10);
-		this.y = randomInt(World.getHeight() - 1);
-		this.position = World.getWidth() * y + x;	
-		Tile t = World.getTile(position);
-		this.tilesSeen = t.inSight(sight);
+		this.position = null;	
+		this.tilesSeen = new ArrayList<Integer>();
 		
 		this.party = new ArrayList<Integer>();	
 		
@@ -92,9 +88,11 @@ public class Player {
 		this.online = true;
 		World.onlineInc();
 		connection.setPlayer(this);
-		Tile t = World.getTile(position);
-		t.addVisitor(this.name);
-		t.updateNeighbors(this.name, Constants.MAXSIGHT);
+		if (position != null) {
+			Tile t = World.getTile(position);
+			t.addVisitor(this.name);
+			t.updateNeighbors(this.name, Constants.MAXSIGHT);
+		}
 	}
 	
 	public JSONObject logoff(Connection connection) {
@@ -184,6 +182,10 @@ public class Player {
 		return xl && xu && yl && yu && dist <= range;
 	}
 	
+	public void setPosition(int position) {
+		this.position = position;
+	}
+	
 	public boolean move(int range, int destination) {
 		int x = destination % World.getWidth();
 		int y = (destination - x)/World.getWidth();
@@ -210,7 +212,10 @@ public class Player {
 			dest.updateNeighbors(this.name, Constants.MAXSIGHT);
 			
 			return true;
-		} else return false;
+		} else {
+			System.out.println("illegal move");
+			return false;
+		}
 	}
 	
 	public boolean isOnline() {
@@ -221,7 +226,7 @@ public class Player {
 		return name;
 	}
 	
-	public int getPosition() {
+	public Integer getPosition() {
 		return position;
 	}
 	

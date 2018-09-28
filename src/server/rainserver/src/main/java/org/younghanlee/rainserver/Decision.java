@@ -54,9 +54,8 @@ public class Decision {
 					JSONArray inventory = tribe.generateInventory(p);
 					JSONArray party = tribe.generateParty(p);
 					tribe.generateParty(p);
-					p.move(World.getHeight() * World.getWidth(), tribe.getRespawnPosition());
+					p.setPosition(World.getTribe(index).getRespawnPosition());
 					JSONObject payload = new JSONObject();
-					p.setSight(1);
 					JSONArray tiles = p.inSightArray();
 					payload.put("position", p.getPosition());
 					payload.put("tiles", tiles);
