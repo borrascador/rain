@@ -68,6 +68,10 @@ export default class Party {
             change = item.jeito_change;
             propertyName = 'jeito';
           }
+          if (item.hasOwnProperty('skill_change')) {
+            change = 1;
+            propertyName = item.skill_change;
+          }
           const text = `${change > 0 ? '+' : ''}${change} ${propertyName}`;
           const yPos = y + (32 + this.portraitSize) / 2;
           fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, 32, text, xPos, yPos);

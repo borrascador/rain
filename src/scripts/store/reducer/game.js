@@ -1,5 +1,6 @@
 import {
-  getActions, mergeArrays, updateStory, updateInventoryChanges, updatePartyChanges
+  updateParty, getActions, mergeArrays, updateStory, updateInventoryChanges,
+  updatePartyChanges
 } from './utils';
 import { MODE } from '../../game/constants';
 

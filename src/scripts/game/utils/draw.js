@@ -172,15 +172,15 @@ export function drawHover(ctx, fontSize, button) {
   ctx.fillStyle = HOVER_GREEN;
   ctx.fillRect(
     button.xPos + button.width / 2 - textWidth / 2 - padding,
-    button.yPos - button.height / 2 - padding * 1.5,
+    button.yPos - fontSize - padding * 3.5,
     textWidth + padding * 2,
     fontSize + padding * 2
   );
-  const y = button.yPos - button.height / 2 + fontSize + padding / 2;
+  const y = button.yPos - padding * 1.5;
   ctx.beginPath();
-  ctx.moveTo(button.xPos + 1/3 * button.width, y);
-  ctx.lineTo(button.xPos + 2/3 * button.width, y);
-  ctx.lineTo(button.xPos + 1/2 * button.width, y + padding);
+  ctx.moveTo(button.xPos + button.width / 2 - padding, y);
+  ctx.lineTo(button.xPos + button.width / 2 + padding, y);
+  ctx.lineTo(button.xPos + button.width / 2, y + padding);
   ctx.closePath();
   ctx.fill();
 
@@ -188,7 +188,7 @@ export function drawHover(ctx, fontSize, button) {
   ctx.fillText(
     text,
     button.xPos + button.width / 2 - textWidth / 2,
-    button.yPos - button.height / 2 + fontSize - padding / 2
+    button.yPos - padding * 2.5
   );
 }
 

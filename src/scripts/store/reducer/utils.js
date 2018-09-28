@@ -29,6 +29,18 @@ export function mergeArrays(oldArray, newArray) {
     } else {
       obj[item.id] = item;
     }
+    if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
+      obj[item.id] = Object.assign(obj[item.id], {
+        skills: item.skills.map(skill => {
+          const match = item.skill_changes.find(change => skill.id === change.id);
+          if (match) {
+            return Object.assign(skill, match);
+          } else {
+            return skill
+          }
+        })
+      });
+    }
   });
   let result = [];
   for(let prop in obj) {
@@ -58,7 +70,7 @@ function getTimestamp (changes, offset, now) {
   if (changes.length > 0) {
     const latest = changes[changes.length - 1];
     if (now - latest.timestamp < offset) {
-      return latest.timestamp - offset;
+      return latest.timestamp + offset;
     }
   }
   return now;
@@ -76,7 +88,7 @@ export function updateInventoryChanges(state, action) {
       })
       .map((item, index) => {
         return Object.assign({}, item, {
-          timestamp: timestamp - index * UPDATE_TEXT_OFFSET
+          timestamp: timestamp + index * UPDATE_TEXT_OFFSET
         })
       })
     );
@@ -90,26 +102,37 @@ export function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     let changes = [];
     const now = Date.now();
-    let timestampsByMember = Array.from({length: 5}, (_, index) => {
-      const filtered = state.partyChanges.filter(item => item.id === index);
-      return getTimestamp(filtered, UPDATE_TEXT_DURATION, now);
-    });
     party.forEach(item => {
+      const filtered = state.partyChanges.filter(member => item.id === member.id);
+      let timestamp = getTimestamp(filtered, UPDATE_TEXT_DURATION, now)
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
           health_change: item.health_change,
-          timestamp: timestampsByMember[item.id]
+          timestamp: timestamp
         }));
-        timestampsByMember[item.id] -= UPDATE_TEXT_DURATION;
+        timestamp += UPDATE_TEXT_DURATION;
       }
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
           jeito_change: item.jeito_change,
-          timestamp: timestampsByMember[item.id]
+          timestamp: timestamp
         }));
-        timestampsByMember[item.id] -= UPDATE_TEXT_DURATION;
+        timestamp += UPDATE_TEXT_DURATION;
+      }
+      if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
+        changes = changes.concat(
+          item.skill_changes.map(change => {
+            const result = Object.assign({}, {
+              id: item.id,
+              skill_change: change.name,
+              timestamp: timestamp
+            });
+            timestamp += UPDATE_TEXT_DURATION;
+            return result;
+          })
+        );
       }
     });
     return state.partyChanges.concat(changes);
@@ -135,17 +158,16 @@ export function getActions(inventory, eating, tiles, position) {
   actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
   actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ];
   if (itemsByTag['food']) {
-    actions['eating'].concat(eating.map(food => {
-      const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
-      return Object.assign({}, food, {
-        tag: 'remove_food',
-        name: `remove ${matchedFood.name}`,
-        tileset: 'items'
-      });
-    }));
-    if (eating.length < 3) {
-      actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
-    }
+    actions['eating'] = actions['eating'].concat(
+      eating.map(food => {
+        const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
+        return Object.assign({}, food, {
+          tag: 'remove_food',
+          name: `remove ${matchedFood.name}`,
+          tileset: 'items'
+        });
+      })
+    );
     actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
       itemsByTag['food']
@@ -154,6 +176,10 @@ export function getActions(inventory, eating, tiles, position) {
         return { tag: 'add_food', name: `add ${item.name}`, id: item.id, tileset: 'items' }
       })
     );
+  }
+
+  if (eating.length < 3) {
+    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
   }
 
   if (itemsByTag['seed']) {
