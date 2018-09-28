@@ -16,8 +16,8 @@ export default class Habitat {
   render(delta) {
     const currentTile = this.connect.currentTile;
     let text = [];
-    currentTile.hunting && text.push(currentTile.hunting);
-    currentTile.fishing && text.push(currentTile.fishing);
+    currentTile && currentTile.hunting && text.push(currentTile.hunting);
+    currentTile && currentTile.fishing && text.push(currentTile.fishing);
     text.forEach( (line, index) => {
       this.ctx.fillStyle = SOLID_WHITE;
       this.ctx.font = this.fontSize + 'px MECC';

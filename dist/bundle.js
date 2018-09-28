@@ -2017,7 +2017,7 @@ function getActions(inventory, eating, tiles, position) {
   var currentTile = tiles.find(function (tile) {
     return tile.id === position;
   });
-  if (currentTile.crops && currentTile.crops.length > 0) {
+  if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
     actions['main'].push({ target: 'harvest', id: 14, tileset: 'icons' });
     actions['harvest'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(currentTile.crops.map(function (crop) {
       if (crop.stage === 0) {
@@ -2028,14 +2028,14 @@ function getActions(inventory, eating, tiles, position) {
     }));
   }
 
-  if (currentTile.fishing && itemsByTag['fishing']) {
+  if (currentTile && currentTile.fishing && itemsByTag['fishing']) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['fishing'].map(function (item) {
       return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
 
-  if (currentTile.hunting && itemsByTag['hunting']) {
+  if (currentTile && currentTile.hunting && itemsByTag['hunting']) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['hunting'].map(function (item) {
       return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
@@ -3596,7 +3596,12 @@ function update(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var eating = action.payload.eating || state.eating;
-  var position = action.payload.position || state.position;
+  var position = void 0;
+  if (typeof action.payload.position === 'number') {
+    position = action.payload.position;
+  } else {
+    position = state.position;
+  }
   var stories = (0, _utils.updateStory)(state, action);
   var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
@@ -3623,7 +3628,12 @@ function eventResponse(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var eating = action.payload.eating || state.eating;
-  var position = action.payload.position || state.position;
+  var position = void 0;
+  if (typeof action.payload.position === 'number') {
+    position = action.payload.position;
+  } else {
+    position = state.position;
+  }
   var stories = (0, _utils.updateStory)(state, action);
   var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
@@ -4952,7 +4962,7 @@ var MapView = function () {
         } else if (this.connect.mode === _constants.MODE.INVENTORY) {
           this.inventoryWindow.update(x, y);
         } else {
-          this.connect.position && this.camera.update(x, y);
+          this.connect.currentTile && this.camera.update(x, y);
           this.overlay.update(x, y);
           this.actionBar.update(x, y);
         }
@@ -4964,7 +4974,7 @@ var MapView = function () {
       this.ctx.fillStyle = _colors.FOREST_BLACK;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      this.connect.position && this.camera.render(delta);
+      this.connect.currentTile && this.camera.render(delta);
       this.overlay.render(delta);
       this.actionBar.render(delta);
       this.story.render(delta);
@@ -5675,8 +5685,8 @@ var Habitat = function () {
 
       var currentTile = this.connect.currentTile;
       var text = [];
-      currentTile.hunting && text.push(currentTile.hunting);
-      currentTile.fishing && text.push(currentTile.fishing);
+      currentTile && currentTile.hunting && text.push(currentTile.hunting);
+      currentTile && currentTile.fishing && text.push(currentTile.fishing);
       text.forEach(function (line, index) {
         _this.ctx.fillStyle = _colors.SOLID_WHITE;
         _this.ctx.font = _this.fontSize + 'px MECC';
@@ -6048,10 +6058,10 @@ var ActionBar = function () {
               break;
             case 'harvest':
               var currentTile = this.connect.currentTile;
-              var currentCrop = currentTile.crops.find(function (crop) {
+              var currentCrop = currentTile && currentTile.crops.find(function (crop) {
                 return crop.name === button.name;
               });
-              currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
+              currentCrop && currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
               this.current = 'main';
               break;
             case 'hunting':

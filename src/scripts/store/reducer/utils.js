@@ -194,7 +194,7 @@ export function getActions(inventory, eating, tiles, position) {
   }
 
   const currentTile = tiles.find(tile => tile.id === position);
-  if (currentTile.crops && currentTile.crops.length > 0) {
+  if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
     actions['main'].push({ target: 'harvest', id: 14, tileset: 'icons' });
     actions['harvest'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(currentTile.crops.map(crop => {
@@ -206,7 +206,7 @@ export function getActions(inventory, eating, tiles, position) {
     }));
   }
 
-  if (currentTile.fishing && itemsByTag['fishing']) {
+  if (currentTile && currentTile.fishing && itemsByTag['fishing']) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
@@ -217,7 +217,7 @@ export function getActions(inventory, eating, tiles, position) {
     );
   }
 
-  if (currentTile.hunting && itemsByTag['hunting']) {
+  if (currentTile && currentTile.hunting && itemsByTag['hunting']) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
