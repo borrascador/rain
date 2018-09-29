@@ -78,6 +78,10 @@ export default class Connect {
     return tiles.find(tile => tile.id === position);
   }
 
+  get position() {
+    return this.store.getState().position;
+  }
+
   get inventory() {
     return this.store.getState().inventory;
   }

@@ -41,7 +41,7 @@ export default class MapView {
       } else if (this.connect.mode === MODE.INVENTORY) {
         this.inventoryWindow.update(x, y);
       } else {
-        this.camera.update(x, y);
+        this.connect.currentTile && this.camera.update(x, y);
         this.overlay.update(x, y);
         this.actionBar.update(x, y);
       }
@@ -52,7 +52,7 @@ export default class MapView {
     this.ctx.fillStyle = FOREST_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.camera.render(delta);
+    this.connect.currentTile && this.camera.render(delta);
     this.overlay.render(delta);
     this.actionBar.render(delta);
     this.story.render(delta);

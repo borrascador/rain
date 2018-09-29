@@ -14,22 +14,46 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
-  oldArray.forEach(item => {
-    obj[item.id] = item;
-  });
-  newArray.forEach(item => {
-    if (obj.hasOwnProperty(item.id)) {
-      if (item.hasOwnProperty('quantity') && item.quantity === 0) {
-        delete obj[item.id];
-      } else if (item.hasOwnProperty('health') && item.health === 0) {
-        delete obj[item.id];
+  for (let oldItem of oldArray) {
+    obj[oldItem.id] = oldItem;
+  };
+  for (let newItem of newArray) {
+    if (obj.hasOwnProperty(newItem.id)) {
+      if (newItem.quantity === 0 || newItem.health === 0) {
+        delete obj[newItem.id];
+        break;
       } else {
-        obj[item.id] = Object.assign(obj[item.id], item);
+        obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
       }
     } else {
-      obj[item.id] = item;
+      obj[newItem.id] = newItem;
     }
-  });
+    if (newItem.hasOwnProperty('skill_changes') && newItem.skill_changes.length > 0) {
+      obj[newItem.id] = Object.assign(obj[newItem.id], {
+        skills: newItem.skills.map(skill => {
+          const match = newItem.skill_changes.find(change => skill.id === change.id);
+          if (match) {
+            return Object.assign(skill, match);
+          } else {
+            return skill;
+          }
+        })
+      });
+    }
+    if (newItem.hasOwnProperty('modifier_changes') && newItem.modifier_changes.length > 0) {
+      obj[newItem.id] = Object.assign(obj[newItem.id], {
+        modifiers: newItem.modifiers.map(modifier => {
+          const match = newItem.modifier_changes.find(change => modifier.id === change.id);
+          if (match) {
+            return Object.assign(modifier, match);
+          } else {
+            return modifier;
+          }
+        })
+      });
+    }
+  }
+  // convert object of items into array of items
   let result = [];
   for(let prop in obj) {
     if(obj.hasOwnProperty(prop))
@@ -58,7 +82,7 @@ function getTimestamp (changes, offset, now) {
   if (changes.length > 0) {
     const latest = changes[changes.length - 1];
     if (now - latest.timestamp < offset) {
-      return latest.timestamp - offset;
+      return latest.timestamp + offset;
     }
   }
   return now;
@@ -76,7 +100,7 @@ export function updateInventoryChanges(state, action) {
       })
       .map((item, index) => {
         return Object.assign({}, item, {
-          timestamp: timestamp - index * UPDATE_TEXT_OFFSET
+          timestamp: timestamp + index * UPDATE_TEXT_OFFSET
         })
       })
     );
@@ -90,26 +114,55 @@ export function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     let changes = [];
     const now = Date.now();
-    let timestampsByMember = Array.from({length: 5}, (_, index) => {
-      const filtered = state.partyChanges.filter(item => item.id === index);
-      return getTimestamp(filtered, UPDATE_TEXT_DURATION, now);
-    });
     party.forEach(item => {
+      const filtered = state.partyChanges.filter(member => item.id === member.id);
+      let timestamp = getTimestamp(filtered, UPDATE_TEXT_DURATION, now)
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          health_change: item.health_change,
-          timestamp: timestampsByMember[item.id]
+          change: item.health_change,
+          name: 'health',
+          timestamp: timestamp
         }));
-        timestampsByMember[item.id] -= UPDATE_TEXT_DURATION;
+        timestamp += UPDATE_TEXT_DURATION;
       }
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          jeito_change: item.jeito_change,
-          timestamp: timestampsByMember[item.id]
+          change: item.jeito_change,
+          name: 'jeito',
+          timestamp: timestamp
         }));
-        timestampsByMember[item.id] -= UPDATE_TEXT_DURATION;
+        timestamp += UPDATE_TEXT_DURATION;
+      }
+      if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
+        changes = changes.concat(
+          item.skill_changes.map(change => {
+            const result = Object.assign({}, {
+              id: item.id,
+              change: 1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += UPDATE_TEXT_DURATION;
+            return result;
+          })
+        );
+      }
+      if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
+        changes = changes.concat(
+          item.modifier_changes.map(change => {
+            const match = item.modifiers.find(modifier => modifier.id === change.id)
+            const result = Object.assign({}, {
+              id: item.id,
+              change: match ? 1 : -1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += UPDATE_TEXT_DURATION;
+            return result;
+          })
+        );
       }
     });
     return state.partyChanges.concat(changes);
@@ -135,17 +188,16 @@ export function getActions(inventory, eating, tiles, position) {
   actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
   actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ];
   if (itemsByTag['food']) {
-    actions['eating'].concat(eating.map(food => {
-      const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
-      return Object.assign({}, food, {
-        tag: 'remove_food',
-        name: `remove ${matchedFood.name}`,
-        tileset: 'items'
-      });
-    }));
-    if (eating.length < 3) {
-      actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
-    }
+    actions['eating'] = actions['eating'].concat(
+      eating.map(food => {
+        const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
+        return Object.assign({}, food, {
+          tag: 'remove_food',
+          name: `remove ${matchedFood.name}`,
+          tileset: 'items'
+        });
+      })
+    );
     actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
       itemsByTag['food']
@@ -154,6 +206,10 @@ export function getActions(inventory, eating, tiles, position) {
         return { tag: 'add_food', name: `add ${item.name}`, id: item.id, tileset: 'items' }
       })
     );
+  }
+
+  if (eating.length < 3) {
+    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
   }
 
   if (itemsByTag['seed']) {
@@ -168,7 +224,7 @@ export function getActions(inventory, eating, tiles, position) {
   }
 
   const currentTile = tiles.find(tile => tile.id === position);
-  if (currentTile.crops && currentTile.crops.length > 0) {
+  if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
     actions['main'].push({ target: 'harvest', id: 14, tileset: 'icons' });
     actions['harvest'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(currentTile.crops.map(crop => {
@@ -180,7 +236,7 @@ export function getActions(inventory, eating, tiles, position) {
     }));
   }
 
-  if (currentTile.fishing && itemsByTag['fishing']) {
+  if (currentTile && currentTile.fishing && itemsByTag['fishing']) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(
@@ -191,7 +247,7 @@ export function getActions(inventory, eating, tiles, position) {
     );
   }
 
-  if (currentTile.hunting && itemsByTag['hunting']) {
+  if (currentTile && currentTile.hunting && itemsByTag['hunting']) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
     .concat(

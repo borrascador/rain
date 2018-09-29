@@ -39,8 +39,10 @@ export default class ActionBar {
             break;
           case 'harvest':
             const currentTile = this.connect.currentTile;
-            const currentCrop = currentTile.crops.find(crop => crop.name === button.name);
-            currentCrop.stage <= 0 && this.store.dispatch(sendEvent('harvest', button.id)); // TODO <= to ===
+            const currentCrop = currentTile && currentTile.crops.find(crop =>
+              crop.name === button.name
+            );
+            currentCrop && currentCrop.stage <= 0 && this.store.dispatch(sendEvent('harvest', button.id)); // TODO <= to ===
             this.current = 'main';
             break;
           case 'hunting':

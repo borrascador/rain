@@ -390,6 +390,11 @@ var Connect = function () {
       });
     }
   }, {
+    key: 'position',
+    get: function get() {
+      return this.store.getState().position;
+    }
+  }, {
     key: 'inventory',
     get: function get() {
       return this.store.getState().inventory;
@@ -674,17 +679,17 @@ function drawHover(ctx, fontSize, button) {
   var padding = 8;
 
   ctx.fillStyle = _colors.HOVER_GREEN;
-  ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - button.height / 2 - padding * 1.5, textWidth + padding * 2, fontSize + padding * 2);
-  var y = button.yPos - button.height / 2 + fontSize + padding / 2;
+  ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - fontSize - padding * 3.5, textWidth + padding * 2, fontSize + padding * 2);
+  var y = button.yPos - padding * 1.5;
   ctx.beginPath();
-  ctx.moveTo(button.xPos + 1 / 3 * button.width, y);
-  ctx.lineTo(button.xPos + 2 / 3 * button.width, y);
-  ctx.lineTo(button.xPos + 1 / 2 * button.width, y + padding);
+  ctx.moveTo(button.xPos + button.width / 2 - padding, y);
+  ctx.lineTo(button.xPos + button.width / 2 + padding, y);
+  ctx.lineTo(button.xPos + button.width / 2, y + padding);
   ctx.closePath();
   ctx.fill();
 
   ctx.fillStyle = _colors.SOLID_WHITE;
-  ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - button.height / 2 + fontSize - padding / 2);
+  ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - padding * 2.5);
 }
 
 function drawDurability(ctx, buttonSize, scale, durability, x, y) {
@@ -1840,22 +1845,101 @@ function updateItemInArray(array, itemId, updateItemCallback) {
 function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   var obj = {};
-  oldArray.forEach(function (item) {
-    obj[item.id] = item;
-  });
-  newArray.forEach(function (item) {
-    if (obj.hasOwnProperty(item.id)) {
-      if (item.hasOwnProperty('quantity') && item.quantity === 0) {
-        delete obj[item.id];
-      } else if (item.hasOwnProperty('health') && item.health === 0) {
-        delete obj[item.id];
-      } else {
-        obj[item.id] = Object.assign(obj[item.id], item);
-      }
-    } else {
-      obj[item.id] = item;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = oldArray[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var oldItem = _step.value;
+
+      obj[oldItem.id] = oldItem;
     }
-  });
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  ;
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    var _loop = function _loop() {
+      var newItem = _step2.value;
+
+      if (obj.hasOwnProperty(newItem.id)) {
+        if (newItem.quantity === 0 || newItem.health === 0) {
+          delete obj[newItem.id];
+          return 'break';
+        } else {
+          obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
+        }
+      } else {
+        obj[newItem.id] = newItem;
+      }
+      if (newItem.hasOwnProperty('skill_changes') && newItem.skill_changes.length > 0) {
+        obj[newItem.id] = Object.assign(obj[newItem.id], {
+          skills: newItem.skills.map(function (skill) {
+            var match = newItem.skill_changes.find(function (change) {
+              return skill.id === change.id;
+            });
+            if (match) {
+              return Object.assign(skill, match);
+            } else {
+              return skill;
+            }
+          })
+        });
+      }
+      if (newItem.hasOwnProperty('modifier_changes') && newItem.modifier_changes.length > 0) {
+        obj[newItem.id] = Object.assign(obj[newItem.id], {
+          modifiers: newItem.modifiers.map(function (modifier) {
+            var match = newItem.modifier_changes.find(function (change) {
+              return modifier.id === change.id;
+            });
+            if (match) {
+              return Object.assign(modifier, match);
+            } else {
+              return modifier;
+            }
+          })
+        });
+      }
+    };
+
+    for (var _iterator2 = newArray[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var _ret = _loop();
+
+      if (_ret === 'break') break;
+    }
+    // convert object of items into array of items
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2.return) {
+        _iterator2.return();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+
   var result = [];
   for (var prop in obj) {
     if (obj.hasOwnProperty(prop)) result.push(obj[prop]);
@@ -1881,7 +1965,7 @@ function getTimestamp(changes, offset, now) {
   if (changes.length > 0) {
     var latest = changes[changes.length - 1];
     if (now - latest.timestamp < offset) {
-      return latest.timestamp - offset;
+      return latest.timestamp + offset;
     }
   }
   return now;
@@ -1896,7 +1980,7 @@ function updateInventoryChanges(state, action) {
       return item.hasOwnProperty('change');
     }).map(function (item, index) {
       return Object.assign({}, item, {
-        timestamp: timestamp - index * _constants.UPDATE_TEXT_OFFSET
+        timestamp: timestamp + index * _constants.UPDATE_TEXT_OFFSET
       });
     }));
   } else {
@@ -1909,28 +1993,55 @@ function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     var changes = [];
     var now = Date.now();
-    var timestampsByMember = Array.from({ length: 5 }, function (_, index) {
-      var filtered = state.partyChanges.filter(function (item) {
-        return item.id === index;
-      });
-      return getTimestamp(filtered, _constants.UPDATE_TEXT_DURATION, now);
-    });
     party.forEach(function (item) {
+      var filtered = state.partyChanges.filter(function (member) {
+        return item.id === member.id;
+      });
+      var timestamp = getTimestamp(filtered, _constants.UPDATE_TEXT_DURATION, now);
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          health_change: item.health_change,
-          timestamp: timestampsByMember[item.id]
+          change: item.health_change,
+          name: 'health',
+          timestamp: timestamp
         }));
-        timestampsByMember[item.id] -= _constants.UPDATE_TEXT_DURATION;
+        timestamp += _constants.UPDATE_TEXT_DURATION;
       }
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          jeito_change: item.jeito_change,
-          timestamp: timestampsByMember[item.id]
+          change: item.jeito_change,
+          name: 'jeito',
+          timestamp: timestamp
         }));
-        timestampsByMember[item.id] -= _constants.UPDATE_TEXT_DURATION;
+        timestamp += _constants.UPDATE_TEXT_DURATION;
+      }
+      if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
+        changes = changes.concat(item.skill_changes.map(function (change) {
+          var result = Object.assign({}, {
+            id: item.id,
+            change: 1,
+            name: change.name,
+            timestamp: timestamp
+          });
+          timestamp += _constants.UPDATE_TEXT_DURATION;
+          return result;
+        }));
+      }
+      if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
+        changes = changes.concat(item.modifier_changes.map(function (change) {
+          var match = item.modifiers.find(function (modifier) {
+            return modifier.id === change.id;
+          });
+          var result = Object.assign({}, {
+            id: item.id,
+            change: match ? 1 : -1,
+            name: change.name,
+            timestamp: timestamp
+          });
+          timestamp += _constants.UPDATE_TEXT_DURATION;
+          return result;
+        }));
       }
     });
     return state.partyChanges.concat(changes);
@@ -1956,7 +2067,7 @@ function getActions(inventory, eating, tiles, position) {
   actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
   actions['eating'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }];
   if (itemsByTag['food']) {
-    actions['eating'].concat(eating.map(function (food) {
+    actions['eating'] = actions['eating'].concat(eating.map(function (food) {
       var matchedFood = itemsByTag['food'].find(function (item) {
         return item.id === food.id;
       });
@@ -1966,9 +2077,6 @@ function getActions(inventory, eating, tiles, position) {
         tileset: 'items'
       });
     }));
-    if (eating.length < 3) {
-      actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' });
-    }
     actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].filter(function (invItem) {
       return !eating.find(function (eatItem) {
         return invItem.id === eatItem.id;
@@ -1976,6 +2084,10 @@ function getActions(inventory, eating, tiles, position) {
     }).map(function (item) {
       return { tag: 'add_food', name: 'add ' + item.name, id: item.id, tileset: 'items' };
     }));
+  }
+
+  if (eating.length < 3) {
+    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' });
   }
 
   if (itemsByTag['seed']) {
@@ -1988,7 +2100,7 @@ function getActions(inventory, eating, tiles, position) {
   var currentTile = tiles.find(function (tile) {
     return tile.id === position;
   });
-  if (currentTile.crops && currentTile.crops.length > 0) {
+  if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
     actions['main'].push({ target: 'harvest', id: 14, tileset: 'icons' });
     actions['harvest'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(currentTile.crops.map(function (crop) {
       if (crop.stage === 0) {
@@ -1999,14 +2111,14 @@ function getActions(inventory, eating, tiles, position) {
     }));
   }
 
-  if (currentTile.fishing && itemsByTag['fishing']) {
+  if (currentTile && currentTile.fishing && itemsByTag['fishing']) {
     actions['main'].push({ target: 'fishing', id: 17, tileset: 'icons' });
     actions['fishing'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['fishing'].map(function (item) {
       return { tag: 'fishing', name: item.name, id: item.id, tileset: 'items' };
     }));
   }
 
-  if (currentTile.hunting && itemsByTag['hunting']) {
+  if (currentTile && currentTile.hunting && itemsByTag['hunting']) {
     actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
     actions['hunting'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['hunting'].map(function (item) {
       return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' };
@@ -3567,7 +3679,12 @@ function update(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var eating = action.payload.eating || state.eating;
-  var position = action.payload.position || state.position;
+  var position = void 0;
+  if (typeof action.payload.position === 'number') {
+    position = action.payload.position;
+  } else {
+    position = state.position;
+  }
   var stories = (0, _utils.updateStory)(state, action);
   var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
@@ -3594,7 +3711,12 @@ function eventResponse(state, action) {
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
   var eating = action.payload.eating || state.eating;
-  var position = action.payload.position || state.position;
+  var position = void 0;
+  if (typeof action.payload.position === 'number') {
+    position = action.payload.position;
+  } else {
+    position = state.position;
+  }
   var stories = (0, _utils.updateStory)(state, action);
   var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
@@ -4923,7 +5045,7 @@ var MapView = function () {
         } else if (this.connect.mode === _constants.MODE.INVENTORY) {
           this.inventoryWindow.update(x, y);
         } else {
-          this.camera.update(x, y);
+          this.connect.currentTile && this.camera.update(x, y);
           this.overlay.update(x, y);
           this.actionBar.update(x, y);
         }
@@ -4935,7 +5057,7 @@ var MapView = function () {
       this.ctx.fillStyle = _colors.FOREST_BLACK;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-      this.camera.render(delta);
+      this.connect.currentTile && this.camera.render(delta);
       this.overlay.render(delta);
       this.actionBar.render(delta);
       this.story.render(delta);
@@ -5433,6 +5555,7 @@ var Party = function () {
     this.scale = 2;
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
+    this.fontSize = 32;
 
     this.buttons = this.connect.party.slice();
   }
@@ -5474,19 +5597,9 @@ var Party = function () {
         partyChanges.forEach(function (item) {
           var elapsed = currentTime - item.timestamp;
           if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION && item.id === member.id) {
-            var change = void 0,
-                propertyName = void 0;
-            if (item.hasOwnProperty('health_change')) {
-              change = item.health_change;
-              propertyName = 'health';
-            }
-            if (item.hasOwnProperty('jeito_change')) {
-              change = item.jeito_change;
-              propertyName = 'jeito';
-            }
-            var text = '' + (change > 0 ? '+' : '') + change + ' ' + propertyName;
-            var yPos = y + (32 + _this.portraitSize) / 2;
-            (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, 32, text, xPos, yPos);
+            var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
+            var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
+            (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
           }
         });
 
@@ -5642,8 +5755,8 @@ var Habitat = function () {
 
       var currentTile = this.connect.currentTile;
       var text = [];
-      currentTile.hunting && text.push(currentTile.hunting);
-      currentTile.fishing && text.push(currentTile.fishing);
+      currentTile && currentTile.hunting && text.push(currentTile.hunting);
+      currentTile && currentTile.fishing && text.push(currentTile.fishing);
       text.forEach(function (line, index) {
         _this.ctx.fillStyle = _colors.SOLID_WHITE;
         _this.ctx.font = _this.fontSize + 'px MECC';
@@ -5705,6 +5818,7 @@ var Inventory = function () {
 
     this.scale = 4;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.fontSize = 32;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
 
     this.buttons = [{ name: 'pack-big' }];
@@ -5732,7 +5846,8 @@ var Inventory = function () {
         var elapsed = currentTime - item.timestamp;
         if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION) {
           var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
-          (0, _draw.slideFadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, 32, text, x, y + _this.size / 2);
+          var yPos = y + _this.size / 2;
+          (0, _draw.slideFadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, x, yPos);
         }
       });
 
@@ -6015,10 +6130,10 @@ var ActionBar = function () {
               break;
             case 'harvest':
               var currentTile = this.connect.currentTile;
-              var currentCrop = currentTile.crops.find(function (crop) {
+              var currentCrop = currentTile && currentTile.crops.find(function (crop) {
                 return crop.name === button.name;
               });
-              currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
+              currentCrop && currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
               this.current = 'main';
               break;
             case 'hunting':

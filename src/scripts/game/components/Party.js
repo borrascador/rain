@@ -17,6 +17,7 @@ export default class Party {
     this.scale = 2;
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
+    this.fontSize = 32;
 
     this.buttons = this.connect.party.slice();
   }
@@ -59,18 +60,9 @@ export default class Party {
       partyChanges.forEach(item => {
         const elapsed = currentTime - item.timestamp;
         if (elapsed > 0 && elapsed < UPDATE_TEXT_DURATION && item.id === member.id) {
-          let change, propertyName;
-          if (item.hasOwnProperty('health_change')) {
-            change = item.health_change;
-            propertyName = 'health';
-          }
-          if (item.hasOwnProperty('jeito_change')) {
-            change = item.jeito_change;
-            propertyName = 'jeito';
-          }
-          const text = `${change > 0 ? '+' : ''}${change} ${propertyName}`;
-          const yPos = y + (32 + this.portraitSize) / 2;
-          fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, 32, text, xPos, yPos);
+          const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
+          const yPos = y + (this.fontSize + this.portraitSize) / 2;
+          fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, xPos, yPos);
         }
       });
 

@@ -1,5 +1,6 @@
 import {
-  getActions, mergeArrays, updateStory, updateInventoryChanges, updatePartyChanges
+  updateParty, getActions, mergeArrays, updateStory, updateInventoryChanges,
+  updatePartyChanges
 } from './utils';
 import { MODE } from '../../game/constants';
 
@@ -87,7 +88,12 @@ export function update(state, action) {
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const eating = action.payload.eating || state.eating;
-  const position = action.payload.position || state.position;
+  let position;
+  if (typeof action.payload.position === 'number') {
+    position = action.payload.position;
+  } else {
+    position = state.position;
+  }
   const stories = updateStory(state, action);
   const inventoryChanges = updateInventoryChanges(state, action);
   const partyChanges = updatePartyChanges(state, action);
@@ -114,7 +120,12 @@ export function eventResponse(state, action) {
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const eating = action.payload.eating || state.eating;
-  const position = action.payload.position || state.position;
+  let position;
+  if (typeof action.payload.position === 'number') {
+    position = action.payload.position;
+  } else {
+    position = state.position;
+  }
   const stories = updateStory(state, action);
   const inventoryChanges = updateInventoryChanges(state, action);
   const partyChanges = updatePartyChanges(state, action);
