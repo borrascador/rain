@@ -14,34 +14,46 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
-  oldArray.forEach(item => {
-    obj[item.id] = item;
-  });
-  newArray.forEach(item => {
-    if (obj.hasOwnProperty(item.id)) {
-      if (item.hasOwnProperty('quantity') && item.quantity === 0) {
-        delete obj[item.id];
-      } else if (item.hasOwnProperty('health') && item.health === 0) {
-        delete obj[item.id];
+  for (let oldItem of oldArray) {
+    obj[oldItem.id] = oldItem;
+  };
+  for (let newItem of newArray) {
+    if (obj.hasOwnProperty(newItem.id)) {
+      if (newItem.quantity === 0 || newItem.health === 0) {
+        delete obj[newItem.id];
+        break;
       } else {
-        obj[item.id] = Object.assign(obj[item.id], item);
+        obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
       }
     } else {
-      obj[item.id] = item;
+      obj[newItem.id] = newItem;
     }
-    if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
-      obj[item.id] = Object.assign(obj[item.id], {
-        skills: item.skills.map(skill => {
-          const match = item.skill_changes.find(change => skill.id === change.id);
+    if (newItem.hasOwnProperty('skill_changes') && newItem.skill_changes.length > 0) {
+      obj[newItem.id] = Object.assign(obj[newItem.id], {
+        skills: newItem.skills.map(skill => {
+          const match = newItem.skill_changes.find(change => skill.id === change.id);
           if (match) {
             return Object.assign(skill, match);
           } else {
-            return skill
+            return skill;
           }
         })
       });
     }
-  });
+    if (newItem.hasOwnProperty('modifier_changes') && newItem.modifier_changes.length > 0) {
+      obj[newItem.id] = Object.assign(obj[newItem.id], {
+        modifiers: newItem.modifiers.map(modifier => {
+          const match = newItem.modifier_changes.find(change => modifier.id === change.id);
+          if (match) {
+            return Object.assign(modifier, match);
+          } else {
+            return modifier;
+          }
+        })
+      });
+    }
+  }
+  // convert object of items into array of items
   let result = [];
   for(let prop in obj) {
     if(obj.hasOwnProperty(prop))
@@ -108,7 +120,8 @@ export function updatePartyChanges(state, action) {
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          health_change: item.health_change,
+          change: item.health_change,
+          name: 'health',
           timestamp: timestamp
         }));
         timestamp += UPDATE_TEXT_DURATION;
@@ -116,7 +129,8 @@ export function updatePartyChanges(state, action) {
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          jeito_change: item.jeito_change,
+          change: item.jeito_change,
+          name: 'jeito',
           timestamp: timestamp
         }));
         timestamp += UPDATE_TEXT_DURATION;
@@ -126,7 +140,23 @@ export function updatePartyChanges(state, action) {
           item.skill_changes.map(change => {
             const result = Object.assign({}, {
               id: item.id,
-              skill_change: change.name,
+              change: 1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += UPDATE_TEXT_DURATION;
+            return result;
+          })
+        );
+      }
+      if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
+        changes = changes.concat(
+          item.modifier_changes.map(change => {
+            const match = item.modifiers.find(modifier => modifier.id === change.id)
+            const result = Object.assign({}, {
+              id: item.id,
+              change: match ? 1 : -1,
+              name: change.name,
               timestamp: timestamp
             });
             timestamp += UPDATE_TEXT_DURATION;

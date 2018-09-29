@@ -15,6 +15,7 @@ export default class Inventory {
 
     this.scale = 4;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.fontSize = 32;
     this.animate = new Animation(this.scale, this.scale, 0.5);
 
     this.buttons = [ { name: 'pack-big' } ];
@@ -37,7 +38,8 @@ export default class Inventory {
       const elapsed = currentTime - item.timestamp;
       if (elapsed > 0 && elapsed < UPDATE_TEXT_DURATION) {
         const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
-        slideFadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, 32, text, x, y + this.size / 2);
+        const yPos = y + this.size / 2;
+        slideFadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, x, yPos);
       }
     });
 

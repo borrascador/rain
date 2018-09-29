@@ -1845,36 +1845,101 @@ function updateItemInArray(array, itemId, updateItemCallback) {
 function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   var obj = {};
-  oldArray.forEach(function (item) {
-    obj[item.id] = item;
-  });
-  newArray.forEach(function (item) {
-    if (obj.hasOwnProperty(item.id)) {
-      if (item.hasOwnProperty('quantity') && item.quantity === 0) {
-        delete obj[item.id];
-      } else if (item.hasOwnProperty('health') && item.health === 0) {
-        delete obj[item.id];
-      } else {
-        obj[item.id] = Object.assign(obj[item.id], item);
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = oldArray[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var oldItem = _step.value;
+
+      obj[oldItem.id] = oldItem;
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
       }
-    } else {
-      obj[item.id] = item;
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
     }
-    if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
-      obj[item.id] = Object.assign(obj[item.id], {
-        skills: item.skills.map(function (skill) {
-          var match = item.skill_changes.find(function (change) {
-            return skill.id === change.id;
-          });
-          if (match) {
-            return Object.assign(skill, match);
-          } else {
-            return skill;
-          }
-        })
-      });
+  }
+
+  ;
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    var _loop = function _loop() {
+      var newItem = _step2.value;
+
+      if (obj.hasOwnProperty(newItem.id)) {
+        if (newItem.quantity === 0 || newItem.health === 0) {
+          delete obj[newItem.id];
+          return 'break';
+        } else {
+          obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
+        }
+      } else {
+        obj[newItem.id] = newItem;
+      }
+      if (newItem.hasOwnProperty('skill_changes') && newItem.skill_changes.length > 0) {
+        obj[newItem.id] = Object.assign(obj[newItem.id], {
+          skills: newItem.skills.map(function (skill) {
+            var match = newItem.skill_changes.find(function (change) {
+              return skill.id === change.id;
+            });
+            if (match) {
+              return Object.assign(skill, match);
+            } else {
+              return skill;
+            }
+          })
+        });
+      }
+      if (newItem.hasOwnProperty('modifier_changes') && newItem.modifier_changes.length > 0) {
+        obj[newItem.id] = Object.assign(obj[newItem.id], {
+          modifiers: newItem.modifiers.map(function (modifier) {
+            var match = newItem.modifier_changes.find(function (change) {
+              return modifier.id === change.id;
+            });
+            if (match) {
+              return Object.assign(modifier, match);
+            } else {
+              return modifier;
+            }
+          })
+        });
+      }
+    };
+
+    for (var _iterator2 = newArray[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var _ret = _loop();
+
+      if (_ret === 'break') break;
     }
-  });
+    // convert object of items into array of items
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2.return) {
+        _iterator2.return();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+
   var result = [];
   for (var prop in obj) {
     if (obj.hasOwnProperty(prop)) result.push(obj[prop]);
@@ -1936,7 +2001,8 @@ function updatePartyChanges(state, action) {
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          health_change: item.health_change,
+          change: item.health_change,
+          name: 'health',
           timestamp: timestamp
         }));
         timestamp += _constants.UPDATE_TEXT_DURATION;
@@ -1944,7 +2010,8 @@ function updatePartyChanges(state, action) {
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
-          jeito_change: item.jeito_change,
+          change: item.jeito_change,
+          name: 'jeito',
           timestamp: timestamp
         }));
         timestamp += _constants.UPDATE_TEXT_DURATION;
@@ -1953,7 +2020,23 @@ function updatePartyChanges(state, action) {
         changes = changes.concat(item.skill_changes.map(function (change) {
           var result = Object.assign({}, {
             id: item.id,
-            skill_change: change.name,
+            change: 1,
+            name: change.name,
+            timestamp: timestamp
+          });
+          timestamp += _constants.UPDATE_TEXT_DURATION;
+          return result;
+        }));
+      }
+      if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
+        changes = changes.concat(item.modifier_changes.map(function (change) {
+          var match = item.modifiers.find(function (modifier) {
+            return modifier.id === change.id;
+          });
+          var result = Object.assign({}, {
+            id: item.id,
+            change: match ? 1 : -1,
+            name: change.name,
             timestamp: timestamp
           });
           timestamp += _constants.UPDATE_TEXT_DURATION;
@@ -5472,6 +5555,7 @@ var Party = function () {
     this.scale = 2;
     this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
     this.statSize = this.icons.tileset.tilewidth;
+    this.fontSize = 32;
 
     this.buttons = this.connect.party.slice();
   }
@@ -5513,23 +5597,9 @@ var Party = function () {
         partyChanges.forEach(function (item) {
           var elapsed = currentTime - item.timestamp;
           if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION && item.id === member.id) {
-            var change = void 0,
-                propertyName = void 0;
-            if (item.hasOwnProperty('health_change')) {
-              change = item.health_change;
-              propertyName = 'health';
-            }
-            if (item.hasOwnProperty('jeito_change')) {
-              change = item.jeito_change;
-              propertyName = 'jeito';
-            }
-            if (item.hasOwnProperty('skill_change')) {
-              change = 1;
-              propertyName = item.skill_change;
-            }
-            var text = '' + (change > 0 ? '+' : '') + change + ' ' + propertyName;
-            var yPos = y + (32 + _this.portraitSize) / 2;
-            (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, 32, text, xPos, yPos);
+            var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
+            var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
+            (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
           }
         });
 
@@ -5748,6 +5818,7 @@ var Inventory = function () {
 
     this.scale = 4;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.fontSize = 32;
     this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
 
     this.buttons = [{ name: 'pack-big' }];
@@ -5775,7 +5846,8 @@ var Inventory = function () {
         var elapsed = currentTime - item.timestamp;
         if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION) {
           var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
-          (0, _draw.slideFadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, 32, text, x, y + _this.size / 2);
+          var yPos = y + _this.size / 2;
+          (0, _draw.slideFadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, x, yPos);
         }
       });
 
