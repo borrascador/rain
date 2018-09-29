@@ -92,16 +92,17 @@ public class Tribe {
 	}
 	
 	public String toString() {
-		String s =  name +"\n  Guaranteed starting skills: ";
+		String s =  name +"\n  Guaranteed skills: ";
 		for (int id : skills.keySet()) {
 			if (skills.get(id) == 100) {
 				s += World.getSkill(id).getName() + "  ";
 			}
 		}
-		s+= "\n  Starting items: ";
-		for (int id : items.keySet()) {
-			s += World.getItem(id).getName() + "  ";
-		}
+		s+= "\n";
+//		s+= "\n  Starting items: ";
+//		for (int id : items.keySet()) {
+//			s += World.getItem(id).getName() + "  ";
+//		}
 		return s;
 	}
 }
