@@ -144,6 +144,17 @@ public class Member {
 		jo.put("jeito", jeito);
 		jo.put("name", name);
 		jo.put("icon", icon);
+		JSONArray skillsArray = new JSONArray();
+		for (int skill_id: skills.keySet()) {
+			Skill s = World.getSkill(skill_id);
+			JSONObject skillObject = new JSONObject();
+			skillObject.put("id", skill_id);
+			skillObject.put("rank", skills.get(skill_id));
+			skillObject.put("name", s.getName());
+			skillObject.put("description", s.getDescription());
+			skillsArray.put(skillObject);
+		}
+		jo.put("skills", skillsArray);
 		return jo;
 	}
 }
