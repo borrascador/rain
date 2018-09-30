@@ -58,6 +58,9 @@ public class Decision {
 					
 					p.setPosition(World.getTribe(index).getRespawnPosition());
 					Tile t = World.getTile(p.getPosition());
+					for (int i : t.inSight(p.getSight())) {
+						p.addTilesSeen(i);
+					}
 					t.addVisitor(p.getName());
 					t.updateNeighbors(p.getName(), Constants.MAXSIGHT);
 					
