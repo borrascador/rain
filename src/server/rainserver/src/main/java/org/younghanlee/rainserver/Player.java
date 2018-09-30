@@ -287,6 +287,10 @@ public class Player {
 		return decision;
 	}
 	
+	public void addTilesSeen(int t) {
+		tilesSeen.add(t);
+	}
+	
 	public JSONArray tilesSeenArray() {
 		JSONArray ja = new JSONArray();
 		for (int ts: tilesSeen) {
