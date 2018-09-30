@@ -70,7 +70,8 @@ public class Player {
 		for (int i=0; i<World.numTribes(); i++) {
 			choiceNames[i] = "selectTribe"+ i;
 		}
-		Decision d = new Decision(choiceNames);
+		String story = "Choose your tribe.";
+		Decision d = new Decision(choiceNames, story);
 		this.decision = d;
 
 		this.buffer = new HashSet<Integer>();
@@ -111,7 +112,7 @@ public class Player {
 		}
 		JSONObject payload = new JSONObject();
 		JSONObject story = new JSONObject();
-		story.put("text", "Choose");
+		story.put("text", decision.getStoryText());
 		story.put("buttons", decision.buttons(this));
 		payload.put("story", story);
 		connection.sendJSON(Message.UPDATE(payload));

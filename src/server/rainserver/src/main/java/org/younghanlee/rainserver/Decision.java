@@ -12,12 +12,14 @@ public class Decision {
 		JSONObject result(Player p);
 	}
 	
+	public String story;
 	public static HashMap<String, Choice> choiceMap;
 	
 	private Choice[] choices;
 	
 	
-	public Decision(String[] choiceNames) {
+	public Decision(String[] choiceNames, String story) {
+		this.story = story;
 		int n = choiceNames.length;
 		this.choices = new Choice[n];
 		for (int i=0; i<n; i++) {
@@ -26,7 +28,6 @@ public class Decision {
 	}
 	
 	public JSONObject choose(Player p, int n) {
-		p.removeDecision();
 		return choices[n].result(p);
 	}
 	
@@ -49,6 +50,7 @@ public class Decision {
 					return World.getTribe(index).toString();
 				}
 				public JSONObject result(Player p) {
+					p.removeDecision();
 					p.setTribe(index);
 					Tribe tribe = World.getTribe(index);
 					JSONArray inventory = tribe.generateInventory(p);
@@ -90,6 +92,7 @@ public class Decision {
 			return "Stop " + huntOrFish;
 		}
 		public JSONObject result(Player p) {
+			p.removeDecision();
 			JSONObject story = new JSONObject();
 			story.put("text", "You have stopped " + p.stopHunting());
 			JSONObject payload = new JSONObject();
@@ -158,7 +161,14 @@ public class Decision {
 			return p.getHunt().getNext();
 		}
 	};
+	
+	public void setStoryText(String story) {
+		this.story = story;
+	}
 
+	public String getStoryText() {
+		return story;
+	}
 	
 	public JSONArray buttons (Player p) {
 		JSONArray buttonArray = new JSONArray();
