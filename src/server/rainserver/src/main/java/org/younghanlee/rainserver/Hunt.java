@@ -41,10 +41,11 @@ public class Hunt{
 	public JSONObject processFish() {
 		JSONArray drops =  animal.rollDrop(p, catchAmount);
 		String[] choiceNames = {"stopHunting", "continueHunting"};
-		Decision d = new Decision(choiceNames);
+		String storyText = "You filet " + catchAmount + " x " + animal.getName();
+		Decision d = new Decision(choiceNames, storyText);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
-		story.put("text", "You filet " + catchAmount + " x " + animal.getName());
+		story.put("text", storyText);
 		story.put("buttons", d.buttons(p));
 		
 		if (Math.random() < rarity) {
@@ -61,10 +62,11 @@ public class Hunt{
 	
 	public JSONObject discardFish() {
 		String[] choiceNames = {"stopHunting", "continueHunting"};
-		Decision d = new Decision(choiceNames);
+		String storyText = "You discard " + catchAmount + " x " + animal.getName();
+		Decision d = new Decision(choiceNames, storyText);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
-		story.put("text", "You discard " + catchAmount + " x " + animal.getName());
+		story.put("text", storyText);
 		story.put("buttons", d.buttons(p));
 		
 		queue.remove(queue.size()-1);
@@ -76,18 +78,18 @@ public class Hunt{
 	
 	public JSONObject attack() {
 		String[] choiceNames = {"stopHunting", "continueHunting"};
-		Decision d = new Decision(choiceNames);
+		Decision d = new Decision(choiceNames, "");
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
 		story.put("buttons", d.buttons(p));
 		JSONArray drops;
 		JSONArray party;
-		String death = "";
 		JSONArray tiles = null;
 		JSONObject payload = new JSONObject();
+		String death = "";
+		String storyText = "";
 		
-		// if (Player.randomInt(100) < animal.getAggression()) {
-		if (true) {
+		if (Player.randomInt(100) < animal.getAggression()) {
 			if (animal.fight(p)) {
 				story.put("text", "You have defeated " + animal.getName());
 				drops = animal.rollDrop(p, 1);
@@ -119,23 +121,23 @@ public class Hunt{
 					}
 				}
 				if (members_injured == 0) {
-					story.put("text",  animal.getName() + " has fought back, but you manage to retreat safely.");
+					storyText = animal.getName() + " has fought back, but you manage to retreat safely.";
 				} else {
 					party = damage;
 					String plural = "s";
 					if (members_injured == 1) {
 						plural = "";
 					}	
-					story.put("text",  animal.getName() + " has fought back and injured your party member" + plural + ". " + death);
+					storyText = animal.getName() + " has fought back and injured your party member" + plural + ". " + death;
 				}
 			}
 		} else {
 			if (animal.flee(p)) {
-				story.put("text", animal.getName() + " attempts to flee " + "but you chased it down");
+				storyText = animal.getName() + " attempts to flee " + "but you chased it down";
 				drops = animal.rollDrop(p, 1);
 				party = null;
 			} else {
-				story.put("text",  animal.getName() + " has escaped your party");
+				storyText = animal.getName() + " has escaped your party";
 				drops = null;
 				party = null;
 			}
@@ -147,6 +149,8 @@ public class Hunt{
 			queue.remove(queue.size()-1);
 		}
 		
+		story.put("text", storyText);
+		p.getDecision().setStoryText(storyText);
 		payload.put("inventory", drops);
 		payload.put("story", story);
 		payload.put("party", party);
@@ -157,10 +161,11 @@ public class Hunt{
 	public JSONObject escape() {
 		
 		String[] choiceNames = {"stopHunting", "continueHunting"};
-		Decision d = new Decision(choiceNames);
+		String storyText = "You have escaped " + animal.getName();
+		Decision d = new Decision(choiceNames, storyText);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
-		story.put("text", "You have escaped " + animal.getName());
+		story.put("text", storyText);
 		story.put("buttons", d.buttons(p));
 		
 		queue.remove(queue.size()-1);
@@ -184,20 +189,22 @@ public class Hunt{
 				if (animal.isFish()) {
 					catchAmount = 1 + Player.randomInt(animal.getNumber() - 1);
 					String[] choiceNames = {"process", "discard"};
-					Decision d = new Decision(choiceNames);
+					String storyText = "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName();
+					Decision d = new Decision(choiceNames, storyText);
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
-					story.put("text", "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName());
+					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				} else {
 					String[] choiceNames = {"attack", "escape"};
-					Decision d = new Decision(choiceNames);
+					String storyText = "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName();
+					Decision d = new Decision(choiceNames, storyText);
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
-					story.put("text", "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName());
+					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
 					payload.put("story", story);

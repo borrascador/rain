@@ -88,8 +88,7 @@ public class Animal {
 	}
 	
 	public boolean fight(Player p) {
-		// return Player.randomInt(100) > strength;
-		return false;
+		return Player.randomInt(100) > strength;
 	}
 	
 	public JSONArray rollDrop(Player p, int n) {
