@@ -9,7 +9,9 @@
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
     "watch": "webpack --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "test": "jest --no-cache",
+    "test:watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -38,12 +40,29 @@
     "webpack-dev-server": "^2.11.2"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.1.0",
     "babel-core": "^6.26.3",
+    "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.5",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
+    "jest": "^23.6.0",
     "json-loader": "^0.5.7",
     "redux-logger": "^3.0.6",
     "style-loader": "^0.19.1"
+  },
+  "jest": {
+    "verbose": true,
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
   }
 }
