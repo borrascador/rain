@@ -176,10 +176,14 @@ export default class PartyWindow {
   renderHover() {
     const { xMouse, yMouse } = this.connect.mouse;
     if (xMouse && yMouse) {
-      const buttonList = this.party.concat(this.skills, this.modifiers);
-      const button = screenToImageButton(xMouse, yMouse, buttonList);
-      if (button && button.id !== this.connect.partyTab) {
-        drawHover(this.ctx, this.fontSize, button);
+      const hoverTab = screenToImageButton(xMouse, yMouse, this.party);
+      if (hoverTab && hoverTab.id !== this.connect.partyTab) {
+        drawHover(this.ctx, this.fontSize, hoverTab);
+      }
+      const iconList = this.skills.concat(this.modifiers);
+      const hoverIcon = screenToImageButton(xMouse, yMouse, iconList);
+      if (hoverIcon) {
+        drawHover(this.ctx, this.fontSize, hoverIcon);
       }
     }
   }

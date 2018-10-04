@@ -6432,10 +6432,14 @@ var PartyWindow = function () {
           yMouse = _connect$mouse.yMouse;
 
       if (xMouse && yMouse) {
-        var buttonList = this.party.concat(this.skills, this.modifiers);
-        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, buttonList);
-        if (button && button.id !== this.connect.partyTab) {
-          (0, _draw.drawHover)(this.ctx, this.fontSize, button);
+        var hoverTab = (0, _utils.screenToImageButton)(xMouse, yMouse, this.party);
+        if (hoverTab && hoverTab.id !== this.connect.partyTab) {
+          (0, _draw.drawHover)(this.ctx, this.fontSize, hoverTab);
+        }
+        var iconList = this.skills.concat(this.modifiers);
+        var hoverIcon = (0, _utils.screenToImageButton)(xMouse, yMouse, iconList);
+        if (hoverIcon) {
+          (0, _draw.drawHover)(this.ctx, this.fontSize, hoverIcon);
         }
       }
     }
