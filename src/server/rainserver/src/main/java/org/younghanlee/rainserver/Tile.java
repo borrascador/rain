@@ -1,5 +1,6 @@
 package org.younghanlee.rainserver;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -115,8 +116,8 @@ public class Tile {
 		return Math.abs(y-t.y) + Math.abs(x-t.x);
 	}
 	
-	public HashSet<Integer> inSight(int sight) {
-		HashSet<Integer> tiles = new HashSet<Integer>();
+	public ArrayList<Integer> inSight(int sight) {
+		ArrayList<Integer> tiles = new ArrayList<Integer>();
 		// System.out.println("Center:" + x + "," + y);
 		
 		int ymin = y - sight;
