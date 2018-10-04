@@ -194,7 +194,7 @@ public class Tile {
 		if (this.crops.get(crop_id) > 0){
 			return Message.ERROR(314, World.getItem(crop_id).getName() +" is still growing");
 		}
-		int yield = 2 + Player.randomInt(10);
+		int yield = 2 + Util.randomInt(10);
 			
 		JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p, false);
 		JSONArray inventory_changes = new JSONArray();

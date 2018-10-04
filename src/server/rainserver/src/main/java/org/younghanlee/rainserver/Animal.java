@@ -84,11 +84,13 @@ public class Animal {
 	}
 	
 	public boolean flee(Player p) {
-		return Player.randomInt(100) > speed;
+		return Util.randomInt(100) > speed;
 	}
 	
-	public boolean fight(Player p) {
-		return Player.randomInt(100) > strength;
+	public boolean fight(Player p, float multiplier) {
+		int base = 10;
+		int value = Util.randomRoll(base, multiplier);
+		return value > strength;
 	}
 	
 	public JSONArray rollDrop(Player p, int n) {
@@ -99,7 +101,7 @@ public class Animal {
 			// roll n times
 			for (int i=0; i<n; i++) {
 				if (Math.random() < d.rarity) {
-					value += Player.randomInt(d.max - d.min) + d.min;
+					value += Util.randomInt(d.max - d.min) + d.min;
 				}		
 			}
 			if (value > 0) {

@@ -22,7 +22,7 @@ public class Member {
 		this.name = name;
 		this.icon = icon;
 		this.speed = 50;
-		this.strength = 50;
+		this.strength = 10;
 		this.health = 5;
 		this.regen = 10;
 		this.jeito = 5;
@@ -91,8 +91,17 @@ public class Member {
 		return ja;
 	}
 	
+	public boolean hasSkill(int id) {
+		return skills.containsKey(id);
+	}
+	
+	public int skillRank(int id) {
+		return skills.get(id);
+	}
+	
 	public JSONObject change(int id, Player p, int health_change, int jeito_change, 
 			HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
+		System.out.println("test");
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);
 		jo.put("icon", icon);
@@ -109,28 +118,30 @@ public class Member {
 			p.removeMember(id);
 
 		}
+		System.out.println("test");
 		
-		JSONArray skillsArray = new JSONArray();
-		JSONArray skillsChangeArray = new JSONArray();
-		for (int skill_id: skills_add.keySet()) {
-			int rank = skills_add.get(skill_id);
-			addSkill(skill_id, rank);
-			JSONObject skillObject = new JSONObject();
-			skillObject.put("id", skill_id);
-			skillObject.put("rank", rank);
-			skillsArray.put(skillObject);
+		if (skills_add != null) {
+			JSONArray skillsArray = new JSONArray();
+			JSONArray skillsChangeArray = new JSONArray();
+		
+			for (int skill_id: skills_add.keySet()) {
+				int rank = skills_add.get(skill_id);
+				addSkill(skill_id, rank);
+				JSONObject skillObject = new JSONObject();
+				skillObject.put("id", skill_id);
+				skillsArray.put(skillObject);
 			
-			Skill s = World.getSkill(skill_id);
-			JSONObject newSkillObject = new JSONObject();
-			newSkillObject.put("id", skill_id);
-			newSkillObject.put("rank", rank);
-			newSkillObject.put("name", s.getName());
-			newSkillObject.put("description", s.getDescription());
-			skillsChangeArray.put(newSkillObject);	
-		}
+				Skill s = World.getSkill(skill_id);
+				JSONObject newSkillObject = new JSONObject();
+				newSkillObject.put("id", skill_id);
+				newSkillObject.put("name", s.getName() + " " + rank);
+				newSkillObject.put("description", s.getDescription());
+				skillsChangeArray.put(newSkillObject);	
+			}
 		
-		jo.put("skills", skillsArray);
-		jo.put("skill_changes", skillsChangeArray);
+			jo.put("skills", skillsArray);
+			jo.put("skill_changes", skillsChangeArray);
+		}
 		
 		jo.put("health", health);
 		jo.put("jeito", jeito);

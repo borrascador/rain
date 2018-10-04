@@ -38,6 +38,41 @@ public class Hunt{
 		return h.getPublicType();
 	}
 	
+	public float huntingMultiplier() {
+		float multiplier = 1.0f;
+		for (int i=0; i<p.partySize(); i++) {
+			Member m = World.getMember(p.getPartyMember(i));
+			if (m.hasSkill(0)){
+				multiplier += m.skillRank(0) * .05;
+			}
+			multiplier += m.getJeito() *.005;
+		}
+		return multiplier;
+	}
+	
+	public float trackingMultiplier() {
+		float multiplier = 1.0f;
+		for (int i=0; i<p.partySize(); i++) {
+			Member m = World.getMember(p.getPartyMember(i));
+			if (m.hasSkill(1)){
+				multiplier += m.skillRank(1) * .05;
+			}
+			multiplier += m.getJeito() *.005;
+		}
+		return multiplier;
+	}
+	
+	public float fishingMultiplier() {
+		float multiplier = 1.0f;
+		for (int i=0; i<p.partySize(); i++) {
+			Member m = World.getMember(p.getPartyMember(i));
+			if (m.hasSkill(3)){
+				multiplier += m.skillRank(3) * .05;
+			}
+		}
+		return multiplier;
+	}
+	
 	public JSONObject processFish() {
 		JSONArray drops =  animal.rollDrop(p, catchAmount);
 		String[] choiceNames = {"stopHunting", "continueHunting"};
@@ -89,8 +124,8 @@ public class Hunt{
 		String death = "";
 		String storyText = "";
 		
-		if (Player.randomInt(100) < animal.getAggression()) {
-			if (animal.fight(p)) {
+		if (Util.randomInt(100) < animal.getAggression()) {
+			if (animal.fight(p, huntingMultiplier())) {
 				story.put("text", "You have defeated " + animal.getName());
 				drops = animal.rollDrop(p, 1);
 				party = null;
@@ -102,10 +137,12 @@ public class Hunt{
 				for (int i=0; i<p.partySize(); i++) {
 					int id = p.getPartyMember(i);
 					Member m = World.getMember(id);
-					if (Math.random() > 0.6) {
+					if (Util.randomInt(20) > m.getStrength()) {
 						members_injured++;
-						int health_loss = -1 * (Player.randomInt(2) + 1);
+						int health_loss = -1 * (Util.randomInt(2) + 1);
+						System.out.println("test4");
 						JSONObject jo = m.change(id, p, health_loss, 0, null, null, null);
+						System.out.println("test5");
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
 								death += "Despite all odds, your last member " + m.getName() + " manages to survive and return home.";
@@ -187,26 +224,31 @@ public class Hunt{
 			if (Math.random() < rarity) {
 				animal = World.getAnimal(id);
 				if (animal.isFish()) {
-					catchAmount = 1 + Player.randomInt(animal.getNumber() - 1);
+					catchAmount = 1 + Util.randomInt(animal.getNumber() - 1);
 					String[] choiceNames = {"process", "discard"};
 					String storyText = "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName();
 					Decision d = new Decision(choiceNames, storyText);
+					d.addMultiplier("fishing", fishingMultiplier());
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
 					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
+					story.put("multipliers", d.getMultipliers());
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				} else {
 					String[] choiceNames = {"attack", "escape"};
 					String storyText = "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName();
 					Decision d = new Decision(choiceNames, storyText);
+					d.addMultiplier("hunting", huntingMultiplier());
+					d.addMultiplier("tracking", trackingMultiplier());
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
 					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
+					story.put("multipliers", d.getMultipliers());
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				}

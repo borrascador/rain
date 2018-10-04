@@ -12,6 +12,7 @@ public class Decision {
 		JSONObject result(Player p);
 	}
 	
+	public HashMap<String, Float> multipliers;
 	public String story;
 	public static HashMap<String, Choice> choiceMap;
 	
@@ -20,6 +21,7 @@ public class Decision {
 	
 	public Decision(String[] choiceNames, String story) {
 		this.story = story;
+		this.multipliers = new HashMap<String, Float>();
 		int n = choiceNames.length;
 		this.choices = new Choice[n];
 		for (int i=0; i<n; i++) {
@@ -29,6 +31,10 @@ public class Decision {
 	
 	public JSONObject choose(Player p, int n) {
 		return choices[n].result(p);
+	}
+	
+	public void addMultiplier(String name, float value) {
+		multipliers.put(name, value);
 	}
 	
 	public static void createDecisionHashMap() {
@@ -171,6 +177,17 @@ public class Decision {
 
 	public String getStoryText() {
 		return story;
+	}
+	
+	public JSONArray getMultipliers() {
+		JSONArray ja = new JSONArray();
+		for (String s: multipliers.keySet()) {
+			JSONObject jo = new JSONObject();
+			jo.put("name", s);
+			jo.put("value", multipliers.get(s));
+			ja.put(jo);
+		}
+		return ja;
 	}
 	
 	public JSONArray buttons (Player p) {
