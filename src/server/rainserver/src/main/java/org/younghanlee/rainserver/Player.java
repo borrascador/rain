@@ -36,10 +36,6 @@ public class Player {
 	private Decision decision;
 	
 	private HashSet<Integer> buffer;
-	
-	public static int randomInt(int max) {
-		return (int)(Math.random() * (max + 1));
-	}
 
 	
 	public Player(String name, String email, String password) {
