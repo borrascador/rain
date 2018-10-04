@@ -123,7 +123,6 @@ public class Hunt{
 		JSONObject payload = new JSONObject();
 		String death = "";
 		String storyText = "";
-		
 		if (Util.randomInt(100) < animal.getAggression()) {
 			if (animal.fight(p, huntingMultiplier())) {
 				story.put("text", "You have defeated " + animal.getName());
@@ -140,15 +139,18 @@ public class Hunt{
 					if (Util.randomInt(20) > m.getStrength()) {
 						members_injured++;
 						int health_loss = -1 * (Util.randomInt(2) + 1);
-						System.out.println("test4");
 						JSONObject jo = m.change(id, p, health_loss, 0, null, null, null);
-						System.out.println("test5");
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
-								death += "Despite all odds, your last member " + m.getName() + " manages to survive and return home.";
-								payload.put("position", p.respawn(id));
+								death += "Your last member " + m.getName() + " has perished.";
+								payload.put("position", p.getTribe().getRespawnPosition());
+								JSONArray newParty = p.respawn();
+								for (int j = 0; j < newParty.length(); j++) {
+							        JSONObject newMember = newParty.getJSONObject(j);
+							        damage.put(newMember);
+							    }
 								tiles = p.inSightArray();
-								jo.put("health", 1);
+								
 								story.remove("buttons");
 							} else {
 								death += m.getName() + " has perished. ";

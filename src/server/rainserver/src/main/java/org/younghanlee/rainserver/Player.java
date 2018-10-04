@@ -159,10 +159,10 @@ public class Player {
 			}
 		}
 		
-		JSONArray partyArray = regen(tick);
-		if (partyArray.length() > 0) {
-			payload.put("party", partyArray);
-		}
+//		JSONArray partyArray = regen(tick);
+//		if (partyArray.length() > 0) {
+//			payload.put("party", partyArray);
+//		}
 		
 		if (payload.length() > 0) {
 			connection.sendJSON(Message.UPDATE(payload));
@@ -227,12 +227,12 @@ public class Player {
 		return position;
 	}
 	
-	public int respawn(int survivor) {
-		party.add(survivor);
-		World.getMember(survivor).setHealth(1);
-		int rp = World.getTribe(tribe).getRespawnPosition();
+	public JSONArray respawn() {
+		Tribe t = World.getTribe(tribe);
+		int rp = t.getRespawnPosition();
 		move(World.getHeight() * World.getWidth(), rp);
-		return rp;
+		tilesSeen = World.getTile(rp).inSight(sight);
+		return t.generateParty(this);
 	}
 	
 	public int getSight() {
@@ -402,8 +402,8 @@ public class Player {
 		tribe = id;
 	}
 	
-	public Tribe getTribe(int id) {
-		return World.getTribe(id);
+	public Tribe getTribe() {
+		return World.getTribe(tribe);
 	}
 	
 	public JSONArray regen(int tick) {
