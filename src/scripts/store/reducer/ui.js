@@ -146,3 +146,9 @@ export function closeStory(state) {
     return state;
   }
 }
+
+export function removePartyMember(state, action) {
+  return updateObject(state, {
+    party: state.party.filter(member => member.id !== action.payload.id)
+  });
+}

@@ -159,6 +159,14 @@ var closeStory = exports.closeStory = function closeStory() {
   };
 };
 
+var REMOVE_PARTY_MEMBER = exports.REMOVE_PARTY_MEMBER = 'REMOVE_PARTY_MEMBER';
+var removePartyMember = exports.removePartyMember = function removePartyMember(id) {
+  return {
+    type: REMOVE_PARTY_MEMBER,
+    payload: { id: id }
+  };
+};
+
 var ERROR = exports.ERROR = 'ERROR';
 
 var error = exports.error = function error(code, message) {
@@ -1665,6 +1673,7 @@ exports.zoomOut = zoomOut;
 exports.setPartyTab = setPartyTab;
 exports.changeMode = changeMode;
 exports.closeStory = closeStory;
+exports.removePartyMember = removePartyMember;
 
 var _constants = __webpack_require__(1);
 
@@ -1811,6 +1820,14 @@ function closeStory(state) {
   }
 }
 
+function removePartyMember(state, action) {
+  return (0, _utils.updateObject)(state, {
+    party: state.party.filter(function (member) {
+      return member.id !== action.payload.id;
+    })
+  });
+}
+
 /***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1880,9 +1897,13 @@ function mergeArrays(oldArray, newArray) {
       var newItem = _step2.value;
 
       if (obj.hasOwnProperty(newItem.id)) {
-        if (newItem.quantity === 0 || newItem.health === 0) {
+        if (newItem.quantity === 0) {
           delete obj[newItem.id];
           return 'break';
+        } else if (newItem.health === 0 && !obj[newItem.id].hasOwnProperty('timestamp')) {
+          obj[newItem.id] = Object.assign(obj[newItem.id], newItem, {
+            timestamp: Date.now()
+          });
         } else {
           obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
         }
@@ -1953,6 +1974,7 @@ function updateStory(state, action) {
       inventoryChanges: action.payload.inventory || [],
       partyChanges: action.payload.party || [],
       buttons: action.payload.story.buttons || [{ text: 'OK', id: 1 }],
+      canDispatch: action.payload.story.buttons ? true : false,
       timestamp: Date.now()
     })]);
   } else {
@@ -1993,57 +2015,119 @@ function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     var changes = [];
     var now = Date.now();
-    party.forEach(function (item) {
-      var filtered = state.partyChanges.filter(function (member) {
-        return item.id === member.id;
-      });
-      var timestamp = getTimestamp(filtered, _constants.UPDATE_TEXT_DURATION, now);
-      if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
-        changes.push(Object.assign({}, {
-          id: item.id,
-          change: item.health_change,
-          name: 'health',
-          timestamp: timestamp
-        }));
-        timestamp += _constants.UPDATE_TEXT_DURATION;
-      }
-      if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
-        changes.push(Object.assign({}, {
-          id: item.id,
-          change: item.jeito_change,
-          name: 'jeito',
-          timestamp: timestamp
-        }));
-        timestamp += _constants.UPDATE_TEXT_DURATION;
-      }
-      if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
-        changes = changes.concat(item.skill_changes.map(function (change) {
-          var result = Object.assign({}, {
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
+
+    try {
+      var _loop2 = function _loop2() {
+        var item = _step3.value;
+
+        var memberChanges = state.partyChanges.filter(function (member) {
+          return item.id === member.id;
+        });
+        var timestamp = getTimestamp(memberChanges, _constants.UPDATE_TEXT_DURATION, now);
+
+        // NOTE Check for health changes
+        if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
+          changes.push(Object.assign({}, {
             id: item.id,
-            change: 1,
-            name: change.name,
+            change: item.health_change,
+            name: 'health',
             timestamp: timestamp
-          });
+          }));
           timestamp += _constants.UPDATE_TEXT_DURATION;
-          return result;
-        }));
-      }
-      if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
-        changes = changes.concat(item.modifier_changes.map(function (change) {
-          var match = item.modifiers.find(function (modifier) {
-            return modifier.id === change.id;
+        }
+
+        // Check for new or dead party members
+        // NOTE loggedIn tests whether the user is starting a new session
+        if (item.hasOwnProperty('health') && state.loggedIn === true) {
+          var match = state.party.find(function (member) {
+            return member.id === item.id;
           });
-          var result = Object.assign({}, {
+          if (!match) {
+            changes.push(Object.assign({}, {
+              id: item.id,
+              change: 1,
+              name: item.name,
+              timestamp: timestamp
+            }));
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+          } else if (item.health === 0) {
+            changes.push(Object.assign({}, {
+              id: item.id,
+              change: -1,
+              name: item.name,
+              timestamp: timestamp
+            }));
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+            return 'continue';
+          }
+        }
+
+        // Check for jeito changes
+        if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
+          changes.push(Object.assign({}, {
             id: item.id,
-            change: match ? 1 : -1,
-            name: change.name,
+            change: item.jeito_change,
+            name: 'jeito',
             timestamp: timestamp
-          });
+          }));
           timestamp += _constants.UPDATE_TEXT_DURATION;
-          return result;
-        }));
+        }
+
+        // Check for skill changes
+        if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
+          changes = changes.concat(item.skill_changes.map(function (change) {
+            var result = Object.assign({}, {
+              id: item.id,
+              change: 1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+            return result;
+          }));
+        }
+
+        // Check for modifier changes
+        if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
+          changes = changes.concat(item.modifier_changes.map(function (change) {
+            var match = item.modifiers.find(function (modifier) {
+              return modifier.id === change.id;
+            });
+            var result = Object.assign({}, {
+              id: item.id,
+              change: match ? 1 : -1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+            return result;
+          }));
+        }
+      };
+
+      for (var _iterator3 = party[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        var _ret2 = _loop2();
+
+        if (_ret2 === 'continue') continue;
       }
-    });
+    } catch (err) {
+      _didIteratorError3 = true;
+      _iteratorError3 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+          _iterator3.return();
+        }
+      } finally {
+        if (_didIteratorError3) {
+          throw _iteratorError3;
+        }
+      }
+    }
+
     return state.partyChanges.concat(changes);
   } else {
     return state.partyChanges;
@@ -3506,6 +3590,8 @@ function reducer(state, action) {
       return (0, _ui.changeMode)(state, action);
     case _actions.CLOSE_STORY:
       return (0, _ui.closeStory)(state);
+    case _actions.REMOVE_PARTY_MEMBER:
+      return (0, _ui.removePartyMember)(state, action);
     case _actions.REGISTER_REQUEST:
     case _actions.LOGIN_REQUEST:
     case _actions.LOGOUT_REQUEST:
@@ -5579,29 +5665,34 @@ var Party = function () {
       // Makes a NEW set of buttons each time
       // Allows adding and removing party members
       this.buttons = party.map(function (member, index) {
-        var x = 0;
+        var x = member.timestamp ? 0.045 * (member.timestamp - Date.now()) : 0;
         var y = index * _this.portraitSize;
         (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
         [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
           );
         });
         [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
           );
         });
 
-        var partyChanges = _this.connect.partyChanges;
         var currentTime = Date.now();
-        var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
-        partyChanges.forEach(function (item) {
+        var memberChanges = _this.connect.partyChanges.filter(function (item) {
           var elapsed = currentTime - item.timestamp;
-          if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION && item.id === member.id) {
+          return item.id === member.id && elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION;
+        });
+        if (memberChanges.length > 0) {
+          var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
+          memberChanges.forEach(function (item) {
+            var elapsed = currentTime - item.timestamp;
             var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
             var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
             (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
-          }
-        });
+          });
+        } else if (member.health === 0) {
+          _this.store.dispatch((0, _actions.removePartyMember)(member.id));
+        }
 
         return Object.assign({}, member, {
           xPos: x,
@@ -5934,9 +6025,9 @@ var Story = function () {
 
   _createClass(Story, [{
     key: 'select',
-    value: function select(button) {
+    value: function select(button, story) {
       this.store.dispatch((0, _actions.closeStory)());
-      if (button.text[0] !== 'OK') {
+      if (story.canDispatch) {
         this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
       }
     }
@@ -5949,7 +6040,7 @@ var Story = function () {
         if (key >= "1" && key <= story.buttons.length.toString()) _this.selected = story.buttons[parseInt(key) - 1];
         if (["Escape", "Backspace", "Delete"].includes(key)) _this.selected = null;
         if (key === "Enter" && _this.selected !== null) {
-          _this.select(_this.selected);
+          _this.select(_this.selected, story);
           _this.selected = null;
         }
       });
@@ -5961,10 +6052,10 @@ var Story = function () {
         var button = (0, _utils.screenToTextButton)(x, y, story.buttons);
         if (button) {
           if (this.selected && this.selected.id === button.id) {
-            this.select(this.selected);
+            this.select(this.selected, story);
             this.selected = null;
           } else if (story.buttons.length === 1) {
-            this.select(button);
+            this.select(button, story);
             this.selected = null;
           } else {
             this.selected = button;
@@ -6378,7 +6469,7 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       this.ctx.fillText(HEALTH, xPos, yPos);
-      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
+      [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
         (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'heart', _this2.scale, xPos + lineWidth + 8 + i * (_this2.size + 8), yPos - _this2.iconOffset);
       });
 

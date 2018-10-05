@@ -110,7 +110,7 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     this.ctx.fillText(HEALTH, xPos, yPos);
-    [...Array(member.jeito)].map((_, i) => {
+    [...Array(member.health)].map((_, i) => {
       drawByName(
         this.ctx, this.icons, 'heart', this.scale,
         xPos + lineWidth + 8 + i * (this.size + 8),

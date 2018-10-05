@@ -32,9 +32,9 @@ export default class Story {
     this.buttonText = buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
   }
 
-  select(button) {
+  select(button, story) {
     this.store.dispatch(closeStory());
-    if (button.text[0] !== 'OK') {
+    if (story.canDispatch) {
       this.store.dispatch(sendEvent('decision', button.id));
     }
   }
@@ -44,7 +44,7 @@ export default class Story {
       if (key >= "1" && key <= story.buttons.length.toString()) this.selected = story.buttons[parseInt(key) - 1];
       if (["Escape", "Backspace", "Delete"].includes(key)) this.selected = null;
       if (key === "Enter" && this.selected !== null) {
-        this.select(this.selected);
+        this.select(this.selected, story);
         this.selected = null;
       }
     });
@@ -55,10 +55,10 @@ export default class Story {
       const button = screenToTextButton(x, y, story.buttons);
       if (button) {
         if (this.selected && this.selected.id === button.id) {
-          this.select(this.selected);
+          this.select(this.selected, story);
           this.selected = null;
         } else if (story.buttons.length === 1) {
-          this.select(button);
+          this.select(button, story);
           this.selected = null;
         } else {
           this.selected = button;

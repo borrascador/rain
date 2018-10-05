@@ -60,7 +60,13 @@ export const changeMode = (mode) => ({
 export const CLOSE_STORY = 'CLOSE_STORY';
 export const closeStory = () => ({
   type: CLOSE_STORY
-})
+});
+
+export const REMOVE_PARTY_MEMBER = 'REMOVE_PARTY_MEMBER';
+export const removePartyMember = (id) => ({
+  type: REMOVE_PARTY_MEMBER,
+  payload: { id }
+});
 
 export const ERROR = 'ERROR';
 
