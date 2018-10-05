@@ -507,6 +507,7 @@ exports.mainText = mainText;
 exports.itemChangeText = itemChangeText;
 exports.partyChangeText = partyChangeText;
 exports.buttonText = buttonText;
+exports.drawMultipliers = drawMultipliers;
 exports.splitIntoLines = splitIntoLines;
 exports.drawHover = drawHover;
 exports.drawDurability = drawDurability;
@@ -651,6 +652,27 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, sele
     return Object.assign({}, button, coords, {
       xPos: xPos,
       width: coords.width + fontSize * 2
+    });
+  });
+}
+
+function drawMultipliers(ctx, img, scale, fontSize, lineHeight, story, xPos, yPos) {
+  var size = img.tileset.tilewidth * scale;
+  var x = xPos;
+  return story.multipliers.map(function (item, index) {
+    ctx.fillStyle = item.value > 1 ? _colors.BRIGHT_GREEN : _colors.BRIGHT_RED;
+    var sign = item.value > 1 ? '+' : '-';
+    var rounded = Math.round((item.value - 1) * 100);
+    var text = '' + sign + rounded + '%';
+    var width = ctx.measureText(text).width;
+    ctx.fillText(text, x, yPos);
+    drawByName(ctx, img, 'question', scale, x + width, yPos - lineHeight);
+    x += width + size * 4 / 3;
+    return Object.assign({}, item, {
+      xPos: x - width - size * 4 / 3,
+      yPos: yPos - lineHeight,
+      width: width + size,
+      height: size
     });
   });
 }
@@ -5108,7 +5130,7 @@ var MapView = function () {
 
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
-    this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.setDim);
+    this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.loader);
     this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new _PartyWindow2.default(this.store, this.canvas, this.ctx, this.loader);
     this.inventoryWindow = new _InventoryWindow2.default(this.store, this.canvas, this.ctx, this.loader);
@@ -6004,7 +6026,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Story = function () {
-  function Story(store, canvas, ctx) {
+  function Story(store, canvas, ctx, loader) {
     _classCallCheck(this, Story);
 
     this.store = store;
@@ -6013,11 +6035,16 @@ var Story = function () {
 
     this.blink = new _Animation2.default(1, 1, 1);
     this.connect = new _Connect2.default(this.store);
+    this.icons = loader.getImage('icons');
 
     this.fontSize = 16;
     this.lineHeight = this.fontSize * 11 / 8;
     this.ctx.font = this.fontSize + 'px MECC';
     this.selected = null;
+
+    this.scale = 2;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.iconOffset = this.fontSize * 4 / 5;
 
     this.width = this.canvas.width / 2;
     this.height = this.canvas.height / 2;
@@ -6037,6 +6064,7 @@ var Story = function () {
       if (story.canDispatch) {
         this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
       }
+      this.selected = null;
     }
   }, {
     key: 'updateKeys',
@@ -6048,7 +6076,6 @@ var Story = function () {
         if (["Escape", "Backspace", "Delete"].includes(key)) _this.selected = null;
         if (key === "Enter" && _this.selected !== null) {
           _this.select(_this.selected, story);
-          _this.selected = null;
         }
       });
     }
@@ -6060,10 +6087,8 @@ var Story = function () {
         if (button) {
           if (this.selected && this.selected.id === button.id) {
             this.select(this.selected, story);
-            this.selected = null;
           } else if (story.buttons.length === 1) {
             this.select(button, story);
-            this.selected = null;
           } else {
             this.selected = button;
           }
@@ -6122,14 +6147,35 @@ var Story = function () {
 
       yPos = coords.yPos + this.lineHeight * 2;
       buttons = this.buttonText(buttons, xPos, yPos, this.selected);
+      yPos = buttons[buttons.length - 1].yPos;
+
+      var hovers = [];
+      if (story.multipliers && story.multipliers.length > 0) {
+        yPos += this.lineHeight * 2;
+        hovers = (0, _draw.drawMultipliers)(this.ctx, this.icons, this.scale, this.fontSize, this.lineHeight, story, xPos, yPos);
+      }
 
       if (buttons.length > 1) {
         this.ctx.fillStyle = _colors.PALE_GREEN;
-        yPos = buttons[buttons.length - 1].yPos + this.lineHeight * 2;
+        yPos += this.lineHeight * 2;
         this.mainText(prompt, xPos, yPos);
       }
 
-      return buttons;
+      return { buttons: buttons, hovers: hovers };
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover(hovers) {
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
+
+      if (xMouse && yMouse) {
+        var hoverIcon = (0, _utils.screenToImageButton)(xMouse, yMouse, hovers);
+        if (hoverIcon) {
+          (0, _draw.drawHover)(this.ctx, this.fontSize, hoverIcon);
+        }
+      }
     }
   }, {
     key: 'render',
@@ -6137,16 +6183,18 @@ var Story = function () {
       var _this3 = this;
 
       this.blink.tick(delta);
-      var buttons = void 0;
       this.stories = this.connect.stories;
       if (this.stories.length > 0) {
         this.stories = this.stories.map(function (story) {
           _this3.ctx.fillStyle = _colors.MEDIUM_RED;
           _this3.ctx.fillRect(_this3.width / 2, _this3.height / 2, _this3.width, _this3.height);
-          buttons = _this3.renderStoryText(story);
-          return Object.assign({}, story, {
-            buttons: buttons
-          });
+
+          var _renderStoryText = _this3.renderStoryText(story),
+              buttons = _renderStoryText.buttons,
+              hovers = _renderStoryText.hovers;
+
+          _this3.renderHover(hovers);
+          return Object.assign({}, story, { buttons: buttons });
         });
       } else {
         this.stories = [];
@@ -6476,14 +6524,14 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       this.ctx.fillText(HEALTH, xPos, yPos);
-      [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'heart', _this2.scale, xPos + lineWidth + 8 + i * (_this2.size + 8), yPos - _this2.iconOffset);
+      [].concat(_toConsumableArray(Array(member.health))).map(function (_, index) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'heart', _this2.scale, xPos + lineWidth + 8 + index * (_this2.size + 8), yPos - _this2.iconOffset);
       });
 
       yPos += this.lineHeight;
       this.ctx.fillText(JEITO, xPos, yPos);
-      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'bolt', _this2.scale, xPos + lineWidth + 8 + i * (_this2.size + 8), yPos - _this2.iconOffset);
+      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, index) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'bolt', _this2.scale, xPos + lineWidth + 8 + index * (_this2.size + 8), yPos - _this2.iconOffset);
       });
 
       yPos += this.lineHeight;
@@ -6491,10 +6539,10 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       if (Array.isArray(member.skills)) {
-        this.skills = member.skills.map(function (skill, i) {
-          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + i * (_this2.size + 8), yPos - _this2.iconOffset);
+        this.skills = member.skills.map(function (skill, index) {
+          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + index * (_this2.size + 8), yPos - _this2.iconOffset);
           return Object.assign({}, skill, {
-            xPos: xPos + i * (_this2.size + 8),
+            xPos: xPos + index * (_this2.size + 8),
             yPos: yPos - _this2.iconOffset,
             width: _this2.size,
             height: _this2.size
@@ -6509,10 +6557,10 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       if (Array.isArray(member.modifiers)) {
-        this.modifiers = member.modifiers.map(function (modifier, i) {
-          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + i * (_this2.size + 8), yPos - _this2.iconOffset);
+        this.modifiers = member.modifiers.map(function (modifier, index) {
+          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + index * (_this2.size + 8), yPos - _this2.iconOffset);
           return Object.assign({}, modifier, {
-            xPos: xPos + i * (_this2.size + 8),
+            xPos: xPos + index * (_this2.size + 8),
             yPos: yPos - _this2.iconOffset,
             width: _this2.size,
             height: _this2.size

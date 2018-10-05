@@ -140,6 +140,27 @@ export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPo
   });
 }
 
+export function drawMultipliers(ctx, img, scale, fontSize, lineHeight, story, xPos, yPos) {
+  const size = img.tileset.tilewidth * scale;
+  let x = xPos;
+  return story.multipliers.map((item, index) => {
+    ctx.fillStyle = item.value > 1 ? BRIGHT_GREEN : BRIGHT_RED;
+    const sign = item.value > 1 ? '+' : '-';
+    const rounded = Math.round((item.value - 1) * 100)
+    const text = `${sign}${rounded}%`;
+    const width = ctx.measureText(text).width;
+    ctx.fillText(text, x, yPos);
+    drawByName(ctx, img, 'question', scale, x + width, yPos - lineHeight);
+    x += width + size * 4/3;
+    return Object.assign({}, item, {
+      xPos: x - width - size * 4/3,
+      yPos: yPos - lineHeight,
+      width: width + size,
+      height: size
+    });
+  });
+}
+
 export function splitIntoLines(ctx, text, maxWidth) {
   const blocks = text.split("\n").map(block => block.split(" "));
   const spaceWidth = ctx.measureText(" ").width;

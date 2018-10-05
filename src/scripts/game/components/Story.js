@@ -2,24 +2,34 @@ import { MODE } from '../constants';
 import { clicked, changeMode, closeStory } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
 import Connect from '../../store/Connect';
-import { screenToTextButton, getItemById } from './utils';
-import { mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines } from '../utils/draw';
+import { screenToTextButton, screenToImageButton, getItemById } from './utils';
+import {
+  mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines,
+  drawMultipliers, drawHover
+} from '../utils/draw';
 import Animation from '../utils/Animation';
-import { PALE_GREEN, MEDIUM_RED } from '../colors';
+import { PALE_GREEN, MEDIUM_RED,
+  BRIGHT_RED, BRIGHT_GREEN
+} from '../colors';
 
 export default class Story {
-  constructor (store, canvas, ctx) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
 
     this.blink = new Animation(1, 1, 1);
     this.connect = new Connect(this.store);
+    this.icons = loader.getImage('icons');
 
     this.fontSize = 16;
     this.lineHeight = this.fontSize * 11 / 8;
     this.ctx.font = this.fontSize + 'px MECC';
     this.selected = null;
+
+    this.scale = 2;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.iconOffset = this.fontSize * 4 / 5
 
     this.width = this.canvas.width / 2;
     this.height = this.canvas.height / 2;
@@ -37,6 +47,7 @@ export default class Story {
     if (story.canDispatch) {
       this.store.dispatch(sendEvent('decision', button.id));
     }
+    this.selected = null;
   }
 
   updateKeys(keys, story) {
@@ -45,7 +56,6 @@ export default class Story {
       if (["Escape", "Backspace", "Delete"].includes(key)) this.selected = null;
       if (key === "Enter" && this.selected !== null) {
         this.select(this.selected, story);
-        this.selected = null;
       }
     });
   }
@@ -56,10 +66,8 @@ export default class Story {
       if (button) {
         if (this.selected && this.selected.id === button.id) {
           this.select(this.selected, story);
-          this.selected = null;
         } else if (story.buttons.length === 1) {
           this.select(button, story);
-          this.selected = null;
         } else {
           this.selected = button;
         }
@@ -114,28 +122,47 @@ export default class Story {
 
     yPos = coords.yPos + this.lineHeight * 2;
     buttons = this.buttonText(buttons, xPos, yPos, this.selected);
+    yPos = buttons[buttons.length - 1].yPos;
+
+    let hovers = [];
+    if (story.multipliers && story.multipliers.length > 0) {
+      yPos += this.lineHeight * 2;
+      hovers = drawMultipliers(
+        this.ctx, this.icons, this.scale,
+        this.fontSize, this.lineHeight,
+        story, xPos, yPos
+      );
+    }
 
     if (buttons.length > 1) {
       this.ctx.fillStyle = PALE_GREEN;
-      yPos = buttons[buttons.length - 1].yPos + this.lineHeight * 2;
+      yPos += this.lineHeight * 2;
       this.mainText(prompt, xPos, yPos);
     }
 
-    return buttons
+    return { buttons, hovers };
+  }
+
+  renderHover(hovers) {
+    const { xMouse, yMouse } = this.connect.mouse;
+    if (xMouse && yMouse) {
+      const hoverIcon = screenToImageButton(xMouse, yMouse, hovers);
+      if (hoverIcon) {
+        drawHover(this.ctx, this.fontSize, hoverIcon);
+      }
+    }
   }
 
   render(delta) {
     this.blink.tick(delta);
-    let buttons;
     this.stories = this.connect.stories;
     if (this.stories.length > 0) {
       this.stories = this.stories.map(story => {
         this.ctx.fillStyle = MEDIUM_RED;
         this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
-        buttons = this.renderStoryText(story);
-        return Object.assign({}, story, {
-          buttons: buttons
-        });
+        const { buttons, hovers } = this.renderStoryText(story);
+        this.renderHover(hovers);
+        return Object.assign({}, story, { buttons });
       });
     } else {
       this.stories = [];

@@ -21,7 +21,7 @@ export default class MapView {
 
     this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader, this.setDim);
-    this.story = new Story(this.store, this.canvas, this.ctx, this.setDim);
+    this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
     this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
     this.inventoryWindow = new InventoryWindow(this.store, this.canvas, this.ctx, this.loader);
