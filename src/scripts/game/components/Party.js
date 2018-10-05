@@ -36,8 +36,32 @@ export default class Party {
     // Makes a NEW set of buttons each time
     // Allows adding and removing party members
     this.buttons = party.map((member, index) => {
-      const x = member.timestamp ? 0.045 * (member.timestamp - Date.now()) : 0;
-      const y = index * this.portraitSize;
+      let x = 0;
+      let y = index * this.portraitSize;
+
+      const currentTime = Date.now();
+      const memberChanges = this.connect.partyChanges.filter(item => {
+        const elapsed = currentTime - item.timestamp;
+        return item.id === member.id && elapsed > 0 && elapsed < UPDATE_TEXT_DURATION;
+      });
+      if (memberChanges.length > 0) {
+        const xPos = this.portraitSize + 5 * (this.statSize + 8)
+        memberChanges.forEach(item => {
+          const elapsed = currentTime - item.timestamp;
+          if (item.name === member.name && item.change === 1) {
+            x = 0.1 * (elapsed - UPDATE_TEXT_DURATION)
+          } else if (item.name === member.name && member.timestamp) {
+            x = -0.1 * elapsed
+          }
+          const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
+          const yPos = y + (this.fontSize + this.portraitSize) / 2;
+          fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, xPos, yPos);
+        })
+      } else if (member.health === 0) {
+        x = -1000;
+        this.store.dispatch(removePartyMember(member.id));
+      }
+
       drawById(this.ctx, this.iconsXl, member.icon, this.scale, x, y);
       [...Array(member.health)].map((_, i) => {
         drawByName(
@@ -53,23 +77,6 @@ export default class Party {
           (index * 2 + 1.1) * this.portraitSize / 2 // TODO: Eliminate hardcoded values
         );
       });
-
-      const currentTime = Date.now();
-      const memberChanges = this.connect.partyChanges.filter(item => {
-        const elapsed = currentTime - item.timestamp;
-        return item.id === member.id && elapsed > 0 && elapsed < UPDATE_TEXT_DURATION;
-      });
-      if (memberChanges.length > 0) {
-        const xPos = this.portraitSize + 5 * (this.statSize + 8)
-        memberChanges.forEach(item => {
-          const elapsed = currentTime - item.timestamp;
-          const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
-          const yPos = y + (this.fontSize + this.portraitSize) / 2;
-          fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, xPos, yPos);
-        })
-      } else if (member.health === 0) {
-        this.store.dispatch(removePartyMember(member.id));
-      }
 
       return Object.assign({}, member, {
         xPos: x,

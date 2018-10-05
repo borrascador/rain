@@ -5665,17 +5665,8 @@ var Party = function () {
       // Makes a NEW set of buttons each time
       // Allows adding and removing party members
       this.buttons = party.map(function (member, index) {
-        var x = member.timestamp ? 0.045 * (member.timestamp - Date.now()) : 0;
+        var x = 0;
         var y = index * _this.portraitSize;
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
-        [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
-          );
-        });
-        [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
-          );
-        });
 
         var currentTime = Date.now();
         var memberChanges = _this.connect.partyChanges.filter(function (item) {
@@ -5686,13 +5677,29 @@ var Party = function () {
           var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
           memberChanges.forEach(function (item) {
             var elapsed = currentTime - item.timestamp;
+            if (item.name === member.name && item.change === 1) {
+              x = 0.1 * (elapsed - _constants.UPDATE_TEXT_DURATION);
+            } else if (item.name === member.name && member.timestamp) {
+              x = -0.1 * elapsed;
+            }
             var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
             var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
             (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
           });
         } else if (member.health === 0) {
+          x = -1000;
           _this.store.dispatch((0, _actions.removePartyMember)(member.id));
         }
+
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
+        [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
+        });
+        [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
+        });
 
         return Object.assign({}, member, {
           xPos: x,
