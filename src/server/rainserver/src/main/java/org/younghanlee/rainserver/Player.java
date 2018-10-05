@@ -177,11 +177,16 @@ public class Player {
 		boolean yl = y >= 0;
 		boolean yu = x < World.getHeight();
 		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
-		return xl && xu && yl && yu && dist <= range;
+		System.out.println("Source: " + this.x + " " + this.y);
+		System.out.println("Destination: " + x + " " + y);
+		System.out.println(xl + " " + xu + " " + yl + " " + yu + " " + dist);
+		return xl && xu && yl && yu && (dist <= range);
 	}
 	
 	public void setPosition(int position) {
 		this.position = position;
+		this.x = position % World.getWidth();
+		this.y = (position - x)/World.getWidth();
 	}
 	
 	public boolean move(int range, int destination) {
@@ -236,6 +241,7 @@ public class Player {
 //		tilesSeen = World.getTile(rp).inSight(sight);
 		JSONArray newParty =  t.generateParty(this);
 		JSONArray newInventory = t.generateInventory(this);
+		payload.put("position", rp);
 		payload.put("party", newParty);
 		payload.put("inventory", newInventory);
 		payload.put("tiles", inSightArray());
