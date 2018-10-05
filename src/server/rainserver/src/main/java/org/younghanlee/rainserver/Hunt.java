@@ -3,8 +3,6 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map.Entry;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -221,8 +219,6 @@ public class Hunt{
 			int last = queue.size()-1;
 			int id = queue.get(last);
 			rarity = h.getAnimalRarity(id) * wildlife;
-			//System.out.println(id + ":" + rarity);
-			//System.out.println(queue);
 			if (Math.random() < rarity) {
 				animal = World.getAnimal(id);
 				if (animal.isFish()) {
@@ -230,27 +226,22 @@ public class Hunt{
 					String[] choiceNames = {"process", "discard"};
 					String storyText = "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName();
 					Decision d = new Decision(choiceNames, storyText);
-					d.addMultiplier("fishing", fishingMultiplier());
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
 					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
-					story.put("multipliers", d.getMultipliers());
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				} else {
 					String[] choiceNames = {"attack", "escape"};
 					String storyText = "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName();
 					Decision d = new Decision(choiceNames, storyText);
-					d.addMultiplier("hunting", huntingMultiplier());
-					d.addMultiplier("tracking", trackingMultiplier());
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
 					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
-					story.put("multipliers", d.getMultipliers());
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				}

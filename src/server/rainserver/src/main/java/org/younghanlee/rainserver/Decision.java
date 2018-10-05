@@ -1,5 +1,6 @@
 package org.younghanlee.rainserver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -7,23 +8,17 @@ import org.json.JSONObject;
 
 public class Decision {
 	
-	public interface Choice{
-		String getText(Player p);
-		JSONObject result(Player p);
-	}
 	
-	public HashMap<String, Float> multipliers;
 	public String story;
-	public static HashMap<String, Choice> choiceMap;
+	public static HashMap<String, IChoice> choiceMap;
 	
-	private Choice[] choices;
+	private IChoice[] choices;
 	
 	
 	public Decision(String[] choiceNames, String story) {
 		this.story = story;
-		this.multipliers = new HashMap<String, Float>();
 		int n = choiceNames.length;
-		this.choices = new Choice[n];
+		this.choices = new IChoice[n];
 		for (int i=0; i<n; i++) {
 			this.choices[i] = choiceMap.get(choiceNames[i]);
 		}
@@ -33,12 +28,8 @@ public class Decision {
 		return choices[n].result(p);
 	}
 	
-	public void addMultiplier(String name, float value) {
-		multipliers.put(name, value);
-	}
-	
 	public static void createDecisionHashMap() {
-		choiceMap = new HashMap<String, Choice>();
+		choiceMap = new HashMap<String, IChoice>();
 		choiceMap.put("attack", attack);
 		choiceMap.put("escape", escape);
 		choiceMap.put("process", process);
@@ -50,7 +41,7 @@ public class Decision {
 		
 		for (int i=0; i<World.numTribes(); i++) {
 			final int index = i;
-			Choice t = new Choice() {
+			IChoice t = new IChoice() {
 				public String getText(Player p) {
 
 					return World.getTribe(index).toString();
@@ -86,7 +77,7 @@ public class Decision {
 		}
 	}
 	
-	public static Choice attack = new Choice() {
+	public static IChoice attack = new IChoice() {
 		public String getText(Player p) {
 			return "attack";
 		}
@@ -95,7 +86,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice stopHunting = new Choice() {
+	public static IChoice stopHunting = new IChoice() {
 		public String getText(Player p) {
 			String huntOrFish = p.getHunt().huntOrFish();
 			return "Stop " + huntOrFish;
@@ -110,7 +101,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice continueHunting = new Choice() {
+	public static IChoice continueHunting = new IChoice() {
 		public String getText(Player p) {
 			String huntOrFish = p.getHunt().huntOrFish();
 			return "Continue " + huntOrFish + " in " + p.getHunt().publicHabitat();
@@ -120,7 +111,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice process = new Choice() {
+	public static IChoice process = new IChoice() {
 		public String getText(Player p) {
 			return "Process";
 		}
@@ -129,7 +120,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice discard = new Choice() {
+	public static IChoice discard = new IChoice() {
 		public String getText(Player p) {
 			return "Discard";
 		}
@@ -138,7 +129,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice escape = new Choice() {
+	public static IChoice escape = new IChoice() {
 		public String getText(Player p) {
 			return "escape";
 		}
@@ -147,7 +138,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice fishDeep = new Choice() {
+	public static IChoice fishDeep = new IChoice() {
 		public String getText(Player p) {
 			return "Fish in Deeper waters";
 		}
@@ -159,7 +150,7 @@ public class Decision {
 		}
 	};
 	
-	public static Choice fishShallow = new Choice() {
+	public static IChoice fishShallow = new IChoice() {
 		public String getText(Player p) {
 			return "Fish in Shallow waters";
 		}
@@ -179,16 +170,6 @@ public class Decision {
 		return story;
 	}
 	
-	public JSONArray getMultipliers() {
-		JSONArray ja = new JSONArray();
-		for (String s: multipliers.keySet()) {
-			JSONObject jo = new JSONObject();
-			jo.put("name", s);
-			jo.put("value", multipliers.get(s));
-			ja.put(jo);
-		}
-		return ja;
-	}
 	
 	public JSONArray buttons (Player p) {
 		JSONArray buttonArray = new JSONArray();
