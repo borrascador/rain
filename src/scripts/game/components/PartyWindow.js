@@ -110,20 +110,20 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     this.ctx.fillText(HEALTH, xPos, yPos);
-    [...Array(member.jeito)].map((_, i) => {
+    [...Array(member.health)].map((_, index) => {
       drawByName(
         this.ctx, this.icons, 'heart', this.scale,
-        xPos + lineWidth + 8 + i * (this.size + 8),
+        xPos + lineWidth + 8 + index * (this.size + 8),
         yPos - this.iconOffset
       );
     });
 
     yPos += this.lineHeight;
     this.ctx.fillText(JEITO, xPos, yPos);
-    [...Array(member.jeito)].map((_, i) => {
+    [...Array(member.jeito)].map((_, index) => {
       drawByName(
         this.ctx, this.icons, 'bolt', this.scale,
-        xPos + lineWidth + 8 + i * (this.size + 8),
+        xPos + lineWidth + 8 + index * (this.size + 8),
         yPos - this.iconOffset
       );
     });
@@ -133,14 +133,14 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     if (Array.isArray(member.skills)) {
-      this.skills = member.skills.map((skill, i) => {
+      this.skills = member.skills.map((skill, index) => {
         drawByName(
           this.ctx, this.icons, 'question', this.scale,
-          xPos + i * (this.size + 8),
+          xPos + index * (this.size + 8),
           yPos - this.iconOffset
         );
         return Object.assign({}, skill, {
-          xPos: xPos + i * (this.size + 8),
+          xPos: xPos + index * (this.size + 8),
           yPos: yPos - this.iconOffset,
           width: this.size,
           height: this.size
@@ -155,14 +155,14 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     if (Array.isArray(member.modifiers)) {
-      this.modifiers = member.modifiers.map((modifier, i) => {
+      this.modifiers = member.modifiers.map((modifier, index) => {
         drawByName(
           this.ctx, this.icons, 'question', this.scale,
-          xPos + i * (this.size + 8),
+          xPos + index * (this.size + 8),
           yPos - this.iconOffset
         );
         return Object.assign({}, modifier, {
-          xPos: xPos + i * (this.size + 8),
+          xPos: xPos + index * (this.size + 8),
           yPos: yPos - this.iconOffset,
           width: this.size,
           height: this.size

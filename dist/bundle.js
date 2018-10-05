@@ -159,6 +159,14 @@ var closeStory = exports.closeStory = function closeStory() {
   };
 };
 
+var REMOVE_PARTY_MEMBER = exports.REMOVE_PARTY_MEMBER = 'REMOVE_PARTY_MEMBER';
+var removePartyMember = exports.removePartyMember = function removePartyMember(id) {
+  return {
+    type: REMOVE_PARTY_MEMBER,
+    payload: { id: id }
+  };
+};
+
 var ERROR = exports.ERROR = 'ERROR';
 
 var error = exports.error = function error(code, message) {
@@ -499,6 +507,7 @@ exports.mainText = mainText;
 exports.itemChangeText = itemChangeText;
 exports.partyChangeText = partyChangeText;
 exports.buttonText = buttonText;
+exports.drawMultipliers = drawMultipliers;
 exports.splitIntoLines = splitIntoLines;
 exports.drawHover = drawHover;
 exports.drawDurability = drawDurability;
@@ -643,6 +652,27 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, sele
     return Object.assign({}, button, coords, {
       xPos: xPos,
       width: coords.width + fontSize * 2
+    });
+  });
+}
+
+function drawMultipliers(ctx, img, scale, fontSize, lineHeight, story, xPos, yPos) {
+  var size = img.tileset.tilewidth * scale;
+  var x = xPos;
+  return story.multipliers.map(function (item, index) {
+    ctx.fillStyle = item.value > 1 ? _colors.BRIGHT_GREEN : _colors.BRIGHT_RED;
+    var sign = item.value > 1 ? '+' : '-';
+    var rounded = Math.round((item.value - 1) * 100);
+    var text = '' + sign + rounded + '%';
+    var width = ctx.measureText(text).width;
+    ctx.fillText(text, x, yPos);
+    drawByName(ctx, img, 'question', scale, x + width, yPos - lineHeight);
+    x += width + size * 4 / 3;
+    return Object.assign({}, item, {
+      xPos: x - width - size * 4 / 3,
+      yPos: yPos - lineHeight,
+      width: width + size,
+      height: size
     });
   });
 }
@@ -1665,6 +1695,7 @@ exports.zoomOut = zoomOut;
 exports.setPartyTab = setPartyTab;
 exports.changeMode = changeMode;
 exports.closeStory = closeStory;
+exports.removePartyMember = removePartyMember;
 
 var _constants = __webpack_require__(1);
 
@@ -1811,6 +1842,14 @@ function closeStory(state) {
   }
 }
 
+function removePartyMember(state, action) {
+  return (0, _utils.updateObject)(state, {
+    party: state.party.filter(function (member) {
+      return member.id !== action.payload.id;
+    })
+  });
+}
+
 /***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1880,9 +1919,13 @@ function mergeArrays(oldArray, newArray) {
       var newItem = _step2.value;
 
       if (obj.hasOwnProperty(newItem.id)) {
-        if (newItem.quantity === 0 || newItem.health === 0) {
+        if (newItem.quantity === 0) {
           delete obj[newItem.id];
           return 'break';
+        } else if (newItem.health === 0 && !obj[newItem.id].hasOwnProperty('timestamp')) {
+          obj[newItem.id] = Object.assign(obj[newItem.id], newItem, {
+            timestamp: Date.now()
+          });
         } else {
           obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
         }
@@ -1953,6 +1996,7 @@ function updateStory(state, action) {
       inventoryChanges: action.payload.inventory || [],
       partyChanges: action.payload.party || [],
       buttons: action.payload.story.buttons || [{ text: 'OK', id: 1 }],
+      canDispatch: action.payload.story.buttons ? true : false,
       timestamp: Date.now()
     })]);
   } else {
@@ -1993,57 +2037,119 @@ function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     var changes = [];
     var now = Date.now();
-    party.forEach(function (item) {
-      var filtered = state.partyChanges.filter(function (member) {
-        return item.id === member.id;
-      });
-      var timestamp = getTimestamp(filtered, _constants.UPDATE_TEXT_DURATION, now);
-      if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
-        changes.push(Object.assign({}, {
-          id: item.id,
-          change: item.health_change,
-          name: 'health',
-          timestamp: timestamp
-        }));
-        timestamp += _constants.UPDATE_TEXT_DURATION;
-      }
-      if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
-        changes.push(Object.assign({}, {
-          id: item.id,
-          change: item.jeito_change,
-          name: 'jeito',
-          timestamp: timestamp
-        }));
-        timestamp += _constants.UPDATE_TEXT_DURATION;
-      }
-      if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
-        changes = changes.concat(item.skill_changes.map(function (change) {
-          var result = Object.assign({}, {
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
+
+    try {
+      var _loop2 = function _loop2() {
+        var item = _step3.value;
+
+        var memberChanges = state.partyChanges.filter(function (member) {
+          return item.id === member.id;
+        });
+        var timestamp = getTimestamp(memberChanges, _constants.UPDATE_TEXT_DURATION, now);
+
+        // NOTE Check for health changes
+        if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
+          changes.push(Object.assign({}, {
             id: item.id,
-            change: 1,
-            name: change.name,
+            change: item.health_change,
+            name: 'health',
             timestamp: timestamp
-          });
+          }));
           timestamp += _constants.UPDATE_TEXT_DURATION;
-          return result;
-        }));
-      }
-      if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
-        changes = changes.concat(item.modifier_changes.map(function (change) {
-          var match = item.modifiers.find(function (modifier) {
-            return modifier.id === change.id;
+        }
+
+        // Check for new or dead party members
+        // NOTE loggedIn tests whether the user is starting a new session
+        if (item.hasOwnProperty('health') && state.loggedIn === true) {
+          var match = state.party.find(function (member) {
+            return member.id === item.id;
           });
-          var result = Object.assign({}, {
+          if (!match) {
+            changes.push(Object.assign({}, {
+              id: item.id,
+              change: 1,
+              name: item.name,
+              timestamp: timestamp
+            }));
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+          } else if (item.health === 0) {
+            changes.push(Object.assign({}, {
+              id: item.id,
+              change: -1,
+              name: item.name,
+              timestamp: timestamp
+            }));
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+            return 'continue';
+          }
+        }
+
+        // Check for jeito changes
+        if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
+          changes.push(Object.assign({}, {
             id: item.id,
-            change: match ? 1 : -1,
-            name: change.name,
+            change: item.jeito_change,
+            name: 'jeito',
             timestamp: timestamp
-          });
+          }));
           timestamp += _constants.UPDATE_TEXT_DURATION;
-          return result;
-        }));
+        }
+
+        // Check for skill changes
+        if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
+          changes = changes.concat(item.skill_changes.map(function (change) {
+            var result = Object.assign({}, {
+              id: item.id,
+              change: 1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+            return result;
+          }));
+        }
+
+        // Check for modifier changes
+        if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
+          changes = changes.concat(item.modifier_changes.map(function (change) {
+            var match = item.modifiers.find(function (modifier) {
+              return modifier.id === change.id;
+            });
+            var result = Object.assign({}, {
+              id: item.id,
+              change: match ? 1 : -1,
+              name: change.name,
+              timestamp: timestamp
+            });
+            timestamp += _constants.UPDATE_TEXT_DURATION;
+            return result;
+          }));
+        }
+      };
+
+      for (var _iterator3 = party[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        var _ret2 = _loop2();
+
+        if (_ret2 === 'continue') continue;
       }
-    });
+    } catch (err) {
+      _didIteratorError3 = true;
+      _iteratorError3 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+          _iterator3.return();
+        }
+      } finally {
+        if (_didIteratorError3) {
+          throw _iteratorError3;
+        }
+      }
+    }
+
     return state.partyChanges.concat(changes);
   } else {
     return state.partyChanges;
@@ -3506,6 +3612,8 @@ function reducer(state, action) {
       return (0, _ui.changeMode)(state, action);
     case _actions.CLOSE_STORY:
       return (0, _ui.closeStory)(state);
+    case _actions.REMOVE_PARTY_MEMBER:
+      return (0, _ui.removePartyMember)(state, action);
     case _actions.REGISTER_REQUEST:
     case _actions.LOGIN_REQUEST:
     case _actions.LOGOUT_REQUEST:
@@ -5022,7 +5130,7 @@ var MapView = function () {
 
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
-    this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.setDim);
+    this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.loader);
     this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new _PartyWindow2.default(this.store, this.canvas, this.ctx, this.loader);
     this.inventoryWindow = new _InventoryWindow2.default(this.store, this.canvas, this.ctx, this.loader);
@@ -5581,26 +5689,38 @@ var Party = function () {
       this.buttons = party.map(function (member, index) {
         var x = 0;
         var y = index * _this.portraitSize;
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
-        [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
-          );
-        });
-        [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
-          );
-        });
 
-        var partyChanges = _this.connect.partyChanges;
         var currentTime = Date.now();
-        var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
-        partyChanges.forEach(function (item) {
+        var memberChanges = _this.connect.partyChanges.filter(function (item) {
           var elapsed = currentTime - item.timestamp;
-          if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION && item.id === member.id) {
+          return item.id === member.id && elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION;
+        });
+        if (memberChanges.length > 0) {
+          var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
+          memberChanges.forEach(function (item) {
+            var elapsed = currentTime - item.timestamp;
+            if (item.name === member.name && item.change === 1) {
+              x = 0.1 * (elapsed - _constants.UPDATE_TEXT_DURATION);
+            } else if (item.name === member.name && member.timestamp) {
+              x = -0.1 * elapsed;
+            }
             var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
             var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
             (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
-          }
+          });
+        } else if (member.health === 0) {
+          x = -1000;
+          _this.store.dispatch((0, _actions.removePartyMember)(member.id));
+        }
+
+        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
+        [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
+        });
+        [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
+          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
+          );
         });
 
         return Object.assign({}, member, {
@@ -5906,7 +6026,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Story = function () {
-  function Story(store, canvas, ctx) {
+  function Story(store, canvas, ctx, loader) {
     _classCallCheck(this, Story);
 
     this.store = store;
@@ -5915,11 +6035,16 @@ var Story = function () {
 
     this.blink = new _Animation2.default(1, 1, 1);
     this.connect = new _Connect2.default(this.store);
+    this.icons = loader.getImage('icons');
 
     this.fontSize = 16;
     this.lineHeight = this.fontSize * 11 / 8;
     this.ctx.font = this.fontSize + 'px MECC';
     this.selected = null;
+
+    this.scale = 2;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.iconOffset = this.fontSize * 4 / 5;
 
     this.width = this.canvas.width / 2;
     this.height = this.canvas.height / 2;
@@ -5934,11 +6059,12 @@ var Story = function () {
 
   _createClass(Story, [{
     key: 'select',
-    value: function select(button) {
+    value: function select(button, story) {
       this.store.dispatch((0, _actions.closeStory)());
-      if (button.text[0] !== 'OK') {
+      if (story.canDispatch) {
         this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
       }
+      this.selected = null;
     }
   }, {
     key: 'updateKeys',
@@ -5949,8 +6075,7 @@ var Story = function () {
         if (key >= "1" && key <= story.buttons.length.toString()) _this.selected = story.buttons[parseInt(key) - 1];
         if (["Escape", "Backspace", "Delete"].includes(key)) _this.selected = null;
         if (key === "Enter" && _this.selected !== null) {
-          _this.select(_this.selected);
-          _this.selected = null;
+          _this.select(_this.selected, story);
         }
       });
     }
@@ -5961,11 +6086,9 @@ var Story = function () {
         var button = (0, _utils.screenToTextButton)(x, y, story.buttons);
         if (button) {
           if (this.selected && this.selected.id === button.id) {
-            this.select(this.selected);
-            this.selected = null;
+            this.select(this.selected, story);
           } else if (story.buttons.length === 1) {
-            this.select(button);
-            this.selected = null;
+            this.select(button, story);
           } else {
             this.selected = button;
           }
@@ -6024,14 +6147,35 @@ var Story = function () {
 
       yPos = coords.yPos + this.lineHeight * 2;
       buttons = this.buttonText(buttons, xPos, yPos, this.selected);
+      yPos = buttons[buttons.length - 1].yPos;
+
+      var hovers = [];
+      if (story.multipliers && story.multipliers.length > 0) {
+        yPos += this.lineHeight * 2;
+        hovers = (0, _draw.drawMultipliers)(this.ctx, this.icons, this.scale, this.fontSize, this.lineHeight, story, xPos, yPos);
+      }
 
       if (buttons.length > 1) {
         this.ctx.fillStyle = _colors.PALE_GREEN;
-        yPos = buttons[buttons.length - 1].yPos + this.lineHeight * 2;
+        yPos += this.lineHeight * 2;
         this.mainText(prompt, xPos, yPos);
       }
 
-      return buttons;
+      return { buttons: buttons, hovers: hovers };
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover(hovers) {
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
+
+      if (xMouse && yMouse) {
+        var hoverIcon = (0, _utils.screenToImageButton)(xMouse, yMouse, hovers);
+        if (hoverIcon) {
+          (0, _draw.drawHover)(this.ctx, this.fontSize, hoverIcon);
+        }
+      }
     }
   }, {
     key: 'render',
@@ -6039,16 +6183,18 @@ var Story = function () {
       var _this3 = this;
 
       this.blink.tick(delta);
-      var buttons = void 0;
       this.stories = this.connect.stories;
       if (this.stories.length > 0) {
         this.stories = this.stories.map(function (story) {
           _this3.ctx.fillStyle = _colors.MEDIUM_RED;
           _this3.ctx.fillRect(_this3.width / 2, _this3.height / 2, _this3.width, _this3.height);
-          buttons = _this3.renderStoryText(story);
-          return Object.assign({}, story, {
-            buttons: buttons
-          });
+
+          var _renderStoryText = _this3.renderStoryText(story),
+              buttons = _renderStoryText.buttons,
+              hovers = _renderStoryText.hovers;
+
+          _this3.renderHover(hovers);
+          return Object.assign({}, story, { buttons: buttons });
         });
       } else {
         this.stories = [];
@@ -6378,14 +6524,14 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       this.ctx.fillText(HEALTH, xPos, yPos);
-      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'heart', _this2.scale, xPos + lineWidth + 8 + i * (_this2.size + 8), yPos - _this2.iconOffset);
+      [].concat(_toConsumableArray(Array(member.health))).map(function (_, index) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'heart', _this2.scale, xPos + lineWidth + 8 + index * (_this2.size + 8), yPos - _this2.iconOffset);
       });
 
       yPos += this.lineHeight;
       this.ctx.fillText(JEITO, xPos, yPos);
-      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'bolt', _this2.scale, xPos + lineWidth + 8 + i * (_this2.size + 8), yPos - _this2.iconOffset);
+      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, index) {
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'bolt', _this2.scale, xPos + lineWidth + 8 + index * (_this2.size + 8), yPos - _this2.iconOffset);
       });
 
       yPos += this.lineHeight;
@@ -6393,10 +6539,10 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       if (Array.isArray(member.skills)) {
-        this.skills = member.skills.map(function (skill, i) {
-          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + i * (_this2.size + 8), yPos - _this2.iconOffset);
+        this.skills = member.skills.map(function (skill, index) {
+          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + index * (_this2.size + 8), yPos - _this2.iconOffset);
           return Object.assign({}, skill, {
-            xPos: xPos + i * (_this2.size + 8),
+            xPos: xPos + index * (_this2.size + 8),
             yPos: yPos - _this2.iconOffset,
             width: _this2.size,
             height: _this2.size
@@ -6411,10 +6557,10 @@ var PartyWindow = function () {
 
       yPos += this.lineHeight;
       if (Array.isArray(member.modifiers)) {
-        this.modifiers = member.modifiers.map(function (modifier, i) {
-          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + i * (_this2.size + 8), yPos - _this2.iconOffset);
+        this.modifiers = member.modifiers.map(function (modifier, index) {
+          (0, _draw.drawByName)(_this2.ctx, _this2.icons, 'question', _this2.scale, xPos + index * (_this2.size + 8), yPos - _this2.iconOffset);
           return Object.assign({}, modifier, {
-            xPos: xPos + i * (_this2.size + 8),
+            xPos: xPos + index * (_this2.size + 8),
             yPos: yPos - _this2.iconOffset,
             width: _this2.size,
             height: _this2.size

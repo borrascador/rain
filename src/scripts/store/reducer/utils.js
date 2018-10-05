@@ -19,9 +19,13 @@ export function mergeArrays(oldArray, newArray) {
   };
   for (let newItem of newArray) {
     if (obj.hasOwnProperty(newItem.id)) {
-      if (newItem.quantity === 0 || newItem.health === 0) {
+      if (newItem.quantity === 0) {
         delete obj[newItem.id];
         break;
+      } else if (newItem.health === 0 && !obj[newItem.id].hasOwnProperty('timestamp')) {
+        obj[newItem.id] = Object.assign(obj[newItem.id], newItem, {
+          timestamp: Date.now()
+        });
       } else {
         obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
       }
@@ -69,6 +73,7 @@ export function updateStory(state, action) {
         inventoryChanges: action.payload.inventory || [],
         partyChanges: action.payload.party || [],
         buttons: action.payload.story.buttons || [ { text: 'OK', id: 1 } ],
+        canDispatch: action.payload.story.buttons ? true : false,
         timestamp: Date.now()
       })
     ]);
@@ -114,9 +119,11 @@ export function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     let changes = [];
     const now = Date.now();
-    party.forEach(item => {
-      const filtered = state.partyChanges.filter(member => item.id === member.id);
-      let timestamp = getTimestamp(filtered, UPDATE_TEXT_DURATION, now)
+    for (let item of party) {
+      const memberChanges = state.partyChanges.filter(member => item.id === member.id);
+      let timestamp = getTimestamp(memberChanges, UPDATE_TEXT_DURATION, now)
+
+      // NOTE Check for health changes
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
@@ -126,6 +133,32 @@ export function updatePartyChanges(state, action) {
         }));
         timestamp += UPDATE_TEXT_DURATION;
       }
+
+      // Check for new or dead party members
+      // NOTE loggedIn tests whether the user is starting a new session
+      if (item.hasOwnProperty('health') && state.loggedIn === true) {
+        const match = state.party.find(member => member.id === item.id)
+        if (!match) {
+          changes.push(Object.assign({}, {
+            id: item.id,
+            change: 1,
+            name: item.name,
+            timestamp: timestamp
+          }));
+          timestamp += UPDATE_TEXT_DURATION;
+        } else if (item.health === 0) {
+          changes.push(Object.assign({}, {
+            id: item.id,
+            change: -1,
+            name: item.name,
+            timestamp: timestamp
+          }));
+          timestamp += UPDATE_TEXT_DURATION;
+          continue;
+        }
+      }
+
+      // Check for jeito changes
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
@@ -135,6 +168,8 @@ export function updatePartyChanges(state, action) {
         }));
         timestamp += UPDATE_TEXT_DURATION;
       }
+
+      // Check for skill changes
       if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
         changes = changes.concat(
           item.skill_changes.map(change => {
@@ -149,6 +184,8 @@ export function updatePartyChanges(state, action) {
           })
         );
       }
+
+      // Check for modifier changes
       if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
         changes = changes.concat(
           item.modifier_changes.map(change => {
@@ -164,7 +201,7 @@ export function updatePartyChanges(state, action) {
           })
         );
       }
-    });
+    }
     return state.partyChanges.concat(changes);
   } else {
     return state.partyChanges;
