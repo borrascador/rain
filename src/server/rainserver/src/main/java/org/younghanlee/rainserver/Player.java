@@ -3,6 +3,7 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -227,12 +228,18 @@ public class Player {
 		return position;
 	}
 	
-	public JSONArray respawn() {
+	public JSONObject respawn() {
 		Tribe t = World.getTribe(tribe);
 		int rp = t.getRespawnPosition();
 		move(World.getHeight() * World.getWidth(), rp);
-		tilesSeen = World.getTile(rp).inSight(sight);
-		return t.generateParty(this);
+		JSONObject payload = new JSONObject();
+//		tilesSeen = World.getTile(rp).inSight(sight);
+		JSONArray newParty =  t.generateParty(this);
+		JSONArray newInventory = t.generateInventory(this);
+		payload.put("party", newParty);
+		payload.put("inventory", newInventory);
+		payload.put("tiles", inSightArray());
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public int getSight() {
@@ -315,6 +322,20 @@ public class Player {
 		if (backpack.containsKey(itemID)){
 			return backpack.get(itemID);
 		} else return 0;
+	}
+	
+	public JSONArray emptyInventory() {
+		JSONArray inventory = new JSONArray();
+		ArrayList<Integer> keys = new ArrayList<Integer>();
+		for (int k : backpack.keySet()) {
+			keys.add(k);
+		}
+		
+		for (int item_id : keys) {
+			JSONObject item = World.getItem(item_id).change(item_id, -1 * getQuantity(item_id), this, false);
+			inventory.put(item);
+		}
+		return inventory;
 	}
 	
 	public JSONArray backpackToJSONArray() {

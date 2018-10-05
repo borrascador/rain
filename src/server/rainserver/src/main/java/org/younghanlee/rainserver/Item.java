@@ -70,6 +70,7 @@ public class Item {
 		return jo;
 	}
 	
+	
 	public JSONObject toJSONObject(int id, int quantity) {
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);
