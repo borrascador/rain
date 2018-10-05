@@ -3,8 +3,6 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map.Entry;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -77,7 +75,7 @@ public class Hunt{
 		JSONArray drops =  animal.rollDrop(p, catchAmount);
 		String[] choiceNames = {"stopHunting", "continueHunting"};
 		String storyText = "You filet " + catchAmount + " x " + animal.getName();
-		Decision d = new Decision(choiceNames, storyText);
+		Decision d = new Decision(choiceNames, storyText, p);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
 		story.put("text", storyText);
@@ -98,7 +96,7 @@ public class Hunt{
 	public JSONObject discardFish() {
 		String[] choiceNames = {"stopHunting", "continueHunting"};
 		String storyText = "You discard " + catchAmount + " x " + animal.getName();
-		Decision d = new Decision(choiceNames, storyText);
+		Decision d = new Decision(choiceNames, storyText, p);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
 		story.put("text", storyText);
@@ -111,9 +109,36 @@ public class Hunt{
 		return Message.EVENT_RESPONSE(payload);
 	}
 	
+	public static IChoice attack = new IChoice() {
+		public String getText(Player p) {
+			return "attack";
+		}
+		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+			return p.getHunt().attack();
+		}
+		public ArrayList<Multiplier> generateMultipliers(Player p){
+			ArrayList<Multiplier> multipliers = new ArrayList<Multiplier>();
+			Multiplier hunting = new Multiplier("hunting", 0, p.getHunt().huntingMultiplier());
+			multipliers.add(hunting);
+			return multipliers;
+		}
+	};
+	
+	public static IChoice escape = new IChoice() {
+		public String getText(Player p) {
+			return "escape";
+		}
+		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+			return p.getHunt().escape();
+		}
+		public ArrayList<Multiplier> generateMultipliers(Player p){
+			return null;
+		}
+	};
+	
 	public JSONObject attack() {
 		String[] choiceNames = {"stopHunting", "continueHunting"};
-		Decision d = new Decision(choiceNames, "");
+		Decision d = new Decision(choiceNames, "", p);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
 		story.put("buttons", d.buttons(p));
@@ -201,7 +226,7 @@ public class Hunt{
 		
 		String[] choiceNames = {"stopHunting", "continueHunting"};
 		String storyText = "You have escaped " + animal.getName();
-		Decision d = new Decision(choiceNames, storyText);
+		Decision d = new Decision(choiceNames, storyText, p);
 		p.setDecision(d);
 		JSONObject story = new JSONObject();
 		story.put("text", storyText);
@@ -221,36 +246,29 @@ public class Hunt{
 			int last = queue.size()-1;
 			int id = queue.get(last);
 			rarity = h.getAnimalRarity(id) * wildlife;
-			//System.out.println(id + ":" + rarity);
-			//System.out.println(queue);
 			if (Math.random() < rarity) {
 				animal = World.getAnimal(id);
 				if (animal.isFish()) {
 					catchAmount = 1 + Util.randomInt(animal.getNumber() - 1);
 					String[] choiceNames = {"process", "discard"};
 					String storyText = "Fishing in habitat: " + h.getPublicType() +"\n\nYou catch " + catchAmount + " x " + animal.getName();
-					Decision d = new Decision(choiceNames, storyText);
-					d.addMultiplier("fishing", fishingMultiplier());
+					Decision d = new Decision(choiceNames, storyText, p);
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
 					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
-					story.put("multipliers", d.getMultipliers());
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				} else {
 					String[] choiceNames = {"attack", "escape"};
 					String storyText = "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName();
-					Decision d = new Decision(choiceNames, storyText);
-					d.addMultiplier("hunting", huntingMultiplier());
-					d.addMultiplier("tracking", trackingMultiplier());
+					Decision d = new Decision(choiceNames, storyText, p);
 					p.setDecision(d);
 					JSONObject story = new JSONObject();
 					story.put("text", storyText);
 					story.put("buttons", d.buttons(p));
 					JSONObject payload = new JSONObject();
-					story.put("multipliers", d.getMultipliers());
 					payload.put("story", story);
 					return Message.EVENT_RESPONSE(payload);
 				}
@@ -263,6 +281,11 @@ public class Hunt{
 		JSONObject payload = new JSONObject();
 		payload.put("story", story);
 		return Message.EVENT_RESPONSE(payload);
+	}
+	
+	public static void addAllChoices() {
+		Decision.addChoice("attack", attack);
+		Decision.addChoice("escape", escape);
 	}
 
 }

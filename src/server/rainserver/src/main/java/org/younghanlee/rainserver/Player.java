@@ -67,7 +67,7 @@ public class Player {
 			choiceNames[i] = "selectTribe"+ i;
 		}
 		String story = "Choose your tribe.";
-		Decision d = new Decision(choiceNames, story);
+		Decision d = new Decision(choiceNames, story, this);
 		this.decision = d;
 
 		this.buffer = new HashSet<Integer>();

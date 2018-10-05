@@ -75,7 +75,7 @@ public class EventHandler {
 					story = new JSONObject();
 					String[] choiceNames = {"fishDeep", "fishShallow"};
 					String storyText = "You estimate the water here to be at least " + depth +" deep.";
-					Decision d = new Decision(choiceNames, storyText);
+					Decision d = new Decision(choiceNames, storyText, p);
 					p.setDecision(d);;
 					story.put("text", storyText);
 					story.put("buttons", p.getDecision().buttons(p));
