@@ -16,7 +16,7 @@ public class Multiplier{
 	public JSONObject toJSONObject() {
 		JSONObject jo = new JSONObject();
 		jo.put("name", name);
-		jo.put("value", Math.round(100 * value));
+		jo.put("value", Math.round(100 * (value - 1.0)));
 		jo.put("icon", icon);
 		return jo;
 	}

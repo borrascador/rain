@@ -83,6 +83,7 @@ public class World {
 
 		
 		Decision.createDecisionHashMap();
+		Hunt.addAllChoices();
 		
 		// indexing
 		memberID = 0;
