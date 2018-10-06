@@ -148,7 +148,8 @@ public class Hunt{
 		JSONObject payload = new JSONObject();
 		String death = "";
 		String storyText = "";
-		if (Util.randomInt(100) < animal.getAggression()) {
+		if (true) {
+//		if (Util.randomInt(100) < animal.getAggression()) {
 			if (animal.fight(p, huntingMultiplier())) {
 				story.put("text", "You have defeated " + animal.getName());
 				drops = animal.rollDrop(p, 1);
@@ -161,22 +162,16 @@ public class Hunt{
 				for (int i=0; i<p.partySize(); i++) {
 					int id = p.getPartyMember(i);
 					Member m = World.getMember(id);
-					if (Util.randomInt(20) > m.getStrength()) {
+					if (Util.randomInt(20) > 5) {
 						members_injured++;
 						int health_loss = -1 * (Util.randomInt(2) + 1);
 						JSONObject jo = m.change(id, p, health_loss, 0, null, null, null);
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
 								death += "Your last member " + m.getName() + " has perished.";
-								payload.put("position", p.getTribe().getRespawnPosition());
-								JSONArray newParty = p.respawn();
-								for (int j = 0; j < newParty.length(); j++) {
-							        JSONObject newMember = newParty.getJSONObject(j);
-							        damage.put(newMember);
-							    }
-								tiles = p.inSightArray();
-								
-								story.remove("buttons");
+								drops = p.emptyInventory();
+								p.setDecision(new Decision(new String[]{"respawn"}, null, p));
+								story.put("buttons", p.getDecision().buttons(p));
 							} else {
 								death += m.getName() + " has perished. ";
 							}

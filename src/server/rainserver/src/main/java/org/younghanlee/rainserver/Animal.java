@@ -88,9 +88,10 @@ public class Animal {
 	}
 	
 	public boolean fight(Player p, float multiplier) {
-		int base = 10;
-		int value = Util.randomRoll(base, multiplier);
-		return value > strength;
+//		int base = 10;
+//		int value = Util.randomRoll(base, multiplier);
+//		return value > strength;
+		return false;
 	}
 	
 	public JSONArray rollDrop(Player p, int n) {

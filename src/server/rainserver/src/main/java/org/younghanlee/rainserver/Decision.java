@@ -43,6 +43,7 @@ public class Decision {
 		choiceMap.put("continueHunting", continueHunting);
 		choiceMap.put("fishDeep", fishDeep);
 		choiceMap.put("fishShallow", fishShallow);
+		choiceMap.put("respawn", respawn);
 		
 		for (int i=0; i<World.numTribes(); i++) {
 			final int index = i;
@@ -178,6 +179,18 @@ public class Decision {
 			Multiplier fishing = new Multiplier("fishing", 0, p.getHunt().fishingMultiplier());
 			multipliers.add(fishing);
 			return multipliers;
+		}
+	};
+	
+	public static IChoice respawn = new IChoice() {
+		public String getText(Player p) {
+			return "Start over from " + p.getTribe().getName();
+		}
+		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+			return p.respawn();
+		}
+		public ArrayList<Multiplier> generateMultipliers(Player p){
+			return null;
 		}
 	};
 	

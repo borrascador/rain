@@ -3,6 +3,7 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -176,11 +177,16 @@ public class Player {
 		boolean yl = y >= 0;
 		boolean yu = x < World.getHeight();
 		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
-		return xl && xu && yl && yu && dist <= range;
+		System.out.println("Source: " + this.x + " " + this.y);
+		System.out.println("Destination: " + x + " " + y);
+		System.out.println(xl + " " + xu + " " + yl + " " + yu + " " + dist);
+		return xl && xu && yl && yu && (dist <= range);
 	}
 	
 	public void setPosition(int position) {
 		this.position = position;
+		this.x = position % World.getWidth();
+		this.y = (position - x)/World.getWidth();
 	}
 	
 	public boolean move(int range, int destination) {
@@ -227,12 +233,19 @@ public class Player {
 		return position;
 	}
 	
-	public JSONArray respawn() {
+	public JSONObject respawn() {
 		Tribe t = World.getTribe(tribe);
 		int rp = t.getRespawnPosition();
 		move(World.getHeight() * World.getWidth(), rp);
-		tilesSeen = World.getTile(rp).inSight(sight);
-		return t.generateParty(this);
+		JSONObject payload = new JSONObject();
+//		tilesSeen = World.getTile(rp).inSight(sight);
+		JSONArray newParty =  t.generateParty(this);
+		JSONArray newInventory = t.generateInventory(this);
+		payload.put("position", rp);
+		payload.put("party", newParty);
+		payload.put("inventory", newInventory);
+		payload.put("tiles", inSightArray());
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public int getSight() {
@@ -315,6 +328,20 @@ public class Player {
 		if (backpack.containsKey(itemID)){
 			return backpack.get(itemID);
 		} else return 0;
+	}
+	
+	public JSONArray emptyInventory() {
+		JSONArray inventory = new JSONArray();
+		ArrayList<Integer> keys = new ArrayList<Integer>();
+		for (int k : backpack.keySet()) {
+			keys.add(k);
+		}
+		
+		for (int item_id : keys) {
+			JSONObject item = World.getItem(item_id).change(item_id, -1 * getQuantity(item_id), this, false);
+			inventory.put(item);
+		}
+		return inventory;
 	}
 	
 	public JSONArray backpackToJSONArray() {
