@@ -121,18 +121,8 @@ export default class Story {
     }
 
     yPos = coords.yPos + this.lineHeight * 2;
-    buttons = this.buttonText(buttons, xPos, yPos, this.selected);
+    buttons = this.buttonText(buttons, xPos, yPos, this.selected, this.icons, this.scale);
     yPos = buttons[buttons.length - 1].yPos;
-
-    let hovers = [];
-    if (story.multipliers && story.multipliers.length > 0) {
-      yPos += this.lineHeight * 2;
-      hovers = drawMultipliers(
-        this.ctx, this.icons, this.scale,
-        this.fontSize, this.lineHeight,
-        story, xPos, yPos
-      );
-    }
 
     if (buttons.length > 1) {
       this.ctx.fillStyle = PALE_GREEN;
@@ -140,15 +130,16 @@ export default class Story {
       this.mainText(prompt, xPos, yPos);
     }
 
-    return { buttons, hovers };
+    return buttons;
   }
 
-  renderHover(hovers) {
+  renderHover(buttons) {
     const { xMouse, yMouse } = this.connect.mouse;
     if (xMouse && yMouse) {
-      const hoverIcon = screenToImageButton(xMouse, yMouse, hovers);
-      if (hoverIcon) {
-        drawHover(this.ctx, this.fontSize, hoverIcon);
+      const filteredButtons = buttons.filter(button => button.hoverText);
+      const item = screenToImageButton(xMouse, yMouse, filteredButtons);
+      if (item && item.hoverText) {
+        drawHover(this.ctx, this.fontSize, item);
       }
     }
   }
@@ -160,8 +151,8 @@ export default class Story {
       this.stories = this.stories.map(story => {
         this.ctx.fillStyle = MEDIUM_RED;
         this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
-        const { buttons, hovers } = this.renderStoryText(story);
-        this.renderHover(hovers);
+        const buttons = this.renderStoryText(story);
+        this.renderHover(buttons);
         return Object.assign({}, story, { buttons });
       });
     } else {
