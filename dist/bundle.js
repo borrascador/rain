@@ -648,6 +648,9 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, sele
   var y = yPos;
   var result = [];
   buttons.forEach(function (button, idx) {
+    if (result.length > 0 && result[result.length - 1].hoverText) {
+      y += lineHeight / 4;
+    }
     ctx.fillStyle = selected && selected.id === button.id ? _colors.BRIGHT_YELLOW : _colors.PALE_GREEN;
     ctx.fillText(button.oneIndex + '.', xPos, y);
     var coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
@@ -657,6 +660,7 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, sele
     }));
     y = coords.yPos + lineHeight;
     if (button.multipliers) {
+      y += lineHeight / 4;
       var multipliers = drawMultipliers(ctx, icons, scale, fontSize, lineHeight, button.multipliers, x, y);
       result.push.apply(result, _toConsumableArray(multipliers));
       y = multipliers[multipliers.length - 1].yPos + lineHeight * 2;
@@ -6157,6 +6161,9 @@ var Story = function () {
       yPos = coords.yPos + this.lineHeight * 2;
       buttons = this.buttonText(buttons, xPos, yPos, this.selected, this.icons, this.scale);
       yPos = buttons[buttons.length - 1].yPos;
+      if (buttons[buttons.length - 1].hoverText) {
+        yPos += this.lineHeight;
+      }
 
       if (buttons.length > 1) {
         this.ctx.fillStyle = _colors.PALE_GREEN;

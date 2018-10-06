@@ -130,6 +130,9 @@ export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPo
   let y = yPos;
   let result = [];
   buttons.forEach((button, idx) => {
+    if (result.length > 0 && result[result.length - 1].hoverText) {
+      y += lineHeight / 4;
+    }
     ctx.fillStyle = (selected && selected.id === button.id) ? BRIGHT_YELLOW : PALE_GREEN;
     ctx.fillText(`${button.oneIndex}.`, xPos, y);
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
@@ -139,9 +142,10 @@ export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPo
     }));
     y = coords.yPos + lineHeight;
     if (button.multipliers) {
+      y += lineHeight / 4;
       const multipliers = drawMultipliers(
         ctx, icons, scale, fontSize, lineHeight, button.multipliers, x, y
-      )
+      );
       result.push(...multipliers);
       y = multipliers[multipliers.length - 1].yPos + lineHeight * 2;
     }
