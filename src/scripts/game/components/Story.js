@@ -123,6 +123,9 @@ export default class Story {
     yPos = coords.yPos + this.lineHeight * 2;
     buttons = this.buttonText(buttons, xPos, yPos, this.selected, this.icons, this.scale);
     yPos = buttons[buttons.length - 1].yPos;
+    if (buttons[buttons.length - 1].hoverText) {
+      yPos += this.lineHeight;
+    }
 
     if (buttons.length > 1) {
       this.ctx.fillStyle = PALE_GREEN;
