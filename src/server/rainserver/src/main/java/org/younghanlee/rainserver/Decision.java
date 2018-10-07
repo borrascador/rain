@@ -158,7 +158,9 @@ public class Decision {
 		}
 		public ArrayList<Multiplier> generateMultipliers(Player p){
 			ArrayList<Multiplier> multipliers = new ArrayList<Multiplier>();
-			Multiplier fishing = new Multiplier("fishing", 0, p.getHunt().fishingMultiplier());
+			System.out.println("test2");
+			Multiplier fishing = new Multiplier("fishing", 0, Hunt.fishingMultiplier(p));
+			System.out.println("test3");
 			multipliers.add(fishing);
 			return multipliers;
 		}
@@ -176,7 +178,7 @@ public class Decision {
 		}
 		public ArrayList<Multiplier> generateMultipliers(Player p){
 			ArrayList<Multiplier> multipliers = new ArrayList<Multiplier>();
-			Multiplier fishing = new Multiplier("fishing", 0, p.getHunt().fishingMultiplier());
+			Multiplier fishing = new Multiplier("fishing", 0, Hunt.fishingMultiplier(p));
 			multipliers.add(fishing);
 			return multipliers;
 		}
@@ -187,6 +189,7 @@ public class Decision {
 			return "Start over from " + p.getTribe().getName();
 		}
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+			p.removeDecision();
 			return p.respawn();
 		}
 		public ArrayList<Multiplier> generateMultipliers(Player p){

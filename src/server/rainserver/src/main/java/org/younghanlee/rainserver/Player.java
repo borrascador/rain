@@ -177,9 +177,6 @@ public class Player {
 		boolean yl = y >= 0;
 		boolean yu = x < World.getHeight();
 		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
-		System.out.println("Source: " + this.x + " " + this.y);
-		System.out.println("Destination: " + x + " " + y);
-		System.out.println(xl + " " + xu + " " + yl + " " + yu + " " + dist);
 		return xl && xu && yl && yu && (dist <= range);
 	}
 	
