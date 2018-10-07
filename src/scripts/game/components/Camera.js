@@ -1,4 +1,5 @@
 import Connect from '../../store/Connect';
+import Animation from '../utils/Animation';
 import { sendEvent } from '../../store/actions/requests';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
@@ -14,6 +15,7 @@ export default class Camera {
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
     this.icons = loader.getImage('icons');
+    this.blink = new Animation(1, 1, 0.5);
 
     this.connect = new Connect(this.store);
   }
@@ -50,6 +52,7 @@ export default class Camera {
   }
 
   render(delta) {
+    this.blink.tick(delta);
     const { pos, tiles, sight, zoom } = this.connect.map;
     const tileSize = this.atlas.tileset.tilewidth * zoom;
     const iconSize = this.icons.tileset.tilewidth * zoom;
@@ -89,7 +92,16 @@ export default class Camera {
 
           if (!dim && 'visitors' in tile && tile.visitors === true) {
             const iconOffset = (tileSize - iconSize) / 2
-            drawByName(this.ctx, this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
+            // xCoord yCoord
+
+            drawById(
+              this.ctx,
+              this.icons,
+              7 + this.blink.getValue(),
+              gridZoom,
+              x + iconOffset,
+              y + iconOffset
+            );
           }
 
           if (dim) {

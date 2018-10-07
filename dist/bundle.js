@@ -5220,6 +5220,10 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
+var _Animation = __webpack_require__(9);
+
+var _Animation2 = _interopRequireDefault(_Animation);
+
 var _requests = __webpack_require__(6);
 
 var _constants = __webpack_require__(1);
@@ -5246,6 +5250,7 @@ var Camera = function () {
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
     this.icons = loader.getImage('icons');
+    this.blink = new _Animation2.default(1, 1, 0.5);
 
     this.connect = new _Connect2.default(this.store);
   }
@@ -5291,6 +5296,7 @@ var Camera = function () {
     value: function render(delta) {
       var _this = this;
 
+      this.blink.tick(delta);
       var _connect$map = this.connect.map,
           pos = _connect$map.pos,
           tiles = _connect$map.tiles,
@@ -5335,7 +5341,9 @@ var Camera = function () {
 
             if (!dim && 'visitors' in tile && tile.visitors === true) {
               var iconOffset = (tileSize - iconSize) / 2;
-              (0, _draw.drawByName)(_this.ctx, _this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
+              // xCoord yCoord
+
+              (0, _draw.drawById)(_this.ctx, _this.icons, 7 + _this.blink.getValue(), gridZoom, x + iconOffset, y + iconOffset);
             }
 
             if (dim) {
