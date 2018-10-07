@@ -60,7 +60,7 @@ public class Hunt{
 		return multiplier;
 	}
 	
-	public float fishingMultiplier() {
+	public static float fishingMultiplier(Player p) {
 		float multiplier = 1.0f;
 		for (int i=0; i<p.partySize(); i++) {
 			Member m = World.getMember(p.getPartyMember(i));
