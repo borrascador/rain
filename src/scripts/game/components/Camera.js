@@ -1,4 +1,5 @@
 import Connect from '../../store/Connect';
+import Animation from '../utils/Animation';
 import { sendEvent } from '../../store/actions/requests';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
@@ -14,6 +15,7 @@ export default class Camera {
     this.ctx = ctx;
     this.atlas = loader.getImage('atlas');
     this.icons = loader.getImage('icons');
+    this.blink = new Animation(1, 1, 0.5);
 
     this.connect = new Connect(this.store);
   }
@@ -24,11 +26,11 @@ export default class Camera {
     });
   }
 
-  getOffsetOrigin(size, x, y) {
+  getOffsetOrigin(size, xPos, yPos, xCoords, yCoords) {
     // move camera
     return {
-      x: Math.round(x * size - Math.floor(this.canvas.width / 2) + size / 2),
-      y: Math.round(y * size - Math.floor(this.canvas.height / 2) + size / 2)
+      x: Math.round((xPos + xCoords / 32) * size - Math.floor(this.canvas.width / 2)),
+      y: Math.round((yPos + yCoords / 32) * size - Math.floor(this.canvas.height / 2))
     };
     // clamp values
     // this.x = Math.max(0, Math.min(this.x, this.maxX));
@@ -38,9 +40,11 @@ export default class Camera {
   updateClick(x, y) {
     const tile = x && y && screenToImageButton(x, y, this.clickTiles);
     if (tile) {
-      const { pos } = this.connect.map;
+      const { pos, zoom } = this.connect.map;
       if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-        this.store.dispatch(sendEvent('move', tile.id));
+        const xCoord = Math.floor((x - tile.xPos) / zoom);
+        const yCoord = Math.floor((y - tile.yPos) / zoom);
+        this.store.dispatch(sendEvent('move', tile.id, { x: xCoord, y: yCoord }));
       }
     }
   }
@@ -50,24 +54,24 @@ export default class Camera {
   }
 
   render(delta) {
-    const { pos, tiles, sight, zoom } = this.connect.map;
+    this.blink.tick(delta);
+    const { pos, coords, positionTarget, coordsTarget, tiles, sight, zoom } = this.connect.map;
     const tileSize = this.atlas.tileset.tilewidth * zoom;
     const iconSize = this.icons.tileset.tilewidth * zoom;
-    const gridZoom = (tileSize - 1) / (tileSize / zoom)
+    const gridZoom = (tileSize - 1) / (tileSize / zoom);
 
-    const origin = this.getOffsetOrigin(tileSize, pos.x, pos.y);
+    const origin = this.getOffsetOrigin(tileSize, pos.x, pos.y, coords.x, coords.y);
     const startCol = Math.floor(origin.x / tileSize);
     const endCol = startCol + Math.ceil((this.canvas.width / tileSize) + 1);
     const startRow = Math.floor(origin.y / tileSize);
     const endRow = startRow + Math.ceil((this.canvas.height / tileSize) + 1);
-    const offsetX = -origin.x + startCol * tileSize;
-    const offsetY = -origin.y + startRow * tileSize;
+
     let clickTiles = [];
     let dim = false;
     for (let col = startCol; col <= endCol; col++) {
       for (let row = startRow; row <= endRow; row++) {
-        const x = (col - startCol) * tileSize + offsetX;
-        const y = (row - startRow) * tileSize + offsetY;
+        const x = col * tileSize - origin.x;
+        const y = row * tileSize - origin.y;
         const tile = this.findTile(tiles, col, row);
         if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) === 1) {
           clickTiles.push(Object.assign({}, tile, {
@@ -87,10 +91,29 @@ export default class Camera {
             }
           });
 
-          if (!dim && 'visitors' in tile && tile.visitors === true) {
-            const iconOffset = (tileSize - iconSize) / 2
-            drawByName(this.ctx, this.icons, 'user', gridZoom, x + iconOffset, y + iconOffset);
+          if (positionTarget === tile.id) {
+            drawById(
+              this.ctx,
+              this.icons,
+              28 + this.blink.getValue(),
+              zoom,
+              x + coordsTarget.x * zoom - iconSize / 2,
+              y + coordsTarget.y * zoom - iconSize / 2
+            );
           }
+
+          // if (!dim && 'visitors' in tile && tile.visitors === true) {
+          //   // TODO add support for coordinates
+          //   const iconOffset = (tileSize - iconSize) / 2
+          //   drawById(
+          //     this.ctx,
+          //     this.icons,
+          //     26 + this.blink.getValue(),
+          //     gridZoom,
+          //     x + iconOffset,
+          //     y + iconOffset
+          //   );
+          // }
 
           if (dim) {
             this.ctx.fillStyle = MEDIUM_OPAQUE;
@@ -100,5 +123,14 @@ export default class Camera {
       }
     }
     this.clickTiles = clickTiles;
+
+    drawById(
+      this.ctx,
+      this.icons,
+      24 + this.blink.getValue(),
+      gridZoom,
+      (this.canvas.width - iconSize) / 2,
+      (this.canvas.height - iconSize) / 2
+    );
   }
 }

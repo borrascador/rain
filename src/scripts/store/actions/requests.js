@@ -83,11 +83,11 @@ export function logout(callback) {
   }
 }
 
-export function sendEvent(type, id) {
+export function sendEvent(type, id, optional) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(eventRequest(type, id));
+      dispatch(eventRequest(type, id, optional));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
         clearTimeout(timer);
