@@ -27,13 +27,15 @@ public class EventHandler {
 				break;
 			case "move":
 				int destination = event.getInt("id");
-				int range = 1;
+				int x = event.getInt("x");
+				int y = event.getInt("y");
 				
-				if (p.move(range, destination)) {
-					tiles = p.inSightArray();
+				if (p.move(destination,x, y)) {
 					payload = new JSONObject();
-					payload.put("position", destination);
-					payload.put("tiles", tiles);
+					payload.put("positionTarget", destination);
+					payload.put("xTarget", x);
+					payload.put("yTarget", y);
+					payload.put("pace", 1);
 					response = Message.EVENT_RESPONSE(payload);
 				} else {
 					response = Message.ERROR(308, null);
