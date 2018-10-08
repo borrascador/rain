@@ -33,6 +33,7 @@ public class Player {
 	private ArrayList<Integer> party;
 	private HashMap<Integer, Integer> backpack;
 	
+	private Move move;
 	private Hunt hunt;
 	private Decision decision;
 	
@@ -44,22 +45,23 @@ public class Player {
 		this.passwordSalt = Password.generateSalt();
 		this.passwordHash = Password.multiHash(password, passwordSalt);
 		
-		this.sight = 1;
+		sight = 1;
 		
 		// Player is offline upon registration. Call Login afterwards
-		this.online = false;
-		this.position = null;	
-		this.tilesSeen = new ArrayList<Integer>();
+		online = false;
+		position = null;	
+		tilesSeen = new ArrayList<Integer>();
 		
-		this.party = new ArrayList<Integer>();	
+		party = new ArrayList<Integer>();	
 		
-		this.pace = 2;
-		this.speed = 1;
-		this.rations = 1;
+		pace = 0;
+		speed = 4;
+		rations = 1;
 		
-		this.hunt = null;
+		hunt = null;
+		move = null;
 		
-		this.backpack = new HashMap<Integer, Integer>();
+		backpack = new HashMap<Integer, Integer>();
 		
 		eating = new ArrayList<Integer>();
 		
@@ -123,6 +125,10 @@ public class Player {
 		System.out.println(tick);
 		JSONObject payload = new JSONObject();
 		
+		if (move != null) {
+			payload = move.tick(this);
+		}
+		
 		// Check tiles buffer
 		if (!buffer.isEmpty()) {
 			JSONArray tiles = new JSONArray();
@@ -171,51 +177,23 @@ public class Player {
 		return;
 	}
 	
-	public boolean legalMove(int range, int x, int y) {
-		boolean xl = x >= 0;
-		boolean xu = x < World.getWidth();
-		boolean yl = y >= 0;
-		boolean yu = x < World.getHeight();
-		int dist = Math.abs(this.x - x) + Math.abs(this.y - y);
-		return xl && xu && yl && yu && (dist <= range);
-	}
-	
 	public void setPosition(int position) {
 		this.position = position;
-		this.x = position % World.getWidth();
-		this.y = (position - x)/World.getWidth();
 	}
 	
-	public boolean move(int range, int destination) {
-		int x = destination % World.getWidth();
-		int y = (destination - x)/World.getWidth();
-		if (legalMove(range, x, y)) {
-			// System.out.println("Legal Move");
-			this.x = x;
-			this.y = y;
-			
-			// Remove this player from source tile
-			Tile source = World.getTile(position);
-			source.removeVisitor(this.name);
-			
-			// Tell players you are leaving range
-			source.updateNeighbors(this.name, Constants.MAXSIGHT);
-			
-			// Add it to destination tile
-			this.position = destination;	
-			Tile dest = World.getTile(destination);
-			dest.addVisitor(this.name);
-			
-			this.tilesSeen.addAll(dest.inSight(sight));
-			
-			// Tell players you are in range
-			dest.updateNeighbors(this.name, Constants.MAXSIGHT);
-			
+	public boolean legalMove(int destination, int x, int y) {
+		return true;
+	}
+	
+	public boolean move(int destination, int x, int y) {
+		if (legalMove(destination, x, y)) {
+			move = new Move(destination, x, y, this);
 			return true;
-		} else {
-			System.out.println("illegal move");
-			return false;
-		}
+		} else return false;
+	}
+	
+	public void stopMoving() {
+		move = null;
 	}
 	
 	public boolean isOnline() {
@@ -230,14 +208,38 @@ public class Player {
 		return position;
 	}
 	
+	public int getX() {
+		return x;
+	}
+	
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
 	public JSONObject respawn() {
 		Tribe t = World.getTribe(tribe);
 		int rp = t.getRespawnPosition();
-		move(World.getHeight() * World.getWidth(), rp);
+		setPosition(rp);
+		setX(Util.randomInt(31));
+		setY(Util.randomInt(32));
 		JSONObject payload = new JSONObject();
 //		tilesSeen = World.getTile(rp).inSight(sight);
 		JSONArray newParty =  t.generateParty(this);
 		JSONArray newInventory = t.generateInventory(this);
+		payload.put("xCoord", x);
+		payload.put("yCoord", y);
 		payload.put("position", rp);
 		payload.put("party", newParty);
 		payload.put("inventory", newInventory);
@@ -257,7 +259,9 @@ public class Player {
 		return pace;
 	}
 	public void setPace(int n) {
-		pace = n;
+		if (move != null) {
+			move.setPace(n);
+		}
 	}
 	
 	public int getRations() {
