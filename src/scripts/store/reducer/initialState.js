@@ -23,11 +23,11 @@ const gameState = {
   inventoryChanges: [],
   partyChanges: [],
   position: null,
-  xCoord: null, // DEBUG
-  yCoord: null, // DEBUG
-  positionTarget: 811, // DEBUG
-  xTarget: 4, // DEBUG
-  yTarget: 4, // DEBUG
+  xCoord: null,
+  yCoord: null,
+  positionTarget: null,
+  xTarget: null,
+  yTarget: null,
   sight: null,
   pace: null,
   rations: null
