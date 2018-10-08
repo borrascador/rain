@@ -23,6 +23,11 @@ const gameState = {
   inventoryChanges: [],
   partyChanges: [],
   position: null,
+  xCoord: null, // DEBUG
+  yCoord: null, // DEBUG
+  positionTarget: 811, // DEBUG
+  xTarget: 4, // DEBUG
+  yTarget: 4, // DEBUG
   sight: null,
   pace: null,
   rations: null
@@ -48,6 +53,14 @@ const connectionState = {
   errorMessage: null,
   errorLog: []
 };
+
+export const revisedInitialState = (newState) => Object.assign({},
+  uiState,
+  gameState,
+  inputState,
+  connectionState,
+  newState
+);
 
 export const initialState = Object.assign({},
   uiState,
