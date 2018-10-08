@@ -53,7 +53,7 @@ export default class Party {
           } else if (item.name === member.name && member.timestamp) {
             x = -0.1 * elapsed
           }
-          const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
+          const text = `${item.change > 0 ? '+' : ''}${item.name}`;
           const yPos = y + (this.fontSize + this.portraitSize) / 2;
           fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, xPos, yPos);
         })

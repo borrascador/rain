@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -833,7 +833,7 @@ var _loading = __webpack_require__(71);
 
 var _success = __webpack_require__(72);
 
-var _failure = __webpack_require__(19);
+var _failure = __webpack_require__(20);
 
 function register(user, email, password, dimCallback, exitRegister) {
   return function (dispatch, getState) {
@@ -975,33 +975,6 @@ function makeButtons() {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1048,6 +1021,33 @@ var Animation = function () {
 exports.default = Animation;
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1059,15 +1059,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.subscribe = exports.store = undefined;
 
-var _reduxThunk = __webpack_require__(29);
+var _reduxThunk = __webpack_require__(30);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _reduxLogger = __webpack_require__(30);
+var _reduxLogger = __webpack_require__(31);
 
-var _redux = __webpack_require__(31);
+var _redux = __webpack_require__(32);
 
-var _reducer = __webpack_require__(46);
+var _reducer = __webpack_require__(47);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
@@ -1116,7 +1116,7 @@ var subscribe = exports.subscribe = (0, _reduxSubscriber2.default)(store);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(41);
 
 
 
@@ -1371,9 +1371,9 @@ var ActionTypes = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getPrototype_js__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getPrototype_js__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(40);
 
 
 
@@ -1443,7 +1443,7 @@ function isPlainObject(value) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__root_js__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__root_js__ = __webpack_require__(34);
 
 
 /** Built-in value references. */
@@ -1539,11 +1539,11 @@ exports.open = open;
 exports.default = createWebSocketMiddleware;
 exports.trimUndefined = trimUndefined;
 
-var _blobToArrayBuffer = __webpack_require__(47);
+var _blobToArrayBuffer = __webpack_require__(48);
 
 var _blobToArrayBuffer2 = _interopRequireDefault(_blobToArrayBuffer);
 
-var _isFSA = __webpack_require__(48);
+var _isFSA = __webpack_require__(49);
 
 var _isFSA2 = _interopRequireDefault(_isFSA);
 
@@ -2262,6 +2262,86 @@ function getActions(inventory, eating, tiles, position) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.initialState = exports.revisedInitialState = undefined;
+
+var _constants = __webpack_require__(1);
+
+var _keys = __webpack_require__(51);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _ui = __webpack_require__(17);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import party from '../../../data/party.json';
+// import inventory from '../../../data/inventory.json';
+// import vehicle from '../../../data/vehicle.json';
+// import story from '../../../data/story.json';
+
+var uiState = {
+  mode: _constants.MODE.TITLE,
+  partyTab: 0,
+  actions: { 'main': [] },
+  zoom: 3
+};
+
+var gameState = {
+  tiles: [],
+  party: [], // DEBUG with party
+  inventory: [], // DEBUG with inventory
+  vehicle: null, // DEBUG with vehicle
+  stories: [], // DEBUG with story TODO update to stories in example
+  inventoryChanges: [],
+  partyChanges: [],
+  position: null,
+  xCoord: null,
+  yCoord: null,
+  positionTarget: null,
+  xTarget: null,
+  yTarget: null,
+  sight: null,
+  pace: null,
+  rations: null
+};
+
+var inputState = {
+  xDown: null,
+  yDown: null,
+  xOffset: null,
+  yOffset: null,
+  xMouse: null,
+  yMouse: null,
+  xClick: null,
+  yClick: null,
+  keys: (0, _ui.makeKeys)()
+};
+
+var connectionState = {
+  connected: false,
+  loggedIn: false,
+  sending: false,
+  error: null,
+  errorMessage: null,
+  errorLog: []
+};
+
+var revisedInitialState = exports.revisedInitialState = function revisedInitialState(newState) {
+  return Object.assign({}, uiState, gameState, inputState, connectionState, newState);
+};
+
+var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.failureDialog = failureDialog;
 
 var _utils = __webpack_require__(7);
@@ -2293,24 +2373,24 @@ function failureDialog(message, dimCallback) {
 }
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(21);
+__webpack_require__(22);
 
-__webpack_require__(28);
+__webpack_require__(29);
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(22);
+var content = __webpack_require__(23);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -2318,7 +2398,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(26)(content, options);
+var update = __webpack_require__(27)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -2335,22 +2415,22 @@ if(false) {
 }
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(23);
-exports = module.exports = __webpack_require__(24)(false);
+var escape = __webpack_require__(24);
+exports = module.exports = __webpack_require__(25)(false);
 // imports
 
 
 // module
-exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(25)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.spacer {\n  display: inline-block;\n  width: 34px;\n}\n\n.items {\n  border: 2px solid white;\n  margin: 8px;\n  overflow: auto;\n  padding: 0px;\n}\n\n.items div {\n  padding: 0px;\n}\n\n.left {\n  float: left;\n}\n\n.right {\n  float: right;\n}\n\n.clear {\n  clear: both;\n}\n", ""]);
+exports.push([module.i, "@font-face {\n  font-family: 'MECC';\n  src: url(" + escape(__webpack_require__(26)) + ") format('truetype');\n}\n\nhtml, body {\n  background-color: #222;\n  height: 100%;\n  margin: 0;\n\tfont-family: 'MECC', Courier, sans-serif;\n}\n\n#container {\n  position: relative;\n  height: 100%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n#container canvas, .dialog {\n  position: absolute;\n}\n\n.dialog {\n  border: 4px solid white;\n  /* width: 600px; */\n  color: white;\n  background-color: black;\n  text-align: center;\n}\n\n.dialog .content {\n  padding: 8px;\n}\n\n.content div {\n  padding: 8px;\n}\n\n.title {\n  font-size: 28px;\n}\n\n.input-line {\n}\n\n.label-container, .input-container {\n  display: inline-block;\n}\n\n.label {\n  width: 130px;\n  margin-right: 8px;\n}\n\ninput, button {\n  border: 4px solid white;\n  font-family: inherit;\n}\n\ninput {\n  color: black;\n}\n\nbutton {\n  width: 120px;\n  padding: 4px;\n  color: white;\n  background-color: black;\n}\n\n.spacer {\n  display: inline-block;\n  width: 34px;\n}\n\n.items {\n  border: 2px solid white;\n  margin: 8px;\n  overflow: auto;\n  padding: 0px;\n}\n\n.items div {\n  padding: 0px;\n}\n\n.left {\n  float: left;\n}\n\n.right {\n  float: right;\n}\n\n.clear {\n  clear: both;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = function escape(url) {
@@ -2372,7 +2452,7 @@ module.exports = function escape(url) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /*
@@ -2454,13 +2534,13 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = "data:application/x-font-ttf;base64,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AP8AgIABAAEAAQD/AAEAgID/AAEAgIABAICA/gCAgICAgICAgICAgICAgAAAAwAAAAADAAOAAAMAFwAbAAAhESERJTUzNTM1MzUzNSEVIxUjFSMVIxUBESERAgABAP0AgICAgAEAgICAgP8AAQABAP8AgICAgICAgICAgIACAAEA/wAAAAMAAAAAA4ADgAADAAcAIwAAJREjERMRIxEDNSMRMzUjETM1IRUzESMVMzUhFSMRMxUhNSMVAYCAgICAgICAgAGAgICAAQCAgP8AgIABAP8AAYABAP8A/gCAAQCAAQCAgP8AgICA/wCAgIAAAAEAAAIAAgADgAALAAARNTM1MzUhFSMVIxWAgAEAgIACAICAgICAgAABAAAAAAIAA4AAEwAAITUjNSMRMzUzNSEVIxUjETMVMxUBAICAgIABAICAgICAgAGAgICAgP6AgIAAAAABAAAAAAIAA4AAEwAAMTUzNTMRIzUjNSEVMxUzESMVIxWAgICAAQCAgICAgIABgICAgID+gICAAAEAAAAABAADgAAjAAAhESMVITUzNTM1IzUjNSEVMxEhETM1IRUjFSMVMxUzFSE1IxEBgID/AICAgIABAIABAIABAICAgID/AIABAICAgICAgIABAP8AgICAgICAgP8AAAEAAACAAwADAAALAAAlESE1IREhESEVIREBAP8AAQABAAEA/wCAAQCAAQD/AID/AAAAAAABAAD/gAGAAQAABwAAFTUzESERIxWAAQCAgIABAP8AgAAAAAABAAABgAKAAgAAAwAAETUhFQKAAYCAgAABAAAAAAEAAIAAAwAAMTUhFQEAgIAAAAABAAAAgAMAAwAAEwAAPQEzNTM1MzUzNSEVIxUjFSMVIxWAgICAAQCAgICAgICAgICAgICAgIAAAAIAAAAAAwADgAADAA8AACURIREHNSMRMzUhFTMRIxUCAP8AgICAAgCAgIACgP2AgIACgICA/YCAAAAAAAEAgAAAAoADgAALAAAzNTMRIzUzNSERMxWAgICAAQCAgAIAgID9AIAAAAAAAQAAAAADAAOAABkAADERMzUzNSERIRUhNTM1IRUzESMVIRUjFSEVgIABAP8A/wCAAgCAgP8AgAIAAQCAgAEAgICAgP8AgICAgAAAAAEAAAAAAwADgAAXAAAzNSM1IRUhESE1MzUzNSE1IREjETMRIxWAgAEAAQD/AICA/gADAICAgICAgAEAgICAgP8A/wD/AIAAAAIAAAAAAwADgAADABMAAAE1IxUTESERMzUzNTM1IREzFSMRAYCAgP6AgICAAQCAgAGAgID+gAEAAQCAgID+AID/AAAAAQAAAAADAAOAABMAADM1IzUhFSERIREhFSEVIRUzESMVgIABAAEA/gADAP4AAYCAgICAgAGAAYCAgID+gIAAAAIAAAAAAwADgAADABcAACURIREHNSMRMzUzNSEVIRUjFSEVMxEjFQIA/wCAgICAAgD+gIABgICAgAEA/wCAgAIAgICAgICA/wCAAAABAAAAAAMAA4AAEQAAMxEzNTM1MzUhNSERIxUjFSMRgICAgP4AAwCAgIABgICAgID/AICA/oAAAAMAAAAAAwADgAADAAcAGwAAJREhEQERIREDNSMRMzUjETM1IRUzESMVMxEjFQIA/wABAP8AgICAgIACAICAgICAAQD/AAGAAQD/AP4AgAEAgAEAgID/AID/AIAAAgAAAAADAAOAAAMAFwAAAREhEQE1ITUzNSE1IxEzNSEVMxEjFSMVAgD/AP8AAYCA/oCAgAIAgICAAgABAP8A/gCAgICAAQCAgP4AgIAAAAACAAAAgAEAAgAAAwAHAAA9ASEVATUhFQEA/wABAICAgAEAgIAAAAAAAgAA/4ABgAIAAAcACwAAFTUzESERIxUDNSEVgAEAgIABAICAAQD/AIACAICAAAAAAQAAAAACgAOAABsAACE1IzUjNSM1MzUzNTM1IRUjFSMVIxUzFTMVMxUBgICAgICAgAEAgICAgICAgICAgICAgICAgICAgIAAAgAAAIACgAKAAAMABwAAPQEhFQE1IRUCgP2AAoCAgIABgICAAAAAAAEAAAAAAoADgAAbAAAxNTM1MzUzNSM1IzUjNSEVMxUzFTMVIxUjFSMVgICAgICAAQCAgICAgICAgICAgICAgICAgICAgAAAAAIAAAAAAwADgAADABcAACE1IRUBETM1MzUhFSE1MzUhFTMVIxUjEQEAAQD/AICA/wD/AIACAICAgICAAQABAICAgICAgICA/wAAAAABAAAAAAOAA4AAFQAAMzUjETM1IRUzESMVIREzFTMRIREhFYCAgAKAgID+gICA/oACAIACgICA/oCAAYCAAQD9gIAAAAIAAAAAAwADgAADABMAAAERIREBETM1MzUhFTMVMxEhESERAgD/AP8AgIABAICA/wD/AAGAAQD/AP6AAoCAgICA/YABAP8AAAMAAAAAAwADgAADAAcAEwAAJREhEQERIREBESEVMxEjFTMRIxUCAP8AAQD/AP8AAoCAgICAgAEA/wABgAEA/wD+AAOAgP8AgP8AgAABAAAAAAMAA4AAEwAAMzUjETM1IRUzFSE1IREhNSEVIxWAgIACAID/AP8AAQABAICAAoCAgICA/YCAgIAAAAAAAgAAAAADAAOAAAMACwAAJREhEQURIRUzESMVAgD/AP8AAoCAgIACgP2AgAOAgP2AgAAAAAEAAAAAAwADgAALAAAxESEVIREhFSERIRUDAP4AAYD+gAIAA4CA/wCA/wCAAAAAAAEAAAAAAwADgAAJAAAxESEVIREhFSERAwD+AAGA/oADgID/AID+gAABAAAAAAMAA4AADwAAMzUjETM1IRUhESE1IzUhEYCAgAKA/gABAIABgIACgICA/YCAgP6AAAAAAAEAAAAAAwADgAALAAAxESERIREhESERIREBAAEAAQD/AP8AA4D+gAGA/IABgP6AAAEAAAAAAgADgAALAAAxNTMRIzUhFSMRMxWAgAIAgICAAoCAgP2AgAABAAAAAAMAA4AACwAAMzUjNSEVIREhESMVgIABAAEAAQCAgICAAwD9AIAAAAEAAAAAAwADgAAbAAAxESERMzUzNSEVIxUjFSMVMxUzFTMVITUjNSMRAQCAgAEAgICAgICA/wCAgAOA/wCAgICAgICAgICAgP8AAAABAAAAAAMAA4AABQAAMREhESEVAQACAAOA/QCAAAAAAAEAAAAAA4ADgAATAAAxESEVMxUzNTM1IREhESMVIzUjEQEAgICAAQD/AICAgAOAgICAgPyAAgCAgP4AAAEAAAAAA4ADgAATAAAxESEVMxUzFTMRIREhNSM1IzUjEQEAgICAAQD/AICAgAOAgICAAYD8gICAgP6AAAIAAAAAAwADgAADAA8AACURIREHNSMRMzUhFTMRIxUCAP8AgICAAgCAgIACgP2AgIACgICA/YCAAAAAAAIAAAAAAwADgAADAA0AAAERIREBESEVMxEjFSERAgD/AP8AAoCAgP6AAgABAP8A/gADgID/AID+gAAAAAEAAAAAAwADgAAXAAAzNSMRMzUhFTMRIxUzFSE1IzUzESERMxWAgIACAICAgP8AgID/AICAAoCAgP4AgICAgAIA/YCAAAAAAAIAAAAAAwADgAADABcAAAERIREBESEVMxEjFSMVMxUzFSE1IzUjEQIA/wD/AAKAgICAgID/AICAAgABAP8A/gADgID/AICAgICAgP8AAAAAAQAAAAADAAOAABsAADM1IzUhFSERITUjETM1IRUzFSE1IREhFTMRIxWAgAEAAQD+gICAAgCA/wD/AAGAgICAgIABAIABAICAgID/AID/AIAAAAAAAQAAAAADAAOAAAcAACERITUhFSERAQD/AAMA/wADAICA/QAAAQAAAAADAAOAAAsAADM1IxEhESERIREjFYCAAQABAAEAgIADAP0AAwD9AIAAAAAAAQAAAAADAAOAAA8AACE1IzUjESERIREhESMVIxUBAICAAQABAAEAgICAgAKA/YACgP2AgIAAAAABAAAAAAOAA4AAEwAAMREhETM1MxUzESERITUjNSMVIxUBAICAgAEA/wCAgIADgP4AgIACAPyAgICAgAABAAAAAAMAA4AAGwAAMREzNTM1IzUjESERIREhESMVIxUzFTMRIREhEYCAgIABAAEAAQCAgICA/wD/AAEAgICAAQD/AAEA/wCAgID/AAEA/wAAAAABAAAAAAMAA4AADwAAIREjNSMRIREhESERIxUjEQEAgIABAAEAAQCAgAIAgAEA/wABAP8AgP4AAAEAAAAAAwADgAAXAAAxETM1MzUzNTM1ITUhESMVIxUjFSMVIRWAgICA/gADAICAgIACAAEAgICAgID/AICAgICAAAAAAQAAAAACgAOAAAcAADERIRUhESEVAoD+gAGAA4CA/YCAAAAAAQAAAIADAAMAABMAACU1IzUjNSM1IzUhFTMVMxUzFTMVAgCAgICAAQCAgICAgICAgICAgICAgIAAAAAAAQAAAAACgAOAAAcAADE1IREhNSERAYD+gAKAgAKAgPyAAAAAAQAAAQADAAKAAA8AABE1MzUzNSEVMxUzFSE1IRWAgAEAgID/AP8AAQCAgICAgICAgAAAAAEAAP+AAwAAAAADAAAVNSEVAwCAgIAAAAEAAAIAAgADgAALAAABNSM1IzUhFTMVMxUBAICAAQCAgAIAgICAgICAAAAAAgAAAAADAAKAAAMAEQAAJTUhFQc1IzUzNSE1ITUhFTMRAgD/AICAgAGA/oACAICAgICAgICAgICA/gAAAgAAAAADAAOAAAMADQAAJREhEQURIREhFTMRIxUCAP8A/wABAAGAgICAAYD+gIADgP8AgP6AgAABAAAAAAMAAoAACwAAMzUjETM1IRUhESEVgICAAoD+AAIAgAGAgID+gIAAAAIAAAAAAwADgAADAA0AACURIREHNSMRMzUhESERAgD/AICAgAGAAQCAAYD+gICAAYCAAQD8gAAAAgAAAAADAAKAAAMAEQAAATUhFQM1IxEzNSEVMxEhFSEVAgD/AICAgAIAgP4AAgABgICA/oCAAYCAgP8AgIAAAAEAAAAAAwADgAATAAAzESM1MxEzNSEVMxUhNSMRMxUjEYCAgIABgID/AICAgAGAgAEAgICAgP8AgP6AAAIAAP+AAwACgAADABEAAAERIREDNSE1ITUjETM1IREjFQIA/wCAAYD+gICAAoCAAQABAP8A/oCAgIABAID9gIAAAAAAAQAAAAADAAOAAAsAADERIREhFTMRIREhEQEAAYCA/wD/AAOA/wCA/gACAP4AAAAAAgAAAAACAAOAAAkADQAAMTUzESM1IREzFQE1IRWAgAGAgP6AAQCAAYCA/gCAAwCAgAAAAAIAAP+AAoADgAANABEAABc1IzUhFTMRIzUhESMVAzUhFYCAAQCAgAGAgIABAICAgIACAID9gIADgICAAAEAAAAAAwADgAAXAAAxESERMzUzNSEVIxUjFTMVMxUhNSM1IxEBAICAAQCAgICA/wCAgAOA/gCAgICAgICAgID/AAAAAQAAAAACAAOAAAkAADE1MxEjNSERMxWAgAGAgIACgID9AIAAAQAAAAADgAKAABMAADERMzUhFTM1IRUzESERIxUjNSMRgAEAgAEAgP8AgICAAgCAgICA/gABgICA/oAAAQAAAAADAAKAAAkAADERIRUzESERIRECgID/AP8AAoCA/gACAP4AAAIAAAAAAwACgAADAA8AACURIREHNSMRMzUhFTMRIxUCAP8AgICAAgCAgIABgP6AgIABgICA/oCAAAAAAAIAAP+AAwACgAADAA0AAAERIREBESEVMxEjFSERAgD/AP8AAoCAgP6AAQABAP8A/oADAID/AID/AAAAAAIAAP+AAwACgAADAA0AAAERIREBESE1IxEzNSERAgD/AAEA/oCAgAKAAQABAP8A/oABAIABAID9AAAAAAEAAAAAAwACgAAJAAAxESEVMxUhNSERAoCA/wD/AAKAgICA/gAAAAABAAAAAAMAAoAAEwAAMTUhNSE1IzUzNSEVIRUhFTMVIxUCAP6AgIACgP4AAYCAgICAgICAgICAgIAAAAABAAAAAAMAA4AAEwAAITUjESM1MxEhESEVIREzNSEVIxUBAICAgAEAAQD/AIABAICAAYCAAQD/AID+gICAgAAAAQAAAAADAAKAAAkAADM1IxEhESERIRGAgAEAAQABAIACAP4AAgD9gAAAAAABAAAAAAMAAoAADwAAITUjNSMRIREhESERIxUjFQEAgIABAAEAAQCAgICAAYD+gAGA/oCAgAAAAAEAAAAAA4ACgAAPAAAxESERMzUzFTMRIREhNSMVAQCAgIABAP6AgAKA/oCAgAGA/YCAgAABAAAAAAMAAoAAGwAAMTUzNTM1IzUjNSEVITUhFSMVIxUzFTMVITUhFYCAgIABAAEAAQCAgICA/wD/AICAgICAgICAgICAgICAAAAAAQAA/4ADAAKAAA8AABc1ITUhNSMRIREhESERIxWAAYD+gIABAAEAAQCAgICAgAGA/oABgP2AgAABAAAAAAMAAoAAEwAAMTUzNTM1MzUhNSEVIxUjFSMVIRWAgID+gAMAgICAAYCAgICAgICAgICAAAEAAAAAAgADgAATAAAhNSMRIzUzETM1IRUjESMVMxEzFQEAgICAgAEAgICAgIABAIABAICA/wCA/wCAAAEAAP+AAQADgAADAAAVESERAQCABAD8AAAAAAABAAAAAAIAA4AAEwAAMTUzETM1IxEjNSEVMxEzFSMRIxWAgICAAQCAgICAgAEAgAEAgID/AID/AIAAAAABAAACgAOAA4AADwAAETUzNSEVMzUhFSMVITUjFYABgIABAID+gIACgICAgICAgICAAAAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAQAAAAAEAAOAACMAACERIxUhNTM1MzUjNSM1IRUzESERMzUhFSMVIxUzFTMVITUjEQGAgP8AgICAgAEAgAEAgAEAgICAgP8AgAEAgICAgICAgAEA/wCAgICAgICA/wAAAAAeAW4AAQAAAAAAAAAYADIAAQAAAAAAAQAOAGkAAQAAAAAAAgAHAIgAAQAAAAAAAwAZAMQAAQAAAAAABAAWAQwAAQAAAAAABQALATsAAQAAAAAABgAOAWUAAQAAAAAABwA8Ae4AAQAAAAAACAAWAlkAAQAAAAAACQAJAoQAAQAAAAAACgDhBFIAAQAAAAAADAA/BbQAAQAAAAAADQAoBkYAAQAAAAAADgAuBs0AAQAAAAAAEwApB1AAAwABBAkAAAAwAAAAAwABBAkAAQAcAEsAAwABBAkAAgAOAHgAAwABBAkAAwAyAJAAAwABBAkABAAsAN4AAwABBAkABQAWASMAAwABBAkABgAcAUcAAwABBAkABwB4AXQAAwABBAkACAAsAisAAwABBAkACQASAnAAAwABBAkACgHCAo4AAwABBAkADAB+BTQAAwABBAkADQBQBfQAAwABBAkADgBcBm8AAwABBAkAEwBSBvwAQwBvAHAAeQByAGkAZwBoAHQAIABjAG8AZABlAG0AYQBuADMAOAAgADIAMAAxADAAAENvcHlyaWdodCBjb2RlbWFuMzggMjAxMAAASABlAHIAZQAgAEwAaQBlAHMAIABNAEUAQwBDAABIZXJlIExpZXMgTUVDQwAAUgBlAGcAdQBsAGEAcgAAUmVndWxhcgAARgBvAG4AdABTAHQAcgB1AGMAdAAgAEgAZQByAGUAIABMAGkAZQBzACAATQBFAEMAQwAARm9udFN0cnVjdCBIZXJlIExpZXMgTUVDQwAASABlAHIAZQAgAEwAaQBlAHMAIABNAEUAQwBDACAAUgBlAGcAdQBsAGEAcgAASGVyZSBMaWVzIE1FQ0MgUmVndWxhcgAAVgBlAHIAcwBpAG8AbgAgADEALgAwAABWZXJzaW9uIDEuMAAASABlAHIAZQAtAEwAaQBlAHMALQBNAEUAQwBDAABIZXJlLUxpZXMtTUVDQwAARgBvAG4AdABTAHQAcgB1AGMAdAAgAGkAcwAgAGEAIAB0AHIAYQBkAGUAbQBhAHIAawAgAG8AZgAgAEYAUwBJACAARgBvAG4AdABTAGgAbwBwACAASQBuAHQAZQByAG4AYQB0AGkAbwBuAGEAbAAgAEcAbQBiAEgAAEZvbnRTdHJ1Y3QgaXMgYSB0cmFkZW1hcmsgb2YgRlNJIEZvbnRTaG9wIEludGVybmF0aW9uYWwgR21iSAAAaAB0AHQAcAA6AC8ALwBmAG8AbgB0AHMAdAByAHUAYwB0AC4AYwBvAG0ALwAAaHR0cDovL2ZvbnRzdHJ1Y3QuY29tLwAAYwBvAGQAZQBtAGEAbgAzADgAAGNvZGVtYW4zOAAgHABIAGUAcgBlACAATABpAGUAcwAgAE0ARQBDAEMgHQAgAHcAYQBzACAAYgB1AGkAbAB0ACAAdwBpAHQAaAAgAEYAbwBuAHQAUwB0AHIAdQBjAHQACgBEAGUAcwBpAGcAbgBlAHIAIABkAGUAcwBjAHIAaQBwAHQAaQBvAG4AOgAgAEkAZgAgAHkAbwB1ACAAZwByAGUAdwAgAHUAcAAgAHAAbABhAHkAaQBuAGcAIABUAGgAZQAgAE8AcgBlAGcAbwBuACAAVAByAGEAaQBsACAAbwBuACAAdABoAGUAIABBAHAAcABsAGUAIABJAEkALAAgAHkAbwB1ACcAbABsACAAawBuAG8AdwAgAHQAaABpAHMAIABmAG8AbgB0AC4ADQAKAA0ACgBOAG8AdwAgAHkAbwB1ACwAIAB0AG8AbwAsACAAYwBhAG4AIABjAHIAZQBhAHQAZQAgAGYAYQBrAGUAIABzAGMAcgBlAGUAbgBzAGgAbwB0AHMAIABjAGwAYQBpAG0AaQBuAGcAIAB5AG8AdQAnAHYAZQAgAGQAaQBlAGQAIABvAGYAIABkAHkAcwBlAG4AdABlAHIAeQAhAAoAANJIZXJlIExpZXMgTUVDQ9Mgd2FzIGJ1aWx0IHdpdGggRm9udFN0cnVjdApEZXNpZ25lciBkZXNjcmlwdGlvbjogSWYgeW91IGdyZXcgdXAgcGxheWluZyBUaGUgT3JlZ29uIFRyYWlsIG9uIHRoZSBBcHBsZSBJSSwgeW91J2xsIGtub3cgdGhpcyBmb250Lg0KDQpOb3cgeW91LCB0b28sIGNhbiBjcmVhdGUgZmFrZSBzY3JlZW5zaG90cyBjbGFpbWluZyB5b3UndmUgZGllZCBvZiBkeXNlbnRlcnkhCgAAaAB0AHQAcAA6AC8ALwBmAG8AbgB0AHMAdAByAHUAYwB0AC4AYwBvAG0ALwBmAG8AbgB0AHMAdAByAHUAYwB0AGkAbwBuAHMALwBzAGgAbwB3AC8AMwAwADYANgA4ADkALwBoAGUAcgBlAF8AbABpAGUAcwBfAG0AZQBjAGMAAGh0dHA6Ly9mb250c3RydWN0LmNvbS9mb250c3RydWN0aW9ucy9zaG93LzMwNjY4OS9oZXJlX2xpZXNfbWVjYwAAQwByAGUAYQB0AGkAdgBlACAAQwBvAG0AbQBvAG4AcwAgAEEAdAB0AHIAaQBiAHUAdABpAG8AbgAgAFMAaABhAHIAZQAgAEEAbABpAGsAZQAAQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBTaGFyZSBBbGlrZQAAaAB0AHQAcAA6AC8ALwBjAHIAZQBhAHQAaQB2AGUAYwBvAG0AbQBvAG4AcwAuAG8AcgBnAC8AbABpAGMAZQBuAHMAZQBzAC8AYgB5AC0AcwBhAC8AMwAuADAALwAAaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnktc2EvMy4wLwAARgBpAHYAZQAgAGIAaQBnACAAcQB1AGEAYwBrAGkAbgBnACAAegBlAHAAaAB5AHIAcwAgAGoAbwBsAHQAIABtAHkAIAB3AGEAeAAgAGIAZQBkAABGaXZlIGJpZyBxdWFja2luZyB6ZXBoeXJzIGpvbHQgbXkgd2F4IGJlZAAAAgAAAAAAAABlADMAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAABAgEDAAMABAAFAAYABwAIAAkACgALAAwADQAOAA8AEAARABIAEwAUABUAFgAXABgAGQAaABsAHAAdAB4AHwAgACEAIgAjACQAJQAmACcAKAApACoAKwAsAC0ALgAvADAAMQAyADMANAA1ADYANwA4ADkAOgA7ADwAPQA+AD8AQABBAEIAQwBEAEUARgBHAEgASQBKAEsATABNAE4ATwBQAFEAUgBTAFQAVQBWAFcAWABZAFoAWwBcAF0AXgBfAGAAYQDDAIcBBAEFAQYBBwEIAQkBCgELBmdseXBoMQZnbHlwaDIOb25lZG90ZW5sZWFkZXIHdW5pMjBGMAd1bmkyMjE5BkgxODUzMwlpbnZidWxsZXQJaW52Y2lyY2xlCm9wZW5idWxsZXQHdW5pMjZBQgAAAAAAAAH//wACAAEAAAAOAAAAGAAAAAAAAgABAAEAawABAAQAAAACAAAAAAABAAAAAMw9os8AAAAA1YFvxAAAAADXRFoz"
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2516,7 +2596,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(27);
+var	fixUrls = __webpack_require__(28);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -2832,7 +2912,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 
@@ -2927,7 +3007,7 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2956,7 +3036,7 @@ window.onload = function () {
 };
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2983,23 +3063,23 @@ thunk.withExtraArgument = createThunkMiddleware;
 /* harmony default export */ __webpack_exports__["default"] = (thunk);
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {!function(e,t){ true?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(e.reduxLogger=e.reduxLogger||{})}(this,function(e){"use strict";function t(e,t){e.super_=t,e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}})}function r(e,t){Object.defineProperty(this,"kind",{value:e,enumerable:!0}),t&&t.length&&Object.defineProperty(this,"path",{value:t,enumerable:!0})}function n(e,t,r){n.super_.call(this,"E",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0}),Object.defineProperty(this,"rhs",{value:r,enumerable:!0})}function o(e,t){o.super_.call(this,"N",e),Object.defineProperty(this,"rhs",{value:t,enumerable:!0})}function i(e,t){i.super_.call(this,"D",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0})}function a(e,t,r){a.super_.call(this,"A",e),Object.defineProperty(this,"index",{value:t,enumerable:!0}),Object.defineProperty(this,"item",{value:r,enumerable:!0})}function f(e,t,r){var n=e.slice((r||t)+1||e.length);return e.length=t<0?e.length+t:t,e.push.apply(e,n),e}function u(e){var t="undefined"==typeof e?"undefined":N(e);return"object"!==t?t:e===Math?"math":null===e?"null":Array.isArray(e)?"array":"[object Date]"===Object.prototype.toString.call(e)?"date":"function"==typeof e.toString&&/^\/.*\//.test(e.toString())?"regexp":"object"}function l(e,t,r,c,s,d,p){s=s||[],p=p||[];var g=s.slice(0);if("undefined"!=typeof d){if(c){if("function"==typeof c&&c(g,d))return;if("object"===("undefined"==typeof c?"undefined":N(c))){if(c.prefilter&&c.prefilter(g,d))return;if(c.normalize){var h=c.normalize(g,d,e,t);h&&(e=h[0],t=h[1])}}}g.push(d)}"regexp"===u(e)&&"regexp"===u(t)&&(e=e.toString(),t=t.toString());var y="undefined"==typeof e?"undefined":N(e),v="undefined"==typeof t?"undefined":N(t),b="undefined"!==y||p&&p[p.length-1].lhs&&p[p.length-1].lhs.hasOwnProperty(d),m="undefined"!==v||p&&p[p.length-1].rhs&&p[p.length-1].rhs.hasOwnProperty(d);if(!b&&m)r(new o(g,t));else if(!m&&b)r(new i(g,e));else if(u(e)!==u(t))r(new n(g,e,t));else if("date"===u(e)&&e-t!==0)r(new n(g,e,t));else if("object"===y&&null!==e&&null!==t)if(p.filter(function(t){return t.lhs===e}).length)e!==t&&r(new n(g,e,t));else{if(p.push({lhs:e,rhs:t}),Array.isArray(e)){var w;e.length;for(w=0;w<e.length;w++)w>=t.length?r(new a(g,w,new i(void 0,e[w]))):l(e[w],t[w],r,c,g,w,p);for(;w<t.length;)r(new a(g,w,new o(void 0,t[w++])))}else{var x=Object.keys(e),S=Object.keys(t);x.forEach(function(n,o){var i=S.indexOf(n);i>=0?(l(e[n],t[n],r,c,g,n,p),S=f(S,i)):l(e[n],void 0,r,c,g,n,p)}),S.forEach(function(e){l(void 0,t[e],r,c,g,e,p)})}p.length=p.length-1}else e!==t&&("number"===y&&isNaN(e)&&isNaN(t)||r(new n(g,e,t)))}function c(e,t,r,n){return n=n||[],l(e,t,function(e){e&&n.push(e)},r),n.length?n:void 0}function s(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":s(o[r.path[n]],r.index,r.item);break;case"D":delete o[r.path[n]];break;case"E":case"N":o[r.path[n]]=r.rhs}}else switch(r.kind){case"A":s(e[t],r.index,r.item);break;case"D":e=f(e,t);break;case"E":case"N":e[t]=r.rhs}return e}function d(e,t,r){if(e&&t&&r&&r.kind){for(var n=e,o=-1,i=r.path?r.path.length-1:0;++o<i;)"undefined"==typeof n[r.path[o]]&&(n[r.path[o]]="number"==typeof r.path[o]?[]:{}),n=n[r.path[o]];switch(r.kind){case"A":s(r.path?n[r.path[o]]:n,r.index,r.item);break;case"D":delete n[r.path[o]];break;case"E":case"N":n[r.path[o]]=r.rhs}}}function p(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":p(o[r.path[n]],r.index,r.item);break;case"D":o[r.path[n]]=r.lhs;break;case"E":o[r.path[n]]=r.lhs;break;case"N":delete o[r.path[n]]}}else switch(r.kind){case"A":p(e[t],r.index,r.item);break;case"D":e[t]=r.lhs;break;case"E":e[t]=r.lhs;break;case"N":e=f(e,t)}return e}function g(e,t,r){if(e&&t&&r&&r.kind){var n,o,i=e;for(o=r.path.length-1,n=0;n<o;n++)"undefined"==typeof i[r.path[n]]&&(i[r.path[n]]={}),i=i[r.path[n]];switch(r.kind){case"A":p(i[r.path[n]],r.index,r.item);break;case"D":i[r.path[n]]=r.lhs;break;case"E":i[r.path[n]]=r.lhs;break;case"N":delete i[r.path[n]]}}}function h(e,t,r){if(e&&t){var n=function(n){r&&!r(e,t,n)||d(e,t,n)};l(e,t,n)}}function y(e){return"color: "+F[e].color+"; font-weight: bold"}function v(e){var t=e.kind,r=e.path,n=e.lhs,o=e.rhs,i=e.index,a=e.item;switch(t){case"E":return[r.join("."),n,"→",o];case"N":return[r.join("."),o];case"D":return[r.join(".")];case"A":return[r.join(".")+"["+i+"]",a];default:return[]}}function b(e,t,r,n){var o=c(e,t);try{n?r.groupCollapsed("diff"):r.group("diff")}catch(e){r.log("diff")}o?o.forEach(function(e){var t=e.kind,n=v(e);r.log.apply(r,["%c "+F[t].text,y(t)].concat(P(n)))}):r.log("—— no diff ——");try{r.groupEnd()}catch(e){r.log("—— diff end —— ")}}function m(e,t,r,n){switch("undefined"==typeof e?"undefined":N(e)){case"object":return"function"==typeof e[n]?e[n].apply(e,P(r)):e[n];case"function":return e(t);default:return e}}function w(e){var t=e.timestamp,r=e.duration;return function(e,n,o){var i=["action"];return i.push("%c"+String(e.type)),t&&i.push("%c@ "+n),r&&i.push("%c(in "+o.toFixed(2)+" ms)"),i.join(" ")}}function x(e,t){var r=t.logger,n=t.actionTransformer,o=t.titleFormatter,i=void 0===o?w(t):o,a=t.collapsed,f=t.colors,u=t.level,l=t.diff,c="undefined"==typeof t.titleFormatter;e.forEach(function(o,s){var d=o.started,p=o.startedTime,g=o.action,h=o.prevState,y=o.error,v=o.took,w=o.nextState,x=e[s+1];x&&(w=x.prevState,v=x.started-d);var S=n(g),k="function"==typeof a?a(function(){return w},g,o):a,j=D(p),E=f.title?"color: "+f.title(S)+";":"",A=["color: gray; font-weight: lighter;"];A.push(E),t.timestamp&&A.push("color: gray; font-weight: lighter;"),t.duration&&A.push("color: gray; font-weight: lighter;");var O=i(S,j,v);try{k?f.title&&c?r.groupCollapsed.apply(r,["%c "+O].concat(A)):r.groupCollapsed(O):f.title&&c?r.group.apply(r,["%c "+O].concat(A)):r.group(O)}catch(e){r.log(O)}var N=m(u,S,[h],"prevState"),P=m(u,S,[S],"action"),C=m(u,S,[y,h],"error"),F=m(u,S,[w],"nextState");if(N)if(f.prevState){var L="color: "+f.prevState(h)+"; font-weight: bold";r[N]("%c prev state",L,h)}else r[N]("prev state",h);if(P)if(f.action){var T="color: "+f.action(S)+"; font-weight: bold";r[P]("%c action    ",T,S)}else r[P]("action    ",S);if(y&&C)if(f.error){var M="color: "+f.error(y,h)+"; font-weight: bold;";r[C]("%c error     ",M,y)}else r[C]("error     ",y);if(F)if(f.nextState){var _="color: "+f.nextState(w)+"; font-weight: bold";r[F]("%c next state",_,w)}else r[F]("next state",w);l&&b(h,w,r,k);try{r.groupEnd()}catch(e){r.log("—— log end ——")}})}function S(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=Object.assign({},L,e),r=t.logger,n=t.stateTransformer,o=t.errorTransformer,i=t.predicate,a=t.logErrors,f=t.diffPredicate;if("undefined"==typeof r)return function(){return function(e){return function(t){return e(t)}}};if(e.getState&&e.dispatch)return console.error("[redux-logger] redux-logger not installed. Make sure to pass logger instance as middleware:\n// Logger with default options\nimport { logger } from 'redux-logger'\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n// Or you can create your own logger with custom options http://bit.ly/redux-logger-options\nimport createLogger from 'redux-logger'\nconst logger = createLogger({\n  // ...options\n});\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n"),function(){return function(e){return function(t){return e(t)}}};var u=[];return function(e){var r=e.getState;return function(e){return function(l){if("function"==typeof i&&!i(r,l))return e(l);var c={};u.push(c),c.started=O.now(),c.startedTime=new Date,c.prevState=n(r()),c.action=l;var s=void 0;if(a)try{s=e(l)}catch(e){c.error=o(e)}else s=e(l);c.took=O.now()-c.started,c.nextState=n(r());var d=t.diff&&"function"==typeof f?f(r,l):t.diff;if(x(u,Object.assign({},t,{diff:d})),u.length=0,c.error)throw c.error;return s}}}}var k,j,E=function(e,t){return new Array(t+1).join(e)},A=function(e,t){return E("0",t-e.toString().length)+e},D=function(e){return A(e.getHours(),2)+":"+A(e.getMinutes(),2)+":"+A(e.getSeconds(),2)+"."+A(e.getMilliseconds(),3)},O="undefined"!=typeof performance&&null!==performance&&"function"==typeof performance.now?performance:Date,N="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},P=function(e){if(Array.isArray(e)){for(var t=0,r=Array(e.length);t<e.length;t++)r[t]=e[t];return r}return Array.from(e)},C=[];k="object"===("undefined"==typeof global?"undefined":N(global))&&global?global:"undefined"!=typeof window?window:{},j=k.DeepDiff,j&&C.push(function(){"undefined"!=typeof j&&k.DeepDiff===c&&(k.DeepDiff=j,j=void 0)}),t(n,r),t(o,r),t(i,r),t(a,r),Object.defineProperties(c,{diff:{value:c,enumerable:!0},observableDiff:{value:l,enumerable:!0},applyDiff:{value:h,enumerable:!0},applyChange:{value:d,enumerable:!0},revertChange:{value:g,enumerable:!0},isConflict:{value:function(){return"undefined"!=typeof j},enumerable:!0},noConflict:{value:function(){return C&&(C.forEach(function(e){e()}),C=null),c},enumerable:!0}});var F={E:{color:"#2196F3",text:"CHANGED:"},N:{color:"#4CAF50",text:"ADDED:"},D:{color:"#F44336",text:"DELETED:"},A:{color:"#2196F3",text:"ARRAY:"}},L={level:"log",logger:console,logErrors:!0,collapsed:void 0,predicate:void 0,duration:!1,timestamp:!0,stateTransformer:function(e){return e},actionTransformer:function(e){return e},errorTransformer:function(e){return e},colors:{title:function(){return"inherit"},prevState:function(){return"#9E9E9E"},action:function(){return"#03A9F4"},nextState:function(){return"#4CAF50"},error:function(){return"#F20404"}},diff:!1,diffPredicate:void 0,transformer:void 0},T=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=e.dispatch,r=e.getState;return"function"==typeof t||"function"==typeof r?S()({dispatch:t,getState:r}):void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n")};e.defaults=L,e.createLogger=S,e.logger=T,e.default=T,Object.defineProperty(e,"__esModule",{value:!0})});
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
@@ -3027,13 +3107,13 @@ if (undefined !== 'production' && typeof isCrushed.name === 'string' && isCrushe
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(37);
 
 
 
@@ -3065,11 +3145,11 @@ function baseGetTag(value) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__ = __webpack_require__(35);
 
 
 /** Detect free variable `self`. */
@@ -3082,7 +3162,7 @@ var root = __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__["a" /* default */] || fr
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3091,10 +3171,10 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = (freeGlobal);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3148,7 +3228,7 @@ function getRawTag(value) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3177,11 +3257,11 @@ function objectToString(value) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__overArg_js__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__overArg_js__ = __webpack_require__(39);
 
 
 /** Built-in value references. */
@@ -3191,7 +3271,7 @@ var getPrototype = Object(__WEBPACK_IMPORTED_MODULE_0__overArg_js__["a" /* defau
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3213,7 +3293,7 @@ function overArg(func, transform) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3249,11 +3329,11 @@ function isObjectLike(value) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global, module) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ponyfill_js__ = __webpack_require__(42);
+/* WEBPACK VAR INJECTION */(function(global, module) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ponyfill_js__ = __webpack_require__(43);
 /* global window */
 
 
@@ -3274,10 +3354,10 @@ if (typeof self !== 'undefined') {
 var result = Object(__WEBPACK_IMPORTED_MODULE_0__ponyfill_js__["a" /* default */])(root);
 /* harmony default export */ __webpack_exports__["a"] = (result);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8), __webpack_require__(41)(module)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(42)(module)))
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports) {
 
 module.exports = function(originalModule) {
@@ -3307,7 +3387,7 @@ module.exports = function(originalModule) {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3332,7 +3412,7 @@ function symbolObservablePonyfill(root) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3472,7 +3552,7 @@ function combineReducers(reducers) {
 }
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3526,7 +3606,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3582,7 +3662,7 @@ function applyMiddleware() {
 }
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3599,9 +3679,9 @@ var _reduxWebsocketBridge = __webpack_require__(16);
 
 var _ui = __webpack_require__(17);
 
-var _game = __webpack_require__(49);
+var _game = __webpack_require__(50);
 
-var _initialState = __webpack_require__(50);
+var _initialState = __webpack_require__(19);
 
 function reducer(state, action) {
   if (typeof state === 'undefined') {
@@ -3659,7 +3739,7 @@ function reducer(state, action) {
 }
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3687,7 +3767,7 @@ function blobToArrayBuffer(blob) {
 //# sourceMappingURL=blobToArrayBuffer.js.map
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3703,7 +3783,7 @@ module.exports = function isFSA(action) {
 //# sourceMappingURL=isFSA.js.map
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3726,7 +3806,7 @@ var _utils = __webpack_require__(18);
 
 var _constants = __webpack_require__(1);
 
-var _initialState = __webpack_require__(50);
+var _initialState = __webpack_require__(19);
 
 function request(state) {
   return Object.assign({}, state, {
@@ -3886,86 +3966,6 @@ function closeSocket(state) {
     errorLog: state.errorLog
   }));
 }
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.initialState = exports.revisedInitialState = undefined;
-
-var _constants = __webpack_require__(1);
-
-var _keys = __webpack_require__(51);
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _ui = __webpack_require__(17);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import party from '../../../data/party.json';
-// import inventory from '../../../data/inventory.json';
-// import vehicle from '../../../data/vehicle.json';
-// import story from '../../../data/story.json';
-
-var uiState = {
-  mode: _constants.MODE.TITLE,
-  partyTab: 0,
-  actions: { 'main': [] },
-  zoom: 3
-};
-
-var gameState = {
-  tiles: [],
-  party: [], // DEBUG with party
-  inventory: [], // DEBUG with inventory
-  vehicle: null, // DEBUG with vehicle
-  stories: [], // DEBUG with story TODO update to stories in example
-  inventoryChanges: [],
-  partyChanges: [],
-  position: null,
-  xCoord: null,
-  yCoord: null,
-  positionTarget: null,
-  xTarget: null,
-  yTarget: null,
-  sight: null,
-  pace: null,
-  rations: null
-};
-
-var inputState = {
-  xDown: null,
-  yDown: null,
-  xOffset: null,
-  yOffset: null,
-  xMouse: null,
-  yMouse: null,
-  xClick: null,
-  yClick: null,
-  keys: (0, _ui.makeKeys)()
-};
-
-var connectionState = {
-  connected: false,
-  loggedIn: false,
-  sending: false,
-  error: null,
-  errorMessage: null,
-  errorLog: []
-};
-
-var revisedInitialState = exports.revisedInitialState = function revisedInitialState(newState) {
-  return Object.assign({}, uiState, gameState, inputState, connectionState, newState);
-};
-
-var initialState = exports.initialState = Object.assign({}, uiState, gameState, inputState, connectionState);
 
 /***/ }),
 /* 51 */
@@ -5210,7 +5210,7 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -5302,7 +5302,6 @@ var Camera = function () {
 
       var tileSize = this.atlas.tileset.tilewidth * zoom;
       var iconSize = this.icons.tileset.tilewidth * zoom;
-      var gridZoom = (tileSize - 1) / (tileSize / zoom);
 
       var origin = this.getOffsetOrigin(tileSize, pos.x, pos.y, coords.x, coords.y);
       var startCol = Math.floor(origin.x / tileSize);
@@ -5331,7 +5330,7 @@ var Camera = function () {
             [BOTTOM, MIDDLE].forEach(function (layer) {
               if (layer in tile.layers) {
                 var id = tile.layers[layer] - 1;
-                (0, _draw.drawById)(_this.ctx, _this.atlas, id, gridZoom, x, y);
+                (0, _draw.drawById)(_this.ctx, _this.atlas, id, zoom, x, y);
               }
             });
 
@@ -5346,7 +5345,7 @@ var Camera = function () {
             //     this.ctx,
             //     this.icons,
             //     26 + this.blink.getValue(),
-            //     gridZoom,
+            //     zoom,
             //     x + iconOffset,
             //     y + iconOffset
             //   );
@@ -5365,7 +5364,7 @@ var Camera = function () {
       }
       this.clickTiles = clickTiles;
 
-      (0, _draw.drawById)(this.ctx, this.icons, 24 + this.blink.getValue(), gridZoom, (this.canvas.width - iconSize) / 2, (this.canvas.height - iconSize) / 2);
+      (0, _draw.drawById)(this.ctx, this.icons, 24 + this.blink.getValue(), zoom, (this.canvas.width - iconSize) / 2, (this.canvas.height - iconSize) / 2);
     }
   }]);
 
@@ -5733,7 +5732,7 @@ var Party = function () {
             } else if (item.name === member.name && member.timestamp) {
               x = -0.1 * elapsed;
             }
-            var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
+            var text = '' + (item.change > 0 ? '+' : '') + item.name;
             var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
             (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
           });
@@ -5939,7 +5938,7 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -6044,7 +6043,7 @@ var _utils = __webpack_require__(3);
 
 var _draw = __webpack_require__(4);
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -6824,7 +6823,7 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(9);
+var _Animation = __webpack_require__(8);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -6953,7 +6952,7 @@ var _requests = __webpack_require__(6);
 
 var _actions = __webpack_require__(0);
 
-var _failure = __webpack_require__(19);
+var _failure = __webpack_require__(20);
 
 function registerDialog(store, setDim) {
   var container = document.getElementById('container');

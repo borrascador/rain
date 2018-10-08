@@ -58,7 +58,6 @@ export default class Camera {
     const { pos, coords, positionTarget, coordsTarget, tiles, sight, zoom } = this.connect.map;
     const tileSize = this.atlas.tileset.tilewidth * zoom;
     const iconSize = this.icons.tileset.tilewidth * zoom;
-    const gridZoom = (tileSize - 1) / (tileSize / zoom);
 
     const origin = this.getOffsetOrigin(tileSize, pos.x, pos.y, coords.x, coords.y);
     const startCol = Math.floor(origin.x / tileSize);
@@ -87,7 +86,7 @@ export default class Camera {
           [BOTTOM, MIDDLE].forEach(layer => {
             if (layer in tile.layers) {
               const id = tile.layers[layer] - 1;
-              drawById(this.ctx, this.atlas, id, gridZoom, x, y);
+              drawById(this.ctx, this.atlas, id, zoom, x, y);
             }
           });
 
@@ -109,7 +108,7 @@ export default class Camera {
           //     this.ctx,
           //     this.icons,
           //     26 + this.blink.getValue(),
-          //     gridZoom,
+          //     zoom,
           //     x + iconOffset,
           //     y + iconOffset
           //   );
@@ -128,7 +127,7 @@ export default class Camera {
       this.ctx,
       this.icons,
       24 + this.blink.getValue(),
-      gridZoom,
+      zoom,
       (this.canvas.width - iconSize) / 2,
       (this.canvas.height - iconSize) / 2
     );
