@@ -1,7 +1,9 @@
 package org.younghanlee.rainserver;
 
 import java.util.HashMap;
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -23,6 +25,24 @@ public class Habitat {
 			JSONObject animal = ja.getJSONObject(i);
 			animals.put(animal.getInt("id"), animal.getDouble("rarity"));
 		}
+	}
+	
+	public static HashMap<Integer, Habitat> readFile() {
+		JSONArray ja = null;
+		try {
+			ja = new JSONArray(new String(Files.readAllBytes(Paths.get("json/habitats.json"))));
+		} catch (IOException e) {
+			System.out.println("Habitats file "+ "habitats.json" + " not found.");
+			System.exit(1);
+		}
+		HashMap<Integer, Habitat> habitats = new HashMap<Integer, Habitat>();
+		JSONObject habitatObject;
+		for (int i = 0; i < ja.length(); i++) {
+			habitatObject = ja.getJSONObject(i);
+			int id = habitatObject.getInt("id");
+			habitats.put(id, new Habitat(habitatObject));
+		}
+		return habitats;
 	}
 	
 	public int getId() {

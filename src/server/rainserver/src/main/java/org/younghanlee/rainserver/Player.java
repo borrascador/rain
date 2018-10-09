@@ -271,6 +271,7 @@ public class Player {
 	public int getRations() {
 		return rations;
 	}
+	
 	public void setRations(int n) {
 		rations = n;
 	}

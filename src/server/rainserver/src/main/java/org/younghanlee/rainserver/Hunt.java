@@ -148,8 +148,7 @@ public class Hunt{
 		JSONObject payload = new JSONObject();
 		String death = "";
 		String storyText = "";
-		if (true) {
-//		if (Util.randomInt(100) < animal.getAggression()) {
+		if (Util.randomInt(100) < animal.getAggression()) {
 			if (animal.fight(p, huntingMultiplier())) {
 				story.put("text", "You have defeated " + animal.getName());
 				drops = animal.rollDrop(p, 1);

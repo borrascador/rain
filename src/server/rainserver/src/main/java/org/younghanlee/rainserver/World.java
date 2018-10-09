@@ -33,7 +33,7 @@ public class World {
 		// Read map.json
 		JSONObject m = null;
 		try {
-			m = new JSONObject(new String(Files.readAllBytes(Paths.get("map.json"))));
+			m = new JSONObject(new String(Files.readAllBytes(Paths.get("json/map.json"))));
 		} catch (IOException e) {
 			System.out.println("Map file "+ "map.json" + " not found.");
 			System.exit(1);
@@ -43,41 +43,14 @@ public class World {
 		mapHeight = m.getInt("width");
 		numTiles = mapWidth * mapHeight;
 		
-		// Read items.json
-		JSONArray itemList = null;
-		try {
-			itemList = new JSONArray(new String(Files.readAllBytes(Paths.get("items.json"))));
-		} catch (IOException e) {
-			System.out.println("Item file "+ "item.json" + " not found.");
-			System.exit(1);
-		}
-		
-		// Read animals.json
-		JSONArray animalList = null;
-		try {
-			animalList = new JSONArray(new String(Files.readAllBytes(Paths.get("animals.json"))));
-		} catch (IOException e) {
-			System.out.println("Item file "+ "animals.json" + " not found.");
-			System.exit(1);
-		}
-		
-		// Read habitats.json
-		JSONArray habitatList = null;
-		try {
-			habitatList = new JSONArray(new String(Files.readAllBytes(Paths.get("habitats.json"))));
-		} catch (IOException e) {
-			System.out.println("Item file "+ "habitats.json" + " not found.");
-			System.exit(1);
-		}
-		
 		// All users, online or offline
 		players = new HashMap<String, Player>();
 		emails = new HashMap<String, String>();
 		
-		items = new HashMap<Integer, Item>();
+		items = Item.readFile();
 		members = new HashMap<Integer, Member>();
-		animals = new HashMap<Integer, Animal>();
-		habitats = new HashMap<Integer, Habitat>();
+		animals = Animal.readFile();
+		habitats = Habitat.readFile();
 		skills = Skill.readFile();
 		tribes = Tribe.readFile();
 
@@ -90,42 +63,6 @@ public class World {
 		
 		numPlayers = 0;
 		online = 0;
-		
-		// store items in memory
-		JSONObject itemObject;
-		for (int i = 0; i < itemList.length(); i++) {
-			itemObject = itemList.getJSONObject(i);
-			String name = itemObject.getString("name");
-			Integer yield = null;
-			if (itemObject.has("yield")) {
-				yield = itemObject.getInt("yield");
-			} else {
-				yield = -1;
-			}
-			int id = itemObject.getInt("id");
-			Item it = new Item(name, yield);
-			JSONArray tags = itemObject.getJSONArray("tags");
-			for (int j = 0; j < tags.length(); j++) {
-				 it.addTag(tags.getString(j));
-			}
-			items.put(id, it);
-		}
-		
-		// store animals in memory
-		JSONObject animalObject;
-		for (int i = 0; i < animalList.length(); i++) {
-			animalObject = animalList.getJSONObject(i);
-			int id = animalObject.getInt("id");
-			animals.put(id, new Animal(animalObject));
-		}
-		
-		// store habitats
-		JSONObject habitatObject;
-		for (int i = 0; i < habitatList.length(); i++) {
-			habitatObject = habitatList.getJSONObject(i);
-			int id = habitatObject.getInt("id");
-			habitats.put(id, new Habitat(habitatObject));
-		}
 		
 		// Initialize tiles without layers
 		map = new Tile[numTiles];

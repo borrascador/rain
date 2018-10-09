@@ -1,5 +1,9 @@
 package org.younghanlee.rainserver;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.json.JSONArray;
@@ -32,6 +36,7 @@ public class Animal {
 		}
 	}
 	
+	
 	public Animal(JSONObject jo) {
 		this.name = jo.getString("name");
 		if (jo.has("number")){
@@ -57,6 +62,25 @@ public class Animal {
 			int max = d.getInt("max");
 			drops[i] = new Drop(id, rarity, min, max);
 		}
+	}
+	
+	public static HashMap<Integer, Animal> readFile() {
+		JSONArray ja = null;
+		try {
+			ja = new JSONArray(new String(Files.readAllBytes(Paths.get("json/animals.json"))));
+		} catch (IOException e) {
+			System.out.println("Animals file "+ "animals.json" + " not found.");
+			System.exit(1);
+		}
+		
+		HashMap<Integer, Animal> animals = new HashMap<Integer, Animal>();
+		JSONObject animalObject;
+		for (int i = 0; i < ja.length(); i++) {
+			animalObject = ja.getJSONObject(i);
+			int id = animalObject.getInt("id");
+			animals.put(id, new Animal(animalObject));
+		}
+		return animals;
 	}
 	
 	public boolean isFish() {
@@ -88,10 +112,13 @@ public class Animal {
 	}
 	
 	public boolean fight(Player p, float multiplier) {
-//		int base = 10;
-//		int value = Util.randomRoll(base, multiplier);
-//		return value > strength;
-		return false;
+		int partySize = p.partySize();
+		int base = 0;
+		for (int i=0; i<partySize; i++) {
+			base += World.getMember(p.getPartyMember(i)).getStrength();
+		}
+		int value = Util.randomRoll(base, multiplier);
+		return value > strength;
 	}
 	
 	public JSONArray rollDrop(Player p, int n) {
