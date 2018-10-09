@@ -20,6 +20,12 @@ public class Move {
 		final int width = World.getWidth();
 		int difference = target - p.getPosition();
 		switch (difference) {
+			case 0:
+				if (x > p.getX()) {
+					direction = "east";
+				} else {
+					direction = "west";
+				}
 			case 1:
 				direction = "east";
 				break;
@@ -61,6 +67,7 @@ public class Move {
 	
 	public JSONObject tick(Player p) {
 		int position = p.getPosition();
+		boolean withinTile = (position == target);
 		int x = p.getX();
 		int y = p.getY();
 		int speed = pace * p.getSpeed();
@@ -69,7 +76,10 @@ public class Move {
 		JSONArray tiles = null;
 		switch (direction) {
 			case "east":
-				newX = (x + speed) % 32;
+				newX = (x + speed);
+				if (!withinTile) {
+					newX = newX % 32;
+				}
 				if (newX < x) {
 					position = position + 1;
 					p.setPosition(position);
@@ -84,7 +94,10 @@ public class Move {
 				p.setY(y);
 				break;
 			case "west":
-				newX = Math.floorMod((x - speed), 32);
+				newX = x - speed;
+				if (!withinTile) {
+					newX = Math.floorMod(newX, 32);
+				}
 				if (newX > x) {
 					position = position - 1;
 					p.setPosition(position);
@@ -99,7 +112,11 @@ public class Move {
 				p.setY(y);
 				break;
 			case "south":
-				newY = (y + speed) % 32;
+				newY = (y + speed);
+				if (!withinTile) {
+					newY = newY % 32;
+				}
+				
 				if (newY < y) {
 					position = position + World.getWidth();
 					p.setPosition(position);
@@ -114,7 +131,10 @@ public class Move {
 				p.setX(x);
 				break;
 			case "north":
-				newY = Math.floorMod((y - speed), 32);
+				newY = y - speed;
+				if (!withinTile) {
+					newY = Math.floorMod(newY, 32);
+				}
 				if (newY > y) {
 					position = position - World.getWidth();
 					p.setPosition(position);
