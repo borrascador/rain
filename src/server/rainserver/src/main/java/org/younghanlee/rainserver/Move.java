@@ -84,7 +84,7 @@ public class Move {
 				p.setY(y);
 				break;
 			case "west":
-				newX = (x - speed) % 32;
+				newX = Math.floorMod((x - speed), 32);
 				if (newX > x) {
 					position = position - 1;
 					p.setPosition(position);
@@ -114,7 +114,7 @@ public class Move {
 				p.setX(x);
 				break;
 			case "north":
-				newY = (y - speed) % 32;
+				newY = Math.floorMod((y - speed), 32);
 				if (newY > y) {
 					position = position - World.getWidth();
 					p.setPosition(position);
