@@ -66,8 +66,8 @@ public class Decision {
 					for (int i : t.inSight(p.getSight())) {
 						p.addTilesSeen(i);
 					}
-					t.addVisitor(p.getName());
-					t.updateNeighbors(p.getName(), Constants.MAXSIGHT);
+					t.addVisitor(p);
+					t.updateNeighbors(p, Constants.MAXSIGHT);
 					
 					JSONObject payload = new JSONObject();
 					JSONArray tiles = p.inSightArray();
@@ -162,9 +162,7 @@ public class Decision {
 		}
 		public ArrayList<Multiplier> generateMultipliers(Player p){
 			ArrayList<Multiplier> multipliers = new ArrayList<Multiplier>();
-			System.out.println("test2");
 			Multiplier fishing = new Multiplier("fishing", 0, Hunt.fishingMultiplier(p));
-			System.out.println("test3");
 			multipliers.add(fishing);
 			return multipliers;
 		}
@@ -210,7 +208,6 @@ public class Decision {
 	}
 	
 	public JSONArray multipliersToJSONArray(int index) {
-		System.out.println("test");
 		JSONArray ja = new JSONArray();
 		ArrayList<Multiplier> ms = choiceMultipliers.get(index);
 		if (ms != null) {
