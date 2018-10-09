@@ -24,7 +24,7 @@ public class Tile {
 	private double wildlife;
 	
 	private Player owner;
-	private HashSet<String> visitors;
+	private HashSet<Player> visitors;
 	
 	public Tile(int id) {
 		this.id = id;
@@ -33,7 +33,7 @@ public class Tile {
 		this.layers = new HashMap<String, Integer>();
 		this.events = new HashMap<String, Integer>();
 		this.crops = new HashMap<Integer, Integer>();
-		this.visitors = new HashSet<String>();
+		this.visitors = new HashSet<Player>();
 		this.habitats = new HashMap<String, Integer>();
 		
 		wildlife = 1.0;
@@ -57,46 +57,70 @@ public class Tile {
 	}
 	
 	
-	public void addVisitor(String name) {
-		this.visitors.add(name);
+	public void addVisitor(Player p) {
+		visitors.add(p);
+		updateNeighbors(p, 1);
 	}
 	
-	public void removeVisitor(String name) {
-		this.visitors.remove(name);
+	public void removeVisitor(Player p) {
+		System.out.println("BEFORE REMOVE " + visitors);
+		visitors.remove(p);
+		System.out.println("REMOVE " + visitors);
+		updateNeighbors(p, 1);
 	}
 	
-	public HashSet<String> getVisitors() {
-		return visitors;
+	public ArrayList<Player> getVisitors(Player exclude) {
+		ArrayList<Player> otherVisitors = new ArrayList<Player>();
+		for (Player v : visitors) {
+			if (v != exclude) {
+				otherVisitors.add(v);
+			}
+		}
+		return otherVisitors;
+	}
+	
+	public JSONArray getVisitorsArray(Player exclude) {
+		JSONArray ja = new JSONArray();
+		for (Player v : visitors) {
+			if (v != exclude) {
+				JSONObject jo = new JSONObject();
+				jo.put("name", v.getName());
+				jo.put("xCoord", v.getX());
+				jo.put("yCoord", v.getY());
+				ja.put(jo);
+			}
+		}
+		return ja;
 	}
 	
 	public boolean occupied() {
 		return !visitors.isEmpty();
 	}
 	
-	public JSONObject toJSONObject() {
+	public JSONObject toJSONObject(Player exclude) {
 		JSONObject jo = new JSONObject();
-		jo.accumulate("id", id);
-		jo.accumulate("x", x);
-		jo.accumulate("y", y);
+		jo.put("id", id);
+		jo.put("x", x);
+		jo.put("y", y);
 		
 		JSONObject layersJO = new JSONObject();
 		for (HashMap.Entry<String, Integer> entry : this.layers.entrySet()) {
-			layersJO.accumulate(entry.getKey(), entry.getValue());
+			layersJO.put(entry.getKey(), entry.getValue());
 		}
-		jo.accumulate("layers", layers);
-		jo.accumulate("visitors", occupied());
+		jo.put("layers", layers);
+		jo.put("visitors", getVisitorsArray(exclude));
 		
 		JSONArray crops = new JSONArray();
 		for (HashMap.Entry<Integer, Integer> entry : this.crops.entrySet()) {
 			JSONObject crop = new JSONObject();
 			int id = entry.getKey();
-			crop.accumulate("id", id);
-			crop.accumulate("name", World.getItem(id).getName());
+			crop.put("id", id);
+			crop.put("name", World.getItem(id).getName());
 			int stage = entry.getValue();
 			if (stage > 1) {
 				stage = 1; 
 			}
-			crop.accumulate("stage", stage);
+			crop.put("stage", stage);
 			crops.put(crop);
 		}
 		jo.put("crops", crops);
@@ -155,15 +179,12 @@ public class Tile {
 	
 	// n is the player that is triggering the update
 	// We don't need to send an update to this player.
-	public void updateNeighbors(String n, int range) {
+	public void updateNeighbors(Player p, int range) {
 		for (int i: inSight(Constants.MAXSIGHT)) {
 			Tile t = World.getTile(i);
-			for (String name: t.getVisitors()) {
-				if (!name.equals(n)) {
-					Player p2 = World.getPlayer(name);
-					if (distance(t) <= p2.getSight()) {
-						p2.addToBuffer(id);
-					}
+			for (Player v: t.getVisitors(p)) {
+				if (distance(t) <= v.getSight()) {
+					v.addToBuffer(id);
 				}
 			}
 		}

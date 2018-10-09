@@ -26,6 +26,7 @@ public class Move {
 				} else {
 					direction = "west";
 				}
+				break;
 			case 1:
 				direction = "east";
 				break;
@@ -76,7 +77,7 @@ public class Move {
 		JSONArray tiles = null;
 		switch (direction) {
 			case "east":
-				newX = (x + speed);
+				newX = x + speed;
 				if (!withinTile) {
 					newX = newX % 32;
 				}
@@ -149,6 +150,8 @@ public class Move {
 				p.setX(x);
 				break;	
 		}
+		
+		World.getTile(position).updateNeighbors(p, 1);
 		
 		JSONObject payload = new JSONObject();
 		if (x == xTarget && y == yTarget && position == target) {

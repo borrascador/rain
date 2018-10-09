@@ -237,7 +237,7 @@ public class World {
 		for (int i=0; i<numTiles; i++) {
 			Tile t = map[i];
 			if (t.occupied()) {
-				System.out.println("  " + i + " " + t.getVisitors().toString());
+				System.out.println("  " + i + " " + t.getVisitors(null).size());
 			}
 		}
 		

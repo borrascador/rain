@@ -90,8 +90,8 @@ public class Player {
 		connection.setPlayer(this);
 		if (position != null) {
 			Tile t = World.getTile(position);
-			t.addVisitor(this.name);
-			t.updateNeighbors(this.name, Constants.MAXSIGHT);
+			t.addVisitor(this);
+			t.updateNeighbors(this, Constants.MAXSIGHT);
 		}
 	}
 	
@@ -99,8 +99,8 @@ public class Player {
 		this.online = false;
 		World.onlineDec();
 		Tile t = World.getTile(position);
-		t.removeVisitor(this.name);
-		t.updateNeighbors(this.name, Constants.MAXSIGHT);
+		t.removeVisitor(this);
+		t.updateNeighbors(this, Constants.MAXSIGHT);
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}
@@ -122,7 +122,6 @@ public class Player {
 	}
 	
 	public void playerTick(Connection connection, int tick) {
-		System.out.println(tick);
 		JSONObject payload = new JSONObject();
 		
 		if (move != null) {
@@ -137,7 +136,7 @@ public class Player {
 			
 			for (Integer i: list) {
 				buffer.remove(i);
-				tiles.put(World.getTile(i).toJSONObject());
+				tiles.put(World.getTile(i).toJSONObject(this));
 			}
 			payload.put("tiles", tiles);
 		}
@@ -178,7 +177,12 @@ public class Player {
 	}
 	
 	public void setPosition(int position) {
+		if (this.position != null) {
+			World.getTile(this.position).removeVisitor(this);
+		}
 		this.position = position;
+		World.getTile(position).addVisitor(this);
+		
 	}
 	
 	public boolean legalMove(int destination, int x, int y) {
@@ -304,7 +308,7 @@ public class Player {
 	public JSONArray tilesSeenArray() {
 		JSONArray ja = new JSONArray();
 		for (int ts: tilesSeen) {
-			ja.put(World.getTile(ts).toJSONObject());
+			ja.put(World.getTile(ts).toJSONObject(this));
 		}
 		return ja;
 	}
@@ -312,7 +316,7 @@ public class Player {
 	public JSONArray inSightArray() {
 		JSONArray ja = new JSONArray();
 		for (int ts: World.getTile(position).inSight(sight)) {
-			ja.put(World.getTile(ts).toJSONObject());
+			ja.put(World.getTile(ts).toJSONObject(this));
 		}
 		return ja;
 	}
