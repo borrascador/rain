@@ -5273,11 +5273,9 @@ var Camera = function () {
             pos = _connect$map.pos,
             zoom = _connect$map.zoom;
 
-        if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-          var xCoord = Math.floor((x - tile.xPos) / zoom);
-          var yCoord = Math.floor((y - tile.yPos) / zoom);
-          this.store.dispatch((0, _requests.sendEvent)('move', tile.id, { x: xCoord, y: yCoord }));
-        }
+        var xCoord = Math.floor((x - tile.xPos) / zoom);
+        var yCoord = Math.floor((y - tile.yPos) / zoom);
+        this.store.dispatch((0, _requests.sendEvent)('move', tile.id, { x: xCoord, y: yCoord }));
       }
     }
   }, {
@@ -5310,13 +5308,14 @@ var Camera = function () {
       var endRow = startRow + Math.ceil(this.canvas.height / tileSize + 1);
 
       var clickTiles = [];
+      var visiblePlayers = [];
       var dim = false;
       for (var col = startCol; col <= endCol; col++) {
         var _loop = function _loop(row) {
           var x = col * tileSize - origin.x;
           var y = row * tileSize - origin.y;
           var tile = _this.findTile(tiles, col, row);
-          if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) === 1) {
+          if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= 1) {
             clickTiles.push(Object.assign({}, tile, {
               xPos: x, yPos: y, width: tileSize, height: tileSize
             }));
@@ -5338,18 +5337,18 @@ var Camera = function () {
               (0, _draw.drawById)(_this.ctx, _this.icons, 28 + _this.blink.getValue(), zoom, x + coordsTarget.x * zoom - iconSize / 2, y + coordsTarget.y * zoom - iconSize / 2);
             }
 
-            // if (!dim && 'visitors' in tile && tile.visitors === true) {
-            //   // TODO add support for coordinates
-            //   const iconOffset = (tileSize - iconSize) / 2
-            //   drawById(
-            //     this.ctx,
-            //     this.icons,
-            //     26 + this.blink.getValue(),
-            //     zoom,
-            //     x + iconOffset,
-            //     y + iconOffset
-            //   );
-            // }
+            if (!dim && tile.visitors && tile.visitors.length > 0) {
+              visiblePlayers.push(tile.visitors.map(function (visitor) {
+                (0, _draw.drawById)(_this.ctx, _this.icons, 26 + _this.blink.getValue(), zoom, x + visitor.xCoord * zoom - iconSize / 2, y + visitor.yCoord * zoom - iconSize / 2);
+                return {
+                  name: visitor.name,
+                  xPos: x + visitor.xCoord * zoom - iconSize / 2,
+                  yPos: y + visitor.yCoord * zoom - iconSize / 2,
+                  width: iconSize,
+                  height: iconSize
+                };
+              }));
+            }
 
             if (dim) {
               _this.ctx.fillStyle = _colors.MEDIUM_OPAQUE;
@@ -5363,6 +5362,15 @@ var Camera = function () {
         }
       }
       this.clickTiles = clickTiles;
+
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
+
+      if (xMouse && yMouse) {
+        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, visiblePlayers);
+        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
+      }
 
       (0, _draw.drawById)(this.ctx, this.icons, 24 + this.blink.getValue(), zoom, (this.canvas.width - iconSize) / 2, (this.canvas.height - iconSize) / 2);
     }

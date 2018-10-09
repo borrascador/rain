@@ -3,7 +3,7 @@ import Animation from '../utils/Animation';
 import { sendEvent } from '../../store/actions/requests';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
-import { drawById, drawByName } from '../utils/draw';
+import { drawById, drawByName, drawHover } from '../utils/draw';
 import { MEDIUM_OPAQUE } from '../colors';
 
 const {BOTTOM, MIDDLE} = LAYER;
@@ -41,11 +41,9 @@ export default class Camera {
     const tile = x && y && screenToImageButton(x, y, this.clickTiles);
     if (tile) {
       const { pos, zoom } = this.connect.map;
-      if (Math.abs(pos.x - tile.x) + Math.abs(pos.y - tile.y) === 1) {
-        const xCoord = Math.floor((x - tile.xPos) / zoom);
-        const yCoord = Math.floor((y - tile.yPos) / zoom);
-        this.store.dispatch(sendEvent('move', tile.id, { x: xCoord, y: yCoord }));
-      }
+      const xCoord = Math.floor((x - tile.xPos) / zoom);
+      const yCoord = Math.floor((y - tile.yPos) / zoom);
+      this.store.dispatch(sendEvent('move', tile.id, { x: xCoord, y: yCoord }));
     }
   }
 
@@ -66,13 +64,14 @@ export default class Camera {
     const endRow = startRow + Math.ceil((this.canvas.height / tileSize) + 1);
 
     let clickTiles = [];
+    let visiblePlayers = [];
     let dim = false;
     for (let col = startCol; col <= endCol; col++) {
       for (let row = startRow; row <= endRow; row++) {
         const x = col * tileSize - origin.x;
         const y = row * tileSize - origin.y;
         const tile = this.findTile(tiles, col, row);
-        if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) === 1) {
+        if (tile && Math.abs(pos.x - col) + Math.abs(pos.y - row) <= 1) {
           clickTiles.push(Object.assign({}, tile, {
             xPos: x, yPos: y, width: tileSize, height: tileSize
           }));
@@ -101,18 +100,25 @@ export default class Camera {
             );
           }
 
-          // if (!dim && 'visitors' in tile && tile.visitors === true) {
-          //   // TODO add support for coordinates
-          //   const iconOffset = (tileSize - iconSize) / 2
-          //   drawById(
-          //     this.ctx,
-          //     this.icons,
-          //     26 + this.blink.getValue(),
-          //     zoom,
-          //     x + iconOffset,
-          //     y + iconOffset
-          //   );
-          // }
+          if (!dim && tile.visitors && tile.visitors.length > 0) {
+            visiblePlayers.push(tile.visitors.map(visitor => {
+              drawById(
+                this.ctx,
+                this.icons,
+                26 + this.blink.getValue(),
+                zoom,
+                x + visitor.xCoord * zoom - iconSize / 2,
+                y + visitor.yCoord * zoom - iconSize / 2
+              );
+              return ({
+                name: visitor.name,
+                xPos: x + visitor.xCoord * zoom - iconSize / 2,
+                yPos: y + visitor.yCoord * zoom - iconSize / 2,
+                width: iconSize,
+                height: iconSize
+              });
+            }));
+          }
 
           if (dim) {
             this.ctx.fillStyle = MEDIUM_OPAQUE;
@@ -122,6 +128,12 @@ export default class Camera {
       }
     }
     this.clickTiles = clickTiles;
+
+    const { xMouse, yMouse } = this.connect.mouse;
+    if (xMouse && yMouse) {
+      const button = screenToImageButton(xMouse, yMouse, visiblePlayers);
+      button && drawHover(this.ctx, this.fontSize, button);
+    }
 
     drawById(
       this.ctx,
