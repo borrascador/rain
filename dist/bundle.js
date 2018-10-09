@@ -5246,6 +5246,7 @@ var Camera = function () {
     this.atlas = loader.getImage('atlas');
     this.icons = loader.getImage('icons');
     this.blink = new _Animation2.default(1, 1, 0.5);
+    this.fontSize = 16;
 
     this.connect = new _Connect2.default(this.store);
   }
@@ -5343,7 +5344,7 @@ var Camera = function () {
             }
 
             if (!dim && tile.visitors && tile.visitors.length > 0) {
-              visiblePlayers.push(tile.visitors.map(function (visitor) {
+              visiblePlayers = visiblePlayers.concat(tile.visitors.map(function (visitor) {
                 (0, _draw.drawById)(_this.ctx, _this.icons, 26 + _this.blink.getValue(), zoom, x + visitor.xCoord * zoom - iconSize / 2, y + visitor.yCoord * zoom - iconSize / 2);
                 return {
                   name: visitor.name,
