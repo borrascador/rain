@@ -3888,6 +3888,11 @@ function update(state, action) {
   var positionTarget = typeof action.payload.positionTarget === 'number' ? action.payload.positionTarget : state.positionTarget;
   var xTarget = typeof action.payload.xTarget === 'number' ? action.payload.xTarget : state.xTarget;
   var yTarget = typeof action.payload.yTarget === 'number' ? action.payload.yTarget : state.yTarget;
+  if (positionTarget !== null && positionTarget === position && xTarget === xCoord && yTarget === yCoord) {
+    positionTarget = null;
+    xTarget = null;
+    yTarget = null;
+  }
   var stories = (0, _utils.updateStory)(state, action);
   var inventoryChanges = (0, _utils.updateInventoryChanges)(state, action);
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
