@@ -16,6 +16,7 @@ export default class Camera {
     this.atlas = loader.getImage('atlas');
     this.icons = loader.getImage('icons');
     this.blink = new Animation(1, 1, 0.5);
+    this.fontSize = 16;
 
     this.connect = new Connect(this.store);
   }
@@ -101,23 +102,25 @@ export default class Camera {
           }
 
           if (!dim && tile.visitors && tile.visitors.length > 0) {
-            visiblePlayers.push(tile.visitors.map(visitor => {
-              drawById(
-                this.ctx,
-                this.icons,
-                26 + this.blink.getValue(),
-                zoom,
-                x + visitor.xCoord * zoom - iconSize / 2,
-                y + visitor.yCoord * zoom - iconSize / 2
-              );
-              return ({
-                name: visitor.name,
-                xPos: x + visitor.xCoord * zoom - iconSize / 2,
-                yPos: y + visitor.yCoord * zoom - iconSize / 2,
-                width: iconSize,
-                height: iconSize
-              });
-            }));
+            visiblePlayers = visiblePlayers.concat(
+              tile.visitors.map(visitor => {
+                drawById(
+                  this.ctx,
+                  this.icons,
+                  26 + this.blink.getValue(),
+                  zoom,
+                  x + visitor.xCoord * zoom - iconSize / 2,
+                  y + visitor.yCoord * zoom - iconSize / 2
+                );
+                return ({
+                  name: visitor.name,
+                  xPos: x + visitor.xCoord * zoom - iconSize / 2,
+                  yPos: y + visitor.yCoord * zoom - iconSize / 2,
+                  width: iconSize,
+                  height: iconSize
+                });
+              })
+            );
           }
 
           if (dim) {
