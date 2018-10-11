@@ -21,7 +21,7 @@ public class Tile {
 	
 	private int waterDepth = 10;
 	
-	private double wildlife;
+	private double wildlife; // How over-hunted is the tile
 	
 	private Player owner;
 	private HashSet<Player> visitors;
@@ -36,7 +36,7 @@ public class Tile {
 		this.visitors = new HashSet<Player>();
 		this.habitats = new HashMap<String, Integer>();
 		
-		wildlife = 1.0;
+		wildlife = 1.0; 
 
 	}
 	
@@ -180,7 +180,7 @@ public class Tile {
 	// n is the player that is triggering the update
 	// We don't need to send an update to this player.
 	public void updateNeighbors(Player p, int range) {
-		for (int i: inSight(Constants.MAXSIGHT)) {
+		for (int i: inSight(1)) {
 			Tile t = World.getTile(i);
 			for (Player v: t.getVisitors(p)) {
 				if (distance(t) <= v.getSight()) {

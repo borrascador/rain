@@ -98,6 +98,7 @@ public class MessageHandler {
 			
 			case "EVENT_REQUEST":
 				payload = jo.getJSONObject("payload");
+				// Go to EventHandler.java
 				EventHandler.handleRequest(payload, connection);
 				break;
 				

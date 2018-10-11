@@ -150,9 +150,9 @@ public class Server extends WebSocketServer {
 			@Override
 			public void run() {
 				// System.out.println("Sending updates: tick "+ server.getTick());
-				server.flush(tick);
-				server.tickInc();
-				server.growthTick();
+				server.flush(tick); // show debugging info
+				server.tickInc(); // increment tick number, do player ticks
+				server.growthTick(); 
 				return;
 			}
 		}, 0, 1, TimeUnit.SECONDS);

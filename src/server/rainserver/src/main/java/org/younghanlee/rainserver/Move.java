@@ -9,8 +9,8 @@ public class Move {
 	private int target;
 	private int xTarget;
 	private int yTarget;
-	private int pace;
-	private String direction;
+	private int pace; // set at 1
+	private String direction; // north, south, east, west
 	
 	public Move(int target, int x, int y, Player p) {
 		this.target = target;

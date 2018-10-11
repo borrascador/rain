@@ -8,21 +8,29 @@ import org.json.JSONObject;
 
 public class Decision {
 	
+	public String story; // Story text to be shown to player
 	
-	public String story;
-	public static HashMap<String, IChoice> choiceMap;
+	// static map with all possible choices (in the entire game)
+	public static HashMap<String, IChoice> choiceMap; 
 	
+	// choices for this decision only
 	private IChoice[] choices;
+	
+	// multipliers to be shown for each choice
+	// choiceMultipliers[i] corresponds to choices[i]
 	private ArrayList<ArrayList<Multiplier>> choiceMultipliers;
 	
-	
+
 	public Decision(String[] choiceNames, String story, Player p) {
 		this.story = story;
 		int n = choiceNames.length;
 		this.choices = new IChoice[n];
 		this.choiceMultipliers = new ArrayList<ArrayList<Multiplier>>();
 		for (int i=0; i<n; i++) {
+			// For each choice name in choiceNames, use the string as a key
+			// to look it up in the static choiceMap
 			this.choices[i] = choiceMap.get(choiceNames[i]);
+			// Each IChoice object has a method generateMultipliers(Player p)
 			this.choiceMultipliers.add(choiceMap.get(choiceNames[i]).generateMultipliers(p));
 		}
 	}
@@ -32,6 +40,8 @@ public class Decision {
 	}
 	
 	public JSONObject choose(Player p, int n) {
+		// Each IChoice object has a method result(Player p, ArrayList<Multiplier> multipliers)
+		// This is what is evaluated when you pick this choice.
 		return choices[n].result(p, choiceMultipliers.get(n));
 	}
 	
@@ -45,6 +55,7 @@ public class Decision {
 		choiceMap.put("fishShallow", fishShallow);
 		choiceMap.put("respawn", respawn);
 		
+		// Adding a IChoice object for each tribe
 		for (int i=0; i<World.numTribes(); i++) {
 			final int index = i;
 			IChoice t = new IChoice() {
@@ -67,7 +78,7 @@ public class Decision {
 						p.addTilesSeen(i);
 					}
 					t.addVisitor(p);
-					t.updateNeighbors(p, Constants.MAXSIGHT);
+					t.updateNeighbors(p, 1);
 					
 					JSONObject payload = new JSONObject();
 					JSONArray tiles = p.inSightArray();
@@ -207,6 +218,7 @@ public class Decision {
 		return story;
 	}
 	
+	
 	public JSONArray multipliersToJSONArray(int index) {
 		JSONArray ja = new JSONArray();
 		ArrayList<Multiplier> ms = choiceMultipliers.get(index);
@@ -218,7 +230,8 @@ public class Decision {
 		} else return null;
 	}
 	
-	
+	// Each IChoice has a method getText()
+	// Create a JSONArray of buttons
 	public JSONArray buttons (Player p) {
 		JSONArray buttonArray = new JSONArray();
 		for (int i=0; i<choices.length; i++) {

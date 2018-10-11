@@ -7,12 +7,10 @@ import org.java_websocket.WebSocketListener;
 import org.java_websocket.drafts.Draft;
 import org.json.JSONObject;
 
+// Connection = WebSocket + Player
 public class Connection extends WebSocketImpl {
-	private Player player;
 	
-	public void flushBuffer () {
-		
-	}
+	private Player player;
 	
 	public Connection(WebSocketListener listener, List<Draft> drafts){
 		super(listener, drafts);

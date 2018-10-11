@@ -17,10 +17,10 @@ public class Player {
 	private String passwordSalt;
 	
 	private boolean online;
-	private Integer position;
-	private int x;
-	private int y;
-	private int tribe;
+	private Integer position; // Which tile
+	private int x; // x coordinate within tile
+	private int y; // within tile
+	private int tribe; 
 	
 	private int pace;
 	private int speed;
@@ -28,16 +28,16 @@ public class Player {
 	private ArrayList<Integer> eating;
 	
 	private int sight;
-	private ArrayList<Integer> tilesSeen;
+	private ArrayList<Integer> tilesSeen; // Tiles to send upon login
 	
-	private ArrayList<Integer> party;
-	private HashMap<Integer, Integer> backpack;
+	private ArrayList<Integer> party; // id of party members
+	private HashMap<Integer, Integer> backpack; // item id, quantity
 	
-	private Move move;
-	private Hunt hunt;
+	private Move move; // Initialize with move(), stop with stopMoving()
+	private Hunt hunt; // Initialize with startHunting(), stop with stopHunting()
 	private Decision decision;
 	
-	private HashSet<Integer> buffer;
+	private HashSet<Integer> buffer; // Which tiles require updates sent in next tick
 
 	
 	public Player(String name, String email, String password) {
@@ -50,9 +50,12 @@ public class Player {
 		// Player is offline upon registration. Call Login afterwards
 		online = false;
 		position = null;	
-		tilesSeen = new ArrayList<Integer>();
 		
+		// Empty data structures
+		tilesSeen = new ArrayList<Integer>();
 		party = new ArrayList<Integer>();	
+		backpack = new HashMap<Integer, Integer>();
+		eating = new ArrayList<Integer>();
 		
 		pace = 0;
 		speed = 4;
@@ -61,10 +64,7 @@ public class Player {
 		hunt = null;
 		move = null;
 		
-		backpack = new HashMap<Integer, Integer>();
-		
-		eating = new ArrayList<Integer>();
-		
+		// First decision is choose tribe. Create and attach this decision to this player.
 		String [] choiceNames = new String[World.numTribes()];
 		for (int i=0; i<World.numTribes(); i++) {
 			choiceNames[i] = "selectTribe"+ i;
@@ -88,10 +88,10 @@ public class Player {
 		this.online = true;
 		World.onlineInc();
 		connection.setPlayer(this);
-		if (position != null) {
+		if (position != null) { // Check if player has chosen tribe yet
 			Tile t = World.getTile(position);
 			t.addVisitor(this);
-			t.updateNeighbors(this, Constants.MAXSIGHT);
+			t.updateNeighbors(this, 1); // Reveal player to everyone in range
 		}
 	}
 	
@@ -100,11 +100,12 @@ public class Player {
 		World.onlineDec();
 		Tile t = World.getTile(position);
 		t.removeVisitor(this);
-		t.updateNeighbors(this, Constants.MAXSIGHT);
+		t.updateNeighbors(this, 1);
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}
 	
+	// When a player logs back in after logging out in the middle of a decision
 	public void sendDecision(Connection connection) {
 		if (decision == null) {
 			return;
@@ -121,9 +122,12 @@ public class Player {
 		buffer.add(n);
 	}
 	
+	// Called every tick
+	// Return payload to be used in UPDATE message
 	public void playerTick(Connection connection, int tick) {
 		JSONObject payload = new JSONObject();
 		
+		// If player has a target, move towards it
 		if (move != null) {
 			payload = move.tick(this);
 		}
@@ -141,6 +145,7 @@ public class Player {
 			payload.put("tiles", tiles);
 		}
 		
+		// Eat food
 		if (tick % 60 == 0) {
 			ArrayList<Integer> copy = new ArrayList<Integer>();
 			for (Integer i: eating) {
@@ -176,7 +181,7 @@ public class Player {
 		return;
 	}
 	
-	public void setPosition(int position) {
+	public void setPosition(int position) { // Also edit tile visitors appropriately
 		if (this.position != null) {
 			World.getTile(this.position).removeVisitor(this);
 		}
@@ -359,6 +364,8 @@ public class Player {
 		return ja;
 	}
 	
+	// First add member to global members in World
+	// Then add its id to party
 	public int addMember(String name, int icon) {
 		Member m = new Member(name, icon);
 		int id = World.addMember(m);
