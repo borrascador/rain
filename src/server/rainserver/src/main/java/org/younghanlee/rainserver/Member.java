@@ -15,8 +15,8 @@ public class Member {
 	private int strength;
 	private int speed;
 	private int jeito;
-	private HashMap<Integer, Integer> skills;
-	private HashMap<Integer, Integer> modifiers;
+	private HashMap<Integer, Integer> skills; // id, rank
+	private HashMap<Integer, Integer> modifiers; // id, timer
 	
 	public Member(String name, int icon) {
 		this.name = name;

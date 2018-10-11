@@ -13,7 +13,7 @@ public class Hunt{
 	private Animal animal;
 	private int catchAmount;
 	private double rarity;
-	private double wildlife;
+	private double wildlife; // Multiplier depending on whether this tile is over-hunted
 	private Player p;
 	
 	private ArrayList<Integer> queue;

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 public class Item {
 	private String name;
+	
 	// If this is a seed what fruit does it yield
 	private int yield;
 	HashSet<String> tags;
@@ -28,7 +29,7 @@ public class Item {
 		try {
 			ja = new JSONArray(new String(Files.readAllBytes(Paths.get("json/items.json"))));
 		} catch (IOException e) {
-			System.out.println("Itmes file "+ "items.json" + " not found.");
+			System.out.println("Items file "+ "items.json" + " not found.");
 			System.exit(1);
 		}
 		
@@ -71,12 +72,15 @@ public class Item {
 		return tags.contains(s);
 	}
 	
-	// id, name, new_quantity, change
+	// returns JSONObject containing id, name, new_quantity, change
+	// this will be a payload in EVENT_RESPONSE or UPDATE
 	public JSONObject change(int id, int change, Player p, boolean requireFull) {
 		JSONObject jo = new JSONObject();
 		
+		// How many does the player have
 		int quantity = p.getQuantity(id);
 		
+		// actual_change may be different if we try to subtract more than the player has
 		int actual_change = change;
 		
 		if (quantity + change < 0) {

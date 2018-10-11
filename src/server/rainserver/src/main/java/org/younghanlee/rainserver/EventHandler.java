@@ -10,7 +10,6 @@ public class EventHandler {
 		Player p = connection.getPlayer();
 		Tile t;
 		int id;
-		JSONArray tiles;
 		JSONObject story;
 		JSONObject payload;
 		JSONObject response;
