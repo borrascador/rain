@@ -21,8 +21,8 @@ export default class InventoryWindow {
     this.buttonSize = this.icons.tileset.tilewidth * this.scale;
     this.gutter = this.buttonSize / this.scale;
 
-    this.unitWidth = 9;
-    this.unitHeight = 3;
+    this.unitWidth = 5;
+    this.unitHeight = 4;
     this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
     this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
   }
@@ -152,7 +152,7 @@ export default class InventoryWindow {
 
   endItemDrag(x, y) {
     const slot = screenToImageButton(x, y, this.slots);
-    const match = this.buttons.find(button => button.position === slot.position);
+    const match = slot && this.buttons.find(button => button.position === slot.position);
     if (slot && match) {
       this.store.dispatch(setItemPosition(this.draggingItem.id, slot.position));
       this.store.dispatch(setItemPosition(match.id, this.draggingItem.position));

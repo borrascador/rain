@@ -6733,8 +6733,8 @@ var InventoryWindow = function () {
     this.buttonSize = this.icons.tileset.tilewidth * this.scale;
     this.gutter = this.buttonSize / this.scale;
 
-    this.unitWidth = 9;
-    this.unitHeight = 3;
+    this.unitWidth = 5;
+    this.unitHeight = 4;
     this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
     this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
   }
@@ -6876,7 +6876,7 @@ var InventoryWindow = function () {
     key: 'endItemDrag',
     value: function endItemDrag(x, y) {
       var slot = (0, _utils.screenToImageButton)(x, y, this.slots);
-      var match = this.buttons.find(function (button) {
+      var match = slot && this.buttons.find(function (button) {
         return button.position === slot.position;
       });
       if (slot && match) {
