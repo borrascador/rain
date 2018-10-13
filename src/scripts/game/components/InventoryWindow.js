@@ -1,7 +1,7 @@
 import Connect from '../../store/Connect';
 import { drawById, drawHover, drawDurability } from '../utils/draw';
 import { screenToImageButton } from './utils';
-import { changeMode } from '../../store/actions/actions';
+import { changeMode, setItemPosition } from '../../store/actions/actions';
 import { MODE } from '../constants';
 import { DARK_RED, MEDIUM_RED, SOLID_WHITE } from '../colors';
 
@@ -34,7 +34,9 @@ export default class InventoryWindow {
       const yMin = (this.canvas.height - this.height) / 2;
       const yMax = yMin + this.height;
       if (x > xMin && x < xMax && y > yMin && y < yMax) {
-        console.log('hit');
+        this.draggingItem && this.endItemDrag(x, y) || this.startItemDrag(x, y);
+      } else if (this.draggingItem) {
+        this.endItemDrag(x, y)
       } else {
         this.store.dispatch(changeMode(MODE.MAP));
       }
@@ -49,9 +51,18 @@ export default class InventoryWindow {
     this.ctx.fillRect(x, y, this.width, this.height);
 
     this.ctx.fillStyle = DARK_RED;
-    for (let xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
-      for (let yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
+    this.slots = [];
+    let counter = 0;
+    for (let yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
+      for (let xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
         this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
+        this.slots.push({
+          position: counter++,
+          xPos,
+          yPos,
+          width: this.buttonSize,
+          height: this.buttonSize
+        });
       }
     }
   }
@@ -74,23 +85,30 @@ export default class InventoryWindow {
     );
   }
 
-  renderButtons() {
-    let x = (this.canvas.width - this.width) / 2;
-    let y = (this.canvas.height - this.height) / 2;
+  renderItem(button, x, y) {
+    drawById(this.ctx, this.items, button.id, this.scale, x, y);
+    if (button.durability) {
+      drawDurability(
+        this.ctx, this.buttonSize, this.scale, button.durability, x, y
+      );
+    } else {
+      this.ctx.fillText(button.quantity, x, y + this.fontSize);
+    }
+  }
+
+  renderItems() {
+    let xOrigin = (this.canvas.width - this.width) / 2;
+    let yOrigin = (this.canvas.height - this.height) / 2;
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = this.fontSize + 'px MECC';
     this.ctx.fillStyle = SOLID_WHITE;
     this.buttons = this.connect.inventory.map((button, index) => {
-      const buttonX = x + this.gutter + (this.buttonSize + this.gutter) * (index % this.unitWidth);
-      const buttonY = y + this.gutter + (this.buttonSize + this.gutter) * Math.floor(index/this.unitWidth);
-      drawById(this.ctx, this.items, button.id, this.scale, buttonX, buttonY);
-      this.ctx.fillText(button.quantity, buttonX, buttonY + this.fontSize);
-      button.durability && drawDurability(
-        this.ctx, this.buttonSize, this.scale, button.durability, buttonX, buttonY
-      );
+      const position = button.hasOwnProperty('position') ? button.position : index;
+      const xPos = xOrigin + this.gutter + (this.buttonSize + this.gutter) * (position % this.unitWidth);
+      const yPos = yOrigin + this.gutter + (this.buttonSize + this.gutter) * Math.floor(position / this.unitWidth);
+      typeof position === 'number' && this.renderItem(button, xPos, yPos);
       return Object.assign({}, button, {
-        xPos: buttonX,
-        yPos: buttonY,
+        position, xPos, yPos,
         width: this.buttonSize,
         height: this.buttonSize
       });
@@ -108,23 +126,48 @@ export default class InventoryWindow {
   renderDrag() {
     const { xMouse, yMouse } = this.connect.mouse;
     const { xOffset, yOffset } = this.connect.offset;
-
-    if (xOffset !== null && yOffset !== null) {
-      this.dragged = this.dragged || xMouse && yMouse && screenToImageButton(xMouse, yMouse, this.buttons);
-      if (this.dragged) {
-        const x = this.dragged.xPos + xOffset;
-        const y = this.dragged.yPos + yOffset;
-        drawById(this.ctx, this.items, this.dragged.id, this.scale, x, y);
-      }
-    } else {
-      this.dragged = null;
+    const { xDrop, yDrop } = this.connect.drop;
+    if (!this.draggingItem && xOffset && yOffset) {
+      this.startItemDrag(xMouse, yMouse);
+    } else if (this.draggingItem && xDrop && yDrop) {
+      this.endItemDrag(xDrop, yDrop);
+    } else if (this.draggingItem) {
+      const x = xMouse + this.dragOrigin.xPos - this.x;
+      const y = yMouse + this.dragOrigin.yPos - this.y;
+      this.renderItemDrag(x, y);
     }
+  }
+
+  startItemDrag(x, y) {
+    this.draggingItem = this.dragOrigin = screenToImageButton(x, y, this.buttons);
+    this.x = x;
+    this.y = y;
+    this.draggingItem && this.store.dispatch(setItemPosition(this.draggingItem.id, null));
+  }
+
+  renderItemDrag(x, y) {
+    this.draggingItem = Object.assign({}, this.draggingItem, { xPos: x, yPos: y });
+    this.renderItem(this.draggingItem, this.draggingItem.xPos, this.draggingItem.yPos);
+  }
+
+  endItemDrag(x, y) {
+    const slot = screenToImageButton(x, y, this.slots);
+    const match = this.buttons.find(button => button.position === slot.position);
+    if (slot && match) {
+      this.store.dispatch(setItemPosition(this.draggingItem.id, slot.position));
+      this.store.dispatch(setItemPosition(match.id, this.draggingItem.position));
+    } else if (slot) {
+      this.store.dispatch(setItemPosition(this.draggingItem.id, slot.position));
+    } else {
+      this.store.dispatch(setItemPosition(this.draggingItem.id, this.dragOrigin.position));
+    }
+    this.draggingItem = null;
   }
 
   render(delta) {
     this.renderWindow();
     this.renderTitle();
-    this.renderButtons();
+    this.renderItems();
     this.renderHover();
     this.renderDrag();
   }

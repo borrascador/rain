@@ -1,5 +1,5 @@
 import { MODE } from '../../game/constants';
-import { updateObject, removeStory } from './utils';
+import { updateObject, updateItemInArray, removeStory } from './utils';
 
 export function makeKeys() {
   let keys = {
@@ -52,6 +52,8 @@ export function mouseDown(state, action) {
   return updateObject(state, {
     xDown: action.payload.x,
     yDown: action.payload.y,
+    xDrop: null,
+    yDrop: null
   });
 }
 
@@ -101,7 +103,7 @@ export function mouseUp(state, action) {
 export function clicked(state) {
   return updateObject(state, {
     xClick: null,
-    yClick: null,
+    yClick: null
   });
 }
 
@@ -128,6 +130,14 @@ export function zoomOut(state) {
 export function setPartyTab(state, action) {
   return updateObject(state, {
     partyTab: action.payload.partyTab,
+  });
+}
+
+export function setItemPosition(state, action) {
+  return updateObject(state, {
+    inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
+      return updateObject(item, { position: action.payload.position });
+    })
   });
 }
 

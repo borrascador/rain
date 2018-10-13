@@ -60,6 +60,16 @@ export default class Connect {
     return {xMouse, yMouse,};
   }
 
+  get down() {
+    const {xDown, yDown} = this.store.getState();
+    return {xDown, yDown,};
+  }
+
+  get drop() {
+    const {xDrop, yDrop} = this.store.getState();
+    return {xDrop, yDrop,};
+  }
+
   get stories() {
     return this.store.getState().stories;
   }
