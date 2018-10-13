@@ -51,6 +51,12 @@ export const setPartyTab = (partyTab) => ({
   payload: { partyTab }
 });
 
+export const SET_ITEM_POSITION = 'SET_ITEM_POSITION';
+export const setItemPosition = (id, position) => ({
+  type: SET_ITEM_POSITION,
+  payload: { id, position }
+});
+
 export const CHANGE_MODE = 'CHANGE_MODE';
 export const changeMode = (mode) => ({
   type: CHANGE_MODE,
