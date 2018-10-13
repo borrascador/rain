@@ -148,5 +148,75 @@
 		"id": 29,
 		"name": "small green feather",
 		"tags":["crafting"]
+	},
+	{
+		"id": 30,
+		"name": "corn",
+		"tags":["food", "seed"]
+	},
+	{
+		"id": 31,
+		"name": "matches",
+		"tags":[]
+	},
+	{
+		"id": 32,
+		"name": "wood paper",
+		"tags":[]
+	},
+	{
+		"id": 33,
+		"name": "wood pulp",
+		"tags":[]
+	},
+	{
+		"id": 34,
+		"name": "white paper",
+		"tags":[]
+	},
+	{
+		"id": 35,
+		"name": "pen",
+		"tags":[]
+	},
+	{
+		"id": 36,
+		"name": "ink",
+		"tags":[]
+	},
+	{
+		"id": 37,
+		"name": "tortilla",
+		"tags":[]
+	},
+	{
+		"id": 38,
+		"name": "clear jar",
+		"tags":[]
+	},
+	{
+		"id": 39,
+		"name": "salt",
+		"tags":[]
+	},
+	{
+		"id": 40,
+		"name": "chef's knife",
+		"tags":[]
+	},
+	{
+		"id": 41,
+		"name": "hunting knife",
+		"tags":["hunting", "fishing"]
+	},
+	{
+		"id": 42,
+		"name": "resin",
+		"tags":[]
+	},
+	{
+		"id": 43,
+		"name": "molasses",
+		"tags":["food"]
 	}
 ]
