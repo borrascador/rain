@@ -136,8 +136,17 @@ export function setPartyTab(state, action) {
 export function setItemPosition(state, action) {
   return updateObject(state, {
     inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
-      return updateObject(item, { position: action.payload.position });
+      return updateObject(item, {
+        type: action.payload.type,
+        position: action.payload.position
+      });
     })
+  });
+}
+
+export function refreshSlots(state, action) {
+  return updateObject(state, {
+    slots: action.payload.slots,
   });
 }
 

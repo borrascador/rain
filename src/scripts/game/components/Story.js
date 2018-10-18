@@ -31,7 +31,7 @@ export default class Story {
     this.size = this.icons.tileset.tilewidth * this.scale;
     this.iconOffset = this.fontSize * 4 / 5
 
-    this.width = this.canvas.width / 2;
+    this.width = this.canvas.width / 3;
     this.height = this.canvas.height / 2;
 
     this.stories = [];
@@ -78,7 +78,7 @@ export default class Story {
   }
 
   update(keys, x, y) {
-    this.width = this.canvas.width / 2;
+    this.width = this.canvas.width / 3;
     this.height = this.canvas.height / 2;
     if (this.stories.length > 0) {
       const story = this.stories[this.stories.length - 1];
@@ -106,7 +106,7 @@ export default class Story {
     const cursor = this.blink.getValue() ? '' : '_';
     const prompt = splitIntoLines(this.ctx, promptText + cursor, maxMainWidth);
 
-    let xPos = this.width / 2 + this.fontSize;
+    let xPos = this.width + this.fontSize;
     let yPos = this.height / 2 + this.fontSize * 2;
     let coords = this.mainText(text, xPos, yPos);
 
@@ -153,7 +153,7 @@ export default class Story {
     if (this.stories.length > 0) {
       this.stories = this.stories.map(story => {
         this.ctx.fillStyle = MEDIUM_RED;
-        this.ctx.fillRect(this.width / 2, this.height / 2, this.width, this.height);
+        this.ctx.fillRect(this.width, this.height / 2, this.width, this.height);
         const buttons = this.renderStoryText(story);
         this.renderHover(buttons);
         return Object.assign({}, story, { buttons });

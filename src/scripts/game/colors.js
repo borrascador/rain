@@ -21,6 +21,14 @@ export function alphaGreen(alpha) {
   return `rgba(0, 256, 0, ${alpha})`
 }
 
+export function alphaYellow(alpha) {
+  return `rgba(256, 256, 0, ${alpha})`
+}
+
 export function alphaRed(alpha) {
   return `rgba(256, 0, 0, ${alpha})`
+}
+
+export function alphaDarkRed(alpha) {
+  return `rgba(128, 0, 0, ${alpha})`
 }

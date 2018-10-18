@@ -5,7 +5,6 @@ import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import ActionBar from '../components/ActionBar';
 import PartyWindow from '../components/PartyWindow';
-import InventoryWindow from '../components/InventoryWindow';
 import { clicked } from '../../store/actions/actions';
 import { FOREST_BLACK, MEDIUM_OPAQUE } from '../colors';
 
@@ -24,7 +23,6 @@ export default class MapView {
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
     this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
-    this.inventoryWindow = new InventoryWindow(this.store, this.canvas, this.ctx, this.loader);
   }
 
   setDim(dim) {
@@ -38,8 +36,6 @@ export default class MapView {
         this.story.update(keys, x, y);
       } else if (this.connect.mode === MODE.PARTY) {
         this.partyWindow.update(x, y);
-      } else if (this.connect.mode === MODE.INVENTORY) {
-        this.inventoryWindow.update(x, y);
       } else {
         this.connect.currentTile && this.camera.update(x, y);
         this.overlay.update(x, y);
@@ -59,9 +55,6 @@ export default class MapView {
     switch (this.connect.mode) {
       case MODE.PARTY:
         this.partyWindow.render(delta);
-        break;
-      case MODE.INVENTORY:
-        this.inventoryWindow.render(delta);
         break;
     }
 
