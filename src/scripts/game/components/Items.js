@@ -105,7 +105,9 @@ export default class Items {
     this.draggingItem = this.dragOrigin = screenToImageButton(x, y, this.buttons);
     this.x = x;
     this.y = y;
-    this.draggingItem && this.store.dispatch(setItemPosition(this.draggingItem.id, null, null));
+    if (this.draggingItem) {
+      this.store.dispatch(setItemPosition(this.draggingItem.id, null, null));
+    }
   }
 
   renderItemDrag(x, y) {
@@ -114,17 +116,30 @@ export default class Items {
   }
 
   endItemDrag(x, y) {
+    const dragging = this.draggingItem;
+    const origin = this.dragOrigin;
     const slot = screenToImageButton(x, y, this.connect.slots);
-    const match = slot && this.buttons.find(button =>
-      button.position === slot.position && button.type === slot.type
-    );
+    const match = slot && this.buttons.find(button => {
+      return button.position === slot.position && button.type === slot.type;
+    });
+    // Eventually setItemPosition(item, slot),
+    // so we can read type and position for both in reducer!
+    // currently this only works if there is one stack of each item
     if (slot && match) {
-      this.store.dispatch(setItemPosition(this.draggingItem.id, slot.type, slot.position));
-      this.store.dispatch(setItemPosition(match.id, this.draggingItem.type, this.draggingItem.position));
+      this.store.dispatch(
+        setItemPosition(dragging.id, slot.type, slot.position)
+      );
+      this.store.dispatch(
+        setItemPosition(match.id, dragging.type, dragging.position)
+      );
     } else if (slot) {
-      this.store.dispatch(setItemPosition(this.draggingItem.id, slot.type, slot.position));
+      this.store.dispatch(
+        setItemPosition(dragging.id, slot.type, slot.position)
+      );
     } else {
-      this.store.dispatch(setItemPosition(this.draggingItem.id, this.dragOrigin.type, this.dragOrigin.position));
+      this.store.dispatch(
+        setItemPosition(dragging.id, origin.type, origin.position)
+      );
     }
     this.draggingItem = null;
   }

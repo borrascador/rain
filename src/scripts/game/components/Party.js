@@ -26,9 +26,9 @@ export default class Party {
     this.fontSize = 32;
 
     this.unitWidth = 5;
-    this.unitHeight = this.connect.party.length;
+    this.unitHeight = 1;
     this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
-    this.height = this.connect.party.length * this.size * 3 / 2;
+    this.height = this.unitHeight * this.size + this.gutter * 2;;
 
     this.buttons = this.connect.party.slice();
   }
@@ -39,14 +39,6 @@ export default class Party {
       this.store.dispatch(setPartyTab(button.id));
       this.store.dispatch(changeMode(MODE.PARTY));
     }
-  }
-
-  renderWindow(party) {
-    this.xStart = this.gutter;
-    this.yStart = this.gutter;
-    this.height = party.length * this.size * 3 / 2;
-    this.ctx.fillStyle = MEDIUM_RED;
-    this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
   }
 
   renderSlot(id, xPos, yPos) {
@@ -60,8 +52,7 @@ export default class Party {
 
   renderPartyMember(member, index) {
     let x = this.xStart + this.gutter;
-    let y = this.yStart + this.gutter + index * (this.size + this.gutter * 2);
-
+    let y = this.yStart + this.gutter + index * this.height;
     const currentTime = Date.now();
     const memberChanges = this.connect.partyChanges.filter(item => {
       const elapsed = currentTime - item.timestamp;
@@ -85,12 +76,15 @@ export default class Party {
       this.store.dispatch(removePartyMember(member.id));
     }
 
+    this.ctx.fillStyle = MEDIUM_RED;
+    this.ctx.fillRect(x - this.gutter, y - this.gutter, this.width, this.height);
+
     drawById(
       this.ctx, this.iconsXl, member.icon, this.scale,
       x - this.gutter * 2, y - this.gutter * 2
     );
 
-    this.renderSlot(member.id, x + this.size + this.gutter * 2, y);
+    this.renderSlot(member.id, x + this.height, y);
 
     [...Array(member.health)].map((_, i) => {
       drawByName(
@@ -110,16 +104,16 @@ export default class Party {
     return Object.assign({}, member, {
       xPos: x - this.gutter,
       yPos: y - this.gutter,
-      width: this.size + this.gutter * 2,
-      height: this.size + this.gutter * 2
+      width: this.height,
+      height: this.height
     });
   }
 
   render(delta) {
-    const party = this.connect.party;
-    this.renderWindow(party);
+    this.xStart = this.yStart = this.gutter;
+    this.height = this.size + this.gutter * 2;
     this.slots = [];
-    this.buttons = party.map((member, index) => {
+    this.buttons = this.connect.party.map((member, index) => {
       return this.renderPartyMember(member, index);
     });
     return this.slots;

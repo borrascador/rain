@@ -3,7 +3,6 @@ import Connect from '../../store/Connect';
 import Camera from '../components/Camera';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
-import ActionBar from '../components/ActionBar';
 import PartyWindow from '../components/PartyWindow';
 import { clicked } from '../../store/actions/actions';
 import { FOREST_BLACK, MEDIUM_OPAQUE } from '../colors';
@@ -19,9 +18,8 @@ export default class MapView {
     this.connect = new Connect(this.store);
 
     this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
-    this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+    this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
-    this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
   }
 
@@ -39,7 +37,6 @@ export default class MapView {
       } else {
         this.connect.currentTile && this.camera.update(x, y);
         this.overlay.update(x, y);
-        this.actionBar.update(x, y);
       }
     }
   }
@@ -50,7 +47,6 @@ export default class MapView {
 
     this.connect.currentTile && this.camera.render(delta);
     this.overlay.render(delta);
-    this.actionBar.render(delta);
     this.story.render(delta);
     switch (this.connect.mode) {
       case MODE.PARTY:

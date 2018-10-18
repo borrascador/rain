@@ -5231,10 +5231,6 @@ var _Story = __webpack_require__(80);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _ActionBar = __webpack_require__(81);
-
-var _ActionBar2 = _interopRequireDefault(_ActionBar);
-
 var _PartyWindow = __webpack_require__(82);
 
 var _PartyWindow2 = _interopRequireDefault(_PartyWindow);
@@ -5260,9 +5256,8 @@ var MapView = function () {
     this.connect = new _Connect2.default(this.store);
 
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader);
     this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new _PartyWindow2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
@@ -5283,7 +5278,6 @@ var MapView = function () {
         } else {
           this.connect.currentTile && this.camera.update(x, y);
           this.overlay.update(x, y);
-          this.actionBar.update(x, y);
         }
       }
     }
@@ -5295,7 +5289,6 @@ var MapView = function () {
 
       this.connect.currentTile && this.camera.render(delta);
       this.overlay.render(delta);
-      this.actionBar.render(delta);
       this.story.render(delta);
       switch (this.connect.mode) {
         case _constants.MODE.PARTY:
@@ -5590,14 +5583,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(1);
-
-var _actions = __webpack_require__(0);
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
 var _Food = __webpack_require__(74);
 
 var _Food2 = _interopRequireDefault(_Food);
@@ -5606,21 +5591,23 @@ var _Party = __webpack_require__(75);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(76);
+var _Inventory = __webpack_require__(78);
 
-var _Vehicle2 = _interopRequireDefault(_Vehicle);
+var _Inventory2 = _interopRequireDefault(_Inventory);
+
+var _ActionBar = __webpack_require__(81);
+
+var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
 var _Habitat = __webpack_require__(77);
 
 var _Habitat2 = _interopRequireDefault(_Habitat);
 
-var _Inventory = __webpack_require__(78);
-
-var _Inventory2 = _interopRequireDefault(_Inventory);
-
 var _Items = __webpack_require__(79);
 
 var _Items2 = _interopRequireDefault(_Items);
+
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5637,9 +5624,9 @@ var Overlay = function () {
 
     this.food = new _Food2.default(this.store, this.canvas, this.ctx, this.loader);
     this.party = new _Party2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.vehicle = new _Vehicle2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
     this.habitat = new _Habitat2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader, setDim);
     this.items = new _Items2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
@@ -5648,23 +5635,19 @@ var Overlay = function () {
     value: function update(x, y) {
       this.food.update(x, y);
       this.party.update(x, y);
-      this.vehicle.update(x, y);
-      this.habitat.update(x, y);
       this.inventory.update(x, y);
+      this.actionBar.update(x, y);
+      this.habitat.update(x, y);
       this.items.update(x, y);
     }
   }, {
     key: 'render',
     value: function render(delta) {
-      var slots = [];
-      slots = slots.concat(this.food.render(delta));
-      slots = slots.concat(this.party.render(delta));
-      slots = slots.concat(this.inventory.render(delta));
+      var slots = [].concat(this.food.render(delta), this.party.render(delta), this.inventory.render(delta));
       this.store.dispatch((0, _actions.refreshSlots)(slots));
-      this.items.render(delta);
-
-      this.vehicle.render(delta);
+      this.actionBar.render(delta);
       this.habitat.render(delta);
+      this.items.render(delta);
     }
   }]);
 
@@ -5903,9 +5886,9 @@ var Party = function () {
     this.fontSize = 32;
 
     this.unitWidth = 5;
-    this.unitHeight = this.connect.party.length;
+    this.unitHeight = 1;
     this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
-    this.height = this.connect.party.length * this.size * 3 / 2;
+    this.height = this.unitHeight * this.size + this.gutter * 2;;
 
     this.buttons = this.connect.party.slice();
   }
@@ -5918,15 +5901,6 @@ var Party = function () {
         this.store.dispatch((0, _actions.setPartyTab)(button.id));
         this.store.dispatch((0, _actions.changeMode)(_constants.MODE.PARTY));
       }
-    }
-  }, {
-    key: 'renderWindow',
-    value: function renderWindow(party) {
-      this.xStart = this.gutter;
-      this.yStart = this.gutter;
-      this.height = party.length * this.size * 3 / 2;
-      this.ctx.fillStyle = _colors.MEDIUM_RED;
-      this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
     }
   }, {
     key: 'renderSlot',
@@ -5949,8 +5923,7 @@ var Party = function () {
       var _this = this;
 
       var x = this.xStart + this.gutter;
-      var y = this.yStart + this.gutter + index * (this.size + this.gutter * 2);
-
+      var y = this.yStart + this.gutter + index * this.height;
       var currentTime = Date.now();
       var memberChanges = this.connect.partyChanges.filter(function (item) {
         var elapsed = currentTime - item.timestamp;
@@ -5974,9 +5947,12 @@ var Party = function () {
         this.store.dispatch((0, _actions.removePartyMember)(member.id));
       }
 
+      this.ctx.fillStyle = _colors.MEDIUM_RED;
+      this.ctx.fillRect(x - this.gutter, y - this.gutter, this.width, this.height);
+
       (0, _draw.drawById)(this.ctx, this.iconsXl, member.icon, this.scale, x - this.gutter * 2, y - this.gutter * 2);
 
-      this.renderSlot(member.id, x + this.size + this.gutter * 2, y);
+      this.renderSlot(member.id, x + this.height, y);
 
       [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
         (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 2, x + _this.size * 2 + _this.gutter * 3 + i * (_this.iconSize + 3), y - _this.iconSize / 8);
@@ -5988,8 +5964,8 @@ var Party = function () {
       return Object.assign({}, member, {
         xPos: x - this.gutter,
         yPos: y - this.gutter,
-        width: this.size + this.gutter * 2,
-        height: this.size + this.gutter * 2
+        width: this.height,
+        height: this.height
       });
     }
   }, {
@@ -5997,10 +5973,10 @@ var Party = function () {
     value: function render(delta) {
       var _this2 = this;
 
-      var party = this.connect.party;
-      this.renderWindow(party);
+      this.xStart = this.yStart = this.gutter;
+      this.height = this.size + this.gutter * 2;
       this.slots = [];
-      this.buttons = party.map(function (member, index) {
+      this.buttons = this.connect.party.map(function (member, index) {
         return _this2.renderPartyMember(member, index);
       });
       return this.slots;
@@ -6013,98 +5989,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(4);
-
-var _draw = __webpack_require__(5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Vehicle = function () {
-  function Vehicle(store, canvas, ctx, loader) {
-    _classCallCheck(this, Vehicle);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.iconsXl = loader.getImage('icons-xl');
-
-    this.connect = new _Connect2.default(this.store);
-
-    this.scale = 2;
-    this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
-    this.wrenchSize = this.icons.tileset.tilewidth;
-
-    var vehicle = this.connect.vehicle;
-
-    if (vehicle) {
-      this.buttons = [{ id: vehicle.icon, onClick: function onClick() {
-          return console.log(vehicle.type);
-        } }];
-    } else {
-      this.buttons = [];
-    }
-  }
-
-  _createClass(Vehicle, [{
-    key: 'update',
-    value: function update(x, y) {
-      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      button && button.onClick();
-    }
-  }, {
-    key: 'renderVehicle',
-    value: function renderVehicle(vehicle) {
-      var _this = this;
-
-      this.buttons = this.buttons.map(function (button) {
-        var x = 0;
-        var y = _this.canvas.height - _this.vehicleSize;
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, vehicle.icon, _this.scale, x, y);
-        for (var i = 0; i < vehicle.repair; i++) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, _this.vehicleSize + i * (_this.wrenchSize + 8), _this.canvas.height - (_this.wrenchSize + _this.vehicleSize) / 2);
-        };
-        return Object.assign({}, button, {
-          id: vehicle.icon,
-          xPos: x,
-          yPos: y,
-          width: _this.vehicleSize,
-          height: _this.vehicleSize
-        });
-      });
-    }
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      var vehicle = this.connect.vehicle;
-      vehicle && this.renderVehicle(vehicle);
-    }
-  }]);
-
-  return Vehicle;
-}();
-
-exports.default = Vehicle;
-
-/***/ }),
+/* 76 */,
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6419,7 +6304,9 @@ var Items = function () {
       this.draggingItem = this.dragOrigin = (0, _utils.screenToImageButton)(x, y, this.buttons);
       this.x = x;
       this.y = y;
-      this.draggingItem && this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, null, null));
+      if (this.draggingItem) {
+        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, null, null));
+      }
     }
   }, {
     key: 'renderItemDrag',
@@ -6430,17 +6317,22 @@ var Items = function () {
   }, {
     key: 'endItemDrag',
     value: function endItemDrag(x, y) {
+      var dragging = this.draggingItem;
+      var origin = this.dragOrigin;
       var slot = (0, _utils.screenToImageButton)(x, y, this.connect.slots);
       var match = slot && this.buttons.find(function (button) {
         return button.position === slot.position && button.type === slot.type;
       });
+      // Eventually setItemPosition(item, slot),
+      // so we can read type and position for both in reducer!
+      // currently this only works if there is one stack of each item
       if (slot && match) {
-        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, slot.type, slot.position));
-        this.store.dispatch((0, _actions.setItemPosition)(match.id, this.draggingItem.type, this.draggingItem.position));
+        this.store.dispatch((0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
+        this.store.dispatch((0, _actions.setItemPosition)(match.id, dragging.type, dragging.position));
       } else if (slot) {
-        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, slot.type, slot.position));
+        this.store.dispatch((0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
       } else {
-        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, this.dragOrigin.type, this.dragOrigin.position));
+        this.store.dispatch((0, _actions.setItemPosition)(dragging.id, origin.type, origin.position));
       }
       this.draggingItem = null;
     }
