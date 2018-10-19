@@ -57,6 +57,14 @@ export const setItemPosition = (id, type, position) => ({
   payload: { id, type, position }
 });
 
+// TODO: Enable this and delete above when server-side item positioning is ready
+// NOTE: See Items.js, line 125
+// export const SET_ITEM_POSITION = 'SET_ITEM_POSITION';
+// export const setItemPosition = (start, end) => ({
+//   type: SET_ITEM_POSITION,
+//   payload: { start, end }
+// });
+
 export const REFRESH_SLOTS = 'REFRESH_SLOTS';
 export const refreshSlots = (slots) => ({
   type: REFRESH_SLOTS,

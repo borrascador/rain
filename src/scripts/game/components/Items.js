@@ -56,11 +56,11 @@ export default class Items {
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = this.fontSize + 'px MECC';
     this.ctx.fillStyle = SOLID_WHITE;
-    const slots = this.connect.slots;
     this.buttons = this.connect.inventory.map((button, index) => {
+      // TODO: Delete these two lines after item position has been done server-side
       const type = button.hasOwnProperty('type') ? button.type : SLOTS.INVENTORY;
       const position = button.hasOwnProperty('position') ? button.position : index;
-      const match = slots.find(slot => {
+      const match = this.connect.slots.find(slot => {
         return slot.position === position && slot.type === type;
       });
       if (match) {
@@ -122,22 +122,25 @@ export default class Items {
     const match = slot && this.buttons.find(button => {
       return button.position === slot.position && button.type === slot.type;
     });
-    // Eventually setItemPosition(item, slot),
-    // so we can read type and position for both in reducer!
-    // currently this only works if there is one stack of each item
+    // TODO: Uncomment commented lines and delete current setItemPosition calls
+    // NOTE: Do this after 'type' and 'position' are included in store copies of inventory items
     if (slot && match) {
       this.store.dispatch(
+        // setItemPosition(dragging, slot)
         setItemPosition(dragging.id, slot.type, slot.position)
       );
       this.store.dispatch(
+        // setItemPosition(match, dragging)
         setItemPosition(match.id, dragging.type, dragging.position)
       );
     } else if (slot) {
       this.store.dispatch(
+        // setItemPosition(dragging, slot)
         setItemPosition(dragging.id, slot.type, slot.position)
       );
     } else {
       this.store.dispatch(
+        // setItemPosition(dragging, origin)
         setItemPosition(dragging.id, origin.type, origin.position)
       );
     }

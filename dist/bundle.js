@@ -152,6 +152,14 @@ var setItemPosition = exports.setItemPosition = function setItemPosition(id, typ
   };
 };
 
+// TODO: Enable this and delete above when server-side item positioning is ready
+// NOTE: See Items.js, line 125
+// export const SET_ITEM_POSITION = 'SET_ITEM_POSITION';
+// export const setItemPosition = (start, end) => ({
+//   type: SET_ITEM_POSITION,
+//   payload: { start, end }
+// });
+
 var REFRESH_SLOTS = exports.REFRESH_SLOTS = 'REFRESH_SLOTS';
 var refreshSlots = exports.refreshSlots = function refreshSlots(slots) {
   return {
@@ -1954,6 +1962,18 @@ function setItemPosition(state, action) {
   });
 }
 
+// TODO: Enable this and delete above when server-side item positioning is ready
+// NOTE: See Items.js, line 125
+// export function setItemPosition(state, action) {
+//   const { start, end } = action.payload;
+//   return updateObject(state, {
+//     inventory: updatePositionInArray(
+//       state.inventory, start.type, start.position,
+//       (item) => updateObject(item, { type: end.type, position: end.position })
+//     )
+//   });
+// }
+
 function refreshSlots(state, action) {
   return (0, _utils.updateObject)(state, {
     slots: action.payload.slots
@@ -1996,6 +2016,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateObject = updateObject;
 exports.updateItemInArray = updateItemInArray;
+exports.updatePositionInArray = updatePositionInArray;
 exports.mergeArrays = mergeArrays;
 exports.updateStory = updateStory;
 exports.updateInventoryChanges = updateInventoryChanges;
@@ -2011,6 +2032,13 @@ function updateObject(oldObject, newValues) {
 function updateItemInArray(array, itemId, updateItemCallback) {
   return array.map(function (item) {
     if (item.id !== itemId) return item;
+    return updateItemCallback(item);
+  });
+};
+
+function updatePositionInArray(array, type, position, updateItemCallback) {
+  return array.map(function (item) {
+    if (item.type !== type && item.position !== position) return item;
     return updateItemCallback(item);
   });
 };
@@ -4938,7 +4966,7 @@ var _MapView = __webpack_require__(69);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _TitleView = __webpack_require__(83);
+var _TitleView = __webpack_require__(82);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -5231,7 +5259,7 @@ var _Story = __webpack_require__(80);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _PartyWindow = __webpack_require__(82);
+var _PartyWindow = __webpack_require__(81);
 
 var _PartyWindow2 = _interopRequireDefault(_PartyWindow);
 
@@ -5591,15 +5619,15 @@ var _Party = __webpack_require__(75);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Inventory = __webpack_require__(78);
+var _Inventory = __webpack_require__(76);
 
 var _Inventory2 = _interopRequireDefault(_Inventory);
 
-var _ActionBar = __webpack_require__(81);
+var _ActionBar = __webpack_require__(77);
 
 var _ActionBar2 = _interopRequireDefault(_ActionBar);
 
-var _Habitat = __webpack_require__(77);
+var _Habitat = __webpack_require__(78);
 
 var _Habitat2 = _interopRequireDefault(_Habitat);
 
@@ -5989,71 +6017,7 @@ var Party = function () {
 exports.default = Party;
 
 /***/ }),
-/* 76 */,
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _colors = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Habitat = function () {
-  function Habitat(store, canvas, ctx, loader) {
-    _classCallCheck(this, Habitat);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.connect = new _Connect2.default(this.store);
-    this.fontSize = 24;
-    this.ctx.font = this.fontSize + 'px MECC';
-  }
-
-  _createClass(Habitat, [{
-    key: 'update',
-    value: function update(x, y) {}
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      var _this = this;
-
-      var currentTile = this.connect.currentTile;
-      var text = [];
-      currentTile && currentTile.hunting && text.push(currentTile.hunting);
-      currentTile && currentTile.fishing && text.push(currentTile.fishing);
-      text.forEach(function (line, index) {
-        _this.ctx.fillStyle = _colors.SOLID_WHITE;
-        _this.ctx.font = _this.fontSize + 'px MECC';
-        var lineWidth = _this.ctx.measureText(line).width;
-        var x = _this.canvas.width - lineWidth - _this.fontSize;
-        var y = _this.canvas.height - 1.25 * _this.fontSize * (text.length - index);
-        _this.ctx.fillText(line, x, y);
-      });
-    }
-  }]);
-
-  return Habitat;
-}();
-
-exports.default = Habitat;
-
-/***/ }),
-/* 78 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6156,6 +6120,236 @@ var Inventory = function () {
 exports.default = Inventory;
 
 /***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _draw = __webpack_require__(5);
+
+var _utils = __webpack_require__(4);
+
+var _requests = __webpack_require__(6);
+
+var _actions = __webpack_require__(0);
+
+var _colors = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ActionBar = function () {
+  function ActionBar(store, canvas, ctx, loader) {
+    _classCallCheck(this, ActionBar);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
+    this.connect = new _Connect2.default(this.store);
+
+    this.current = 'main';
+    this.buttons = this.connect.actions[this.current];
+
+    this.scale = 4;
+    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
+    this.barSize = this.buttonSize * 1.5;
+    this.gutter = (this.barSize - this.buttonSize) / 2;
+
+    this.fontSize = 16;
+    this.ctx.font = this.fontSize + 'px MECC';
+  }
+
+  _createClass(ActionBar, [{
+    key: 'update',
+    value: function update(x, y) {
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      if (button) {
+        if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
+          this.current = button.target;
+        } else if (button.tag) {
+          switch (button.tag) {
+            case 'seed':
+              this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
+              this.current = 'main';
+              break;
+            case 'harvest':
+              var currentTile = this.connect.currentTile;
+              var currentCrop = currentTile && currentTile.crops.find(function (crop) {
+                return crop.name === button.name;
+              });
+              currentCrop && currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
+              this.current = 'main';
+              break;
+            case 'hunting':
+              this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
+              this.current = 'main';
+              break;
+            case 'fishing':
+              this.store.dispatch((0, _requests.sendEvent)('fish', button.id));
+              this.current = 'main';
+              break;
+            case 'add_food':
+              this.store.dispatch((0, _requests.sendEvent)('add_food', button.id));
+              this.current = 'main'; // COMBAK 'eating' instead?
+              break;
+            case 'remove_food':
+              this.store.dispatch((0, _requests.sendEvent)('remove_food', button.id));
+              this.current = 'main'; // COMBAK 'eating' instead?
+              break;
+            default:
+              this.store.dispatch((0, _requests.sendEvent)(button.tag, button.id)); // DEBUG
+              break;
+          }
+        }
+      }
+    }
+  }, {
+    key: 'renderBar',
+    value: function renderBar() {
+      this.ctx.textAlign = 'alphabetical';
+      this.ctx.font = this.fontSize + 'px MECC';
+      var titleWidth = this.ctx.measureText(this.current).width;
+
+      this.ctx.fillStyle = _colors.MEDIUM_RED;
+      this.ctx.fillRect((this.canvas.width - this.barWidth) / 2, this.canvas.height - this.barSize, this.barWidth, this.barSize);
+
+      this.ctx.fillStyle = _colors.MEDIUM_RED;
+      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - 8, this.canvas.height - (this.barSize + this.fontSize + 4), titleWidth + 16, this.fontSize + 4);
+
+      this.ctx.fillStyle = _colors.SOLID_WHITE;
+      this.ctx.fillText(this.current, (this.canvas.width - titleWidth) / 2, this.canvas.height - this.barSize);
+    }
+  }, {
+    key: 'renderButtons',
+    value: function renderButtons() {
+      var _this = this;
+
+      var buttonX = (this.canvas.width - this.barWidth) / 2 + this.gutter;
+      var buttonY = this.canvas.height - this.barSize + this.gutter;
+      this.buttons = this.buttons.map(function (button, index) {
+        var x = buttonX + _this.barSize * index;
+        if (button.tileset === 'icons') {
+          (0, _draw.drawById)(_this.ctx, _this.icons, button.id, _this.scale, x, buttonY);
+        } else if (button.tileset === 'items') {
+          (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, buttonY);
+        }
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: buttonY,
+          width: _this.buttonSize,
+          height: _this.buttonSize
+        });
+      });
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover() {
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
+
+      if (xMouse && yMouse) {
+        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
+        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      if (!this.connect.actions[this.current]) {
+        this.current = 'main';
+      }
+      this.buttons = this.connect.actions[this.current];
+      this.barWidth = this.barSize * this.buttons.length;
+      this.buttons.length > 0 && this.renderBar();
+      this.renderButtons();
+      this.renderHover();
+    }
+  }]);
+
+  return ActionBar;
+}();
+
+exports.default = ActionBar;
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _colors = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Habitat = function () {
+  function Habitat(store, canvas, ctx, loader) {
+    _classCallCheck(this, Habitat);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.connect = new _Connect2.default(this.store);
+    this.fontSize = 24;
+    this.ctx.font = this.fontSize + 'px MECC';
+  }
+
+  _createClass(Habitat, [{
+    key: 'update',
+    value: function update(x, y) {}
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      var _this = this;
+
+      var currentTile = this.connect.currentTile;
+      var text = [];
+      currentTile && currentTile.hunting && text.push(currentTile.hunting);
+      currentTile && currentTile.fishing && text.push(currentTile.fishing);
+      text.forEach(function (line, index) {
+        _this.ctx.fillStyle = _colors.SOLID_WHITE;
+        _this.ctx.font = _this.fontSize + 'px MECC';
+        var lineWidth = _this.ctx.measureText(line).width;
+        var x = _this.canvas.width - lineWidth - _this.fontSize;
+        var y = _this.canvas.height - 1.25 * _this.fontSize * (text.length - index);
+        _this.ctx.fillText(line, x, y);
+      });
+    }
+  }]);
+
+  return Habitat;
+}();
+
+exports.default = Habitat;
+
+/***/ }),
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6242,11 +6436,11 @@ var Items = function () {
       this.ctx.textAlign = 'alphabetical';
       this.ctx.font = this.fontSize + 'px MECC';
       this.ctx.fillStyle = _colors.SOLID_WHITE;
-      var slots = this.connect.slots;
       this.buttons = this.connect.inventory.map(function (button, index) {
+        // TODO: Delete these two lines after item position has been done server-side
         var type = button.hasOwnProperty('type') ? button.type : _constants.SLOTS.INVENTORY;
         var position = button.hasOwnProperty('position') ? button.position : index;
-        var match = slots.find(function (slot) {
+        var match = _this.connect.slots.find(function (slot) {
           return slot.position === position && slot.type === type;
         });
         if (match) {
@@ -6323,16 +6517,23 @@ var Items = function () {
       var match = slot && this.buttons.find(function (button) {
         return button.position === slot.position && button.type === slot.type;
       });
-      // Eventually setItemPosition(item, slot),
-      // so we can read type and position for both in reducer!
-      // currently this only works if there is one stack of each item
+      // TODO: Uncomment commented lines and delete current setItemPosition calls
+      // NOTE: Do this after 'type' and 'position' are included in store copies of inventory items
       if (slot && match) {
-        this.store.dispatch((0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
-        this.store.dispatch((0, _actions.setItemPosition)(match.id, dragging.type, dragging.position));
+        this.store.dispatch(
+        // setItemPosition(dragging, slot)
+        (0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
+        this.store.dispatch(
+        // setItemPosition(match, dragging)
+        (0, _actions.setItemPosition)(match.id, dragging.type, dragging.position));
       } else if (slot) {
-        this.store.dispatch((0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
+        this.store.dispatch(
+        // setItemPosition(dragging, slot)
+        (0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
       } else {
-        this.store.dispatch((0, _actions.setItemPosition)(dragging.id, origin.type, origin.position));
+        this.store.dispatch(
+        // setItemPosition(dragging, origin)
+        (0, _actions.setItemPosition)(dragging.id, origin.type, origin.position));
       }
       this.draggingItem = null;
     }
@@ -6586,173 +6787,6 @@ var _draw = __webpack_require__(5);
 
 var _utils = __webpack_require__(4);
 
-var _requests = __webpack_require__(6);
-
-var _actions = __webpack_require__(0);
-
-var _colors = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ActionBar = function () {
-  function ActionBar(store, canvas, ctx, loader) {
-    _classCallCheck(this, ActionBar);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
-    this.connect = new _Connect2.default(this.store);
-
-    this.current = 'main';
-    this.buttons = this.connect.actions[this.current];
-
-    this.scale = 4;
-    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
-    this.barSize = this.buttonSize * 1.5;
-    this.gutter = (this.barSize - this.buttonSize) / 2;
-
-    this.fontSize = 16;
-    this.ctx.font = this.fontSize + 'px MECC';
-  }
-
-  _createClass(ActionBar, [{
-    key: 'update',
-    value: function update(x, y) {
-      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      if (button) {
-        if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
-          this.current = button.target;
-        } else if (button.tag) {
-          switch (button.tag) {
-            case 'seed':
-              this.store.dispatch((0, _requests.sendEvent)('plant', button.id));
-              this.current = 'main';
-              break;
-            case 'harvest':
-              var currentTile = this.connect.currentTile;
-              var currentCrop = currentTile && currentTile.crops.find(function (crop) {
-                return crop.name === button.name;
-              });
-              currentCrop && currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
-              this.current = 'main';
-              break;
-            case 'hunting':
-              this.store.dispatch((0, _requests.sendEvent)('hunt', button.id));
-              this.current = 'main';
-              break;
-            case 'fishing':
-              this.store.dispatch((0, _requests.sendEvent)('fish', button.id));
-              this.current = 'main';
-              break;
-            case 'add_food':
-              this.store.dispatch((0, _requests.sendEvent)('add_food', button.id));
-              this.current = 'main'; // COMBAK 'eating' instead?
-              break;
-            case 'remove_food':
-              this.store.dispatch((0, _requests.sendEvent)('remove_food', button.id));
-              this.current = 'main'; // COMBAK 'eating' instead?
-              break;
-            default:
-              this.store.dispatch((0, _requests.sendEvent)(button.tag, button.id)); // DEBUG
-              break;
-          }
-        }
-      }
-    }
-  }, {
-    key: 'renderBar',
-    value: function renderBar() {
-      this.ctx.textAlign = 'alphabetical';
-      this.ctx.font = this.fontSize + 'px MECC';
-      var titleWidth = this.ctx.measureText(this.current).width;
-
-      this.ctx.fillStyle = _colors.MEDIUM_RED;
-      this.ctx.fillRect((this.canvas.width - this.barWidth) / 2, this.canvas.height - this.barSize, this.barWidth, this.barSize);
-
-      this.ctx.fillStyle = _colors.MEDIUM_RED;
-      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - 8, this.canvas.height - (this.barSize + this.fontSize + 4), titleWidth + 16, this.fontSize + 4);
-
-      this.ctx.fillStyle = _colors.SOLID_WHITE;
-      this.ctx.fillText(this.current, (this.canvas.width - titleWidth) / 2, this.canvas.height - this.barSize);
-    }
-  }, {
-    key: 'renderButtons',
-    value: function renderButtons() {
-      var _this = this;
-
-      var buttonX = (this.canvas.width - this.barWidth) / 2 + this.gutter;
-      var buttonY = this.canvas.height - this.barSize + this.gutter;
-      this.buttons = this.buttons.map(function (button, index) {
-        var x = buttonX + _this.barSize * index;
-        if (button.tileset === 'icons') {
-          (0, _draw.drawById)(_this.ctx, _this.icons, button.id, _this.scale, x, buttonY);
-        } else if (button.tileset === 'items') {
-          (0, _draw.drawById)(_this.ctx, _this.items, button.id, _this.scale, x, buttonY);
-        }
-        return Object.assign({}, button, {
-          xPos: x,
-          yPos: buttonY,
-          width: _this.buttonSize,
-          height: _this.buttonSize
-        });
-      });
-    }
-  }, {
-    key: 'renderHover',
-    value: function renderHover() {
-      var _connect$mouse = this.connect.mouse,
-          xMouse = _connect$mouse.xMouse,
-          yMouse = _connect$mouse.yMouse;
-
-      if (xMouse && yMouse) {
-        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
-        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      if (!this.connect.actions[this.current]) {
-        this.current = 'main';
-      }
-      this.buttons = this.connect.actions[this.current];
-      this.barWidth = this.barSize * this.buttons.length;
-      this.buttons.length > 0 && this.renderBar();
-      this.renderButtons();
-      this.renderHover();
-    }
-  }]);
-
-  return ActionBar;
-}();
-
-exports.default = ActionBar;
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _draw = __webpack_require__(5);
-
-var _utils = __webpack_require__(4);
-
 var _actions = __webpack_require__(0);
 
 var _constants = __webpack_require__(1);
@@ -6963,7 +6997,7 @@ var PartyWindow = function () {
 exports.default = PartyWindow;
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6977,9 +7011,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(5);
 
-var _register = __webpack_require__(84);
+var _register = __webpack_require__(83);
 
-var _login = __webpack_require__(85);
+var _login = __webpack_require__(84);
 
 var _utils = __webpack_require__(4);
 
@@ -7099,7 +7133,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7168,7 +7202,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

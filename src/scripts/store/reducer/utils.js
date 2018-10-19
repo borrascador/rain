@@ -11,6 +11,13 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
   });
 };
 
+export function updatePositionInArray(array, type, position, updateItemCallback) {
+  return array.map(item => {
+    if (item.type !== type && item.position !== position) return item
+    return updateItemCallback(item);
+  });
+};
+
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
