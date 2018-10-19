@@ -3,6 +3,7 @@ import Party from './Party';
 import Inventory from './Inventory';
 import ActionBar from '../components/ActionBar';
 import Habitat from './Habitat';
+import Zoom from './Zoom';
 import Items from './Items';
 import { refreshSlots } from '../../store/actions/actions';
 
@@ -18,6 +19,7 @@ export default class Overlay {
     this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader);
     this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
     this.habitat = new Habitat(this.store, this.canvas, this.ctx, this.loader);
+    this.zoom = new Zoom(this.store, this.canvas, this.ctx, this.loader);
     this.items = new Items(this.store, this.canvas, this.ctx, this.loader);
   }
 
@@ -27,6 +29,7 @@ export default class Overlay {
     this.inventory.update(x, y);
     this.actionBar.update(x, y);
     this.habitat.update(x, y);
+    this.zoom.update(x, y);
     this.items.update(x, y);
   }
 
@@ -39,6 +42,7 @@ export default class Overlay {
     this.store.dispatch(refreshSlots(slots));
     this.actionBar.render(delta);
     this.habitat.render(delta);
+    this.zoom.render(delta);
     this.items.render(delta);
   }
 }
