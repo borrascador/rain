@@ -7,6 +7,7 @@ export const LAYER = {
   MIDDLE: "MIDDLE",
   TOP: "TOP",
 };
+
 export const MODE = {
   MAP: "MAP",
   STORY: "STORY",
@@ -14,6 +15,13 @@ export const MODE = {
   INVENTORY: "INVENTORY",
   TITLE: "TITLE"
 };
+
+export const SLOTS = {
+  INVENTORY: 'INVENTORY',
+  EATING: 'EATING',
+  PARTY: 'PARTY'
+};
+
 export const VEHICLE = {
   JEEP: "jeep",
   CANOE: "canoe",

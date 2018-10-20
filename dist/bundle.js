@@ -145,10 +145,26 @@ var setPartyTab = exports.setPartyTab = function setPartyTab(partyTab) {
 };
 
 var SET_ITEM_POSITION = exports.SET_ITEM_POSITION = 'SET_ITEM_POSITION';
-var setItemPosition = exports.setItemPosition = function setItemPosition(id, position) {
+var setItemPosition = exports.setItemPosition = function setItemPosition(id, type, position) {
   return {
     type: SET_ITEM_POSITION,
-    payload: { id: id, position: position }
+    payload: { id: id, type: type, position: position }
+  };
+};
+
+// TODO: Enable this and delete above when server-side item positioning is ready
+// NOTE: See Items.js, line 125
+// export const SET_ITEM_POSITION = 'SET_ITEM_POSITION';
+// export const setItemPosition = (start, end) => ({
+//   type: SET_ITEM_POSITION,
+//   payload: { start, end }
+// });
+
+var REFRESH_SLOTS = exports.REFRESH_SLOTS = 'REFRESH_SLOTS';
+var refreshSlots = exports.refreshSlots = function refreshSlots(slots) {
+  return {
+    type: REFRESH_SLOTS,
+    payload: { slots: slots }
   };
 };
 
@@ -257,6 +273,7 @@ var LAYER = exports.LAYER = {
   MIDDLE: "MIDDLE",
   TOP: "TOP"
 };
+
 var MODE = exports.MODE = {
   MAP: "MAP",
   STORY: "STORY",
@@ -264,6 +281,13 @@ var MODE = exports.MODE = {
   INVENTORY: "INVENTORY",
   TITLE: "TITLE"
 };
+
+var SLOTS = exports.SLOTS = {
+  INVENTORY: 'INVENTORY',
+  EATING: 'EATING',
+  PARTY: 'PARTY'
+};
+
 var VEHICLE = exports.VEHICLE = {
   JEEP: "jeep",
   CANOE: "canoe"
@@ -436,7 +460,50 @@ var Connect = function () {
   }, {
     key: 'inventory',
     get: function get() {
-      return this.store.getState().inventory;
+      // TODO Move logic to reducer
+      var _store$getState8 = this.store.getState(),
+          eating = _store$getState8.eating,
+          inventory = _store$getState8.inventory;
+
+      return inventory.map(function (item) {
+        var match = eating.find(function (food) {
+          return food.id === item.id;
+        });
+        return match ? Object.assign({}, item, { portion: match.portion }) : item;
+      });
+    }
+  }, {
+    key: 'eating',
+    get: function get() {
+      // TODO Move logic to reducer
+      var _store$getState9 = this.store.getState(),
+          eating = _store$getState9.eating,
+          inventory = _store$getState9.inventory;
+
+      return eating.map(function (food) {
+        var _inventory$find = inventory.find(function (item) {
+          return item.id === food.id;
+        }),
+            name = _inventory$find.name,
+            quantity = _inventory$find.quantity;
+
+        return Object.assign({}, food, { name: name, quantity: quantity });
+      });
+    }
+  }, {
+    key: 'slots',
+    get: function get() {
+      return this.store.getState().slots;
+    }
+  }, {
+    key: 'dragCurrent',
+    get: function get() {
+      return this.store.getState().dragCurrent;
+    }
+  }, {
+    key: 'dragOrigin',
+    get: function get() {
+      return this.store.getState().dragOrigin;
     }
   }, {
     key: 'party',
@@ -467,6 +534,55 @@ exports.default = Connect;
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.alphaGreen = alphaGreen;
+exports.alphaYellow = alphaYellow;
+exports.alphaRed = alphaRed;
+exports.alphaDarkRed = alphaDarkRed;
+var BRIGHT_RED = exports.BRIGHT_RED = "#F00";
+var DISCONNECT_RED = exports.DISCONNECT_RED = "#F36";
+var MEDIUM_RED = exports.MEDIUM_RED = "rgba(100, 11, 33, 0.9)";
+var DARK_RED = exports.DARK_RED = "rgba(33, 5, 11, 0.9)";
+
+var PALE_GREEN = exports.PALE_GREEN = "#6F6";
+var BRIGHT_GREEN = exports.BRIGHT_GREEN = "#0F0";
+var CONNECT_GREEN = exports.CONNECT_GREEN = "#3F6";
+var HOVER_GREEN = exports.HOVER_GREEN = "rgba(10, 100, 15, 0.95)";
+
+var BRIGHT_YELLOW = exports.BRIGHT_YELLOW = "#FF0";
+
+var SOLID_WHITE = exports.SOLID_WHITE = "#FFF";
+
+var FOREST_BLACK = exports.FOREST_BLACK = "#010";
+
+var MEDIUM_OPAQUE = exports.MEDIUM_OPAQUE = "rgba(0, 0, 0, 0.6)";
+var DARK_OPAQUE = exports.DARK_OPAQUE = "rgba(0, 0, 0, 0.8)";
+
+function alphaGreen(alpha) {
+  return "rgba(0, 256, 0, " + alpha + ")";
+}
+
+function alphaYellow(alpha) {
+  return "rgba(256, 256, 0, " + alpha + ")";
+}
+
+function alphaRed(alpha) {
+  return "rgba(256, 0, 0, " + alpha + ")";
+}
+
+function alphaDarkRed(alpha) {
+  return "rgba(128, 0, 0, " + alpha + ")";
+}
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -520,7 +636,7 @@ var getItemById = exports.getItemById = function getItemById(array, id) {
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -545,7 +661,7 @@ exports.drawDurability = drawDurability;
 exports.slideFadeText = slideFadeText;
 exports.fadeText = fadeText;
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -796,45 +912,6 @@ function fadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
 }
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.alphaGreen = alphaGreen;
-exports.alphaRed = alphaRed;
-var BRIGHT_RED = exports.BRIGHT_RED = "#F00";
-var DISCONNECT_RED = exports.DISCONNECT_RED = "#F36";
-var MEDIUM_RED = exports.MEDIUM_RED = "rgba(100, 11, 33, 0.9)";
-var DARK_RED = exports.DARK_RED = "rgba(33, 5, 11, 0.9)";
-
-var PALE_GREEN = exports.PALE_GREEN = "#6F6";
-var BRIGHT_GREEN = exports.BRIGHT_GREEN = "#0F0";
-var CONNECT_GREEN = exports.CONNECT_GREEN = "#3F6";
-var HOVER_GREEN = exports.HOVER_GREEN = "rgba(10, 100, 15, 0.95)";
-
-var BRIGHT_YELLOW = exports.BRIGHT_YELLOW = "#FF0";
-
-var SOLID_WHITE = exports.SOLID_WHITE = "#FFF";
-
-var FOREST_BLACK = exports.FOREST_BLACK = "#010";
-
-var MEDIUM_OPAQUE = exports.MEDIUM_OPAQUE = "rgba(0, 0, 0, 0.6)";
-var DARK_OPAQUE = exports.DARK_OPAQUE = "rgba(0, 0, 0, 0.8)";
-
-function alphaGreen(alpha) {
-  return "rgba(0, 256, 0, " + alpha + ")";
-}
-
-function alphaRed(alpha) {
-  return "rgba(256, 0, 0, " + alpha + ")";
-}
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1001,6 +1078,33 @@ function makeButtons() {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1047,33 +1151,6 @@ var Animation = function () {
 exports.default = Animation;
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1116,7 +1193,7 @@ var _actions = __webpack_require__(0);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function configureStore() {
-	var BLACKLIST = [_actions.KEYDOWN, _actions.KEYUP, _actions.MOUSEDOWN, _actions.MOUSEMOVE, _actions.MOUSEUP, _actions.CLICKED];
+	var BLACKLIST = [_actions.KEYDOWN, _actions.KEYUP, _actions.MOUSEDOWN, _actions.MOUSEMOVE, _actions.MOUSEUP, _actions.CLICKED, _actions.REFRESH_SLOTS];
 	var loggerMiddleware = (0, _reduxLogger.createLogger)({
 		predicate: function predicate(getState, action) {
 			return !BLACKLIST.includes(action.type);
@@ -1738,6 +1815,7 @@ exports.zoomIn = zoomIn;
 exports.zoomOut = zoomOut;
 exports.setPartyTab = setPartyTab;
 exports.setItemPosition = setItemPosition;
+exports.refreshSlots = refreshSlots;
 exports.changeMode = changeMode;
 exports.closeStory = closeStory;
 exports.removePartyMember = removePartyMember;
@@ -1876,8 +1954,29 @@ function setPartyTab(state, action) {
 function setItemPosition(state, action) {
   return (0, _utils.updateObject)(state, {
     inventory: (0, _utils.updateItemInArray)(state.inventory, action.payload.id, function (item) {
-      return (0, _utils.updateObject)(item, { position: action.payload.position });
+      return (0, _utils.updateObject)(item, {
+        type: action.payload.type,
+        position: action.payload.position
+      });
     })
+  });
+}
+
+// TODO: Enable this and delete above when server-side item positioning is ready
+// NOTE: See Items.js, line 125
+// export function setItemPosition(state, action) {
+//   const { start, end } = action.payload;
+//   return updateObject(state, {
+//     inventory: updatePositionInArray(
+//       state.inventory, start.type, start.position,
+//       (item) => updateObject(item, { type: end.type, position: end.position })
+//     )
+//   });
+// }
+
+function refreshSlots(state, action) {
+  return (0, _utils.updateObject)(state, {
+    slots: action.payload.slots
   });
 }
 
@@ -1917,6 +2016,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.updateObject = updateObject;
 exports.updateItemInArray = updateItemInArray;
+exports.updatePositionInArray = updatePositionInArray;
 exports.mergeArrays = mergeArrays;
 exports.updateStory = updateStory;
 exports.updateInventoryChanges = updateInventoryChanges;
@@ -1932,6 +2032,13 @@ function updateObject(oldObject, newValues) {
 function updateItemInArray(array, itemId, updateItemCallback) {
   return array.map(function (item) {
     if (item.id !== itemId) return item;
+    return updateItemCallback(item);
+  });
+};
+
+function updatePositionInArray(array, type, position, updateItemCallback) {
+  return array.map(function (item) {
+    if (item.type !== type && item.position !== position) return item;
     return updateItemCallback(item);
   });
 };
@@ -2320,7 +2427,10 @@ var uiState = {
   mode: _constants.MODE.TITLE,
   partyTab: 0,
   actions: { 'main': [] },
-  zoom: 3
+  zoom: 3,
+  dragCurrent: null,
+  dragOrigin: null,
+  slots: {}
 };
 
 var gameState = {
@@ -3108,7 +3218,7 @@ thunk.withExtraArgument = createThunkMiddleware;
 
 /* WEBPACK VAR INJECTION */(function(global) {!function(e,t){ true?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(e.reduxLogger=e.reduxLogger||{})}(this,function(e){"use strict";function t(e,t){e.super_=t,e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}})}function r(e,t){Object.defineProperty(this,"kind",{value:e,enumerable:!0}),t&&t.length&&Object.defineProperty(this,"path",{value:t,enumerable:!0})}function n(e,t,r){n.super_.call(this,"E",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0}),Object.defineProperty(this,"rhs",{value:r,enumerable:!0})}function o(e,t){o.super_.call(this,"N",e),Object.defineProperty(this,"rhs",{value:t,enumerable:!0})}function i(e,t){i.super_.call(this,"D",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0})}function a(e,t,r){a.super_.call(this,"A",e),Object.defineProperty(this,"index",{value:t,enumerable:!0}),Object.defineProperty(this,"item",{value:r,enumerable:!0})}function f(e,t,r){var n=e.slice((r||t)+1||e.length);return e.length=t<0?e.length+t:t,e.push.apply(e,n),e}function u(e){var t="undefined"==typeof e?"undefined":N(e);return"object"!==t?t:e===Math?"math":null===e?"null":Array.isArray(e)?"array":"[object Date]"===Object.prototype.toString.call(e)?"date":"function"==typeof e.toString&&/^\/.*\//.test(e.toString())?"regexp":"object"}function l(e,t,r,c,s,d,p){s=s||[],p=p||[];var g=s.slice(0);if("undefined"!=typeof d){if(c){if("function"==typeof c&&c(g,d))return;if("object"===("undefined"==typeof c?"undefined":N(c))){if(c.prefilter&&c.prefilter(g,d))return;if(c.normalize){var h=c.normalize(g,d,e,t);h&&(e=h[0],t=h[1])}}}g.push(d)}"regexp"===u(e)&&"regexp"===u(t)&&(e=e.toString(),t=t.toString());var y="undefined"==typeof e?"undefined":N(e),v="undefined"==typeof t?"undefined":N(t),b="undefined"!==y||p&&p[p.length-1].lhs&&p[p.length-1].lhs.hasOwnProperty(d),m="undefined"!==v||p&&p[p.length-1].rhs&&p[p.length-1].rhs.hasOwnProperty(d);if(!b&&m)r(new o(g,t));else if(!m&&b)r(new i(g,e));else if(u(e)!==u(t))r(new n(g,e,t));else if("date"===u(e)&&e-t!==0)r(new n(g,e,t));else if("object"===y&&null!==e&&null!==t)if(p.filter(function(t){return t.lhs===e}).length)e!==t&&r(new n(g,e,t));else{if(p.push({lhs:e,rhs:t}),Array.isArray(e)){var w;e.length;for(w=0;w<e.length;w++)w>=t.length?r(new a(g,w,new i(void 0,e[w]))):l(e[w],t[w],r,c,g,w,p);for(;w<t.length;)r(new a(g,w,new o(void 0,t[w++])))}else{var x=Object.keys(e),S=Object.keys(t);x.forEach(function(n,o){var i=S.indexOf(n);i>=0?(l(e[n],t[n],r,c,g,n,p),S=f(S,i)):l(e[n],void 0,r,c,g,n,p)}),S.forEach(function(e){l(void 0,t[e],r,c,g,e,p)})}p.length=p.length-1}else e!==t&&("number"===y&&isNaN(e)&&isNaN(t)||r(new n(g,e,t)))}function c(e,t,r,n){return n=n||[],l(e,t,function(e){e&&n.push(e)},r),n.length?n:void 0}function s(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":s(o[r.path[n]],r.index,r.item);break;case"D":delete o[r.path[n]];break;case"E":case"N":o[r.path[n]]=r.rhs}}else switch(r.kind){case"A":s(e[t],r.index,r.item);break;case"D":e=f(e,t);break;case"E":case"N":e[t]=r.rhs}return e}function d(e,t,r){if(e&&t&&r&&r.kind){for(var n=e,o=-1,i=r.path?r.path.length-1:0;++o<i;)"undefined"==typeof n[r.path[o]]&&(n[r.path[o]]="number"==typeof r.path[o]?[]:{}),n=n[r.path[o]];switch(r.kind){case"A":s(r.path?n[r.path[o]]:n,r.index,r.item);break;case"D":delete n[r.path[o]];break;case"E":case"N":n[r.path[o]]=r.rhs}}}function p(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":p(o[r.path[n]],r.index,r.item);break;case"D":o[r.path[n]]=r.lhs;break;case"E":o[r.path[n]]=r.lhs;break;case"N":delete o[r.path[n]]}}else switch(r.kind){case"A":p(e[t],r.index,r.item);break;case"D":e[t]=r.lhs;break;case"E":e[t]=r.lhs;break;case"N":e=f(e,t)}return e}function g(e,t,r){if(e&&t&&r&&r.kind){var n,o,i=e;for(o=r.path.length-1,n=0;n<o;n++)"undefined"==typeof i[r.path[n]]&&(i[r.path[n]]={}),i=i[r.path[n]];switch(r.kind){case"A":p(i[r.path[n]],r.index,r.item);break;case"D":i[r.path[n]]=r.lhs;break;case"E":i[r.path[n]]=r.lhs;break;case"N":delete i[r.path[n]]}}}function h(e,t,r){if(e&&t){var n=function(n){r&&!r(e,t,n)||d(e,t,n)};l(e,t,n)}}function y(e){return"color: "+F[e].color+"; font-weight: bold"}function v(e){var t=e.kind,r=e.path,n=e.lhs,o=e.rhs,i=e.index,a=e.item;switch(t){case"E":return[r.join("."),n,"→",o];case"N":return[r.join("."),o];case"D":return[r.join(".")];case"A":return[r.join(".")+"["+i+"]",a];default:return[]}}function b(e,t,r,n){var o=c(e,t);try{n?r.groupCollapsed("diff"):r.group("diff")}catch(e){r.log("diff")}o?o.forEach(function(e){var t=e.kind,n=v(e);r.log.apply(r,["%c "+F[t].text,y(t)].concat(P(n)))}):r.log("—— no diff ——");try{r.groupEnd()}catch(e){r.log("—— diff end —— ")}}function m(e,t,r,n){switch("undefined"==typeof e?"undefined":N(e)){case"object":return"function"==typeof e[n]?e[n].apply(e,P(r)):e[n];case"function":return e(t);default:return e}}function w(e){var t=e.timestamp,r=e.duration;return function(e,n,o){var i=["action"];return i.push("%c"+String(e.type)),t&&i.push("%c@ "+n),r&&i.push("%c(in "+o.toFixed(2)+" ms)"),i.join(" ")}}function x(e,t){var r=t.logger,n=t.actionTransformer,o=t.titleFormatter,i=void 0===o?w(t):o,a=t.collapsed,f=t.colors,u=t.level,l=t.diff,c="undefined"==typeof t.titleFormatter;e.forEach(function(o,s){var d=o.started,p=o.startedTime,g=o.action,h=o.prevState,y=o.error,v=o.took,w=o.nextState,x=e[s+1];x&&(w=x.prevState,v=x.started-d);var S=n(g),k="function"==typeof a?a(function(){return w},g,o):a,j=D(p),E=f.title?"color: "+f.title(S)+";":"",A=["color: gray; font-weight: lighter;"];A.push(E),t.timestamp&&A.push("color: gray; font-weight: lighter;"),t.duration&&A.push("color: gray; font-weight: lighter;");var O=i(S,j,v);try{k?f.title&&c?r.groupCollapsed.apply(r,["%c "+O].concat(A)):r.groupCollapsed(O):f.title&&c?r.group.apply(r,["%c "+O].concat(A)):r.group(O)}catch(e){r.log(O)}var N=m(u,S,[h],"prevState"),P=m(u,S,[S],"action"),C=m(u,S,[y,h],"error"),F=m(u,S,[w],"nextState");if(N)if(f.prevState){var L="color: "+f.prevState(h)+"; font-weight: bold";r[N]("%c prev state",L,h)}else r[N]("prev state",h);if(P)if(f.action){var T="color: "+f.action(S)+"; font-weight: bold";r[P]("%c action    ",T,S)}else r[P]("action    ",S);if(y&&C)if(f.error){var M="color: "+f.error(y,h)+"; font-weight: bold;";r[C]("%c error     ",M,y)}else r[C]("error     ",y);if(F)if(f.nextState){var _="color: "+f.nextState(w)+"; font-weight: bold";r[F]("%c next state",_,w)}else r[F]("next state",w);l&&b(h,w,r,k);try{r.groupEnd()}catch(e){r.log("—— log end ——")}})}function S(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=Object.assign({},L,e),r=t.logger,n=t.stateTransformer,o=t.errorTransformer,i=t.predicate,a=t.logErrors,f=t.diffPredicate;if("undefined"==typeof r)return function(){return function(e){return function(t){return e(t)}}};if(e.getState&&e.dispatch)return console.error("[redux-logger] redux-logger not installed. Make sure to pass logger instance as middleware:\n// Logger with default options\nimport { logger } from 'redux-logger'\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n// Or you can create your own logger with custom options http://bit.ly/redux-logger-options\nimport createLogger from 'redux-logger'\nconst logger = createLogger({\n  // ...options\n});\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n"),function(){return function(e){return function(t){return e(t)}}};var u=[];return function(e){var r=e.getState;return function(e){return function(l){if("function"==typeof i&&!i(r,l))return e(l);var c={};u.push(c),c.started=O.now(),c.startedTime=new Date,c.prevState=n(r()),c.action=l;var s=void 0;if(a)try{s=e(l)}catch(e){c.error=o(e)}else s=e(l);c.took=O.now()-c.started,c.nextState=n(r());var d=t.diff&&"function"==typeof f?f(r,l):t.diff;if(x(u,Object.assign({},t,{diff:d})),u.length=0,c.error)throw c.error;return s}}}}var k,j,E=function(e,t){return new Array(t+1).join(e)},A=function(e,t){return E("0",t-e.toString().length)+e},D=function(e){return A(e.getHours(),2)+":"+A(e.getMinutes(),2)+":"+A(e.getSeconds(),2)+"."+A(e.getMilliseconds(),3)},O="undefined"!=typeof performance&&null!==performance&&"function"==typeof performance.now?performance:Date,N="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},P=function(e){if(Array.isArray(e)){for(var t=0,r=Array(e.length);t<e.length;t++)r[t]=e[t];return r}return Array.from(e)},C=[];k="object"===("undefined"==typeof global?"undefined":N(global))&&global?global:"undefined"!=typeof window?window:{},j=k.DeepDiff,j&&C.push(function(){"undefined"!=typeof j&&k.DeepDiff===c&&(k.DeepDiff=j,j=void 0)}),t(n,r),t(o,r),t(i,r),t(a,r),Object.defineProperties(c,{diff:{value:c,enumerable:!0},observableDiff:{value:l,enumerable:!0},applyDiff:{value:h,enumerable:!0},applyChange:{value:d,enumerable:!0},revertChange:{value:g,enumerable:!0},isConflict:{value:function(){return"undefined"!=typeof j},enumerable:!0},noConflict:{value:function(){return C&&(C.forEach(function(e){e()}),C=null),c},enumerable:!0}});var F={E:{color:"#2196F3",text:"CHANGED:"},N:{color:"#4CAF50",text:"ADDED:"},D:{color:"#F44336",text:"DELETED:"},A:{color:"#2196F3",text:"ARRAY:"}},L={level:"log",logger:console,logErrors:!0,collapsed:void 0,predicate:void 0,duration:!1,timestamp:!0,stateTransformer:function(e){return e},actionTransformer:function(e){return e},errorTransformer:function(e){return e},colors:{title:function(){return"inherit"},prevState:function(){return"#9E9E9E"},action:function(){return"#03A9F4"},nextState:function(){return"#4CAF50"},error:function(){return"#F20404"}},diff:!1,diffPredicate:void 0,transformer:void 0},T=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=e.dispatch,r=e.getState;return"function"==typeof t||"function"==typeof r?S()({dispatch:t,getState:r}):void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n")};e.defaults=L,e.createLogger=S,e.logger=T,e.default=T,Object.defineProperty(e,"__esModule",{value:!0})});
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 32 */
@@ -3211,7 +3321,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = (freeGlobal);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8)))
 
 /***/ }),
 /* 36 */
@@ -3394,7 +3504,7 @@ if (typeof self !== 'undefined') {
 var result = Object(__WEBPACK_IMPORTED_MODULE_0__ponyfill_js__["a" /* default */])(root);
 /* harmony default export */ __webpack_exports__["a"] = (result);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9), __webpack_require__(42)(module)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(8), __webpack_require__(42)(module)))
 
 /***/ }),
 /* 42 */
@@ -3748,6 +3858,8 @@ function reducer(state, action) {
       return (0, _ui.setPartyTab)(state, action);
     case _actions.SET_ITEM_POSITION:
       return (0, _ui.setItemPosition)(state, action);
+    case _actions.REFRESH_SLOTS:
+      return (0, _ui.refreshSlots)(state, action);
     case _actions.CHANGE_MODE:
       return (0, _ui.changeMode)(state, action);
     case _actions.CLOSE_STORY:
@@ -4966,7 +5078,8 @@ function addInputListeners(dispatch, canvas) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    dispatch((0, _actions.mouseDown)(x, y));
+    event.button === 0 && dispatch((0, _actions.mouseDown)(x, y));
+    event.button === 2 && console.log('right', x, y);
   }, false);
 
   canvas.addEventListener('mousemove', function (event) {
@@ -5142,25 +5255,17 @@ var _Overlay = __webpack_require__(73);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _Story = __webpack_require__(79);
+var _Story = __webpack_require__(81);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _ActionBar = __webpack_require__(80);
-
-var _ActionBar2 = _interopRequireDefault(_ActionBar);
-
-var _PartyWindow = __webpack_require__(81);
+var _PartyWindow = __webpack_require__(82);
 
 var _PartyWindow2 = _interopRequireDefault(_PartyWindow);
 
-var _InventoryWindow = __webpack_require__(82);
-
-var _InventoryWindow2 = _interopRequireDefault(_InventoryWindow);
-
 var _actions = __webpack_require__(0);
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5179,11 +5284,9 @@ var MapView = function () {
     this.connect = new _Connect2.default(this.store);
 
     this.camera = new _Camera2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader, this.setDim);
+    this.overlay = new _Overlay2.default(this.store, this.canvas, this.ctx, this.loader);
     this.story = new _Story2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new _PartyWindow2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.inventoryWindow = new _InventoryWindow2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
   _createClass(MapView, [{
@@ -5200,12 +5303,9 @@ var MapView = function () {
           this.story.update(keys, x, y);
         } else if (this.connect.mode === _constants.MODE.PARTY) {
           this.partyWindow.update(x, y);
-        } else if (this.connect.mode === _constants.MODE.INVENTORY) {
-          this.inventoryWindow.update(x, y);
         } else {
           this.connect.currentTile && this.camera.update(x, y);
           this.overlay.update(x, y);
-          this.actionBar.update(x, y);
         }
       }
     }
@@ -5217,14 +5317,10 @@ var MapView = function () {
 
       this.connect.currentTile && this.camera.render(delta);
       this.overlay.render(delta);
-      this.actionBar.render(delta);
       this.story.render(delta);
       switch (this.connect.mode) {
         case _constants.MODE.PARTY:
           this.partyWindow.render(delta);
-          break;
-        case _constants.MODE.INVENTORY:
-          this.inventoryWindow.render(delta);
           break;
       }
 
@@ -5257,7 +5353,7 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(8);
+var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
@@ -5265,11 +5361,11 @@ var _requests = __webpack_require__(6);
 
 var _constants = __webpack_require__(1);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(5);
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5515,33 +5611,35 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(1);
+var _Food = __webpack_require__(74);
 
-var _actions = __webpack_require__(0);
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _Zoom = __webpack_require__(74);
-
-var _Zoom2 = _interopRequireDefault(_Zoom);
+var _Food2 = _interopRequireDefault(_Food);
 
 var _Party = __webpack_require__(75);
 
 var _Party2 = _interopRequireDefault(_Party);
 
-var _Vehicle = __webpack_require__(76);
+var _Inventory = __webpack_require__(76);
 
-var _Vehicle2 = _interopRequireDefault(_Vehicle);
+var _Inventory2 = _interopRequireDefault(_Inventory);
 
-var _Habitat = __webpack_require__(77);
+var _ActionBar = __webpack_require__(77);
+
+var _ActionBar2 = _interopRequireDefault(_ActionBar);
+
+var _Habitat = __webpack_require__(78);
 
 var _Habitat2 = _interopRequireDefault(_Habitat);
 
-var _Inventory = __webpack_require__(78);
+var _Zoom = __webpack_require__(79);
 
-var _Inventory2 = _interopRequireDefault(_Inventory);
+var _Zoom2 = _interopRequireDefault(_Zoom);
+
+var _Items = __webpack_require__(80);
+
+var _Items2 = _interopRequireDefault(_Items);
+
+var _actions = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5556,30 +5654,35 @@ var Overlay = function () {
     this.ctx = ctx;
     this.loader = loader;
 
-    this.zoom = new _Zoom2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.food = new _Food2.default(this.store, this.canvas, this.ctx, this.loader);
     this.party = new _Party2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.vehicle = new _Vehicle2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.actionBar = new _ActionBar2.default(this.store, this.canvas, this.ctx, this.loader);
     this.habitat = new _Habitat2.default(this.store, this.canvas, this.ctx, this.loader);
-    this.inventory = new _Inventory2.default(this.store, this.canvas, this.ctx, this.loader, setDim);
+    this.zoom = new _Zoom2.default(this.store, this.canvas, this.ctx, this.loader);
+    this.items = new _Items2.default(this.store, this.canvas, this.ctx, this.loader);
   }
 
   _createClass(Overlay, [{
     key: 'update',
     value: function update(x, y) {
-      this.zoom.update(x, y);
+      this.food.update(x, y);
       this.party.update(x, y);
-      this.vehicle.update(x, y);
-      this.habitat.update(x, y);
       this.inventory.update(x, y);
+      this.actionBar.update(x, y);
+      this.habitat.update(x, y);
+      this.zoom.update(x, y);
+      this.items.update(x, y);
     }
   }, {
     key: 'render',
     value: function render(delta) {
-      this.zoom.render(delta);
-      this.party.render(delta);
-      this.vehicle.render(delta);
+      var slots = [].concat(this.food.render(delta), this.party.render(delta), this.inventory.render(delta));
+      this.store.dispatch((0, _actions.refreshSlots)(slots));
+      this.actionBar.render(delta);
       this.habitat.render(delta);
-      this.inventory.render(delta);
+      this.zoom.render(delta);
+      this.items.render(delta);
     }
   }]);
 
@@ -5607,99 +5710,160 @@ var _Connect2 = _interopRequireDefault(_Connect);
 
 var _requests = __webpack_require__(6);
 
-var _actions = __webpack_require__(0);
+var _utils = __webpack_require__(4);
 
-var _utils = __webpack_require__(3);
+var _draw = __webpack_require__(5);
 
-var _draw = __webpack_require__(4);
+var _constants = __webpack_require__(1);
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Zoom = function () {
-  function Zoom(store, canvas, ctx, loader) {
-    _classCallCheck(this, Zoom);
+var Food = function () {
+  function Food(store, canvas, ctx, loader) {
+    var _this = this;
+
+    _classCallCheck(this, Food);
 
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
+    this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
 
     this.connect = new _Connect2.default(this.store);
 
-    this.scale = 2;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.scale = 4;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.gutter = this.size / this.scale;
 
-    this.fontSize = 32;
+    this.unitWidth = 4;
+    this.unitHeight = 1;
+    this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
+
+    this.fontSize = 16;
     this.ctx.font = this.fontSize + 'px MECC';
 
-    this.buttons = [{ name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }, { name: 'PACE', onClick: function onClick() {
-        return (0, _requests.sendEvent)('pace', 2);
-      }, id: 2 }, { name: 'PACE', onClick: function onClick() {
-        return (0, _requests.sendEvent)('pace', 1);
-      }, id: 1 }, { name: 'PACE', onClick: function onClick() {
-        return (0, _requests.sendEvent)('pace', 0);
-      }, id: 0 }, { name: 'RATIONS', onClick: function onClick() {
-        return (0, _requests.sendEvent)('rations', 2);
-      }, id: 2 }, { name: 'RATIONS', onClick: function onClick() {
-        return (0, _requests.sendEvent)('rations', 1);
-      }, id: 1 }, { name: 'RATIONS', onClick: function onClick() {
-        return (0, _requests.sendEvent)('rations', 0);
-      }, id: 0 }];
+    this.stepperOffset = 9 * this.scale;
+
+    this.buttons = [{
+      id: 0,
+      name: 'up',
+      pos: -this.stepperOffset,
+      onClick: function onClick(rations) {
+        return _this.increaseRations(rations);
+      }
+    }, {
+      id: 1,
+      name: 'down',
+      pos: this.stepperOffset,
+      onClick: function onClick(rations) {
+        return _this.decreaseRations(rations);
+      }
+    }];
   }
 
-  _createClass(Zoom, [{
+  _createClass(Food, [{
+    key: 'increaseRations',
+    value: function increaseRations(rations) {
+      rations < 2 && this.store.dispatch((0, _requests.sendEvent)('rations', rations + 1));
+    }
+  }, {
+    key: 'decreaseRations',
+    value: function decreaseRations(rations) {
+      rations > 0 && this.store.dispatch((0, _requests.sendEvent)('rations', rations - 1));
+    }
+  }, {
     key: 'update',
     value: function update(x, y) {
       var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      button && this.store.dispatch(button.onClick());
+      button && button.onClick(this.connect.rations);
+    }
+  }, {
+    key: 'renderWindow',
+    value: function renderWindow() {
+      this.xStart = this.canvas.width - this.width - this.gutter;
+      this.yStart = this.gutter;
+
+      this.ctx.fillStyle = _colors.MEDIUM_RED;
+      this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
+    }
+  }, {
+    key: 'renderStepper',
+    value: function renderStepper() {
+      var _this2 = this;
+
+      var rations = this.connect.rations;
+      var x = this.xStart + this.gutter;
+      var y = this.yStart + this.gutter;
+      (0, _draw.drawByName)(this.ctx, this.icons, 'food', this.scale, x, y);
+      var text = void 0,
+          color = void 0;
+      if (rations === 0) {
+        text = '0%';
+        color = (0, _colors.alphaDarkRed)(0.9);
+      } else if (rations === 1) {
+        text = '50%';
+        color = (0, _colors.alphaYellow)(0.9);
+      } else if (rations === 2) {
+        text = '100%';
+        color = (0, _colors.alphaGreen)(0.9);
+      }
+      this.ctx.font = this.fontSize + 'px MECC';
+      this.ctx.fillStyle = color;
+      var textWidth = this.ctx.measureText(text).width;
+      this.ctx.fillText(text, x + (this.size - textWidth) / 2, y + (this.size + this.fontSize) / 2);
+      this.buttons = this.buttons.map(function (button) {
+        var yPos = y + button.pos;
+        (0, _draw.drawByName)(_this2.ctx, _this2.icons, button.name, _this2.scale, x, yPos);
+        return Object.assign({}, button, {
+          xPos: x,
+          yPos: yPos,
+          width: _this2.size,
+          height: _this2.size
+        });
+      });
+    }
+  }, {
+    key: 'renderSlots',
+    value: function renderSlots() {
+      var x = this.xStart + this.size + this.gutter;
+      var y = this.yStart;
+      var slots = [];
+      var counter = 0;
+      this.ctx.fillStyle = _colors.DARK_RED;
+      for (var yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.size + this.gutter) {
+        for (var xPos = x + this.gutter; xPos < x + this.width - (this.size + this.gutter); xPos = xPos + this.size + this.gutter) {
+          this.ctx.fillRect(xPos, yPos, this.size, this.size);
+          slots.push({
+            type: _constants.SLOTS.EATING,
+            position: counter++,
+            xPos: xPos,
+            yPos: yPos,
+            width: this.size,
+            height: this.size
+          });
+        }
+      }
+      return slots;
     }
   }, {
     key: 'render',
     value: function render(delta) {
-      var _this = this;
-
-      var pace = this.connect.pace;
-      var rations = this.connect.rations;
-      this.buttons = this.buttons.map(function (button, index) {
-        var x = _this.canvas.width - _this.size * (index % 3 + 1);
-        var y = Math.floor(index / 3) * _this.size;
-
-        if (typeof button.id === "number") {
-          if (button.name === "PACE" && button.id === pace || button.name === "RATIONS" && button.id === rations) {
-            _this.ctx.fillStyle = _colors.BRIGHT_YELLOW;
-          } else {
-            _this.ctx.fillStyle = _colors.SOLID_WHITE;
-          }
-          _this.ctx.font = _this.fontSize + 'px MECC';
-          var textWidth = _this.ctx.measureText(button.id.toString()).width;
-          _this.ctx.fillText(button.id, x + (_this.size - textWidth) / 2, y + (_this.size + _this.fontSize) / 2);
-          if (button.id === 0) {
-            var labelWidth = _this.ctx.measureText(button.name).width;
-            _this.ctx.fillStyle = _colors.SOLID_WHITE;
-            _this.ctx.fillText(button.name, x - labelWidth - _this.size / 4, y + (_this.size + _this.fontSize) / 2);
-          }
-        } else {
-          (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y);
-        }
-
-        return Object.assign({}, button, {
-          xPos: x,
-          yPos: y,
-          width: _this.size,
-          height: _this.size
-        });
-      });
+      this.renderWindow();
+      this.renderStepper();
+      return this.renderSlots();
     }
   }]);
 
-  return Zoom;
+  return Food;
 }();
 
-exports.default = Zoom;
+exports.default = Food;
 
 /***/ }),
 /* 75 */
@@ -5712,6 +5876,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _constants = __webpack_require__(1);
@@ -5720,11 +5886,13 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _actions = __webpack_require__(0);
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(5);
+
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5739,15 +5907,23 @@ var Party = function () {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.items = loader.getImage('items');
     this.icons = loader.getImage('icons');
     this.iconsXl = loader.getImage('icons-xl');
 
     this.connect = new _Connect2.default(this.store);
 
-    this.scale = 2;
-    this.portraitSize = this.iconsXl.tileset.tilewidth * this.scale;
-    this.statSize = this.icons.tileset.tilewidth;
+    this.scale = 4;
+    this.iconSize = this.icons.tileset.tilewidth * 2;
+    this.size = this.items.tileset.tilewidth * this.scale;
+    this.gutter = this.size / this.scale;
+
     this.fontSize = 32;
+
+    this.unitWidth = 5;
+    this.unitHeight = 1;
+    this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
+    this.height = this.unitHeight * this.size + this.gutter * 2;;
 
     this.buttons = this.connect.party.slice();
   }
@@ -5762,58 +5938,83 @@ var Party = function () {
       }
     }
   }, {
-    key: 'render',
-    value: function render(delta) {
+    key: 'renderSlot',
+    value: function renderSlot(id, xPos, yPos) {
+      var type = _constants.SLOTS.PARTY;
+      var position = id;
+
+      var _Array$fill = Array(2).fill(this.size),
+          _Array$fill2 = _slicedToArray(_Array$fill, 2),
+          width = _Array$fill2[0],
+          height = _Array$fill2[1];
+
+      this.ctx.fillStyle = _colors.DARK_RED;
+      this.ctx.fillRect(xPos, yPos, this.size, this.size);
+      this.slots.push({ type: type, position: position, xPos: xPos, yPos: yPos, width: width, height: height });
+    }
+  }, {
+    key: 'renderPartyMember',
+    value: function renderPartyMember(member, index) {
       var _this = this;
 
-      var party = this.connect.party;
-
-      // Makes a NEW set of buttons each time
-      // Allows adding and removing party members
-      this.buttons = party.map(function (member, index) {
-        var x = 0;
-        var y = index * _this.portraitSize;
-
-        var currentTime = Date.now();
-        var memberChanges = _this.connect.partyChanges.filter(function (item) {
-          var elapsed = currentTime - item.timestamp;
-          return item.id === member.id && elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION;
-        });
-        if (memberChanges.length > 0) {
-          var xPos = _this.portraitSize + 5 * (_this.statSize + 8);
-          memberChanges.forEach(function (item) {
-            var elapsed = currentTime - item.timestamp;
-            if (item.name === member.name && item.change === 1) {
-              x = 0.1 * (elapsed - _constants.UPDATE_TEXT_DURATION);
-            } else if (item.name === member.name && member.timestamp) {
-              x = -0.1 * elapsed;
-            }
-            var text = '' + (item.change > 0 ? '+' : '') + item.name;
-            var yPos = y + (_this.fontSize + _this.portraitSize) / 2;
-            (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
-          });
-        } else if (member.health === 0) {
-          x = -1000;
-          _this.store.dispatch((0, _actions.removePartyMember)(member.id));
-        }
-
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, member.icon, _this.scale, x, y);
-        [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 0.4) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
-          );
-        });
-        [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 1, x + _this.portraitSize + i * (_this.statSize + 8), (index * 2 + 1.1) * _this.portraitSize / 2 // TODO: Eliminate hardcoded values
-          );
-        });
-
-        return Object.assign({}, member, {
-          xPos: x,
-          yPos: y,
-          width: _this.portraitSize,
-          height: _this.portraitSize
-        });
+      var x = this.xStart + this.gutter;
+      var y = this.yStart + this.gutter + index * this.height;
+      var currentTime = Date.now();
+      var memberChanges = this.connect.partyChanges.filter(function (item) {
+        var elapsed = currentTime - item.timestamp;
+        return item.id === member.id && elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION;
       });
+      if (memberChanges.length > 0) {
+        var xPos = x + this.width;
+        memberChanges.forEach(function (item) {
+          var elapsed = currentTime - item.timestamp;
+          if (item.name === member.name && item.change === 1) {
+            x = 0.2 * (elapsed - _constants.UPDATE_TEXT_DURATION);
+          } else if (item.name === member.name && member.timestamp) {
+            x = -0.2 * elapsed;
+          }
+          var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
+          var yPos = y + (_this.fontSize + _this.size) / 2;
+          (0, _draw.fadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, xPos, yPos);
+        });
+      } else if (member.health === 0) {
+        x = -1000;
+        this.store.dispatch((0, _actions.removePartyMember)(member.id));
+      }
+
+      this.ctx.fillStyle = _colors.MEDIUM_RED;
+      this.ctx.fillRect(x - this.gutter, y - this.gutter, this.width, this.height);
+
+      (0, _draw.drawById)(this.ctx, this.iconsXl, member.icon, this.scale, x - this.gutter * 2, y - this.gutter * 2);
+
+      this.renderSlot(member.id, x + this.height, y);
+
+      [].concat(_toConsumableArray(Array(member.health))).map(function (_, i) {
+        (0, _draw.drawByName)(_this.ctx, _this.icons, 'heart', 2, x + _this.size * 2 + _this.gutter * 3 + i * (_this.iconSize + 3), y - _this.iconSize / 8);
+      });
+      [].concat(_toConsumableArray(Array(member.jeito))).map(function (_, i) {
+        (0, _draw.drawByName)(_this.ctx, _this.icons, 'bolt', 2, x + _this.size * 2 + _this.gutter * 3 + i * (_this.iconSize + 3), y + _this.size - _this.iconSize * 7 / 8);
+      });
+
+      return Object.assign({}, member, {
+        xPos: x - this.gutter,
+        yPos: y - this.gutter,
+        width: this.height,
+        height: this.height
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      var _this2 = this;
+
+      this.xStart = this.yStart = this.gutter;
+      this.height = this.size + this.gutter * 2;
+      this.slots = [];
+      this.buttons = this.connect.party.map(function (member, index) {
+        return _this2.renderPartyMember(member, index);
+      });
+      return this.slots;
     }
   }]);
 
@@ -5839,80 +6040,91 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _utils = __webpack_require__(3);
+var _draw = __webpack_require__(5);
 
-var _draw = __webpack_require__(4);
+var _utils = __webpack_require__(4);
+
+var _actions = __webpack_require__(0);
+
+var _constants = __webpack_require__(1);
+
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Vehicle = function () {
-  function Vehicle(store, canvas, ctx, loader) {
-    _classCallCheck(this, Vehicle);
+var Inventory = function () {
+  function Inventory(store, canvas, ctx, loader) {
+    _classCallCheck(this, Inventory);
 
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.iconsXl = loader.getImage('icons-xl');
-
     this.connect = new _Connect2.default(this.store);
 
-    this.scale = 2;
-    this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
-    this.wrenchSize = this.icons.tileset.tilewidth;
+    this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
 
-    var vehicle = this.connect.vehicle;
+    this.fontSize = 16;
 
-    if (vehicle) {
-      this.buttons = [{ id: vehicle.icon, onClick: function onClick() {
-          return console.log(vehicle.type);
-        } }];
-    } else {
-      this.buttons = [];
-    }
+    this.scale = 4;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.gutter = this.size / this.scale;
+
+    this.unitWidth = 4;
+    this.unitHeight = 5;
+    this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
   }
 
-  _createClass(Vehicle, [{
+  _createClass(Inventory, [{
     key: 'update',
-    value: function update(x, y) {
-      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      button && button.onClick();
+    value: function update(x, y) {}
+  }, {
+    key: 'renderWindow',
+    value: function renderWindow() {
+      this.xStart = this.canvas.width - this.width - this.gutter;
+      this.yStart = this.size * 2;
+      this.ctx.fillStyle = _colors.MEDIUM_RED;
+      this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
     }
   }, {
-    key: 'renderVehicle',
-    value: function renderVehicle(vehicle) {
-      var _this = this;
-
-      this.buttons = this.buttons.map(function (button) {
-        var x = 0;
-        var y = _this.canvas.height - _this.vehicleSize;
-        (0, _draw.drawById)(_this.ctx, _this.iconsXl, vehicle.icon, _this.scale, x, y);
-        for (var i = 0; i < vehicle.repair; i++) {
-          (0, _draw.drawByName)(_this.ctx, _this.icons, 'wrench', 1, _this.vehicleSize + i * (_this.wrenchSize + 8), _this.canvas.height - (_this.wrenchSize + _this.vehicleSize) / 2);
-        };
-        return Object.assign({}, button, {
-          id: vehicle.icon,
-          xPos: x,
-          yPos: y,
-          width: _this.vehicleSize,
-          height: _this.vehicleSize
-        });
-      });
+    key: 'renderSlots',
+    value: function renderSlots() {
+      // const [xMax, yMax] = [this.xStart + this.width, this.yStart + this.height]
+      var x = this.xStart;
+      var y = this.yStart;
+      var slots = [];
+      var counter = 0;
+      this.ctx.fillStyle = _colors.DARK_RED;
+      for (var yPos = y + this.gutter; yPos < y + this.height; yPos += this.size + this.gutter) {
+        for (var xPos = x + this.gutter; xPos < x + this.width; xPos += this.size + this.gutter) {
+          this.ctx.fillRect(xPos, yPos, this.size, this.size);
+          slots.push({
+            type: _constants.SLOTS.INVENTORY,
+            position: counter++,
+            xPos: xPos,
+            yPos: yPos,
+            width: this.size,
+            height: this.size
+          });
+        }
+      }
+      return slots;
     }
   }, {
     key: 'render',
     value: function render(delta) {
-      var vehicle = this.connect.vehicle;
-      vehicle && this.renderVehicle(vehicle);
+      this.renderWindow();
+      return this.renderSlots();
     }
   }]);
 
-  return Vehicle;
+  return Inventory;
 }();
 
-exports.default = Vehicle;
+exports.default = Inventory;
 
 /***/ }),
 /* 77 */
@@ -5931,388 +6143,15 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _colors = __webpack_require__(5);
+var _draw = __webpack_require__(5);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Habitat = function () {
-  function Habitat(store, canvas, ctx, loader) {
-    _classCallCheck(this, Habitat);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.connect = new _Connect2.default(this.store);
-    this.fontSize = 24;
-    this.ctx.font = this.fontSize + 'px MECC';
-  }
-
-  _createClass(Habitat, [{
-    key: 'update',
-    value: function update(x, y) {}
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      var _this = this;
-
-      var currentTile = this.connect.currentTile;
-      var text = [];
-      currentTile && currentTile.hunting && text.push(currentTile.hunting);
-      currentTile && currentTile.fishing && text.push(currentTile.fishing);
-      text.forEach(function (line, index) {
-        _this.ctx.fillStyle = _colors.SOLID_WHITE;
-        _this.ctx.font = _this.fontSize + 'px MECC';
-        var lineWidth = _this.ctx.measureText(line).width;
-        var x = _this.canvas.width - lineWidth - _this.fontSize;
-        var y = _this.canvas.height - 1.25 * _this.fontSize * (text.length - index);
-        _this.ctx.fillText(line, x, y);
-      });
-    }
-  }]);
-
-  return Habitat;
-}();
-
-exports.default = Habitat;
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _Animation = __webpack_require__(8);
-
-var _Animation2 = _interopRequireDefault(_Animation);
-
-var _utils = __webpack_require__(3);
-
-var _draw = __webpack_require__(4);
-
-var _actions = __webpack_require__(0);
-
-var _constants = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Inventory = function () {
-  function Inventory(store, canvas, ctx, loader, setDim) {
-    _classCallCheck(this, Inventory);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
-    this.connect = new _Connect2.default(this.store);
-
-    this.scale = 4;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
-    this.fontSize = 32;
-    this.animate = new _Animation2.default(this.scale, this.scale, 0.5);
-
-    this.buttons = [{ name: 'pack-big' }];
-  }
-
-  _createClass(Inventory, [{
-    key: 'update',
-    value: function update(x, y) {
-      if (x && y && (0, _utils.screenToImageButton)(x, y, this.buttons)) {
-        this.store.dispatch((0, _actions.changeMode)(_constants.MODE.INVENTORY));
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      var _this = this;
-
-      this.animate.tick(delta);
-      var x = this.canvas.width - this.size;
-      var y = this.canvas.height / 2 - this.size / 2;
-
-      var inventoryChanges = this.connect.inventoryChanges;
-      var currentTime = Date.now();
-      inventoryChanges.forEach(function (item) {
-        var elapsed = currentTime - item.timestamp;
-        if (elapsed > 0 && elapsed < _constants.UPDATE_TEXT_DURATION) {
-          var text = '' + (item.change > 0 ? '+' : '') + item.change + ' ' + item.name;
-          var yPos = y + _this.size / 2;
-          (0, _draw.slideFadeText)(_this.ctx, elapsed, _constants.UPDATE_TEXT_DURATION, _this.fontSize, text, x, yPos);
-        }
-      });
-
-      this.buttons = this.buttons.map(function (button) {
-        (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, x, y + _this.animate.getValue());
-        return Object.assign({}, button, {
-          xPos: x,
-          yPos: y,
-          width: _this.size,
-          height: _this.size
-        });
-      });
-    }
-  }]);
-
-  return Inventory;
-}();
-
-exports.default = Inventory;
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _constants = __webpack_require__(1);
-
-var _actions = __webpack_require__(0);
+var _utils = __webpack_require__(4);
 
 var _requests = __webpack_require__(6);
 
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _utils = __webpack_require__(3);
-
-var _draw = __webpack_require__(4);
-
-var _Animation = __webpack_require__(8);
-
-var _Animation2 = _interopRequireDefault(_Animation);
-
-var _colors = __webpack_require__(5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Story = function () {
-  function Story(store, canvas, ctx, loader) {
-    _classCallCheck(this, Story);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-
-    this.blink = new _Animation2.default(1, 1, 1);
-    this.connect = new _Connect2.default(this.store);
-    this.icons = loader.getImage('icons');
-
-    this.fontSize = 16;
-    this.lineHeight = this.fontSize * 11 / 8;
-    this.ctx.font = this.fontSize + 'px MECC';
-    this.selected = null;
-
-    this.scale = 2;
-    this.size = this.icons.tileset.tilewidth * this.scale;
-    this.iconOffset = this.fontSize * 4 / 5;
-
-    this.width = this.canvas.width / 2;
-    this.height = this.canvas.height / 2;
-
-    this.stories = [];
-
-    this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.itemChangeText = _draw.itemChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.partyChangeText = _draw.partyChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-    this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
-  }
-
-  _createClass(Story, [{
-    key: 'select',
-    value: function select(button, story) {
-      this.store.dispatch((0, _actions.closeStory)());
-      if (story.canDispatch) {
-        this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
-      }
-      this.selected = null;
-    }
-  }, {
-    key: 'updateKeys',
-    value: function updateKeys(keys, story) {
-      var _this = this;
-
-      keys.map(function (key) {
-        if (key >= "1" && key <= story.buttons.length.toString()) _this.selected = story.buttons[parseInt(key) - 1];
-        if (["Escape", "Backspace", "Delete"].includes(key)) _this.selected = null;
-        if (key === "Enter" && _this.selected !== null) {
-          _this.select(_this.selected, story);
-        }
-      });
-    }
-  }, {
-    key: 'updateClick',
-    value: function updateClick(x, y, story) {
-      if (x && y) {
-        var button = (0, _utils.screenToTextButton)(x, y, story.buttons);
-        if (button) {
-          if (this.selected && this.selected.id === button.id) {
-            this.select(this.selected, story);
-          } else if (story.buttons.length === 1) {
-            this.select(button, story);
-          } else {
-            this.selected = button;
-          }
-        } else {
-          this.selected = null;
-        }
-      }
-    }
-  }, {
-    key: 'update',
-    value: function update(keys, x, y) {
-      this.width = this.canvas.width / 2;
-      this.height = this.canvas.height / 2;
-      if (this.stories.length > 0) {
-        var story = this.stories[this.stories.length - 1];
-        this.updateKeys(keys, story);
-        this.updateClick(x, y, story);
-      }
-    }
-  }, {
-    key: 'renderStoryText',
-    value: function renderStoryText(story) {
-      var _this2 = this;
-
-      this.ctx.font = this.fontSize + 'px MECC';
-      this.ctx.fillStyle = _colors.PALE_GREEN;
-
-      var maxMainWidth = this.width - this.fontSize * 2;
-      var maxButtonWidth = this.width - this.fontSize * 4;
-      var text = (0, _draw.splitIntoLines)(this.ctx, story.text, maxMainWidth);
-      var inventoryChanges = story.inventoryChanges;
-      var partyChanges = story.partyChanges;
-      var buttons = story && story.buttons.map(function (button, idx) {
-        return Object.assign({}, button, {
-          text: (0, _draw.splitIntoLines)(_this2.ctx, button.text, maxButtonWidth),
-          oneIndex: idx + 1
-        });
-      });
-      var promptText = 'What is your choice? ' + (this.selected && this.selected.oneIndex || '');
-      var cursor = this.blink.getValue() ? '' : '_';
-      var prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, maxMainWidth);
-
-      var xPos = this.width / 2 + this.fontSize;
-      var yPos = this.height / 2 + this.fontSize * 2;
-      var coords = this.mainText(text, xPos, yPos);
-
-      if (inventoryChanges.length > 0) {
-        yPos = coords.yPos + this.lineHeight * 2;
-        coords = this.itemChangeText(inventoryChanges, xPos, yPos);
-      }
-
-      if (partyChanges.length > 0) {
-        yPos = coords.yPos + this.lineHeight * 2;
-        coords = this.partyChangeText(partyChanges, xPos, yPos);
-      }
-
-      yPos = coords.yPos + this.lineHeight * 2;
-      buttons = this.buttonText(buttons, xPos, yPos, this.selected, this.icons, this.scale);
-      yPos = buttons[buttons.length - 1].yPos;
-      if (buttons[buttons.length - 1].hoverText) {
-        yPos += this.lineHeight;
-      }
-
-      if (buttons.length > 1) {
-        this.ctx.fillStyle = _colors.PALE_GREEN;
-        yPos += this.lineHeight * 2;
-        this.mainText(prompt, xPos, yPos);
-      }
-
-      return buttons;
-    }
-  }, {
-    key: 'renderHover',
-    value: function renderHover(buttons) {
-      var _connect$mouse = this.connect.mouse,
-          xMouse = _connect$mouse.xMouse,
-          yMouse = _connect$mouse.yMouse;
-
-      if (xMouse && yMouse) {
-        var filteredButtons = buttons.filter(function (button) {
-          return button.hoverText;
-        });
-        var item = (0, _utils.screenToImageButton)(xMouse, yMouse, filteredButtons);
-        if (item && item.hoverText) {
-          (0, _draw.drawHover)(this.ctx, this.fontSize, item);
-        }
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      var _this3 = this;
-
-      this.blink.tick(delta);
-      this.stories = this.connect.stories;
-      if (this.stories.length > 0) {
-        this.stories = this.stories.map(function (story) {
-          _this3.ctx.fillStyle = _colors.MEDIUM_RED;
-          _this3.ctx.fillRect(_this3.width / 2, _this3.height / 2, _this3.width, _this3.height);
-          var buttons = _this3.renderStoryText(story);
-          _this3.renderHover(buttons);
-          return Object.assign({}, story, { buttons: buttons });
-        });
-      } else {
-        this.stories = [];
-      }
-    }
-  }]);
-
-  return Story;
-}();
-
-exports.default = Story;
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _draw = __webpack_require__(4);
-
-var _utils = __webpack_require__(3);
-
-var _requests = __webpack_require__(6);
-
 var _actions = __webpack_require__(0);
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6359,7 +6198,10 @@ var ActionBar = function () {
               var currentCrop = currentTile && currentTile.crops.find(function (crop) {
                 return crop.name === button.name;
               });
-              currentCrop && currentCrop.stage <= 0 && this.store.dispatch((0, _requests.sendEvent)('harvest', button.id)); // TODO <= to ===
+              if (currentCrop && currentCrop.stage <= 0) {
+                // TODO <= to ===
+                this.store.dispatch((0, _requests.sendEvent)('harvest', button.id));
+              }
               this.current = 'main';
               break;
             case 'hunting':
@@ -6455,7 +6297,7 @@ var ActionBar = function () {
 exports.default = ActionBar;
 
 /***/ }),
-/* 81 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6471,15 +6313,604 @@ var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _draw = __webpack_require__(4);
+var _colors = __webpack_require__(3);
 
-var _utils = __webpack_require__(3);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Habitat = function () {
+  function Habitat(store, canvas, ctx, loader) {
+    _classCallCheck(this, Habitat);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.connect = new _Connect2.default(this.store);
+    this.fontSize = 24;
+    this.ctx.font = this.fontSize + 'px MECC';
+  }
+
+  _createClass(Habitat, [{
+    key: 'update',
+    value: function update(x, y) {}
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      var _this = this;
+
+      var currentTile = this.connect.currentTile;
+      var text = [];
+      currentTile && currentTile.hunting && text.push(currentTile.hunting);
+      currentTile && currentTile.fishing && text.push(currentTile.fishing);
+      text.forEach(function (line, index) {
+        _this.ctx.fillStyle = _colors.SOLID_WHITE;
+        _this.ctx.font = _this.fontSize + 'px MECC';
+        var lineWidth = _this.ctx.measureText(line).width;
+        var x = _this.canvas.width - lineWidth - _this.fontSize;
+        var y = _this.canvas.height - 1.25 * _this.fontSize * (text.length - index);
+        _this.ctx.fillText(line, x, y);
+      });
+    }
+  }]);
+
+  return Habitat;
+}();
+
+exports.default = Habitat;
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _requests = __webpack_require__(6);
+
+var _actions = __webpack_require__(0);
+
+var _utils = __webpack_require__(4);
+
+var _draw = __webpack_require__(5);
+
+var _colors = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Zoom = function () {
+  function Zoom(store, canvas, ctx, loader) {
+    _classCallCheck(this, Zoom);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.iconsXl = loader.getImage('icons-xl');
+
+    this.connect = new _Connect2.default(this.store);
+
+    console.log(this.ctx.measureText("PACE"));
+
+    this.scale = 2;
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+
+    this.fontSize = 32;
+    this.ctx.font = this.fontSize + 'px MECC';
+
+    this.buttons = [{ name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 0);
+      }, id: 0 }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 1);
+      }, id: 1 }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 2);
+      }, id: 2 }, { name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
+  }
+
+  _createClass(Zoom, [{
+    key: 'update',
+    value: function update(x, y) {
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      button && this.store.dispatch(button.onClick());
+    }
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      var _this = this;
+
+      var pace = this.connect.pace;
+      var rations = this.connect.rations;
+      this.ctx.fillStyle = _colors.SOLID_WHITE;
+      this.ctx.font = this.fontSize + 'px MECC';
+      var textWidth = this.ctx.measureText("PACE").width;
+      this.ctx.fillText("PACE", (this.size * 3 - textWidth) / 2, this.canvas.height - this.size * 2);
+      this.buttons = this.buttons.map(function (button, index) {
+        var xPos = _this.size * (index % 3);
+        var yPos = _this.canvas.height - _this.size * 2 + Math.floor(index / 3) * _this.size;
+
+        var _Array$fill = Array(2).fill(_this.size),
+            _Array$fill2 = _slicedToArray(_Array$fill, 2),
+            width = _Array$fill2[0],
+            height = _Array$fill2[1];
+
+        if (typeof button.id === "number") {
+          if (button.id === pace) {
+            _this.ctx.fillStyle = _colors.BRIGHT_YELLOW;
+          } else {
+            _this.ctx.fillStyle = _colors.SOLID_WHITE;
+          }
+          var _textWidth = _this.ctx.measureText(button.id.toString()).width;
+          _this.ctx.fillText(button.id, xPos + (_this.size - _textWidth) / 2, yPos + (_this.size + _this.fontSize) / 2);
+        } else {
+          (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, xPos, yPos);
+        }
+
+        return Object.assign({}, button, { xPos: xPos, yPos: yPos, width: width, height: height });
+      });
+    }
+  }]);
+
+  return Zoom;
+}();
+
+exports.default = Zoom;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _draw = __webpack_require__(5);
+
+var _utils = __webpack_require__(4);
 
 var _actions = __webpack_require__(0);
 
 var _constants = __webpack_require__(1);
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Items = function () {
+  function Items(store, canvas, ctx, loader) {
+    _classCallCheck(this, Items);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.connect = new _Connect2.default(this.store);
+
+    this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
+
+    this.fontSize = 16;
+
+    this.scale = 4;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.gutter = this.size / this.scale;
+
+    this.unitWidth = 4;
+    this.unitHeight = 5;
+    this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
+  }
+
+  _createClass(Items, [{
+    key: 'update',
+    value: function update(x, y) {
+      if (x && y) {
+        this.draggingItem ? this.endItemDrag(x, y) : this.startItemDrag(x, y);
+      }
+    }
+  }, {
+    key: 'renderItem',
+    value: function renderItem(button, x, y) {
+      (0, _draw.drawById)(this.ctx, this.items, button.id, this.scale, x, y);
+      if (button.durability) {
+        (0, _draw.drawDurability)(this.ctx, this.size, this.scale, button.durability, x, y);
+      } else {
+        if (button.portion) {
+          var portion = parseInt(button.portion);
+          var portionWidth = this.ctx.measureText(portion).width;
+          this.ctx.fillStyle = _colors.BRIGHT_RED;
+          this.ctx.fillText(portion, x + this.size - portionWidth, y + this.size);
+        }
+        this.ctx.fillStyle = _colors.SOLID_WHITE;
+        this.ctx.fillText(button.quantity, x, y + this.fontSize);
+      }
+    }
+  }, {
+    key: 'renderItems',
+    value: function renderItems() {
+      var _this = this;
+
+      this.ctx.textAlign = 'alphabetical';
+      this.ctx.font = this.fontSize + 'px MECC';
+      this.ctx.fillStyle = _colors.SOLID_WHITE;
+      this.buttons = this.connect.inventory.map(function (button, index) {
+        // TODO: Delete these two lines after item position has been done server-side
+        var type = button.hasOwnProperty('type') ? button.type : _constants.SLOTS.INVENTORY;
+        var position = button.hasOwnProperty('position') ? button.position : index;
+        var match = _this.connect.slots.find(function (slot) {
+          return slot.position === position && slot.type === type;
+        });
+        if (match) {
+          _this.renderItem(button, match.xPos, match.yPos);
+          return Object.assign({}, button, {
+            type: type, position: position,
+            xPos: match.xPos,
+            yPos: match.yPos,
+            width: _this.size,
+            height: _this.size
+          });
+        } else {
+          return button;
+        }
+      });
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover() {
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
+
+      if (xMouse && yMouse) {
+        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
+        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
+      }
+    }
+  }, {
+    key: 'renderDrag',
+    value: function renderDrag() {
+      var _connect$mouse2 = this.connect.mouse,
+          xMouse = _connect$mouse2.xMouse,
+          yMouse = _connect$mouse2.yMouse;
+      var _connect$offset = this.connect.offset,
+          xOffset = _connect$offset.xOffset,
+          yOffset = _connect$offset.yOffset;
+      var _connect$drop = this.connect.drop,
+          xDrop = _connect$drop.xDrop,
+          yDrop = _connect$drop.yDrop;
+
+      if (!this.draggingItem && xOffset && yOffset) {
+        this.startItemDrag(xMouse, yMouse);
+      } else if (this.draggingItem && xDrop && yDrop) {
+        this.endItemDrag(xDrop, yDrop);
+      } else if (this.draggingItem) {
+        var x = xMouse + this.dragOrigin.xPos - this.x;
+        var y = yMouse + this.dragOrigin.yPos - this.y;
+        this.renderItemDrag(x, y);
+      }
+    }
+  }, {
+    key: 'startItemDrag',
+    value: function startItemDrag(x, y) {
+      this.draggingItem = this.dragOrigin = (0, _utils.screenToImageButton)(x, y, this.buttons);
+      this.x = x;
+      this.y = y;
+      if (this.draggingItem) {
+        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, null, null));
+      }
+    }
+  }, {
+    key: 'renderItemDrag',
+    value: function renderItemDrag(x, y) {
+      this.draggingItem = Object.assign({}, this.draggingItem, { xPos: x, yPos: y });
+      this.renderItem(this.draggingItem, this.draggingItem.xPos, this.draggingItem.yPos);
+    }
+  }, {
+    key: 'endItemDrag',
+    value: function endItemDrag(x, y) {
+      var dragging = this.draggingItem;
+      var origin = this.dragOrigin;
+      var slot = (0, _utils.screenToImageButton)(x, y, this.connect.slots);
+      var match = slot && this.buttons.find(function (button) {
+        return button.position === slot.position && button.type === slot.type;
+      });
+      // TODO: Uncomment commented lines and delete current setItemPosition calls
+      // NOTE: Do this after 'type' and 'position' are included in store copies of inventory items
+      if (slot && match) {
+        this.store.dispatch(
+        // setItemPosition(dragging, slot)
+        (0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
+        this.store.dispatch(
+        // setItemPosition(match, dragging)
+        (0, _actions.setItemPosition)(match.id, dragging.type, dragging.position));
+      } else if (slot) {
+        this.store.dispatch(
+        // setItemPosition(dragging, slot)
+        (0, _actions.setItemPosition)(dragging.id, slot.type, slot.position));
+      } else {
+        this.store.dispatch(
+        // setItemPosition(dragging, origin)
+        (0, _actions.setItemPosition)(dragging.id, origin.type, origin.position));
+      }
+      this.draggingItem = null;
+    }
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      this.renderItems();
+      this.renderHover();
+      this.renderDrag();
+    }
+  }]);
+
+  return Items;
+}();
+
+exports.default = Items;
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _constants = __webpack_require__(1);
+
+var _actions = __webpack_require__(0);
+
+var _requests = __webpack_require__(6);
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _utils = __webpack_require__(4);
+
+var _draw = __webpack_require__(5);
+
+var _Animation = __webpack_require__(9);
+
+var _Animation2 = _interopRequireDefault(_Animation);
+
+var _colors = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Story = function () {
+  function Story(store, canvas, ctx, loader) {
+    _classCallCheck(this, Story);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+
+    this.blink = new _Animation2.default(1, 1, 1);
+    this.connect = new _Connect2.default(this.store);
+    this.icons = loader.getImage('icons');
+
+    this.fontSize = 16;
+    this.lineHeight = this.fontSize * 11 / 8;
+    this.ctx.font = this.fontSize + 'px MECC';
+    this.selected = null;
+
+    this.scale = 2;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.iconOffset = this.fontSize * 4 / 5;
+
+    this.width = this.canvas.width / 3;
+    this.height = this.canvas.height / 2;
+
+    this.stories = [];
+
+    this.mainText = _draw.mainText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.itemChangeText = _draw.itemChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.partyChangeText = _draw.partyChangeText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+    this.buttonText = _draw.buttonText.bind(null, this.canvas, this.ctx, this.fontSize, this.lineHeight);
+  }
+
+  _createClass(Story, [{
+    key: 'select',
+    value: function select(button, story) {
+      this.store.dispatch((0, _actions.closeStory)());
+      if (story.canDispatch) {
+        this.store.dispatch((0, _requests.sendEvent)('decision', button.id));
+      }
+      this.selected = null;
+    }
+  }, {
+    key: 'updateKeys',
+    value: function updateKeys(keys, story) {
+      var _this = this;
+
+      keys.map(function (key) {
+        if (key >= "1" && key <= story.buttons.length.toString()) _this.selected = story.buttons[parseInt(key) - 1];
+        if (["Escape", "Backspace", "Delete"].includes(key)) _this.selected = null;
+        if (key === "Enter" && _this.selected !== null) {
+          _this.select(_this.selected, story);
+        }
+      });
+    }
+  }, {
+    key: 'updateClick',
+    value: function updateClick(x, y, story) {
+      if (x && y) {
+        var button = (0, _utils.screenToTextButton)(x, y, story.buttons);
+        if (button) {
+          if (this.selected && this.selected.id === button.id) {
+            this.select(this.selected, story);
+          } else if (story.buttons.length === 1) {
+            this.select(button, story);
+          } else {
+            this.selected = button;
+          }
+        } else {
+          this.selected = null;
+        }
+      }
+    }
+  }, {
+    key: 'update',
+    value: function update(keys, x, y) {
+      this.width = this.canvas.width / 3;
+      this.height = this.canvas.height / 2;
+      if (this.stories.length > 0) {
+        var story = this.stories[this.stories.length - 1];
+        this.updateKeys(keys, story);
+        this.updateClick(x, y, story);
+      }
+    }
+  }, {
+    key: 'renderStoryText',
+    value: function renderStoryText(story) {
+      var _this2 = this;
+
+      this.ctx.font = this.fontSize + 'px MECC';
+      this.ctx.fillStyle = _colors.PALE_GREEN;
+
+      var maxMainWidth = this.width - this.fontSize * 2;
+      var maxButtonWidth = this.width - this.fontSize * 4;
+      var text = (0, _draw.splitIntoLines)(this.ctx, story.text, maxMainWidth);
+      var inventoryChanges = story.inventoryChanges;
+      var partyChanges = story.partyChanges;
+      var buttons = story && story.buttons.map(function (button, idx) {
+        return Object.assign({}, button, {
+          text: (0, _draw.splitIntoLines)(_this2.ctx, button.text, maxButtonWidth),
+          oneIndex: idx + 1
+        });
+      });
+      var promptText = 'What is your choice? ' + (this.selected && this.selected.oneIndex || '');
+      var cursor = this.blink.getValue() ? '' : '_';
+      var prompt = (0, _draw.splitIntoLines)(this.ctx, promptText + cursor, maxMainWidth);
+
+      var xPos = this.width + this.fontSize;
+      var yPos = this.height / 2 + this.fontSize * 2;
+      var coords = this.mainText(text, xPos, yPos);
+
+      if (inventoryChanges.length > 0) {
+        yPos = coords.yPos + this.lineHeight * 2;
+        coords = this.itemChangeText(inventoryChanges, xPos, yPos);
+      }
+
+      if (partyChanges.length > 0) {
+        yPos = coords.yPos + this.lineHeight * 2;
+        coords = this.partyChangeText(partyChanges, xPos, yPos);
+      }
+
+      yPos = coords.yPos + this.lineHeight * 2;
+      buttons = this.buttonText(buttons, xPos, yPos, this.selected, this.icons, this.scale);
+      yPos = buttons[buttons.length - 1].yPos;
+      if (buttons[buttons.length - 1].hoverText) {
+        yPos += this.lineHeight;
+      }
+
+      if (buttons.length > 1) {
+        this.ctx.fillStyle = _colors.PALE_GREEN;
+        yPos += this.lineHeight * 2;
+        this.mainText(prompt, xPos, yPos);
+      }
+
+      return buttons;
+    }
+  }, {
+    key: 'renderHover',
+    value: function renderHover(buttons) {
+      var _connect$mouse = this.connect.mouse,
+          xMouse = _connect$mouse.xMouse,
+          yMouse = _connect$mouse.yMouse;
+
+      if (xMouse && yMouse) {
+        var filteredButtons = buttons.filter(function (button) {
+          return button.hoverText;
+        });
+        var item = (0, _utils.screenToImageButton)(xMouse, yMouse, filteredButtons);
+        if (item && item.hoverText) {
+          (0, _draw.drawHover)(this.ctx, this.fontSize, item);
+        }
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      var _this3 = this;
+
+      this.blink.tick(delta);
+      this.stories = this.connect.stories;
+      if (this.stories.length > 0) {
+        this.stories = this.stories.map(function (story) {
+          _this3.ctx.fillStyle = _colors.MEDIUM_RED;
+          _this3.ctx.fillRect(_this3.width, _this3.height / 2, _this3.width, _this3.height);
+          var buttons = _this3.renderStoryText(story);
+          _this3.renderHover(buttons);
+          return Object.assign({}, story, { buttons: buttons });
+        });
+      } else {
+        this.stories = [];
+      }
+    }
+  }]);
+
+  return Story;
+}();
+
+exports.default = Story;
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _draw = __webpack_require__(5);
+
+var _utils = __webpack_require__(4);
+
+var _actions = __webpack_require__(0);
+
+var _constants = __webpack_require__(1);
+
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6685,227 +7116,6 @@ var PartyWindow = function () {
 exports.default = PartyWindow;
 
 /***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _draw = __webpack_require__(4);
-
-var _utils = __webpack_require__(3);
-
-var _actions = __webpack_require__(0);
-
-var _constants = __webpack_require__(1);
-
-var _colors = __webpack_require__(5);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var InventoryWindow = function () {
-  function InventoryWindow(store, canvas, ctx, loader) {
-    _classCallCheck(this, InventoryWindow);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.connect = new _Connect2.default(this.store);
-
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
-
-    this.fontSize = 16;
-
-    this.scale = 4;
-    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
-    this.gutter = this.buttonSize / this.scale;
-
-    this.unitWidth = 5;
-    this.unitHeight = 4;
-    this.width = this.unitWidth * (this.buttonSize + this.gutter) + this.gutter;
-    this.height = this.unitHeight * (this.buttonSize + this.gutter) + this.gutter;
-  }
-
-  _createClass(InventoryWindow, [{
-    key: 'update',
-    value: function update(x, y) {
-      if (x && y) {
-        var xMin = (this.canvas.width - this.width) / 2;
-        var xMax = xMin + this.width;
-        var yMin = (this.canvas.height - this.height) / 2;
-        var yMax = yMin + this.height;
-        if (x > xMin && x < xMax && y > yMin && y < yMax) {
-          this.draggingItem && this.endItemDrag(x, y) || this.startItemDrag(x, y);
-        } else if (this.draggingItem) {
-          this.endItemDrag(x, y);
-        } else {
-          this.store.dispatch((0, _actions.changeMode)(_constants.MODE.MAP));
-        }
-      }
-    }
-  }, {
-    key: 'renderWindow',
-    value: function renderWindow() {
-      var x = (this.canvas.width - this.width) / 2;
-      var y = (this.canvas.height - this.height) / 2;
-
-      this.ctx.fillStyle = _colors.MEDIUM_RED;
-      this.ctx.fillRect(x, y, this.width, this.height);
-
-      this.ctx.fillStyle = _colors.DARK_RED;
-      this.slots = [];
-      var counter = 0;
-      for (var yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.buttonSize + this.gutter) {
-        for (var xPos = x + this.gutter; xPos < x + this.width; xPos = xPos + this.buttonSize + this.gutter) {
-          this.ctx.fillRect(xPos, yPos, this.buttonSize, this.buttonSize);
-          this.slots.push({
-            position: counter++,
-            xPos: xPos,
-            yPos: yPos,
-            width: this.buttonSize,
-            height: this.buttonSize
-          });
-        }
-      }
-    }
-  }, {
-    key: 'renderTitle',
-    value: function renderTitle() {
-      var titleWidth = this.ctx.measureText(_constants.MODE.INVENTORY).width;
-      this.ctx.fillStyle = _colors.MEDIUM_RED;
-      this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - this.gutter, this.canvas.height / 2 - this.height / 2 - this.fontSize - 4, titleWidth + this.gutter * 2, this.fontSize + 4);
-
-      this.ctx.fillStyle = _colors.SOLID_WHITE;
-      this.ctx.fillText(_constants.MODE.INVENTORY, (this.canvas.width - titleWidth) / 2, (this.canvas.height - this.height) / 2);
-    }
-  }, {
-    key: 'renderItem',
-    value: function renderItem(button, x, y) {
-      (0, _draw.drawById)(this.ctx, this.items, button.id, this.scale, x, y);
-      if (button.durability) {
-        (0, _draw.drawDurability)(this.ctx, this.buttonSize, this.scale, button.durability, x, y);
-      } else {
-        this.ctx.fillText(button.quantity, x, y + this.fontSize);
-      }
-    }
-  }, {
-    key: 'renderItems',
-    value: function renderItems() {
-      var _this = this;
-
-      var xOrigin = (this.canvas.width - this.width) / 2;
-      var yOrigin = (this.canvas.height - this.height) / 2;
-      this.ctx.textAlign = 'alphabetical';
-      this.ctx.font = this.fontSize + 'px MECC';
-      this.ctx.fillStyle = _colors.SOLID_WHITE;
-      this.buttons = this.connect.inventory.map(function (button, index) {
-        var position = button.hasOwnProperty('position') ? button.position : index;
-        var xPos = xOrigin + _this.gutter + (_this.buttonSize + _this.gutter) * (position % _this.unitWidth);
-        var yPos = yOrigin + _this.gutter + (_this.buttonSize + _this.gutter) * Math.floor(position / _this.unitWidth);
-        typeof position === 'number' && _this.renderItem(button, xPos, yPos);
-        return Object.assign({}, button, {
-          position: position, xPos: xPos, yPos: yPos,
-          width: _this.buttonSize,
-          height: _this.buttonSize
-        });
-      });
-    }
-  }, {
-    key: 'renderHover',
-    value: function renderHover() {
-      var _connect$mouse = this.connect.mouse,
-          xMouse = _connect$mouse.xMouse,
-          yMouse = _connect$mouse.yMouse;
-
-      if (xMouse && yMouse) {
-        var button = (0, _utils.screenToImageButton)(xMouse, yMouse, this.buttons);
-        button && (0, _draw.drawHover)(this.ctx, this.fontSize, button);
-      }
-    }
-  }, {
-    key: 'renderDrag',
-    value: function renderDrag() {
-      var _connect$mouse2 = this.connect.mouse,
-          xMouse = _connect$mouse2.xMouse,
-          yMouse = _connect$mouse2.yMouse;
-      var _connect$offset = this.connect.offset,
-          xOffset = _connect$offset.xOffset,
-          yOffset = _connect$offset.yOffset;
-      var _connect$drop = this.connect.drop,
-          xDrop = _connect$drop.xDrop,
-          yDrop = _connect$drop.yDrop;
-
-      if (!this.draggingItem && xOffset && yOffset) {
-        this.startItemDrag(xMouse, yMouse);
-      } else if (this.draggingItem && xDrop && yDrop) {
-        this.endItemDrag(xDrop, yDrop);
-      } else if (this.draggingItem) {
-        var x = xMouse + this.dragOrigin.xPos - this.x;
-        var y = yMouse + this.dragOrigin.yPos - this.y;
-        this.renderItemDrag(x, y);
-      }
-    }
-  }, {
-    key: 'startItemDrag',
-    value: function startItemDrag(x, y) {
-      this.draggingItem = this.dragOrigin = (0, _utils.screenToImageButton)(x, y, this.buttons);
-      this.x = x;
-      this.y = y;
-      this.draggingItem && this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, null));
-    }
-  }, {
-    key: 'renderItemDrag',
-    value: function renderItemDrag(x, y) {
-      this.draggingItem = Object.assign({}, this.draggingItem, { xPos: x, yPos: y });
-      this.renderItem(this.draggingItem, this.draggingItem.xPos, this.draggingItem.yPos);
-    }
-  }, {
-    key: 'endItemDrag',
-    value: function endItemDrag(x, y) {
-      var slot = (0, _utils.screenToImageButton)(x, y, this.slots);
-      var match = slot && this.buttons.find(function (button) {
-        return button.position === slot.position;
-      });
-      if (slot && match) {
-        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, slot.position));
-        this.store.dispatch((0, _actions.setItemPosition)(match.id, this.draggingItem.position));
-      } else if (slot) {
-        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, slot.position));
-      } else {
-        this.store.dispatch((0, _actions.setItemPosition)(this.draggingItem.id, this.dragOrigin.position));
-      }
-      this.draggingItem = null;
-    }
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      this.renderWindow();
-      this.renderTitle();
-      this.renderItems();
-      this.renderHover();
-      this.renderDrag();
-    }
-  }]);
-
-  return InventoryWindow;
-}();
-
-exports.default = InventoryWindow;
-
-/***/ }),
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6918,25 +7128,25 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _draw = __webpack_require__(4);
+var _draw = __webpack_require__(5);
 
 var _register = __webpack_require__(84);
 
 var _login = __webpack_require__(85);
 
-var _utils = __webpack_require__(3);
+var _utils = __webpack_require__(4);
 
 var _Connect = __webpack_require__(2);
 
 var _Connect2 = _interopRequireDefault(_Connect);
 
-var _Animation = __webpack_require__(8);
+var _Animation = __webpack_require__(9);
 
 var _Animation2 = _interopRequireDefault(_Animation);
 
 var _actions = __webpack_require__(0);
 
-var _colors = __webpack_require__(5);
+var _colors = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

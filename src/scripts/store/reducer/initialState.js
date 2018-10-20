@@ -11,7 +11,10 @@ const uiState = {
   mode: MODE.TITLE,
   partyTab: 0,
   actions: { 'main': [] },
-  zoom: 3
+  zoom: 3,
+  dragCurrent: null,
+  dragOrigin: null,
+  slots: {}
 };
 
 const gameState = {

@@ -93,7 +93,33 @@ export default class Connect {
   }
 
   get inventory() {
-    return this.store.getState().inventory;
+    // TODO Move logic to reducer
+    const { eating, inventory } = this.store.getState();
+    return inventory.map(item => {
+      const match = eating.find(food => food.id === item.id);
+      return match ? Object.assign({}, item, { portion: match.portion }) : item;
+    });
+  }
+
+  get eating() {
+    // TODO Move logic to reducer
+    const { eating, inventory } = this.store.getState();
+    return eating.map(food => {
+      const { name, quantity } = inventory.find(item => item.id === food.id);
+      return Object.assign({}, food, { name, quantity });
+    });
+  }
+
+  get slots() {
+    return this.store.getState().slots;
+  }
+
+  get dragCurrent() {
+    return this.store.getState().dragCurrent;
+  }
+
+  get dragOrigin() {
+    return this.store.getState().dragOrigin;
   }
 
   get party() {

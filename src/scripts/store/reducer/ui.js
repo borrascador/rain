@@ -1,5 +1,7 @@
 import { MODE } from '../../game/constants';
-import { updateObject, updateItemInArray, removeStory } from './utils';
+import {
+  updateObject, updateItemInArray, updatePositionInArray, removeStory
+} from './utils';
 
 export function makeKeys() {
   let keys = {
@@ -13,13 +15,13 @@ export function makeKeys() {
     "Escape": false,
   };
   for (let i = 48; i <= 57 ; i++) {
-      keys[String.fromCharCode(i)] = false;
+    keys[String.fromCharCode(i)] = false;
   }
   for (let i = 65; i <= 90 ; i++) {
-      keys[String.fromCharCode(i)] = false;
+    keys[String.fromCharCode(i)] = false;
   }
   for (let i = 97; i <= 122; i++) {
-      keys[String.fromCharCode(i)] = false;
+    keys[String.fromCharCode(i)] = false;
   }
   return keys;
 }
@@ -136,8 +138,29 @@ export function setPartyTab(state, action) {
 export function setItemPosition(state, action) {
   return updateObject(state, {
     inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
-      return updateObject(item, { position: action.payload.position });
+      return updateObject(item, {
+        type: action.payload.type,
+        position: action.payload.position
+      });
     })
+  });
+}
+
+// TODO: Enable this and delete above when server-side item positioning is ready
+// NOTE: See Items.js, line 125
+// export function setItemPosition(state, action) {
+//   const { start, end } = action.payload;
+//   return updateObject(state, {
+//     inventory: updatePositionInArray(
+//       state.inventory, start.type, start.position,
+//       (item) => updateObject(item, { type: end.type, position: end.position })
+//     )
+//   });
+// }
+
+export function refreshSlots(state, action) {
+  return updateObject(state, {
+    slots: action.payload.slots,
   });
 }
 
