@@ -4966,7 +4966,7 @@ var _MapView = __webpack_require__(69);
 
 var _MapView2 = _interopRequireDefault(_MapView);
 
-var _TitleView = __webpack_require__(82);
+var _TitleView = __webpack_require__(83);
 
 var _TitleView2 = _interopRequireDefault(_TitleView);
 
@@ -5255,11 +5255,11 @@ var _Overlay = __webpack_require__(73);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
-var _Story = __webpack_require__(80);
+var _Story = __webpack_require__(81);
 
 var _Story2 = _interopRequireDefault(_Story);
 
-var _PartyWindow = __webpack_require__(81);
+var _PartyWindow = __webpack_require__(82);
 
 var _PartyWindow2 = _interopRequireDefault(_PartyWindow);
 
@@ -5631,11 +5631,11 @@ var _Habitat = __webpack_require__(78);
 
 var _Habitat2 = _interopRequireDefault(_Habitat);
 
-var _Zoom = __webpack_require__(85);
+var _Zoom = __webpack_require__(79);
 
 var _Zoom2 = _interopRequireDefault(_Zoom);
 
-var _Items = __webpack_require__(79);
+var _Items = __webpack_require__(80);
 
 var _Items2 = _interopRequireDefault(_Items);
 
@@ -6370,6 +6370,115 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Connect = __webpack_require__(2);
+
+var _Connect2 = _interopRequireDefault(_Connect);
+
+var _requests = __webpack_require__(6);
+
+var _actions = __webpack_require__(0);
+
+var _utils = __webpack_require__(4);
+
+var _draw = __webpack_require__(5);
+
+var _colors = __webpack_require__(3);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Zoom = function () {
+  function Zoom(store, canvas, ctx, loader) {
+    _classCallCheck(this, Zoom);
+
+    this.store = store;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.iconsXl = loader.getImage('icons-xl');
+
+    this.connect = new _Connect2.default(this.store);
+
+    console.log(this.ctx.measureText("PACE"));
+
+    this.scale = 2;
+    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+
+    this.fontSize = 32;
+    this.ctx.font = this.fontSize + 'px MECC';
+
+    this.buttons = [{ name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 0);
+      }, id: 0 }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 1);
+      }, id: 1 }, { name: 'PACE', onClick: function onClick() {
+        return (0, _requests.sendEvent)('pace', 2);
+      }, id: 2 }, { name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
+  }
+
+  _createClass(Zoom, [{
+    key: 'update',
+    value: function update(x, y) {
+      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
+      button && this.store.dispatch(button.onClick());
+    }
+  }, {
+    key: 'render',
+    value: function render(delta) {
+      var _this = this;
+
+      var pace = this.connect.pace;
+      var rations = this.connect.rations;
+      this.ctx.fillStyle = _colors.SOLID_WHITE;
+      this.ctx.font = this.fontSize + 'px MECC';
+      var textWidth = this.ctx.measureText("PACE").width;
+      this.ctx.fillText("PACE", (this.size * 3 - textWidth) / 2, this.canvas.height - this.size * 2);
+      this.buttons = this.buttons.map(function (button, index) {
+        var xPos = _this.size * (index % 3);
+        var yPos = _this.canvas.height - _this.size * 2 + Math.floor(index / 3) * _this.size;
+
+        var _Array$fill = Array(2).fill(_this.size),
+            _Array$fill2 = _slicedToArray(_Array$fill, 2),
+            width = _Array$fill2[0],
+            height = _Array$fill2[1];
+
+        if (typeof button.id === "number") {
+          if (button.id === pace) {
+            _this.ctx.fillStyle = _colors.BRIGHT_YELLOW;
+          } else {
+            _this.ctx.fillStyle = _colors.SOLID_WHITE;
+          }
+          var _textWidth = _this.ctx.measureText(button.id.toString()).width;
+          _this.ctx.fillText(button.id, xPos + (_this.size - _textWidth) / 2, yPos + (_this.size + _this.fontSize) / 2);
+        } else {
+          (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, xPos, yPos);
+        }
+
+        return Object.assign({}, button, { xPos: xPos, yPos: yPos, width: width, height: height });
+      });
+    }
+  }]);
+
+  return Zoom;
+}();
+
+exports.default = Zoom;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _Connect = __webpack_require__(2);
@@ -6562,7 +6671,7 @@ var Items = function () {
 exports.default = Items;
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6777,7 +6886,7 @@ var Story = function () {
 exports.default = Story;
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7007,7 +7116,7 @@ var PartyWindow = function () {
 exports.default = PartyWindow;
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7021,9 +7130,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _draw = __webpack_require__(5);
 
-var _register = __webpack_require__(83);
+var _register = __webpack_require__(84);
 
-var _login = __webpack_require__(84);
+var _login = __webpack_require__(85);
 
 var _utils = __webpack_require__(4);
 
@@ -7143,7 +7252,7 @@ var TitleView = function () {
 exports.default = TitleView;
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7212,7 +7321,7 @@ function registerDialog(store, setDim) {
 }
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7266,115 +7375,6 @@ function loginDialog(store, setDim) {
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
 }
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Connect = __webpack_require__(2);
-
-var _Connect2 = _interopRequireDefault(_Connect);
-
-var _requests = __webpack_require__(6);
-
-var _actions = __webpack_require__(0);
-
-var _utils = __webpack_require__(4);
-
-var _draw = __webpack_require__(5);
-
-var _colors = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Zoom = function () {
-  function Zoom(store, canvas, ctx, loader) {
-    _classCallCheck(this, Zoom);
-
-    this.store = store;
-    this.canvas = canvas;
-    this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
-
-    this.connect = new _Connect2.default(this.store);
-
-    console.log(this.ctx.measureText("PACE"));
-
-    this.scale = 2;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
-
-    this.fontSize = 32;
-    this.ctx.font = this.fontSize + 'px MECC';
-
-    this.buttons = [{ name: 'PACE', onClick: function onClick() {
-        return (0, _requests.sendEvent)('pace', 0);
-      }, id: 0 }, { name: 'PACE', onClick: function onClick() {
-        return (0, _requests.sendEvent)('pace', 1);
-      }, id: 1 }, { name: 'PACE', onClick: function onClick() {
-        return (0, _requests.sendEvent)('pace', 2);
-      }, id: 2 }, { name: 'settings', onClick: _requests.logout }, { name: 'zoom-out', onClick: _actions.zoomOut }, { name: 'zoom-in', onClick: _actions.zoomIn }];
-  }
-
-  _createClass(Zoom, [{
-    key: 'update',
-    value: function update(x, y) {
-      var button = x && y && (0, _utils.screenToImageButton)(x, y, this.buttons);
-      button && this.store.dispatch(button.onClick());
-    }
-  }, {
-    key: 'render',
-    value: function render(delta) {
-      var _this = this;
-
-      var pace = this.connect.pace;
-      var rations = this.connect.rations;
-      this.ctx.fillStyle = _colors.SOLID_WHITE;
-      this.ctx.font = this.fontSize + 'px MECC';
-      var textWidth = this.ctx.measureText("PACE").width;
-      this.ctx.fillText("PACE", (this.size * 3 - textWidth) / 2, this.canvas.height - this.size * 2);
-      this.buttons = this.buttons.map(function (button, index) {
-        var xPos = _this.size * (index % 3);
-        var yPos = _this.canvas.height - _this.size * 2 + Math.floor(index / 3) * _this.size;
-
-        var _Array$fill = Array(2).fill(_this.size),
-            _Array$fill2 = _slicedToArray(_Array$fill, 2),
-            width = _Array$fill2[0],
-            height = _Array$fill2[1];
-
-        if (typeof button.id === "number") {
-          if (button.id === pace) {
-            _this.ctx.fillStyle = _colors.BRIGHT_YELLOW;
-          } else {
-            _this.ctx.fillStyle = _colors.SOLID_WHITE;
-          }
-          var _textWidth = _this.ctx.measureText(button.id.toString()).width;
-          _this.ctx.fillText(button.id, xPos + (_this.size - _textWidth) / 2, yPos + (_this.size + _this.fontSize) / 2);
-        } else {
-          (0, _draw.drawByName)(_this.ctx, _this.iconsXl, button.name, _this.scale, xPos, yPos);
-        }
-
-        return Object.assign({}, button, { xPos: xPos, yPos: yPos, width: width, height: height });
-      });
-    }
-  }]);
-
-  return Zoom;
-}();
-
-exports.default = Zoom;
 
 /***/ })
 /******/ ]);
