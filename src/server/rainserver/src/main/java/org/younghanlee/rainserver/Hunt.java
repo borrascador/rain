@@ -235,7 +235,6 @@ public class Hunt{
 	}
 	
 	public JSONObject getNext() {
-		System.out.println("test");
 		while (!queue.isEmpty()) {
 			int last = queue.size()-1;
 			int id = queue.get(last);

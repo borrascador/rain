@@ -92,10 +92,12 @@ public class Server extends WebSocketServer {
 		}
 	}
 	
-	public void growthTick() {
+	public void WorldTick(int tick) {
+		// System.out.println("tick:" + tick);
 		for (Tile t: World.getMap()) {
 			t.decGrowthStage(1);
 		}
+		RandomEvents.dispatch(tick);
 	}
 	
 	public void backup(int index) {
@@ -152,7 +154,7 @@ public class Server extends WebSocketServer {
 				// System.out.println("Sending updates: tick "+ server.getTick());
 				server.flush(tick); // show debugging info
 				server.tickInc(); // increment tick number, do player ticks
-				server.growthTick(); 
+				server.WorldTick(tick); 
 				return;
 			}
 		}, 0, 1, TimeUnit.SECONDS);

@@ -37,6 +37,9 @@ public class Player {
 	private Hunt hunt; // Initialize with startHunting(), stop with stopHunting()
 	private Decision decision;
 	
+	private IRandomEvent randomEvent;
+	private String trigger;
+	
 	private HashSet<Integer> buffer; // Which tiles require updates sent in next tick
 
 	
@@ -178,6 +181,11 @@ public class Player {
 		if (payload.length() > 0) {
 			connection.sendJSON(Message.UPDATE(payload));
 		}
+		
+		if (randomEvent != null && trigger == null) {
+			connection.sendJSON(Message.UPDATE(randomEvent.result(this)));
+			randomEvent = null;
+		}
 		return;
 	}
 	
@@ -307,6 +315,22 @@ public class Player {
 		return decision;
 	}
 	
+	public IRandomEvent getRandomEvent() {
+		return randomEvent;
+	}
+
+	public void setRandomEvent(IRandomEvent r) {
+		this.randomEvent = r;
+	}
+	
+	public String getTrigger() {
+		return trigger;
+	}
+
+	public void setTrigger(String trigger) {
+		this.trigger = trigger;
+	}
+	
 	public void addTilesSeen(int t) {
 		tilesSeen.add(t);
 	}
@@ -418,7 +442,6 @@ public class Player {
 	}
 	
 	public JSONArray remove_food(Integer id) {
-		System.out.println("test");
 		System.out.println(id);
 		System.out.println(eating);
 		if (eating.contains(id)) {
@@ -468,4 +491,6 @@ public class Player {
 	public static void main(String[] args) {
 		
 	}
+
+
 }
