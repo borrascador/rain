@@ -15,7 +15,6 @@ public class Tile {
 	private int y;
 	
 	private HashMap<String, Integer> layers;
-	private HashMap<String, Integer> events;
 	private HashMap<Integer, Integer> crops;
 	private HashMap<String, Integer> habitats;
 	
@@ -31,7 +30,6 @@ public class Tile {
 		this.x = id % World.getWidth();
 		this.y = (id - x)/World.getWidth();
 		this.layers = new HashMap<String, Integer>();
-		this.events = new HashMap<String, Integer>();
 		this.crops = new HashMap<Integer, Integer>();
 		this.visitors = new HashSet<Player>();
 		this.habitats = new HashMap<String, Integer>();

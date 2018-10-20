@@ -154,6 +154,13 @@ public class Move {
 		World.getTile(position).updateNeighbors(p, 1);
 		
 		JSONObject payload = new JSONObject();
+		IRandomEvent r = p.getRandomEvent();
+		if (r != null && p.getTrigger() == "move") {
+			System.out.println("Executing random event");
+			payload = r.result(p);
+			p.stopMoving();
+			p.setRandomEvent(null);
+		}
 		if (x == xTarget && y == yTarget && position == target) {
 			p.stopMoving();
 			payload.put("pace", 0);
@@ -164,6 +171,7 @@ public class Move {
 		payload.put("position", position);
 		payload.put("xCoord", x);
 		payload.put("yCoord", y);
+
 		return payload;
 	}
 	

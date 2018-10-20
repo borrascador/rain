@@ -247,6 +247,23 @@ public class Decision {
 		return buttonArray;
 	}
 	
+	public JSONObject payload(Player p) {
+		JSONObject payload = new JSONObject();
+		JSONObject storyObject = new JSONObject();
+		storyObject.put("text", story);
+		storyObject.put("buttons", buttons(p));
+		payload.put("story", storyObject);
+		return payload;
+	}
+	
+	public static JSONObject payload(String s) {
+		JSONObject payload = new JSONObject();
+		JSONObject storyObject = new JSONObject();
+		storyObject.put("text", s);
+		payload.put("story", storyObject);
+		return payload;
+	}
+	
 	public static void main(String[] args){
 		
 	}

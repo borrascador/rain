@@ -101,7 +101,6 @@ public class Member {
 	
 	public JSONObject change(int id, Player p, int health_change, int jeito_change, 
 			HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
-		System.out.println("test");
 		JSONObject jo = new JSONObject();
 		jo.put("id", id);
 		jo.put("icon", icon);
@@ -118,7 +117,6 @@ public class Member {
 			p.removeMember(id);
 
 		}
-		System.out.println("test");
 		
 		if (skills_add != null) {
 			JSONArray skillsArray = new JSONArray();
@@ -167,5 +165,32 @@ public class Member {
 		}
 		jo.put("skills", skillsArray);
 		return jo;
+	}
+	
+	// pick 1 member
+	public static Member pickRandom(Player p){
+		return World.getMember(p.getPartyMember(Util.randomInt(p.partySize()-1)));
+	}
+	
+	// pick n members
+	public static ArrayList<Member> pickRandom(Player p, int n){
+		int size = p.partySize();
+		if (n > size) {
+			System.err.println("Error: pickRandom() not enough party members");
+			System.exit(1);
+		}
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i=0; i<size; i++) {
+			list.add(i);
+		}
+		for (int i=0; i<n; i++) {
+			list.remove(Util.randomInt(list.size()-1));
+		}
+		
+		ArrayList<Member> members = new ArrayList<Member>();
+		for (int i: list) {
+			members.add(World.getMember(p.getPartyMember(i)));
+		}
+		return members;
 	}
 }
