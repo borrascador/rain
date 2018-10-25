@@ -1,7 +1,11 @@
 import Connect from '../../store/Connect';
 import { drawById, drawHover, drawDurability } from '../utils/draw';
 import { screenToImageButton } from './utils';
-import { changeMode, setItemPosition } from '../../store/actions/actions';
+import {
+  changeMode, clickedRight, dragItem, endDrag, error
+} from '../../store/actions/actions';
+import { sendEvent } from '../../store/actions/requests';
+import { EVENTS } from '../../store/actions/events';
 import { MODE, SLOTS } from '../constants';
 import { DARK_RED, MEDIUM_RED, BRIGHT_RED, SOLID_WHITE } from '../colors';
 
@@ -28,9 +32,15 @@ export default class Items {
     this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
   }
 
-  update(x, y) {
-    if (x && y) {
-      this.draggingItem ? this.endItemDrag(x, y) : this.startItemDrag(x, y);
+  update(xLeft, yLeft) {
+    const clickRight = this.connect.clickRight;
+    clickRight.x && clickRight.y && this.store.dispatch(clickedRight());
+    if (xLeft && yLeft) {
+      this.connect.draggedItem
+        ? this.endItemDrag(xLeft, yLeft)
+        : this.startItemDrag(xLeft, yLeft);
+    } else if (clickRight.x && clickRight.y) {
+      console.log('right click!!');
     }
   }
 
@@ -56,17 +66,36 @@ export default class Items {
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = this.fontSize + 'px MECC';
     this.ctx.fillStyle = SOLID_WHITE;
-    this.buttons = this.connect.inventory.map((button, index) => {
-      // TODO: Delete these two lines after item position has been done server-side
-      const type = button.hasOwnProperty('type') ? button.type : SLOTS.INVENTORY;
-      const position = button.hasOwnProperty('position') ? button.position : index;
+    const draggedItem = this.connect.draggedItem;
+    const draggedOrigin = this.connect.draggedOrigin;
+    this.buttons = this.connect.inventory.map( (button, index) => {
+
+      // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+      // DEBUG Hopefully this does not interfere with server data
+      // if (!button.hasOwnProperty('position') && !button.hasOwnProperty('type')) {
+      //   button = Object.assign({}, button, {
+      //     position: index,
+      //     type: SLOTS.BACKPACK
+      //   })
+      // }
+      // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+
+      const dragged = draggedItem && (
+        draggedItem.position === button.position &&
+        draggedItem.type === button.type
+      );
+      const origin = draggedOrigin && (
+        draggedOrigin.position === button.position &&
+        draggedOrigin.type === button.type
+      );
       const match = this.connect.slots.find(slot => {
-        return slot.position === position && slot.type === type;
+        return slot.position === button.position && slot.type === button.type;
       });
-      if (match) {
+      if (match && !dragged && !origin) { // TODO: Display partial origin
         this.renderItem(button, match.xPos, match.yPos);
         return Object.assign({}, button, {
-          type, position,
+          type: button.type,
+          position: button.position,
           xPos: match.xPos,
           yPos: match.yPos,
           width: this.size,
@@ -79,72 +108,77 @@ export default class Items {
   }
 
   renderHover() {
-    const { xMouse, yMouse } = this.connect.mouse;
-    if (xMouse && yMouse) {
-      const button = screenToImageButton(xMouse, yMouse, this.buttons);
+    const mousePos = this.connect.mousePos;
+    if (mousePos.x && mousePos.y) {
+      const button = screenToImageButton(mousePos.x, mousePos.y, this.buttons);
       button && drawHover(this.ctx, this.fontSize, button);
     }
   }
 
   renderDrag() {
-    const { xMouse, yMouse } = this.connect.mouse;
-    const { xOffset, yOffset } = this.connect.offset;
-    const { xDrop, yDrop } = this.connect.drop;
-    if (!this.draggingItem && xOffset && yOffset) {
-      this.startItemDrag(xMouse, yMouse);
-    } else if (this.draggingItem && xDrop && yDrop) {
-      this.endItemDrag(xDrop, yDrop);
-    } else if (this.draggingItem) {
-      const x = xMouse + this.dragOrigin.xPos - this.x;
-      const y = yMouse + this.dragOrigin.yPos - this.y;
-      this.renderItemDrag(x, y);
+    const mousePos = this.connect.mousePos;
+    const mouseOffset = this.connect.mouseOffset;
+    const mouseDrop = this.connect.mouseDrop;
+    const draggedItem = this.connect.draggedItem;
+    const draggedOrigin = this.connect.draggedOrigin;
+    if (!draggedItem && mouseOffset.x && mouseOffset.y) {
+      this.startItemDrag(mousePos.x, mousePos.y); // TODO: Add quantity argument
+    } else if (draggedItem && mouseDrop.x && mouseDrop.y) {
+      this.endItemDrag(mouseDrop.x, mouseDrop.y); // TODO: Add quantity argument
+    } else if (draggedItem) {
+      this.renderItem(
+        draggedItem,
+        mousePos.x + draggedOrigin.x,
+        mousePos.y + draggedOrigin.y
+      );
     }
   }
 
-  startItemDrag(x, y) {
-    this.draggingItem = this.dragOrigin = screenToImageButton(x, y, this.buttons);
-    this.x = x;
-    this.y = y;
-    if (this.draggingItem) {
-      this.store.dispatch(setItemPosition(this.draggingItem.id, null, null));
-    }
+  startItemDrag(x, y) { // TODO: Add quantity argument
+    const item = screenToImageButton(x, y, this.buttons);
+    item && this.store.dispatch(dragItem(item, item.quantity, x, y));
   }
 
-  renderItemDrag(x, y) {
-    this.draggingItem = Object.assign({}, this.draggingItem, { xPos: x, yPos: y });
-    this.renderItem(this.draggingItem, this.draggingItem.xPos, this.draggingItem.yPos);
-  }
+  // TODO enable these for dropping use cases
+  // dropAllItems(x, y) {
+  //   this.endItemDrag(x, y, this.connect.draggedItem.quantity);
+  // }
+  //
+  // dropOneItem(x, y) {
+  //   this.endItemDrag(x, y, 1);
+  // }
 
-  endItemDrag(x, y) {
-    const dragging = this.draggingItem;
-    const origin = this.dragOrigin;
+  endItemDrag(x, y) { // TODO: Add quantity argument
+    const draggedItem = this.connect.draggedItem;
+    const draggedOrigin = this.connect.draggedOrigin;
     const slot = screenToImageButton(x, y, this.connect.slots);
-    const match = slot && this.buttons.find(button => {
-      return button.position === slot.position && button.type === slot.type;
-    });
-    // TODO: Uncomment commented lines and delete current setItemPosition calls
-    // NOTE: Do this after 'type' and 'position' are included in store copies of inventory items
-    if (slot && match) {
-      this.store.dispatch(
-        // setItemPosition(dragging, slot)
-        setItemPosition(dragging.id, slot.type, slot.position)
+    if (slot) {
+      const equipping = (
+        slot.type === SLOTS.PARTY &&
+        draggedItem.tags.some(tag =>
+          ["farming", "hunting", "fishing"].includes(tag)
+        )
       );
-      this.store.dispatch(
-        // setItemPosition(match, dragging)
-        setItemPosition(match.id, dragging.type, dragging.position)
+      const eating = (
+        slot.type === SLOTS.EATING && draggedItem.tags.includes("food")
       );
-    } else if (slot) {
-      this.store.dispatch(
-        // setItemPosition(dragging, slot)
-        setItemPosition(dragging.id, slot.type, slot.position)
-      );
-    } else {
-      this.store.dispatch(
-        // setItemPosition(dragging, origin)
-        setItemPosition(dragging.id, origin.type, origin.position)
-      );
+      const neither = slot.type === SLOTS.BACKPACK;
+      if (equipping || eating || neither) {
+        this.store.dispatch(
+          sendEvent(EVENTS.MOVE_ITEM, draggedItem.id, {
+            quantity: draggedItem.quantity,
+            srcType: draggedOrigin.type,
+            srcPosition: draggedOrigin.position,
+            destType: slot.type,
+            destPosition: slot.position
+          })
+        );
+      } else {
+        this.store.dispatch(error(801, "Cannot move item to this slot"));
+      }
     }
-    this.draggingItem = null;
+    // TODO: If there is jumpy behavior with server data, look here first
+    this.store.dispatch(endDrag());
   }
 
   render(delta) {

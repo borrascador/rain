@@ -49,7 +49,7 @@ export default class Inventory {
       for (let xPos = x + this.gutter; xPos < x + this.width; xPos += this.size + this.gutter) {
         this.ctx.fillRect(xPos, yPos, this.size, this.size);
         slots.push({
-          type: SLOTS.INVENTORY,
+          type: SLOTS.BACKPACK,
           position: counter++,
           xPos,
           yPos,

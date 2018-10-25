@@ -1,6 +1,7 @@
 import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import { sendEvent } from '../../store/actions/requests';
+import { EVENTS } from '../../store/actions/events';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
 import { drawById, drawByName, drawHover } from '../utils/draw';
@@ -44,7 +45,7 @@ export default class Camera {
       const { pos, zoom } = this.connect.map;
       const xCoord = Math.floor((x - tile.xPos) / zoom);
       const yCoord = Math.floor((y - tile.yPos) / zoom);
-      this.store.dispatch(sendEvent('move', tile.id, { x: xCoord, y: yCoord }));
+      this.store.dispatch(sendEvent(EVENTS.MOVE, tile.id, { x: xCoord, y: yCoord }));
     }
   }
 
@@ -132,9 +133,9 @@ export default class Camera {
     }
     this.clickTiles = clickTiles;
 
-    const { xMouse, yMouse } = this.connect.mouse;
-    if (xMouse && yMouse) {
-      const button = screenToImageButton(xMouse, yMouse, visiblePlayers);
+    const mousePos = this.connect.mousePos;
+    if (mousePos.x && mousePos.y) {
+      const button = screenToImageButton(mousePos.x, mousePos.y, visiblePlayers);
       button && drawHover(this.ctx, this.fontSize, button);
     }
 

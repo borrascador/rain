@@ -4,7 +4,6 @@ import { loginDialog } from '../dialogs/login';
 import { screenToTextButton } from '../components/utils';
 import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
-import {clicked} from '../../store/actions/actions';
 import { drawById, drawByName, centerText } from '../utils/draw';
 import { CONNECT_GREEN, DISCONNECT_RED, SOLID_WHITE, DARK_OPAQUE } from '../colors';
 
@@ -44,7 +43,6 @@ export default class TitleView {
 
   handleClick(x, y) {
     if (x && y) {
-      this.store.dispatch(clicked());
       const button = !this.dim && screenToTextButton(x, y, this.buttons);
       button && button.onClick(this.store, this.setDim)
     }

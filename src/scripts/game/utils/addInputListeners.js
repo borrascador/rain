@@ -1,9 +1,11 @@
 import {
   keyDown,
   keyUp,
-  mouseDown,
+  mouseDownLeft,
+  mouseDownRight,
   mouseMove,
-  mouseUp,
+  mouseUpLeft,
+  mouseUpRight,
 } from '../../store/actions/actions';
 
 export default function addInputListeners (dispatch, canvas) {
@@ -19,8 +21,8 @@ export default function addInputListeners (dispatch, canvas) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    event.button === 0 && dispatch(mouseDown(x, y));
-    event.button === 2 && console.log('right', x, y);
+    event.button === 0 && dispatch(mouseDownLeft(x, y));
+    event.button === 2 && dispatch(mouseDownRight(x, y));
   }, false);
 
   canvas.addEventListener('mousemove', (event) => {
@@ -34,6 +36,7 @@ export default function addInputListeners (dispatch, canvas) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    dispatch(mouseUp(x, y));
+    event.button === 0 && dispatch(mouseUpLeft(x, y));
+    event.button === 2 && dispatch(mouseUpRight(x, y));
   }, false);
 }

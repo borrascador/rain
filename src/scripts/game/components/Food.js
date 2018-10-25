@@ -1,5 +1,6 @@
 import Connect from '../../store/Connect';
 import { sendEvent } from '../../store/actions/requests';
+import { EVENTS } from '../../store/actions/events';
 import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 import { SLOTS } from '../constants';
@@ -49,11 +50,11 @@ export default class Food {
   }
 
   increaseRations(rations) {
-    rations < 2 && this.store.dispatch(sendEvent('rations', rations + 1));
+    rations < 2 && this.store.dispatch(sendEvent(EVENTS.RATIONS, rations + 1));
   }
 
   decreaseRations(rations) {
-    rations > 0 && this.store.dispatch(sendEvent('rations', rations - 1));
+    rations > 0 && this.store.dispatch(sendEvent(EVENTS.RATIONS, rations - 1));
   }
 
   update(x, y) {

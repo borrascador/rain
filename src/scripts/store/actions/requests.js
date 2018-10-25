@@ -47,7 +47,7 @@ export function login(user, password, dimCallback, exitLogin) {
         exitLoading();
         clearTimeout(timer);
         if (!getState().error) {
-          dispatch(changeMode(MODE.MAP));
+          dispatch(changeMode(MODE.GAME));
         } else {
           failureDialog(getState().errorMessage, dimCallback);
         }

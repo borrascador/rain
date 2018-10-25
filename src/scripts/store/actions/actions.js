@@ -1,38 +1,55 @@
 // Type and action definitions
 
-export const KEYDOWN = 'KEYDOWN';
+export const KEY_DOWN = 'KEY_DOWN';
 export const keyDown = (key) => ({
-  type: KEYDOWN,
+  type: KEY_DOWN,
   payload: { key }
 });
 
-export const KEYUP = 'KEYUP';
+export const KEY_UP = 'KEY_UP';
 export const keyUp = (key) => ({
-  type: KEYUP,
+  type: KEY_UP,
   payload: { key }
 });
 
-export const MOUSEDOWN = 'MOUSEDOWN';
-export const mouseDown = (x, y) => ({
-  type: MOUSEDOWN,
+export const MOUSE_DOWN_LEFT = 'MOUSE_DOWN_LEFT';
+export const mouseDownLeft = (x, y) => ({
+  type: MOUSE_DOWN_LEFT,
   payload: { x, y }
 });
 
-export const MOUSEMOVE = 'MOUSEMOVE';
+export const MOUSE_DOWN_RIGHT = 'MOUSE_DOWN_RIGHT';
+export const mouseDownRight = (x, y) => ({
+  type: MOUSE_DOWN_RIGHT,
+  payload: { x, y }
+});
+
+export const MOUSE_MOVE = 'MOUSE_MOVE';
 export const mouseMove = (x, y) => ({
-  type: MOUSEMOVE,
+  type: MOUSE_MOVE,
   payload: { x, y }
 });
 
-export const MOUSEUP = 'MOUSEUP';
-export const mouseUp = (x, y) => ({
-  type: MOUSEUP,
+export const MOUSE_UP_LEFT = 'MOUSE_UP_LEFT';
+export const mouseUpLeft = (x, y) => ({
+  type: MOUSE_UP_LEFT,
   payload: { x, y }
 });
 
-export const CLICKED = 'CLICKED';
-export const clicked = () => ({
-  type: CLICKED
+export const MOUSE_UP_RIGHT = 'MOUSE_UP_RIGHT';
+export const mouseUpRight = (x, y) => ({
+  type: MOUSE_UP_RIGHT,
+  payload: { x, y }
+});
+
+export const CLICKED_LEFT = 'CLICKED_LEFT';
+export const clickedLeft = () => ({
+  type: CLICKED_LEFT
+});
+
+export const CLICKED_RIGHT = 'CLICKED_RIGHT';
+export const clickedRight = () => ({
+  type: CLICKED_RIGHT
 });
 
 export const ZOOM_IN = 'ZOOM_IN';
@@ -50,20 +67,6 @@ export const setPartyTab = (partyTab) => ({
   type: SET_PARTY_TAB,
   payload: { partyTab }
 });
-
-export const SET_ITEM_POSITION = 'SET_ITEM_POSITION';
-export const setItemPosition = (id, type, position) => ({
-  type: SET_ITEM_POSITION,
-  payload: { id, type, position }
-});
-
-// TODO: Enable this and delete above when server-side item positioning is ready
-// NOTE: See Items.js, line 125
-// export const SET_ITEM_POSITION = 'SET_ITEM_POSITION';
-// export const setItemPosition = (start, end) => ({
-//   type: SET_ITEM_POSITION,
-//   payload: { start, end }
-// });
 
 export const REFRESH_SLOTS = 'REFRESH_SLOTS';
 export const refreshSlots = (slots) => ({
@@ -86,6 +89,17 @@ export const REMOVE_PARTY_MEMBER = 'REMOVE_PARTY_MEMBER';
 export const removePartyMember = (id) => ({
   type: REMOVE_PARTY_MEMBER,
   payload: { id }
+});
+
+export const DRAG_ITEM = 'DRAG_ITEM';
+export const dragItem = (item, quantity, x, y) => ({
+  type: DRAG_ITEM,
+  payload: { item, quantity, x, y }
+});
+
+export const END_DRAG = 'END_DRAG';
+export const endDrag = () => ({
+  type: END_DRAG
 });
 
 export const ERROR = 'ERROR';

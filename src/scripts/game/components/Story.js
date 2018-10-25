@@ -1,6 +1,7 @@
 import { MODE } from '../constants';
 import { clicked, changeMode, closeStory } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
+import { EVENTS } from '../../store/actions/events';
 import Connect from '../../store/Connect';
 import { screenToTextButton, screenToImageButton, getItemById } from './utils';
 import {
@@ -45,7 +46,7 @@ export default class Story {
   select(button, story) {
     this.store.dispatch(closeStory());
     if (story.canDispatch) {
-      this.store.dispatch(sendEvent('decision', button.id));
+      this.store.dispatch(sendEvent(EVENTS.DECISION, button.id));
     }
     this.selected = null;
   }
@@ -137,10 +138,10 @@ export default class Story {
   }
 
   renderHover(buttons) {
-    const { xMouse, yMouse } = this.connect.mouse;
-    if (xMouse && yMouse) {
+    const mousePos = this.connect.mousePos;
+    if (mousePos.x && mousePos.y) {
       const filteredButtons = buttons.filter(button => button.hoverText);
-      const item = screenToImageButton(xMouse, yMouse, filteredButtons);
+      const item = screenToImageButton(mousePos.x, mousePos.y, filteredButtons);
       if (item && item.hoverText) {
         drawHover(this.ctx, this.fontSize, item);
       }
