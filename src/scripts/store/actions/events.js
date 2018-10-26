@@ -9,5 +9,5 @@ export const EVENTS = {
   RATIONS: 'rations',
   DECISION: 'decision',
   PACE: 'pace',
-  MOVE_ITEM: 'grab_item',
+  MOVE_ITEM: 'move_item',
 };
