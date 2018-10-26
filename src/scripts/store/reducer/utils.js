@@ -215,7 +215,7 @@ export function updatePartyChanges(state, action) {
   }
 }
 
-export function getActions(inventory, eating, tiles, position) {
+export function getActions(inventory, tiles, position) {
   let actions = { 'main': [] };
 
   let itemsByTag = {};
@@ -228,33 +228,6 @@ export function getActions(inventory, eating, tiles, position) {
       }
     });
   });
-
-  actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
-  actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ];
-  if (itemsByTag['food']) {
-    actions['eating'] = actions['eating'].concat(
-      eating.map(food => {
-        const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
-        return Object.assign({}, food, {
-          tag: 'remove_food',
-          name: `remove ${matchedFood.name}`,
-          tileset: 'items'
-        });
-      })
-    );
-    actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
-    .concat(
-      itemsByTag['food']
-      .filter(invItem => !eating.find(eatItem => invItem.id === eatItem.id))
-      .map(item => {
-        return { tag: 'add_food', name: `add ${item.name}`, id: item.id, tileset: 'items' }
-      })
-    );
-  }
-
-  if (eating.length < 3) {
-    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
-  }
 
   if (itemsByTag['seed']) {
     actions['main'].push({ target: 'seed', id: 10, tileset: 'icons' });
