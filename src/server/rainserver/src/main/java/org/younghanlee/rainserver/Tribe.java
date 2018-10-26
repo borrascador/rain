@@ -83,6 +83,7 @@ public class Tribe {
 
 	
 	public JSONArray generateInventory(Player p) {
+		System.out.println("Generating inventory");
 		JSONArray inventory = new JSONArray();
 		for (int id: items.keySet()) {
 			Util.concat(inventory, p.add(id, items.get(id)));

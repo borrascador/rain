@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -398,6 +396,16 @@ public class Player {
 		return -1;
 	}
 	
+	public void addStack(int itemID, ItemStack stack) {
+		if (inventory.containsKey(itemID)) {
+			inventory.get(itemID).add(stack);
+		} else {
+			ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+			list.add(stack);
+			inventory.put(itemID, list);
+		}
+	}
+	
 	public JSONArray add(int itemID, int quantity) {
 		JSONArray ja = new JSONArray();
 		int maxStack = World.getItem(itemID).getMaxStack();
@@ -422,14 +430,17 @@ public class Player {
 		while (true) {
 			int p = getOpenPosition("BACKPACK");
 			occupied.get("BACKPACK").set(p, true);
-			if (maxStack <= left) {
-				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
-				ja.put(stack.change(left, null, null));
+			System.out.println("test");
+			if (maxStack >= left) {
+				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
+				addStack(itemID, stack);
+				ja.put(stack.toJSONObject());
 				return ja;
 			} else {
 				left -= maxStack;
-				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
-				ja.put(stack.change(maxStack, null, null));
+				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
+				addStack(itemID, stack);
+				ja.put(stack.toJSONObject());
 			}
 		}
 	}
@@ -460,11 +471,13 @@ public class Player {
 			occupied.get("BACKPACK").set(p, true);
 			if (maxStack <= left) {
 				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
+				addStack(itemID, stack);
 				ja.put(stack.change(left, null, null));
 				return ja;
 			} else {
 				left -= maxStack;
 				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
+				addStack(itemID, stack);
 				ja.put(stack.change(maxStack, null, null));
 			}
 		}
@@ -505,19 +518,28 @@ public class Player {
 			type = destType;
 		}
 		
+		ItemStack swap = null;
+		
+		// Swap if there is an item at the destination
+		
+		if (occupied.get(destType).get(destPosition)) {
+			for (int item: inventory.keySet()) {
+				for (ItemStack stack : inventory.get(item)) {
+					if (destPosition == stack.getPosition() && destType.equals(stack.getType())) {
+						swap = stack;
+					}
+				}
+			}
+		}
+		
 		for (ItemStack stack : inventory.get(itemID)) {
 			if (srcPosition == stack.getPosition() && srcType.equals(stack.getType())) {
 				ja.put(stack.change(null, destPosition, type));
 			}
 		}
 		
-		// Swap if there is an item at the destination
-		if (occupied.get(destType).get(destPosition)) {
-			for (ItemStack stack : inventory.get(itemID)) {
-				if (destPosition == stack.getPosition() && destType.equals(stack.getType())) {
-					ja.put(stack.change(null, srcPosition, type));
-				}
-			}
+		if (swap != null) {
+			ja.put(swap.change(null, srcPosition, type));
 		} else {
 			occupied.get(destType).set(destPosition, true);
 			occupied.get(srcType).set(srcPosition, true);
