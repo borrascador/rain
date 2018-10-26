@@ -472,35 +472,7 @@ var Connect = function () {
   }, {
     key: 'inventory',
     get: function get() {
-      // TODO Move logic to reducer
-      var _store$getState3 = this.store.getState(),
-          eating = _store$getState3.eating,
-          inventory = _store$getState3.inventory;
-
-      return inventory.map(function (item) {
-        var match = eating.find(function (food) {
-          return food.id === item.id;
-        });
-        return match ? Object.assign({}, item, { portion: match.portion }) : item;
-      });
-    }
-  }, {
-    key: 'eating',
-    get: function get() {
-      // TODO Move logic to reducer
-      var _store$getState4 = this.store.getState(),
-          eating = _store$getState4.eating,
-          inventory = _store$getState4.inventory;
-
-      return eating.map(function (food) {
-        var _inventory$find = inventory.find(function (item) {
-          return item.id === food.id;
-        }),
-            name = _inventory$find.name,
-            quantity = _inventory$find.quantity;
-
-        return Object.assign({}, food, { name: name, quantity: quantity });
-      });
+      return this.store.getState().inventory;
     }
   }, {
     key: 'slots',
@@ -2388,7 +2360,7 @@ function updatePartyChanges(state, action) {
   }
 }
 
-function getActions(inventory, eating, tiles, position) {
+function getActions(inventory, tiles, position) {
   var actions = { 'main': [] };
 
   var itemsByTag = {};
@@ -2401,32 +2373,6 @@ function getActions(inventory, eating, tiles, position) {
       }
     });
   });
-
-  actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
-  actions['eating'] = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }];
-  if (itemsByTag['food']) {
-    actions['eating'] = actions['eating'].concat(eating.map(function (food) {
-      var matchedFood = itemsByTag['food'].find(function (item) {
-        return item.id === food.id;
-      });
-      return Object.assign({}, food, {
-        tag: 'remove_food',
-        name: 'remove ' + matchedFood.name,
-        tileset: 'items'
-      });
-    }));
-    actions['food'] = [{ target: 'eating', name: 'back', id: 18, tileset: 'icons' }].concat(itemsByTag['food'].filter(function (invItem) {
-      return !eating.find(function (eatItem) {
-        return invItem.id === eatItem.id;
-      });
-    }).map(function (item) {
-      return { tag: 'add_food', name: 'add ' + item.name, id: item.id, tileset: 'items' };
-    }));
-  }
-
-  if (eating.length < 3) {
-    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' });
-  }
 
   if (itemsByTag['seed']) {
     actions['main'].push({ target: 'seed', id: 10, tileset: 'icons' });
@@ -4080,8 +4026,7 @@ function loginResponse(state, action) {
     tiles: action.payload.tiles,
     party: action.payload.party,
     inventory: action.payload.inventory,
-    eating: action.payload.eating,
-    actions: (0, _utils.getActions)(action.payload.inventory, action.payload.eating, action.payload.tiles, action.payload.position),
+    actions: (0, _utils.getActions)(action.payload.inventory, action.payload.tiles, action.payload.position),
     vehicle: action.payload.vehicle || null,
     stories: (0, _utils.updateStory)(state, action),
     inventoryChanges: (0, _utils.updateInventoryChanges)(state, action),
@@ -4112,7 +4057,6 @@ function update(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
-  var eating = action.payload.eating || state.eating;
   var position = typeof action.payload.position === 'number' ? action.payload.position : state.position;
   var xCoord = typeof action.payload.xCoord === 'number' ? action.payload.xCoord : state.xCoord;
   var yCoord = typeof action.payload.yCoord === 'number' ? action.payload.yCoord : state.yCoord;
@@ -4129,12 +4073,11 @@ function update(state, action) {
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
+  var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
     inventory: inventory,
     tiles: tiles,
     party: party,
-    eating: eating,
     position: position,
     xCoord: xCoord,
     yCoord: yCoord,
@@ -4154,7 +4097,6 @@ function eventResponse(state, action) {
   var inventory = (0, _utils.mergeArrays)(state.inventory, action.payload.inventory);
   var tiles = (0, _utils.mergeArrays)(state.tiles, action.payload.tiles);
   var party = (0, _utils.mergeArrays)(state.party, action.payload.party);
-  var eating = action.payload.eating || state.eating;
   var position = typeof action.payload.position === 'number' ? action.payload.position : state.position;
   var xCoord = typeof action.payload.xCoord === 'number' ? action.payload.xCoord : state.xCoord;
   var yCoord = typeof action.payload.yCoord === 'number' ? action.payload.yCoord : state.yCoord;
@@ -4166,7 +4108,7 @@ function eventResponse(state, action) {
   var partyChanges = (0, _utils.updatePartyChanges)(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
   var rations = [0, 1, 2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  var actions = (0, _utils.getActions)(inventory, eating, tiles, position);
+  var actions = (0, _utils.getActions)(inventory, tiles, position);
   return Object.assign({}, state, {
     sending: false,
     error: null,
@@ -4174,7 +4116,6 @@ function eventResponse(state, action) {
     inventory: inventory,
     tiles: tiles,
     party: party,
-    eating: eating,
     position: position,
     xCoord: xCoord,
     yCoord: yCoord,
