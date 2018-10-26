@@ -1,6 +1,7 @@
 import Connect from '../../store/Connect';
-import { logout, sendEvent } from '../../store/actions/requests';
 import { zoomIn, zoomOut } from '../../store/actions/actions';
+import { logout, sendEvent } from '../../store/actions/requests';
+import { EVENTS } from '../../store/actions/events';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
 import { SOLID_WHITE, BRIGHT_YELLOW } from '../colors';
@@ -14,8 +15,6 @@ export default class Zoom {
 
     this.connect = new Connect(this.store);
 
-    console.log(this.ctx.measureText("PACE"));
-
     this.scale = 2;
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
 
@@ -23,9 +22,9 @@ export default class Zoom {
     this.ctx.font = this.fontSize + 'px MECC';
 
     this.buttons = [
-      { name: 'PACE', onClick: () => sendEvent('pace', 0), id: 0 },
-      { name: 'PACE', onClick: () => sendEvent('pace', 1), id: 1 },
-      { name: 'PACE', onClick: () => sendEvent('pace', 2), id: 2 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 0), id: 0 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 1), id: 1 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 2), id: 2 },
       { name: 'settings', onClick: logout },
       { name: 'zoom-out', onClick: zoomOut },
       { name: 'zoom-in', onClick: zoomIn }
@@ -42,9 +41,9 @@ export default class Zoom {
     const rations = this.connect.rations;
     this.ctx.fillStyle = SOLID_WHITE;
     this.ctx.font = this.fontSize + 'px MECC';
-    const textWidth = this.ctx.measureText("PACE").width;
+    const textWidth = this.ctx.measureText('PACE').width;
     this.ctx.fillText(
-      "PACE",
+      'PACE',
       (this.size * 3 - textWidth) / 2,
       this.canvas.height - this.size * 2
     );
@@ -52,7 +51,7 @@ export default class Zoom {
       const xPos = this.size * (index % 3);
       const yPos = this.canvas.height - this.size * 2 + Math.floor(index / 3) * this.size;
       const [width, height] = Array(2).fill(this.size);
-      if (typeof button.id === "number") {
+      if (typeof button.id === 'number') {
         if (button.id === pace) {
           this.ctx.fillStyle = BRIGHT_YELLOW;
         } else {

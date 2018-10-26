@@ -45,11 +45,11 @@ export default class PartyWindow {
       const yMax = yMin + this.height;
       const button = screenToImageButton(x, y, this.party)
       if (x > xMin && x < xMax && y > yMin && y < yMax) {
-        console.log('hit');
+        console.log('Click inside party window');
       } else if (button) {
         this.store.dispatch(setPartyTab(button.id));
       } else {
-        this.store.dispatch(changeMode(MODE.MAP));
+        this.store.dispatch(changeMode(MODE.GAME));
       }
     }
   }
@@ -174,14 +174,14 @@ export default class PartyWindow {
   }
 
   renderHover() {
-    const { xMouse, yMouse } = this.connect.mouse;
-    if (xMouse && yMouse) {
-      const hoverTab = screenToImageButton(xMouse, yMouse, this.party);
+    const mousePos = this.connect.mousePos;
+    if (mousePos.x && mousePos.y) {
+      const hoverTab = screenToImageButton(mousePos.x, mousePos.y, this.party);
       if (hoverTab && hoverTab.id !== this.connect.partyTab) {
         drawHover(this.ctx, this.fontSize, hoverTab);
       }
       const iconList = this.skills.concat(this.modifiers);
-      const hoverIcon = screenToImageButton(xMouse, yMouse, iconList);
+      const hoverIcon = screenToImageButton(mousePos.x, mousePos.y, iconList);
       if (hoverIcon) {
         drawHover(this.ctx, this.fontSize, hoverIcon);
       }

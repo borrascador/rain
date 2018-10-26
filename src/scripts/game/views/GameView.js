@@ -4,10 +4,9 @@ import Camera from '../components/Camera';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import PartyWindow from '../components/PartyWindow';
-import { clicked } from '../../store/actions/actions';
 import { FOREST_BLACK, MEDIUM_OPAQUE } from '../colors';
 
-export default class MapView {
+export default class GameView {
   constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
@@ -28,7 +27,6 @@ export default class MapView {
   }
 
   update(keys, x, y) {
-    x && y && this.store.dispatch(clicked());
     if (!this.dim) {
       if (this.connect.stories.length > 0) {
         this.story.update(keys, x, y);

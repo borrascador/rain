@@ -1,4 +1,4 @@
-import { MODE } from '../../game/constants';
+import { MODE, SLOTS } from '../../game/constants';
 import {
   updateObject, updateItemInArray, updatePositionInArray, removeStory
 } from './utils';
@@ -50,62 +50,71 @@ export function keyUp(state, action) {
   }
 }
 
-export function mouseDown(state, action) {
+export function mouseDownLeft(state, action) {
   return updateObject(state, {
-    xDown: action.payload.x,
-    yDown: action.payload.y,
-    xDrop: null,
-    yDrop: null
+    mouseDownLeft: { x: action.payload.x, y: action.payload.y },
+    mouseDrop: { x: null, y: null }
+  });
+}
+
+export function mouseDownRight(state, action) {
+  return updateObject(state, {
+    mouseDownRight: { x: action.payload.x, y: action.payload.y }
   });
 }
 
 export function mouseMove(state, action) {
-  if (state.xDown && state.yDown) {
+  if (state.mouseDownLeft.x && state.mouseDownLeft.y) {
     return updateObject(state, {
-      xOffset: state.xOffset + action.payload.x - state.xMouse,
-      yOffset: state.yOffset + action.payload.y - state.yMouse,
-      xMouse: action.payload.x,
-      yMouse: action.payload.y,
+      mouseOffset: {
+        x: state.mouseOffset.x + action.payload.x - state.mousePos.x,
+        y: state.mouseOffset.y + action.payload.y - state.mousePos.y,
+      },
+      mousePos: { x: action.payload.x, y: action.payload.y }
     });
   } else {
     return updateObject(state, {
-      xOffset: null,
-      yOffset: null,
-      xMouse: action.payload.x,
-      yMouse: action.payload.y,
+      mouseOffset: { x: null, y: null },
+      mousePos: { x: action.payload.x, y: action.payload.y }
     });
   }
 }
 
-export function mouseUp(state, action) {
+export function mouseUpLeft(state, action) {
   if (
-    Math.abs(state.xDown - action.payload.x) < 15 &&
-    Math.abs(state.yDown - action.payload.y) < 15
+    Math.abs(state.mouseDownLeft.x - action.payload.x) < 15 &&
+    Math.abs(state.mouseDownLeft.y - action.payload.y) < 15
   ) {
     return updateObject(state, {
-      xOffset: null,
-      yOffset: null,
-      xDown: null,
-      yDown: null,
-      xClick: action.payload.x,
-      yClick: action.payload.y,
+      mouseOffset: { x: null, y: null },
+      mouseDownLeft: { x: null, y: null },
+      clickLeft: { x: action.payload.x, y: action.payload.y }
     });
   } else {
     return updateObject(state, {
-      xOffset: null,
-      yOffset: null,
-      xDown: null,
-      yDown: null,
-      xDrop: action.payload.x,
-      yDrop: action.payload.y,
+      mouseOffset: { x: null, y: null },
+      mouseDownLeft: { x: null, y: null },
+      mouseDrop: { x: action.payload.x, y: action.payload.y }
     });
   }
 }
 
-export function clicked(state) {
+export function mouseUpRight(state, action) {
   return updateObject(state, {
-    xClick: null,
-    yClick: null
+    mouseDownRight: { x: null, y: null },
+    clickRight: { x: action.payload.x, y: action.payload.y }
+  });
+}
+
+export function clickedLeft(state) {
+  return updateObject(state, {
+    clickLeft: { x: null, y: null }
+  });
+}
+
+export function clickedRight(state) {
+  return updateObject(state, {
+    clickRight: { x: null, y: null }
   });
 }
 
@@ -135,16 +144,37 @@ export function setPartyTab(state, action) {
   });
 }
 
-export function setItemPosition(state, action) {
+export function dragItem(state, action) {
   return updateObject(state, {
-    inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
-      return updateObject(item, {
-        type: action.payload.type,
-        position: action.payload.position
-      });
+    draggedItem: updateObject(action.payload.item, {
+      quantity: action.payload.quantity,
+      type: SLOTS.DRAG
+    }),
+    draggedOrigin: updateObject(action.payload.item, {
+      quantity: action.payload.item.quantity - action.payload.quantity,
+      x: action.payload.item.xPos - action.payload.x,
+      y: action.payload.item.yPos - action.payload.y
     })
   });
 }
+
+export function endDrag(state) {
+  return updateObject(state, {
+    draggedItem: null,
+    draggedOrigin: null
+  });
+}
+
+// export function setItemPosition(state, action) {
+//   return updateObject(state, {
+//     inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
+//       return updateObject(item, {
+//         type: action.payload.type,
+//         position: action.payload.position
+//       });
+//     })
+//   });
+// }
 
 // TODO: Enable this and delete above when server-side item positioning is ready
 // NOTE: See Items.js, line 125

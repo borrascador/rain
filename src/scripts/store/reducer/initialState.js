@@ -12,9 +12,9 @@ const uiState = {
   partyTab: 0,
   actions: { 'main': [] },
   zoom: 3,
-  dragCurrent: null,
-  dragOrigin: null,
-  slots: {}
+  draggedItem: null,
+  draggedOrigin: null,
+  slots: []
 };
 
 const gameState = {
@@ -37,14 +37,13 @@ const gameState = {
 };
 
 const inputState = {
-  xDown: null,
-  yDown: null,
-  xOffset: null,
-  yOffset: null,
-  xMouse: null,
-  yMouse: null,
-  xClick: null,
-  yClick: null,
+  mouseDownLeft: { x: null, y: null },
+  mouseDownRight: { x: null, y: null },
+  mouseDrop: { x: null, y: null },
+  mouseOffset: { x: null, y: null },
+  mousePos: { x: null, y: null },
+  clickLeft: { x: null, y: null },
+  clickRight: { x: null, y: null },
   keys: makeKeys()
 };
 

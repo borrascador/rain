@@ -37,11 +37,6 @@ export default class Connect {
     return this.store.getState().actions;
   }
 
-  get click() {
-    const {xClick, yClick} = this.store.getState();
-    return {xClick, yClick,};
-  }
-
   get keys() {
     const allKeys = this.store.getState().keys;
     const trueKeys = Object.keys(allKeys).filter(x => {
@@ -50,24 +45,32 @@ export default class Connect {
     return trueKeys;
   }
 
-  get offset() {
-    const {xOffset, yOffset} = this.store.getState();
-    return {xOffset, yOffset,};
+  get mouseDownLeft() {
+    return this.store.getState().mouseDownLeft;
   }
 
-  get mouse() {
-    const {xMouse, yMouse} = this.store.getState();
-    return {xMouse, yMouse,};
+  get mouseDownRight() {
+    return this.store.getState().mouseDownRight;
   }
 
-  get down() {
-    const {xDown, yDown} = this.store.getState();
-    return {xDown, yDown,};
+  get mouseDrop() {
+    return this.store.getState().mouseDrop;
   }
 
-  get drop() {
-    const {xDrop, yDrop} = this.store.getState();
-    return {xDrop, yDrop,};
+  get mouseOffset() {
+    return this.store.getState().mouseOffset;
+  }
+
+  get mousePos() {
+    return this.store.getState().mousePos;
+  }
+
+  get clickLeft() {
+    return this.store.getState().clickLeft;
+  }
+
+  get clickRight() {
+    return this.store.getState().clickRight;
   }
 
   get stories() {
@@ -75,7 +78,7 @@ export default class Connect {
   }
 
   get map() {
-    const { position, xCoord, yCoord, positionTarget, xTarget, yTarget, tiles, sight, zoom} = this.store.getState();
+    const { position, xCoord, yCoord, positionTarget, xTarget, yTarget, tiles, sight, zoom } = this.store.getState();
     const { x, y } = tiles.find(tile => tile.id === position);
     const pos = { x, y };
     const coords = { x: xCoord, y: yCoord };
@@ -114,12 +117,12 @@ export default class Connect {
     return this.store.getState().slots;
   }
 
-  get dragCurrent() {
-    return this.store.getState().dragCurrent;
+  get draggedItem() {
+    return this.store.getState().draggedItem;
   }
 
-  get dragOrigin() {
-    return this.store.getState().dragOrigin;
+  get draggedOrigin() {
+    return this.store.getState().draggedOrigin;
   }
 
   get party() {

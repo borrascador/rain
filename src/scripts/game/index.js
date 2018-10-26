@@ -11,10 +11,12 @@ import iconsTileset from '../../data/icons.json';
 import iconsXlTileset from '../../data/icons-xl.json';
 import waterTileset from '../../data/water.json';
 import itemsTileset from '../../data/items.json';
-import MapView from './views/MapView';
+import GameView from './views/GameView';
 import TitleView from './views/TitleView';
-import {changeMode} from '../store/actions/actions';
-import {MODE} from './constants.js'
+import { changeMode } from '../store/actions/actions';
+import { MODE } from './constants.js'
+import { clickedLeft } from '../store/actions/actions';
+
 
 export default class RainGame {
 	constructor (store, canvas, ctx) {
@@ -39,9 +41,10 @@ export default class RainGame {
 			this.loader.setImage('items', itemsImage, itemsTileset)
 		])
     .then(loaded => {
-			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
+			this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
 			this.titleView = new TitleView(this.store, this.canvas, this.ctx, this.loader);
-    }).then(() => {
+    })
+		.then(() => {
 			window.requestAnimationFrame(this.tick);
 		})
   }
@@ -63,19 +66,20 @@ export default class RainGame {
 
 		if (this.connect.mode !== MODE.TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
 			this.store.dispatch(changeMode(MODE.TITLE));
-			this.mapView = new MapView(this.store, this.canvas, this.ctx, this.loader);
+			this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
 		}
 
 		const keys = this.connect.keys;
-		const { xClick, yClick } = this.connect.click;
+		const clickLeft = this.connect.clickLeft;
+		clickLeft.x && clickLeft.y && this.store.dispatch(clickedLeft());
 		switch (this.connect.mode) {
 			case MODE.TITLE:
-				this.titleView.update(keys, xClick, yClick);
+				this.titleView.update(keys, clickLeft.x, clickLeft.y);
 				this.titleView.render(delta);
 				break;
 			default:
-				this.mapView.update(keys, xClick, yClick);
-				this.mapView.render(delta);
+				this.gameView.update(keys, clickLeft.x, clickLeft.y);
+				this.gameView.render(delta);
 				break;
 		}
 	}

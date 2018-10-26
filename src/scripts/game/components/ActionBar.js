@@ -3,6 +3,7 @@ import { drawById, drawByName, drawHover } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
 import { sendError } from '../../store/actions/actions';
+import { EVENTS } from '../../store/actions/events';
 import { DARK_RED, MEDIUM_RED, SOLID_WHITE } from '../colors';
 
 export default class ActionBar {
@@ -34,7 +35,7 @@ export default class ActionBar {
       } else if (button.tag) {
         switch (button.tag) {
           case 'seed':
-            this.store.dispatch(sendEvent('plant', button.id))
+            this.store.dispatch(sendEvent(EVENTS.PLANT, button.id))
             this.current = 'main';
             break;
           case 'harvest':
@@ -43,24 +44,24 @@ export default class ActionBar {
               crop.name === button.name
             );
             if (currentCrop && currentCrop.stage <= 0) { // TODO <= to ===
-              this.store.dispatch(sendEvent('harvest', button.id));
+              this.store.dispatch(sendEvent(EVENTS.HARVEST, button.id));
             }
             this.current = 'main';
             break;
           case 'hunting':
-            this.store.dispatch(sendEvent('hunt', button.id))
+            this.store.dispatch(sendEvent(EVENTS.HUNT, button.id))
             this.current = 'main';
             break;
           case 'fishing':
-            this.store.dispatch(sendEvent('fish', button.id))
+            this.store.dispatch(sendEvent(EVENTS.FISH, button.id))
             this.current = 'main';
             break;
           case 'add_food':
-            this.store.dispatch(sendEvent('add_food', button.id))
+            this.store.dispatch(sendEvent(EVENTS.ADD_FOOD, button.id))
             this.current = 'main'; // COMBAK 'eating' instead?
             break;
           case 'remove_food':
-            this.store.dispatch(sendEvent('remove_food', button.id))
+            this.store.dispatch(sendEvent(EVENTS.REMOVE_FOOD, button.id))
             this.current = 'main'; // COMBAK 'eating' instead?
             break;
           default:
@@ -120,9 +121,9 @@ export default class ActionBar {
   }
 
   renderHover() {
-    const { xMouse, yMouse } = this.connect.mouse;
-    if (xMouse && yMouse) {
-      const button = screenToImageButton(xMouse, yMouse, this.buttons);
+    const mousePos = this.connect.mousePos;
+    if (mousePos.x && mousePos.y) {
+      const button = screenToImageButton(mousePos.x, mousePos.y, this.buttons);
       button && drawHover(this.ctx, this.fontSize, button);
     }
   }
