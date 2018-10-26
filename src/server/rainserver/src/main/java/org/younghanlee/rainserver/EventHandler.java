@@ -90,15 +90,13 @@ public class EventHandler {
 				response = p.getDecision().choose(p, id);
 				connection.sendJSON(response);
 				break;
-			case "add_food":
-				payload = new JSONObject();
-				payload.put("eating", p.add_food(new Integer(event.getInt("id"))));
-				response = Message.EVENT_RESPONSE(payload);
-				connection.sendJSON(response);
-				break;
-			case "remove_food":
-				payload = new JSONObject();
-				payload.put("eating", p.remove_food(new Integer(event.getInt("id"))));
+			case "move_item":
+				id = event.getInt("id");
+				int srcPosition = event.getInt("srcPosition");
+				int destPosition = event.getInt("destPosition");
+				String srcType = event.getString("srcType");
+				String destType = event.getString("destType");
+				payload = p.moveStack(id, srcPosition, destPosition, srcType, destType);
 				response = Message.EVENT_RESPONSE(payload);
 				connection.sendJSON(response);
 				break;

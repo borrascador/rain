@@ -133,8 +133,8 @@ public class Animal {
 				}		
 			}
 			if (value > 0) {
-				JSONObject itemObject = World.getItem(item).change(item, value, p, false);
-				items.put(itemObject);
+				JSONArray drop = p.add(item, value);
+				Util.concat(items, drop);
 			}
 		}
 		return items;

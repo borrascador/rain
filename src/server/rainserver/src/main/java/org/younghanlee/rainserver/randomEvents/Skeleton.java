@@ -42,7 +42,7 @@ public class Skeleton {
 			String story = "You take the map and place it in your backpack.";
 			JSONObject payload = Decision.payload(story);
 			int item_id = 44;
-			payload.put("inventory", World.getItem(item_id).change(item_id, 1, p, false));
+			payload.put("inventory", p.add(item_id, 1));
 			return Message.EVENT_RESPONSE(payload);
 		}
 		public ArrayList<Multiplier> generateMultipliers(Player p){
@@ -111,7 +111,7 @@ public class Skeleton {
 			Decision d = new Decision(choiceNames, story, p);
 			JSONObject payload = d.payload(p);
 			int item_id = 44;
-			payload.put("inventory", World.getItem(item_id).change(item_id, 1, p, false));
+			payload.put("inventory", p.add(item_id, 1));
 			return Message.EVENT_RESPONSE(payload);
 		}
 		public ArrayList<Multiplier> generateMultipliers(Player p){
