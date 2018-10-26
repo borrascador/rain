@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -422,14 +420,15 @@ public class Player {
 		while (true) {
 			int p = getOpenPosition("BACKPACK");
 			occupied.get("BACKPACK").set(p, true);
-			if (maxStack <= left) {
-				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
-				ja.put(stack.change(left, null, null));
+			System.out.println("test");
+			if (maxStack >= left) {
+				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
+				ja.put(stack.toJSONObject());
 				return ja;
 			} else {
 				left -= maxStack;
-				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
-				ja.put(stack.change(maxStack, null, null));
+				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
+				ja.put(stack.toJSONObject());
 			}
 		}
 	}
