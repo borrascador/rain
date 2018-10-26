@@ -63,14 +63,12 @@ public class ItemStack {
 	public JSONObject change(Integer quantity, Integer position, String type) {
 		JSONObject jo = new JSONObject();
 		if (type != null || position != null) {
-			jo.put("srcPosition", this.position);
 			this.position = position;
-			jo.put("destPosition", position);
+			jo.put("position", position);
 			
 			if (type != null) {
-				jo.put("srcType", this.type);
 				this.type = type;
-				jo.put("destType", type);
+				jo.put("type", type);
 			}
 		}
 		

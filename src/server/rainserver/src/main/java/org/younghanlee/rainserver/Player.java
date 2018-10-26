@@ -60,7 +60,7 @@ public class Player {
 		inventory = new HashMap<Integer, ArrayList<ItemStack>>();
 		// Which backpack slots are occupied
 		capacity = new HashMap<String, Integer>();
-		capacity.put("PARTY", 0);
+		capacity.put("PARTY", 3);
 		capacity.put("BACKPACK", 20);
 		capacity.put("EATING", 3);
 		
@@ -416,7 +416,7 @@ public class Player {
 				int stackSize = itemstack.getQuantity();
 				if (stackSize < maxStack) {
 					int difference = maxStack - stackSize;
-					if (difference <= left) {
+					if (difference >= left) {
 						ja.put(itemstack.change(stackSize + left, null, null));
 						return ja;
 					} else {
@@ -438,7 +438,7 @@ public class Player {
 				return ja;
 			} else {
 				left -= maxStack;
-				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
+				ItemStack stack = new ItemStack(itemID, maxStack, p, "BACKPACK");
 				addStack(itemID, stack);
 				ja.put(stack.toJSONObject());
 			}
@@ -513,10 +513,6 @@ public class Player {
 	public JSONObject moveStack(int itemID, int srcPosition, int destPosition, String srcType, String destType) {
 		JSONObject payload = new JSONObject();
 		JSONArray ja = new JSONArray();
-		String type = null;
-		if (!srcType.equals(destType)) {
-			type = destType;
-		}
 		
 		ItemStack swap = null;
 		
@@ -534,12 +530,12 @@ public class Player {
 		
 		for (ItemStack stack : inventory.get(itemID)) {
 			if (srcPosition == stack.getPosition() && srcType.equals(stack.getType())) {
-				ja.put(stack.change(null, destPosition, type));
+				ja.put(stack.change(null, destPosition, destType));
 			}
 		}
 		
 		if (swap != null) {
-			ja.put(swap.change(null, srcPosition, type));
+			ja.put(swap.change(null, srcPosition, srcType));
 		} else {
 			occupied.get(destType).set(destPosition, true);
 			occupied.get(srcType).set(srcPosition, true);
