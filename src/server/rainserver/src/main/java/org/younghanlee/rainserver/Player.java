@@ -1,6 +1,7 @@
 package org.younghanlee.rainserver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,13 +26,14 @@ public class Player {
 	private int pace;
 	private int speed;
 	private int rations;
-	private ArrayList<Integer> eating;
+	private HashMap<String, Integer> capacity;
 	
 	private int sight;
 	private ArrayList<Integer> tilesSeen; // Tiles to send upon login
 	
 	private ArrayList<Integer> party; // id of party members
-	private HashMap<Integer, Integer> backpack; // item id, quantity
+	private HashMap<Integer, ArrayList<ItemStack>> inventory; // item id, position in inventory 
+	private HashMap<String, ArrayList<Boolean>> occupied;
 	
 	private Move move; // Initialize with move(), stop with stopMoving()
 	private Hunt hunt; // Initialize with startHunting(), stop with stopHunting()
@@ -57,8 +59,17 @@ public class Player {
 		// Empty data structures
 		tilesSeen = new ArrayList<Integer>();
 		party = new ArrayList<Integer>();	
-		backpack = new HashMap<Integer, Integer>();
-		eating = new ArrayList<Integer>();
+		inventory = new HashMap<Integer, ArrayList<ItemStack>>();
+		// Which backpack slots are occupied
+		capacity = new HashMap<String, Integer>();
+		capacity.put("PARTY", 0);
+		capacity.put("BACKPACK", 20);
+		capacity.put("EATING", 3);
+		
+		occupied = new HashMap<String, ArrayList<Boolean>>();
+		occupied.put("BACKPACK", new ArrayList<Boolean>(Collections.nCopies(capacity.get("BACKPACK"), false)));
+		occupied.put("PARTY", new ArrayList<Boolean>(Collections.nCopies(capacity.get("PARTY"), false)));
+		occupied.put("EATING", new ArrayList<Boolean>(Collections.nCopies(capacity.get("EATING"), false)));
 		
 		pace = 0;
 		speed = 4;
@@ -149,29 +160,29 @@ public class Player {
 		}
 		
 		// Eat food
-		if (tick % 60 == 0) {
-			ArrayList<Integer> copy = new ArrayList<Integer>();
-			for (Integer i: eating) {
-				copy.add(new Integer(i));
-			}
-			JSONArray inventory = eat(copy);
-			if (inventory.length() > 0) {
-				payload.put("inventory", inventory);
-			} 
-			if (copy.size() > eating.size()) {
-				JSONObject story = new JSONObject();
-				String message = "";
-				// Find out which food ran out and remove from eating
-				for (int i: copy) {
-					if (!eating.contains(i)) {
-						message += "You don't have enough " + World.getItem(i).getName() + " left to eat. ";
-					}
-				}
-				payload.put("eating", eatingToJSONArray());
-				story.put("text", message);
-				payload.put("story", story);
-			}
-		}
+//		if (tick % 60 == 0) {
+//			ArrayList<Integer> copy = new ArrayList<Integer>();
+//			for (Integer i: eating) {
+//				copy.add(new Integer(i));
+//			}
+//			JSONArray inventory = eat(copy);
+//			if (inventory.length() > 0) {
+//				payload.put("inventory", inventory);
+//			} 
+//			if (copy.size() > eating.size()) {
+//				JSONObject story = new JSONObject();
+//				String message = "";
+//				// Find out which food ran out and remove from eating
+//				for (int i: copy) {
+//					if (!eating.contains(i)) {
+//						message += "You don't have enough " + World.getItem(i).getName() + " left to eat. ";
+//					}
+//				}
+//				payload.put("eating", eatingToJSONArray());
+//				story.put("text", message);
+//				payload.put("story", story);
+//			}
+//		}
 		
 //		JSONArray partyArray = regen(tick);
 //		if (partyArray.length() > 0) {
@@ -351,39 +362,176 @@ public class Player {
 		return ja;
 	}
 	
-	public void setQuantity(int itemID, int quantity) {
-		if (quantity > 0) {
-			backpack.put(itemID, quantity);
+	public JSONArray setQuantity(int itemID, int quantity) {
+		JSONArray ja = new JSONArray();
+		// If quantity is 0 remove all stacks 
+		if (quantity <= 0) {
+			if (inventory.containsKey(itemID)){
+				
+				for (int item : inventory.keySet()) {
+					for (ItemStack stack : inventory.get(item)) {
+						occupied.get(stack.getType()).set(stack.getPosition(), false);
+						ja.put(stack.change(0, null, null));
+					}
+					inventory.remove(item);
+				}
+			}
+			return ja;
 		} else {
-			backpack.remove(itemID);
+			int count = getQuantity(itemID);
+			int difference = quantity - count;
+			if (difference > 0) {
+				return add(itemID, difference);
+			} else {
+				return subtract(itemID, difference, false);
+			}
+		}
+	}
+	
+	public int getOpenPosition(String type) {
+		for (int i=0; i<capacity.get(type); i++) {
+			ArrayList<Boolean> slots = occupied.get(type);
+			if (!slots.get(i)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public JSONArray add(int itemID, int quantity) {
+		JSONArray ja = new JSONArray();
+		int maxStack = World.getItem(itemID).getMaxStack();
+		int left = quantity;
+		if (inventory.containsKey(itemID)){
+			// Top off existing stacks
+			for (ItemStack itemstack : inventory.get(itemID)) {
+				int stackSize = itemstack.getQuantity();
+				if (stackSize < maxStack) {
+					int difference = maxStack - stackSize;
+					if (difference <= left) {
+						ja.put(itemstack.change(stackSize + left, null, null));
+						return ja;
+					} else {
+						left -= difference;
+						ja.put(itemstack.change(maxStack, null, null));
+					}
+				}
+			}
+		}
+		// Create new stacks if necessary
+		while (true) {
+			int p = getOpenPosition("BACKPACK");
+			occupied.get("BACKPACK").set(p, true);
+			if (maxStack <= left) {
+				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
+				ja.put(stack.change(left, null, null));
+				return ja;
+			} else {
+				left -= maxStack;
+				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
+				ja.put(stack.change(maxStack, null, null));
+			}
+		}
+	}
+	
+	public JSONArray subtract(int itemID, int quantity, boolean requireFull) {
+		JSONArray ja = new JSONArray();
+		int maxStack = World.getItem(itemID).getMaxStack();
+		int left = quantity;
+		if (inventory.containsKey(itemID)){
+			// Top off existing stacks
+			for (ItemStack itemstack : inventory.get(itemID)) {
+				int stackSize = itemstack.getQuantity();
+				if (stackSize < maxStack) {
+					int difference = maxStack - stackSize;
+					if (difference <= left) {
+						ja.put(itemstack.change(stackSize + left, null, null));
+						return ja;
+					} else {
+						left -= difference;
+						ja.put(itemstack.change(maxStack, null, null));
+					}
+				}
+			}
+		}
+		// Create new stacks if necessary
+		while (true) {
+			int p = getOpenPosition("BACKPACK");
+			occupied.get("BACKPACK").set(p, true);
+			if (maxStack <= left) {
+				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
+				ja.put(stack.change(left, null, null));
+				return ja;
+			} else {
+				left -= maxStack;
+				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
+				ja.put(stack.change(maxStack, null, null));
+			}
 		}
 	}
 	
 	public int getQuantity(int itemID) {
-		if (backpack.containsKey(itemID)){
-			return backpack.get(itemID);
+		if (inventory.containsKey(itemID)){
+			int quantity = 0;
+			for (ItemStack itemstack : inventory.get(itemID)) {
+				quantity += itemstack.getQuantity();
+			}
+			return quantity;
 		} else return 0;
 	}
 	
 	public JSONArray emptyInventory() {
-		JSONArray inventory = new JSONArray();
-		ArrayList<Integer> keys = new ArrayList<Integer>();
-		for (int k : backpack.keySet()) {
-			keys.add(k);
+		JSONArray ja = new JSONArray();
+		for (String type: occupied.keySet()) {
+			for (int i=0; i<capacity.get(type); i++) {
+				occupied.get(type).set(i, false);
+			}	
 		}
 		
-		for (int item_id : keys) {
-			JSONObject item = World.getItem(item_id).change(item_id, -1 * getQuantity(item_id), this, false);
-			inventory.put(item);
+		for (int item : inventory.keySet()) {
+			for (ItemStack stack : inventory.get(item)) {
+				ja.put(stack.change(0, null, null));
+			}
+			inventory.remove(item);
 		}
-		return inventory;
+		return ja;
 	}
 	
-	public JSONArray backpackToJSONArray() {
+	public JSONObject moveStack(int itemID, int srcPosition, int destPosition, String srcType, String destType) {
+		JSONObject payload = new JSONObject();
 		JSONArray ja = new JSONArray();
-		for (int i: backpack.keySet()) {
-			Item item = World.getItem(i);
-			ja.put(item.toJSONObject(i, backpack.get(i)));
+		String type = null;
+		if (!srcType.equals(destType)) {
+			type = destType;
+		}
+		
+		for (ItemStack stack : inventory.get(itemID)) {
+			if (srcPosition == stack.getPosition() && srcType.equals(stack.getType())) {
+				ja.put(stack.change(null, destPosition, type));
+			}
+		}
+		
+		// Swap if there is an item at the destination
+		if (occupied.get(destType).get(destPosition)) {
+			for (ItemStack stack : inventory.get(itemID)) {
+				if (destPosition == stack.getPosition() && destType.equals(stack.getType())) {
+					ja.put(stack.change(null, srcPosition, type));
+				}
+			}
+		} else {
+			occupied.get(destType).set(destPosition, true);
+			occupied.get(srcType).set(srcPosition, true);
+		}
+		payload.put("inventory", ja);
+		return payload;	
+	}
+	
+	public JSONArray inventoryToJSONArray() {
+		JSONArray ja = new JSONArray();
+		for (int item: inventory.keySet()) {
+			for (ItemStack itemstack: inventory.get(item)) {
+				ja.put(itemstack.toJSONObject());
+			}
 		}
 		return ja;
 	}
@@ -417,49 +565,23 @@ public class Player {
 		return ja;
 	}
 	
-	public int Portion(int id) {
-		return - rations * 6/eating.size();
-	}
-	
-	public JSONArray eat(ArrayList<Integer> copy) {
-		JSONArray changes = new JSONArray();
-		for (Integer id: copy) {
-			JSONObject item = World.getItem(id).change(id, Portion(id), this, false);
-			if (item.getInt("quantity") == 0) {
-				eating.remove(id);
-			}
-			
-			changes.put(item);
-		}
-		return changes;
-	}
-	
-	public JSONArray add_food(Integer id) {
-		if (eating.size() < 3 && !eating.contains(id) && backpack.containsKey(id)) {
-			eating.add(id);
-		}
-		return eatingToJSONArray();
-	}
-	
-	public JSONArray remove_food(Integer id) {
-		System.out.println(id);
-		System.out.println(eating);
-		if (eating.contains(id)) {
-			eating.remove(id);
-		}
-		return eatingToJSONArray();
-	}
-	
-	public JSONArray eatingToJSONArray() {
-		JSONArray ja = new JSONArray();
-		for (int id: eating) {
-			JSONObject jo = new JSONObject();
-			jo.put("id", id);
-			jo.put("portion", Portion(id));
-			ja.put(jo);
-		}
-		return ja;
-	}
+//	public int Portion(int id) {
+//		return - rations * 6/eating.size();
+//	}
+//	
+//	public JSONArray eat(ArrayList<Integer> copy) {
+//		JSONArray changes = new JSONArray();
+//		for (Integer id: copy) {
+//			JSONObject item = World.getItem(id).change(id, Portion(id), this, false);
+//			if (item.getInt("quantity") == 0) {
+//				eating.remove(id);
+//			}
+//			
+//			changes.put(item);
+//		}
+//		return changes;
+//	}
+
 	
 	public void setTribe(int id) {
 		tribe = id;

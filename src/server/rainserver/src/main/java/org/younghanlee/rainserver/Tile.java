@@ -193,9 +193,7 @@ public class Tile {
 		if (n >= 1) {
 			int yield_id = World.getItem(seed_id).getYield();
 			
-			JSONObject inventory_change = World.getItem(seed_id).change(seed_id, -1, p, true);
-			JSONArray inventory_changes = new JSONArray();
-			inventory_changes.put(inventory_change);
+			JSONArray inventory_changes = p.subtract(seed_id, 1, true);
 
 			this.crops.put(yield_id, 10);
 			updateNeighbors(null, 0);
@@ -215,10 +213,8 @@ public class Tile {
 			return Message.ERROR(314, World.getItem(crop_id).getName() +" is still growing");
 		}
 		int yield = 2 + Util.randomInt(10);
-			
-		JSONObject inventory_change = World.getItem(crop_id).change(crop_id, yield, p, false);
-		JSONArray inventory_changes = new JSONArray();
-		inventory_changes.put(inventory_change);
+		
+		JSONArray inventory_changes = p.add(crop_id, yield);
 			
 		this.crops.remove(crop_id);
 		updateNeighbors(null, 0);

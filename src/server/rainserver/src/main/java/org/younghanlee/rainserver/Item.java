@@ -15,6 +15,7 @@ public class Item {
 	// If this is a seed what fruit does it yield
 	private int yield;
 	HashSet<String> tags;
+	private int maxStack;
 	
 	public Item(String name, int yield) {
 		this.name = name;
@@ -22,6 +23,7 @@ public class Item {
 			this.yield = yield;
 		}
 		this.tags = new HashSet<String>();
+		this.maxStack = 20;
 	}
 	
 	public static HashMap<Integer, Item> readFile() {
@@ -72,50 +74,14 @@ public class Item {
 		return tags.contains(s);
 	}
 	
-	// returns JSONObject containing id, name, new_quantity, change
-	// this will be a payload in EVENT_RESPONSE or UPDATE
-	public JSONObject change(int id, int change, Player p, boolean requireFull) {
-		JSONObject jo = new JSONObject();
-		
-		// How many does the player have
-		int quantity = p.getQuantity(id);
-		
-		// actual_change may be different if we try to subtract more than the player has
-		int actual_change = change;
-		
-		if (quantity + change < 0) {
-			if (requireFull) {
-				return null;
-			} else actual_change = -quantity;
-		}
-
-		// Case when we add an item not yet owned
-		if (quantity == 0 && change >=0 ) {
-			jo.put("yield", yield);
-			JSONArray tagArray = new JSONArray();
-			for (String s: tags) {
-				tagArray.put(s);
-			}
-			jo.put("tags", tagArray);
-		}
-		
-		jo.put("id", id);
-		jo.put("name", name);
-		
-		quantity += actual_change;
-		p.setQuantity(id, quantity);
-		
-		jo.put("quantity", quantity);
-		jo.put("change", actual_change);
-		return jo;
+	public int getMaxStack() {
+		return maxStack;
 	}
 	
 	
-	public JSONObject toJSONObject(int id, int quantity) {
+	public JSONObject toJSONObject() {
 		JSONObject jo = new JSONObject();
-		jo.put("id", id);
 		jo.put("name", name);
-		jo.put("quantity", quantity);
 		jo.put("yield", yield);
 		JSONArray tagArray = new JSONArray();
 		for (String s: tags) {
