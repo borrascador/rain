@@ -513,10 +513,6 @@ public class Player {
 	public JSONObject moveStack(int itemID, int srcPosition, int destPosition, String srcType, String destType) {
 		JSONObject payload = new JSONObject();
 		JSONArray ja = new JSONArray();
-		String type = null;
-		if (!srcType.equals(destType)) {
-			type = destType;
-		}
 		
 		ItemStack swap = null;
 		
@@ -534,12 +530,12 @@ public class Player {
 		
 		for (ItemStack stack : inventory.get(itemID)) {
 			if (srcPosition == stack.getPosition() && srcType.equals(stack.getType())) {
-				ja.put(stack.change(null, destPosition, type));
+				ja.put(stack.change(null, destPosition, destType));
 			}
 		}
 		
 		if (swap != null) {
-			ja.put(swap.change(null, srcPosition, type));
+			ja.put(swap.change(null, srcPosition, srcType));
 		} else {
 			occupied.get(destType).set(destPosition, true);
 			occupied.get(srcType).set(srcPosition, true);
