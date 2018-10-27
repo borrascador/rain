@@ -2175,6 +2175,20 @@ function updatePositionInArray(array, type, position, updateItemCallback) {
   });
 }
 ;
+
+function compareObjects(a, b) {
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+  if (aProps.length != bProps.length) return false;
+
+  for (var i = 0; i < aProps.length; i++) {
+    var propName = aProps[i];
+    if (a[propName] !== b[propName]) return false;
+  }
+
+  return true;
+}
+
 function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   var obj = {};
@@ -2340,50 +2354,41 @@ function mergeSlots(oldArray, newArray) {
   }
 
   ;
+  var newObj = {};
   var _iteratorNormalCompletion4 = true;
   var _didIteratorError4 = false;
   var _iteratorError4 = undefined;
 
   try {
-    var _loop2 = function _loop2() {
+    for (var _iterator4 = newArray[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
       var newItem = _step4.value;
-      var key = makeKey(newItem.type, newItem.position);
 
-      if (obj[key]) {
-        // TODO #1 Use existing item data to populate sparse incoming items
-        // TODO #2 Figure out how to implement this later
+      var _key = makeKey(newItem.type, newItem.position);
+
+      if (obj[_key]) {
+        // TODO Figure out how to implement this later
         // if (newItem.hasOwnProperty('quantity') && newItem.quantity === 0) {
         //   obj[key] = Object.assign(getSlotProps(obj[key]));
         // }
-        if (['srcType', 'srcPosition', 'destType', 'destPosition'].every(function (prop) {
-          return newItem.hasOwnProperty(prop);
-        })) {
-          var srcType = newItem.srcType,
-              srcPosition = newItem.srcPosition,
-              destType = newItem.destType,
-              destPosition = newItem.destPosition,
-              rest = _objectWithoutProperties(newItem, ["srcType", "srcPosition", "destType", "destPosition"]);
+        obj[_key] = Object.assign(obj[_key], newItem);
+      } else if (newItem.hasOwnProperty('srcType') && newItem.hasOwnProperty('srcPosition') && newItem.hasOwnProperty('destType') && newItem.hasOwnProperty('destPosition')) {
+        var srcType = newItem.srcType,
+            srcPosition = newItem.srcPosition,
+            destType = newItem.destType,
+            destPosition = newItem.destPosition,
+            rest = _objectWithoutProperties(newItem, ["srcType", "srcPosition", "destType", "destPosition"]);
 
-          var srcKey = makeKey(srcType, srcPosition);
-          var destKey = makeKey(destType, destPosition);
+        var destKey = makeKey(destType, destPosition);
+        var srcKey = makeKey(srcType, srcPosition);
+        newObj[destKey] = Object.assign({}, obj[srcKey], getSlotProps(obj[destKey]), rest);
 
-          if (key === srcKey) {
-            obj[key] = Object.assign(getSlotProps(obj[key]));
-          } else if (key === destKey) {
-            obj[key] = Object.assign(obj[key], rest);
-          }
-        } else {
-          obj[key] = Object.assign(obj[key], newItem);
+        if (compareObjects(obj[destKey], getSlotProps(obj[destKey]))) {
+          newObj[srcKey] = getSlotProps(obj[srcKey]);
         }
       } else {
-        obj[key] = newItem;
+        obj[_key] = newItem;
       }
-    };
-
-    for (var _iterator4 = newArray[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-      _loop2();
-    } // convert object of items into array of items
-
+    }
   } catch (err) {
     _didIteratorError4 = true;
     _iteratorError4 = err;
@@ -2398,6 +2403,8 @@ function mergeSlots(oldArray, newArray) {
       }
     }
   }
+
+  obj = Object.assign(obj, newObj); // convert object of items into array of items
 
   var result = [];
 
@@ -2465,7 +2472,7 @@ function updatePartyChanges(state, action) {
     var _iteratorError5 = undefined;
 
     try {
-      var _loop3 = function _loop3() {
+      var _loop2 = function _loop2() {
         var item = _step5.value;
         var memberChanges = state.partyChanges.filter(function (member) {
           return item.id === member.id;
@@ -2553,7 +2560,7 @@ function updatePartyChanges(state, action) {
       };
 
       for (var _iterator5 = party[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-        var _ret2 = _loop3();
+        var _ret2 = _loop2();
 
         if (_ret2 === "continue") continue;
       }
