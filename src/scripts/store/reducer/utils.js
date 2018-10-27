@@ -73,6 +73,58 @@ export function mergeArrays(oldArray, newArray) {
   return result;
 };
 
+function makeKey(type, position) {
+  return `${type},${position}`;
+}
+
+function getSlotProps({ type, position, xPos, yPos, width, height }) {
+  return { type, position, xPos, yPos, width, height };
+}
+
+export function mergeSlots(oldArray, newArray) {
+  if (!newArray) return oldArray;
+  let obj = {};
+  for (let oldItem of oldArray) {
+    const key = makeKey(oldItem.type, oldItem.position);
+    obj[key] = oldItem;
+  };
+  for (let newItem of newArray) {
+    const key = makeKey(newItem.type, newItem.position);
+    if (obj[key]) {
+      // TODO #1 Use existing item data to populate sparse incoming items
+      // TODO #2 Figure out how to implement this later
+      // if (newItem.hasOwnProperty('quantity') && newItem.quantity === 0) {
+      //   obj[key] = Object.assign(getSlotProps(obj[key]));
+      // }
+      if (
+        ['srcType', 'srcPosition', 'destType', 'destPosition'].every(prop => {
+          return newItem.hasOwnProperty(prop);
+        })
+      ) {
+        const {srcType, srcPosition, destType, destPosition, ...rest} = newItem;
+        const srcKey = makeKey(srcType, srcPosition);
+        const destKey = makeKey(destType, destPosition);
+        if (key === srcKey) {
+          obj[key] = Object.assign(getSlotProps(obj[key]));
+        } else if (key === destKey) {
+          obj[key] = Object.assign(obj[key], rest)
+        }
+      } else {
+        obj[key] = Object.assign(obj[key], newItem);
+      }
+    } else {
+      obj[key] = newItem;
+    }
+  }
+  // convert object of items into array of items
+  let result = [];
+  for (let prop in obj) {
+    if (obj.hasOwnProperty(prop))
+      result.push(obj[prop]);
+  }
+  return result;
+};
+
 export function updateStory(state, action) {
   if (action.payload.story) {
     return state.stories.concat([
@@ -220,7 +272,7 @@ export function getActions(inventory, tiles, position) {
 
   let itemsByTag = {};
   inventory.length > 0 && inventory.forEach(item => {
-    item.tags.forEach((tag, index) => {
+    item.tags && item.tags.forEach((tag, index) => {
       if (itemsByTag[tag]) {
         itemsByTag[tag].push(item);
       } else {

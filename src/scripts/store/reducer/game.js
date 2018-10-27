@@ -1,6 +1,6 @@
 import {
-  updateParty, getActions, mergeArrays, updateStory, updateInventoryChanges,
-  updatePartyChanges
+  updateParty, getActions, mergeArrays, mergeSlots, updateStory,
+  updateInventoryChanges, updatePartyChanges
 } from './utils';
 import { MODE } from '../../game/constants';
 import { revisedInitialState } from './initialState';
@@ -51,7 +51,7 @@ export function loginResponse(state, action) {
     loggedIn: true,
     tiles: action.payload.tiles,
     party: action.payload.party,
-    inventory: action.payload.inventory,
+    slots: mergeSlots(state.slots, action.payload.inventory),
     actions: getActions(
       action.payload.inventory,
       action.payload.tiles,
@@ -86,7 +86,7 @@ export function logoutResponse(state) {
 }
 
 export function update(state, action) {
-  const inventory = mergeArrays(state.inventory, action.payload.inventory);
+  const slots = mergeSlots(state.slots, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const position = typeof action.payload.position === 'number'
@@ -101,7 +101,10 @@ export function update(state, action) {
     ? action.payload.xTarget : state.xTarget
   let yTarget = typeof action.payload.yTarget === 'number'
     ? action.payload.yTarget : state.yTarget;
-  if (positionTarget !== null && positionTarget === position && xTarget === xCoord && yTarget === yCoord) {
+  if (
+    positionTarget !== null && positionTarget === position &&
+    xTarget === xCoord && yTarget === yCoord
+  ) {
     positionTarget = null;
     xTarget = null;
     yTarget = null;
@@ -109,11 +112,15 @@ export function update(state, action) {
   const stories = updateStory(state, action);
   const inventoryChanges = updateInventoryChanges(state, action);
   const partyChanges = updatePartyChanges(state, action);
-  const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
-  const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  const actions = getActions(inventory, tiles, position);
+  const pace = [0,1,2].includes(action.payload.pace)
+    ? action.payload.pace
+    : state.pace;
+  const rations = [0,1,2].includes(action.payload.rations)
+    ? action.payload.rations
+    : state.rations;
+  const actions = getActions(slots, tiles, position);
   return Object.assign({}, state, {
-    inventory,
+    slots,
     tiles,
     party,
     position,
@@ -132,7 +139,7 @@ export function update(state, action) {
 }
 
 export function eventResponse(state, action) {
-  const inventory = mergeArrays(state.inventory, action.payload.inventory);
+  const slots = mergeSlots(state.slots, action.payload.inventory);
   const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const position = typeof action.payload.position === 'number'
@@ -150,14 +157,18 @@ export function eventResponse(state, action) {
   const stories = updateStory(state, action);
   const inventoryChanges = updateInventoryChanges(state, action);
   const partyChanges = updatePartyChanges(state, action);
-  const pace = [0,1,2].includes(action.payload.pace) ? action.payload.pace : state.pace;
-  const rations = [0,1,2].includes(action.payload.rations) ? action.payload.rations : state.rations;
-  const actions = getActions(inventory, tiles, position);
+  const pace = [0,1,2].includes(action.payload.pace)
+    ? action.payload.pace
+    : state.pace;
+  const rations = [0,1,2].includes(action.payload.rations)
+    ? action.payload.rations
+    : state.rations;
+  const actions = getActions(slots, tiles, position);
   return Object.assign({}, state, {
     sending: false,
     error: null,
     errorMessage: null,
-    inventory,
+    slots,
     tiles,
     party,
     position,
