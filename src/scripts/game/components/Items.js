@@ -68,18 +68,7 @@ export default class Items {
     this.ctx.fillStyle = SOLID_WHITE;
     const draggedItem = this.connect.draggedItem;
     const draggedOrigin = this.connect.draggedOrigin;
-    this.buttons = this.connect.inventory.map( (button, index) => {
-
-      // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-      // DEBUG Hopefully this does not interfere with server data
-      // if (!button.hasOwnProperty('position') && !button.hasOwnProperty('type')) {
-      //   button = Object.assign({}, button, {
-      //     position: index,
-      //     type: SLOTS.BACKPACK
-      //   })
-      // }
-      // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-
+    this.buttons = this.connect.slots.map( (button, index) => {
       const dragged = draggedItem && (
         draggedItem.position === button.position &&
         draggedItem.type === button.type
@@ -88,16 +77,13 @@ export default class Items {
         draggedOrigin.position === button.position &&
         draggedOrigin.type === button.type
       );
-      const match = this.connect.slots.find(slot => {
-        return slot.position === button.position && slot.type === button.type;
-      });
-      if (match && !dragged && !origin) { // TODO: Display partial origin
-        this.renderItem(button, match.xPos, match.yPos);
+      if (button.quantity > 0 && !dragged && !origin) { // TODO: Display partial origin
+        this.renderItem(button, button.xPos, button.yPos);
         return Object.assign({}, button, {
           type: button.type,
           position: button.position,
-          xPos: match.xPos,
-          yPos: match.yPos,
+          xPos: button.xPos,
+          yPos: button.yPos,
           width: this.size,
           height: this.size
         });
@@ -111,7 +97,7 @@ export default class Items {
     const mousePos = this.connect.mousePos;
     if (mousePos.x && mousePos.y) {
       const button = screenToImageButton(mousePos.x, mousePos.y, this.buttons);
-      button && drawHover(this.ctx, this.fontSize, button);
+      button && button.name && drawHover(this.ctx, this.fontSize, button);
     }
   }
 

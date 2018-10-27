@@ -1,6 +1,6 @@
 import { MODE, SLOTS } from '../../game/constants';
 import {
-  updateObject, updateItemInArray, updatePositionInArray, removeStory
+  updateObject, updateItemInArray, updatePositionInArray, removeStory, mergeSlots
 } from './utils';
 
 export function makeKeys() {
@@ -190,7 +190,8 @@ export function endDrag(state) {
 
 export function refreshSlots(state, action) {
   return updateObject(state, {
-    slots: action.payload.slots,
+    // slots: action.payload.slots
+    slots: mergeSlots(state.slots, action.payload.slots)
   });
 }
 
