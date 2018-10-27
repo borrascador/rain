@@ -18,6 +18,17 @@ export function updatePositionInArray(array, type, position, updateItemCallback)
   });
 };
 
+function compareObjects(a, b) {
+    var aProps = Object.getOwnPropertyNames(a);
+    var bProps = Object.getOwnPropertyNames(b);
+    if (aProps.length != bProps.length) return false;
+    for (let i = 0; i < aProps.length; i++) {
+        let propName = aProps[i];
+        if (a[propName] !== b[propName]) return false;
+    }
+    return true;
+}
+
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
@@ -88,34 +99,35 @@ export function mergeSlots(oldArray, newArray) {
     const key = makeKey(oldItem.type, oldItem.position);
     obj[key] = oldItem;
   };
+  let newObj = {};
   for (let newItem of newArray) {
     const key = makeKey(newItem.type, newItem.position);
     if (obj[key]) {
-      // TODO #1 Use existing item data to populate sparse incoming items
-      // TODO #2 Figure out how to implement this later
+      // TODO Figure out how to implement this later
       // if (newItem.hasOwnProperty('quantity') && newItem.quantity === 0) {
       //   obj[key] = Object.assign(getSlotProps(obj[key]));
       // }
-      if (
-        ['srcType', 'srcPosition', 'destType', 'destPosition'].every(prop => {
-          return newItem.hasOwnProperty(prop);
-        })
-      ) {
-        const {srcType, srcPosition, destType, destPosition, ...rest} = newItem;
-        const srcKey = makeKey(srcType, srcPosition);
-        const destKey = makeKey(destType, destPosition);
-        if (key === srcKey) {
-          obj[key] = Object.assign(getSlotProps(obj[key]));
-        } else if (key === destKey) {
-          obj[key] = Object.assign(obj[key], rest)
-        }
-      } else {
-        obj[key] = Object.assign(obj[key], newItem);
+      obj[key] = Object.assign(obj[key], newItem);
+    } else if (
+      newItem.hasOwnProperty('srcType') &&
+      newItem.hasOwnProperty('srcPosition') &&
+      newItem.hasOwnProperty('destType') &&
+      newItem.hasOwnProperty('destPosition')
+    ) {
+      const {srcType, srcPosition, destType, destPosition, ...rest} = newItem;
+      const destKey = makeKey(destType, destPosition);
+      const srcKey = makeKey(srcType, srcPosition);
+      newObj[destKey] = (
+        Object.assign({}, obj[srcKey], getSlotProps(obj[destKey]), rest)
+      );
+      if (compareObjects(obj[destKey], getSlotProps(obj[destKey]))) {
+        newObj[srcKey] = getSlotProps(obj[srcKey]);
       }
     } else {
       obj[key] = newItem;
     }
   }
+  obj = Object.assign(obj, newObj);
   // convert object of items into array of items
   let result = [];
   for (let prop in obj) {
