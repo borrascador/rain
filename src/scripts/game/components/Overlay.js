@@ -23,14 +23,14 @@ export default class Overlay {
     this.items = new Items(this.store, this.canvas, this.ctx, this.loader);
   }
 
-  update(x, y) {
-    this.food.update(x, y);
-    this.party.update(x, y);
-    this.inventory.update(x, y);
-    this.actionBar.update(x, y);
-    this.habitat.update(x, y);
-    this.zoom.update(x, y);
-    this.items.update(x, y);
+  update(left, right) {
+    this.food.update(left.x, left.y);
+    this.party.update(left.x, left.y);
+    this.inventory.update(left.x, left.y);
+    this.actionBar.update(left.x, left.y);
+    this.habitat.update(left.x, left.y);
+    this.zoom.update(left.x, left.y);
+    this.items.update(left, right);
   }
 
   render(delta) {

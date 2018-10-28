@@ -48,8 +48,8 @@ export default class TitleView {
     }
   }
 
-  update(keys, x, y) {
-    this.handleClick(x, y);
+  update(keys, left, right) {
+    this.handleClick(left.x, left.y);
   }
 
   renderBackground() {

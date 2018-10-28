@@ -26,15 +26,15 @@ export default class GameView {
     this.dim = dim;
   }
 
-  update(keys, x, y) {
+  update(keys, left, right) {
     if (!this.dim) {
       if (this.connect.stories.length > 0) {
-        this.story.update(keys, x, y);
+        this.story.update(keys, left.x, left.y);
       } else if (this.connect.mode === MODE.PARTY) {
-        this.partyWindow.update(x, y);
+        this.partyWindow.update(left.x, left.y);
       } else {
-        this.connect.currentTile && this.camera.update(x, y);
-        this.overlay.update(x, y);
+        this.connect.currentTile && this.camera.update(left.x, left.y);
+        this.overlay.update(left, right);
       }
     }
   }

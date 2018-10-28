@@ -147,11 +147,11 @@ export function setPartyTab(state, action) {
 export function dragItem(state, action) {
   return updateObject(state, {
     draggedItem: updateObject(action.payload.item, {
-      quantity: action.payload.quantity,
+      quantity: action.payload.dragQuantity,
       type: SLOTS.DRAG
     }),
     draggedOrigin: updateObject(action.payload.item, {
-      quantity: action.payload.item.quantity - action.payload.quantity,
+      quantity: action.payload.originQuantity,
       x: action.payload.item.xPos - action.payload.x,
       y: action.payload.item.yPos - action.payload.y
     })

@@ -256,12 +256,13 @@ var removePartyMember = function removePartyMember(id) {
   };
 };
 var DRAG_ITEM = 'DRAG_ITEM';
-var dragItem = function dragItem(item, quantity, x, y) {
+var dragItem = function dragItem(item, dragQuantity, originQuantity, x, y) {
   return {
     type: DRAG_ITEM,
     payload: {
       item: item,
-      quantity: quantity,
+      dragQuantity: dragQuantity,
+      originQuantity: originQuantity,
       x: x,
       y: y
     }
@@ -1272,7 +1273,10 @@ function configureStore() {
     }
   });
   return Object(__WEBPACK_IMPORTED_MODULE_2_redux__["b" /* createStore */])(__WEBPACK_IMPORTED_MODULE_3__reducer__["a" /* default */], Object(__WEBPACK_IMPORTED_MODULE_2_redux__["a" /* applyMiddleware */])(__WEBPACK_IMPORTED_MODULE_0_redux_thunk__["a" /* default */], __WEBPACK_IMPORTED_MODULE_4_redux_websocket_bridge___default()(function () {
-    var rws = new __WEBPACK_IMPORTED_MODULE_5_reconnecting_websocket__["a" /* default */]('ws://localhost:8887/', [], {});
+    var rws = new __WEBPACK_IMPORTED_MODULE_5_reconnecting_websocket__["a" /* default */]('ws://localhost:8887/', [], {
+      maxReconnectionDelay: 500,
+      connectionTimeout: 500
+    });
     rws.addEventListener('close', function () {
       return rws._shouldReconnect && rws._connect();
     });
@@ -2072,11 +2076,11 @@ function setPartyTab(state, action) {
 function dragItem(state, action) {
   return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(state, {
     draggedItem: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(action.payload.item, {
-      quantity: action.payload.quantity,
+      quantity: action.payload.dragQuantity,
       type: __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG
     }),
     draggedOrigin: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(action.payload.item, {
-      quantity: action.payload.item.quantity - action.payload.quantity,
+      quantity: action.payload.originQuantity,
       x: action.payload.item.xPos - action.payload.x,
       y: action.payload.item.yPos - action.payload.y
     })
@@ -5494,15 +5498,17 @@ function () {
       var keys = this.connect.keys;
       var clickLeft = this.connect.clickLeft;
       clickLeft.x && clickLeft.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["D" /* clickedLeft */])());
+      var clickRight = this.connect.clickRight;
+      clickRight.x && clickRight.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["E" /* clickedRight */])());
 
       switch (this.connect.mode) {
         case __WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE:
-          this.titleView.update(keys, clickLeft.x, clickLeft.y);
+          this.titleView.update(keys, clickLeft, clickRight);
           this.titleView.render(delta);
           break;
 
         default:
-          this.gameView.update(keys, clickLeft.x, clickLeft.y);
+          this.gameView.update(keys, clickLeft, clickRight);
           this.gameView.render(delta);
           break;
       }
@@ -5732,15 +5738,15 @@ function () {
     }
   }, {
     key: "update",
-    value: function update(keys, x, y) {
+    value: function update(keys, left, right) {
       if (!this.dim) {
         if (this.connect.stories.length > 0) {
-          this.story.update(keys, x, y);
+          this.story.update(keys, left.x, left.y);
         } else if (this.connect.mode === __WEBPACK_IMPORTED_MODULE_0__constants__["b" /* MODE */].PARTY) {
-          this.partyWindow.update(x, y);
+          this.partyWindow.update(left.x, left.y);
         } else {
-          this.connect.currentTile && this.camera.update(x, y);
-          this.overlay.update(x, y);
+          this.connect.currentTile && this.camera.update(left.x, left.y);
+          this.overlay.update(left, right);
         }
       }
     }
@@ -6067,14 +6073,14 @@ function () {
 
   _createClass(Overlay, [{
     key: "update",
-    value: function update(x, y) {
-      this.food.update(x, y);
-      this.party.update(x, y);
-      this.inventory.update(x, y);
-      this.actionBar.update(x, y);
-      this.habitat.update(x, y);
-      this.zoom.update(x, y);
-      this.items.update(x, y);
+    value: function update(left, right) {
+      this.food.update(left.x, left.y);
+      this.party.update(left.x, left.y);
+      this.inventory.update(left.x, left.y);
+      this.actionBar.update(left.x, left.y);
+      this.habitat.update(left.x, left.y);
+      this.zoom.update(left.x, left.y);
+      this.items.update(left, right);
     }
   }, {
     key: "render",
@@ -6956,14 +6962,13 @@ function () {
 
   _createClass(Items, [{
     key: "update",
-    value: function update(xLeft, yLeft) {
-      var clickRight = this.connect.clickRight;
-      clickRight.x && clickRight.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["E" /* clickedRight */])());
+    value: function update(left, right) {
+      if (left.x && left.y) {
+        this.connect.draggedItem ? this.dropFullStack(left.x, left.y) : this.grabFullStack(left.x, left.y);
+      }
 
-      if (xLeft && yLeft) {
-        this.connect.draggedItem ? this.endItemDrag(xLeft, yLeft) : this.startItemDrag(xLeft, yLeft);
-      } else if (clickRight.x && clickRight.y) {
-        console.log('right click!!');
+      if (right.x && right.y) {
+        this.connect.draggedItem ? this.dropOneItem(right.x, right.y) : this.grabHalfStack(right.x, right.y);
       }
     }
   }, {
@@ -7035,32 +7040,66 @@ function () {
       var draggedItem = this.connect.draggedItem;
       var draggedOrigin = this.connect.draggedOrigin;
 
+      if (draggedOrigin && draggedOrigin.quantity > 0) {
+        this.renderItem(draggedOrigin, draggedOrigin.xPos, draggedOrigin.yPos);
+      }
+
       if (!draggedItem && mouseOffset.x && mouseOffset.y) {
-        this.startItemDrag(mousePos.x, mousePos.y); // TODO: Add quantity argument
+        this.grabFullStack(mousePos.x, mousePos.y);
       } else if (draggedItem && mouseDrop.x && mouseDrop.y) {
-        this.endItemDrag(mouseDrop.x, mouseDrop.y); // TODO: Add quantity argument
+        this.dropFullStack(mouseDrop.x, mouseDrop.y);
       } else if (draggedItem) {
         this.renderItem(draggedItem, mousePos.x + draggedOrigin.x, mousePos.y + draggedOrigin.y);
       }
     }
   }, {
-    key: "startItemDrag",
-    value: function startItemDrag(x, y) {
-      // TODO: Add quantity argument
-      var item = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
-      item && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(item, item.quantity, x, y));
-    } // TODO enable these for dropping use cases
-    // dropAllItems(x, y) {
-    //   this.endItemDrag(x, y, this.connect.draggedItem.quantity);
-    // }
-    //
-    // dropOneItem(x, y) {
-    //   this.endItemDrag(x, y, 1);
-    // }
+    key: "grabFullStack",
+    value: function grabFullStack(x, y) {
+      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
 
+      if (stack && stack.hasOwnProperty('id')) {
+        var dragQuantity = stack.quantity;
+        var originQuantity = 0;
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity, x, y));
+      }
+    }
   }, {
-    key: "endItemDrag",
-    value: function endItemDrag(x, y) {
+    key: "grabHalfStack",
+    value: function grabHalfStack(x, y) {
+      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
+
+      if (stack && stack.hasOwnProperty('id')) {
+        var dragQuantity = Math.floor(stack.quantity / 2);
+        var originQuantity = stack.quantity - dragQuantity;
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity, x, y));
+      }
+    }
+  }, {
+    key: "dropFullStack",
+    value: function dropFullStack(x, y) {
+      this.dropItems(x, y, this.connect.draggedItem.quantity);
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* endDrag */])());
+    }
+  }, {
+    key: "dropOneItem",
+    value: function dropOneItem(x, y) {
+      var draggedItem = this.connect.draggedItem;
+      var draggedOrigin = this.connect.draggedOrigin;
+      this.dropItems(x, y, 1);
+
+      if (draggedItem.quantity - 1 === 0) {
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* endDrag */])());
+      } else {
+        var dragQuantity = draggedItem.quantity - 1;
+        var originQuantity = 0;
+        var xOrigin = draggedItem.xPos - draggedOrigin.x;
+        var yOrigin = draggedItem.yPos - draggedOrigin.y;
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(draggedItem, dragQuantity, originQuantity, xOrigin, yOrigin));
+      }
+    }
+  }, {
+    key: "dropItems",
+    value: function dropItems(x, y, quantity) {
       // TODO: Add quantity argument
       var draggedItem = this.connect.draggedItem;
       var draggedOrigin = this.connect.draggedOrigin;
@@ -7075,7 +7114,7 @@ function () {
 
         if (equipping || eating || neither) {
           this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, draggedItem.id, {
-            quantity: draggedItem.quantity,
+            quantity: quantity,
             srcType: draggedOrigin.type,
             srcPosition: draggedOrigin.position,
             destType: slot.type,
@@ -7084,10 +7123,7 @@ function () {
         } else {
           this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["I" /* error */])(801, "Cannot move item to this slot"));
         }
-      } // TODO: If there is jumpy behavior with server data, look here first
-
-
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* endDrag */])());
+      }
     }
   }, {
     key: "render",
@@ -7624,8 +7660,8 @@ function () {
     }
   }, {
     key: "update",
-    value: function update(keys, x, y) {
-      this.handleClick(x, y);
+    value: function update(keys, left, right) {
+      this.handleClick(left.x, left.y);
     }
   }, {
     key: "renderBackground",

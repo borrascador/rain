@@ -32,15 +32,16 @@ export default class Items {
     this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
   }
 
-  update(xLeft, yLeft) {
-    const clickRight = this.connect.clickRight;
-    clickRight.x && clickRight.y && this.store.dispatch(clickedRight());
-    if (xLeft && yLeft) {
+  update(left, right) {
+    if (left.x && left.y) {
       this.connect.draggedItem
-        ? this.endItemDrag(xLeft, yLeft)
-        : this.startItemDrag(xLeft, yLeft);
-    } else if (clickRight.x && clickRight.y) {
-      console.log('right click!!');
+        ? this.dropFullStack(left.x, left.y)
+        : this.grabFullStack(left.x, left.y);
+    }
+    if (right.x && right.y) {
+      this.connect.draggedItem
+        ? this.dropOneItem(right.x, right.y)
+        : this.grabHalfStack(right.x, right.y);
     }
   }
 
@@ -107,10 +108,17 @@ export default class Items {
     const mouseDrop = this.connect.mouseDrop;
     const draggedItem = this.connect.draggedItem;
     const draggedOrigin = this.connect.draggedOrigin;
+    if (draggedOrigin && draggedOrigin.quantity > 0) {
+      this.renderItem(
+        draggedOrigin,
+        draggedOrigin.xPos,
+        draggedOrigin.yPos,
+      );
+    }
     if (!draggedItem && mouseOffset.x && mouseOffset.y) {
-      this.startItemDrag(mousePos.x, mousePos.y); // TODO: Add quantity argument
+      this.grabFullStack(mousePos.x, mousePos.y);
     } else if (draggedItem && mouseDrop.x && mouseDrop.y) {
-      this.endItemDrag(mouseDrop.x, mouseDrop.y); // TODO: Add quantity argument
+      this.dropFullStack(mouseDrop.x, mouseDrop.y);
     } else if (draggedItem) {
       this.renderItem(
         draggedItem,
@@ -120,21 +128,47 @@ export default class Items {
     }
   }
 
-  startItemDrag(x, y) { // TODO: Add quantity argument
-    const item = screenToImageButton(x, y, this.buttons);
-    item && this.store.dispatch(dragItem(item, item.quantity, x, y));
+  grabFullStack(x, y) {
+    const stack = screenToImageButton(x, y, this.buttons);
+    if (stack && stack.hasOwnProperty('id')) {
+      const dragQuantity = stack.quantity;
+      const originQuantity = 0;
+      this.store.dispatch(dragItem(stack, dragQuantity, originQuantity, x, y));
+    }
   }
 
-  // TODO enable these for dropping use cases
-  // dropAllItems(x, y) {
-  //   this.endItemDrag(x, y, this.connect.draggedItem.quantity);
-  // }
-  //
-  // dropOneItem(x, y) {
-  //   this.endItemDrag(x, y, 1);
-  // }
+  grabHalfStack(x, y) {
+    const stack = screenToImageButton(x, y, this.buttons);
+    if (stack && stack.hasOwnProperty('id')) {
+      const dragQuantity = Math.floor(stack.quantity / 2);
+      const originQuantity = stack.quantity - dragQuantity;
+      this.store.dispatch(dragItem(stack, dragQuantity, originQuantity, x, y));
+    }
+  }
 
-  endItemDrag(x, y) { // TODO: Add quantity argument
+  dropFullStack(x, y) {
+    this.dropItems(x, y, this.connect.draggedItem.quantity);
+    this.store.dispatch(endDrag());
+  }
+
+  dropOneItem(x, y) {
+    const draggedItem = this.connect.draggedItem;
+    const draggedOrigin = this.connect.draggedOrigin;
+    this.dropItems(x, y, 1);
+    if (draggedItem.quantity - 1 === 0) {
+      this.store.dispatch(endDrag());
+    } else {
+      const dragQuantity = draggedItem.quantity - 1;
+      const originQuantity = 0;
+      const xOrigin = draggedItem.xPos - draggedOrigin.x;
+      const yOrigin = draggedItem.yPos - draggedOrigin.y;
+      this.store.dispatch(
+        dragItem(draggedItem, dragQuantity, originQuantity, xOrigin, yOrigin)
+      );
+    }
+  }
+
+  dropItems(x, y, quantity) { // TODO: Add quantity argument
     const draggedItem = this.connect.draggedItem;
     const draggedOrigin = this.connect.draggedOrigin;
     const slot = screenToImageButton(x, y, this.connect.slots);
@@ -152,7 +186,7 @@ export default class Items {
       if (equipping || eating || neither) {
         this.store.dispatch(
           sendEvent(EVENTS.MOVE_ITEM, draggedItem.id, {
-            quantity: draggedItem.quantity,
+            quantity,
             srcType: draggedOrigin.type,
             srcPosition: draggedOrigin.position,
             destType: slot.type,
@@ -163,8 +197,6 @@ export default class Items {
         this.store.dispatch(error(801, "Cannot move item to this slot"));
       }
     }
-    // TODO: If there is jumpy behavior with server data, look here first
-    this.store.dispatch(endDrag());
   }
 
   render(delta) {
