@@ -256,15 +256,13 @@ var removePartyMember = function removePartyMember(id) {
   };
 };
 var DRAG_ITEM = 'DRAG_ITEM';
-var dragItem = function dragItem(item, dragQuantity, originQuantity, x, y) {
+var dragItem = function dragItem(item, dragQuantity, originQuantity) {
   return {
     type: DRAG_ITEM,
     payload: {
       item: item,
       dragQuantity: dragQuantity,
-      originQuantity: originQuantity,
-      x: x,
-      y: y
+      originQuantity: originQuantity
     }
   };
 };
@@ -578,7 +576,11 @@ function () {
   }, {
     key: "draggedItem",
     get: function get() {
-      return this.store.getState().draggedItem;
+      var slots = this.store.getState().slots;
+      var match = slots.find(function (slot) {
+        return slot.type === __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG && slot.position === 0 && slot.quantity > 0;
+      });
+      return match ? match : null;
     }
   }, {
     key: "draggedOrigin",
@@ -617,23 +619,24 @@ function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return BRIGHT_RED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return DISCONNECT_RED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return MEDIUM_RED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DARK_RED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return PALE_GREEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return BRIGHT_RED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return DISCONNECT_RED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return MEDIUM_RED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return DARK_RED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return PALE_GREEN; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BRIGHT_GREEN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return CONNECT_GREEN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return HOVER_GREEN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return BRIGHT_YELLOW; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return SOLID_WHITE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return FOREST_BLACK; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return MEDIUM_OPAQUE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DARK_OPAQUE; });
-/* harmony export (immutable) */ __webpack_exports__["o"] = alphaGreen;
-/* harmony export (immutable) */ __webpack_exports__["q"] = alphaYellow;
-/* harmony export (immutable) */ __webpack_exports__["p"] = alphaRed;
-/* harmony export (immutable) */ __webpack_exports__["n"] = alphaDarkRed;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return CONNECT_GREEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return HOVER_GREEN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return BRIGHT_YELLOW; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return SOLID_WHITE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return FOREST_BLACK; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return BRIGHT_OPAQUE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return MEDIUM_OPAQUE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DARK_OPAQUE; });
+/* harmony export (immutable) */ __webpack_exports__["p"] = alphaGreen;
+/* harmony export (immutable) */ __webpack_exports__["r"] = alphaYellow;
+/* harmony export (immutable) */ __webpack_exports__["q"] = alphaRed;
+/* harmony export (immutable) */ __webpack_exports__["o"] = alphaDarkRed;
 var BRIGHT_RED = "#F00";
 var DISCONNECT_RED = "#F36";
 var MEDIUM_RED = "rgba(100, 11, 33, 0.9)";
@@ -645,6 +648,7 @@ var HOVER_GREEN = "rgba(10, 100, 15, 0.95)";
 var BRIGHT_YELLOW = "#FF0";
 var SOLID_WHITE = "#FFF";
 var FOREST_BLACK = "#010";
+var BRIGHT_OPAQUE = "rgba(256, 256, 256, 0.2)";
 var MEDIUM_OPAQUE = "rgba(0, 0, 0, 0.6)";
 var DARK_OPAQUE = "rgba(0, 0, 0, 0.8)";
 function alphaGreen(alpha) {
@@ -750,7 +754,7 @@ function itemChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
   var lengths = lines.map(function (line, idx) {
     y = yPos + idx * lineHeight;
     var change = line.change < 0 ? line.change : '+' + line.change;
-    var color = line.change < 0 ? __WEBPACK_IMPORTED_MODULE_0__colors__["b" /* BRIGHT_RED */] : __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */];
+    var color = line.change < 0 ? __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_RED */] : __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */];
     var text = "".concat(change, " ").concat(line.name);
     ctx.fillStyle = color;
     ctx.fillText(text, xPos, y);
@@ -771,7 +775,7 @@ function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     var x = xPos;
     y = yPos + idx * lineHeight;
     var text = "".concat(line.name, ":");
-    ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["l" /* PALE_GREEN */];
+    ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["m" /* PALE_GREEN */];
     ctx.fillText(text, x, y);
     x += ctx.measureText(text).width;
 
@@ -779,7 +783,7 @@ function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
       text = " ".concat(line.health_change < 0 ? line.health_change : '+' + line.health_change, " health");
 
       if (line.health_change < 0) {
-        ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["b" /* BRIGHT_RED */];
+        ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_RED */];
       } else {
         ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */];
       }
@@ -792,7 +796,7 @@ function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
       text = " ".concat(line.health_change < 0 ? line.health_change : '+' + line.health_change, " health");
 
       if (line.health_change < 0) {
-        ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["b" /* BRIGHT_RED */];
+        ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_RED */];
       } else {
         ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */];
       }
@@ -803,7 +807,7 @@ function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
 
     return x;
   });
-  ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["l" /* PALE_GREEN */];
+  ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["m" /* PALE_GREEN */];
   return {
     xPos: xPos,
     yPos: y,
@@ -822,7 +826,7 @@ function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, sele
       y += lineHeight / 4;
     }
 
-    ctx.fillStyle = selected && selected.id === button.id ? __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_YELLOW */] : __WEBPACK_IMPORTED_MODULE_0__colors__["l" /* PALE_GREEN */];
+    ctx.fillStyle = selected && selected.id === button.id ? __WEBPACK_IMPORTED_MODULE_0__colors__["d" /* BRIGHT_YELLOW */] : __WEBPACK_IMPORTED_MODULE_0__colors__["m" /* PALE_GREEN */];
     ctx.fillText("".concat(button.oneIndex, "."), xPos, y);
     var coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     result.push(Object.assign({}, button, coords, {
@@ -844,7 +848,7 @@ function drawMultipliers(ctx, img, scale, fontSize, lineHeight, multipliers, xPo
   var size = img.tileset.tilewidth * scale;
   var x = xPos;
   return multipliers.map(function (item, index) {
-    ctx.fillStyle = item.value > 1 ? __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */] : __WEBPACK_IMPORTED_MODULE_0__colors__["b" /* BRIGHT_RED */];
+    ctx.fillStyle = item.value > 1 ? __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */] : __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_RED */];
     var sign = item.value > 1 ? '+' : '-';
     var text = "".concat(sign).concat(item.value, "%");
     var width = ctx.measureText(text).width;
@@ -891,7 +895,7 @@ function drawHover(ctx, fontSize, button) {
   var text = button.hoverText || button.name || button.target || 'no text';
   var textWidth = ctx.measureText(text).width;
   var padding = 8;
-  ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["i" /* HOVER_GREEN */];
+  ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["j" /* HOVER_GREEN */];
   ctx.fillRect(button.xPos + button.width / 2 - textWidth / 2 - padding, button.yPos - fontSize - padding * 3.5, textWidth + padding * 2, fontSize + padding * 2);
   var y = button.yPos - padding * 1.5;
   ctx.beginPath();
@@ -900,7 +904,7 @@ function drawHover(ctx, fontSize, button) {
   ctx.lineTo(button.xPos + button.width / 2, y + padding);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["m" /* SOLID_WHITE */];
+  ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_0__colors__["n" /* SOLID_WHITE */];
   ctx.fillText(text, button.xPos + button.width / 2 - textWidth / 2, button.yPos - padding * 2.5);
 }
 function drawDurability(ctx, buttonSize, scale, durability, x, y) {
@@ -908,7 +912,7 @@ function drawDurability(ctx, buttonSize, scale, durability, x, y) {
   var xPos = x + scale;
   var yPos = y + buttonSize - scale * 1.5;
   ctx.lineWidth = scale;
-  ctx.strokeStyle = durability > 50 ? __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */] : durability > 25 ? __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_YELLOW */] : __WEBPACK_IMPORTED_MODULE_0__colors__["b" /* BRIGHT_RED */];
+  ctx.strokeStyle = durability > 50 ? __WEBPACK_IMPORTED_MODULE_0__colors__["a" /* BRIGHT_GREEN */] : durability > 25 ? __WEBPACK_IMPORTED_MODULE_0__colors__["d" /* BRIGHT_YELLOW */] : __WEBPACK_IMPORTED_MODULE_0__colors__["c" /* BRIGHT_RED */];
   ctx.beginPath();
   ctx.moveTo(xPos, yPos);
   ctx.lineTo(xPos + length, yPos);
@@ -917,7 +921,7 @@ function drawDurability(ctx, buttonSize, scale, durability, x, y) {
 function slideFadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   ctx.font = fontSize + 'MECC';
   var alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
-  ctx.fillStyle = text[0] === '+' ? Object(__WEBPACK_IMPORTED_MODULE_0__colors__["o" /* alphaGreen */])(alpha) : Object(__WEBPACK_IMPORTED_MODULE_0__colors__["p" /* alphaRed */])(alpha);
+  ctx.fillStyle = text[0] === '+' ? Object(__WEBPACK_IMPORTED_MODULE_0__colors__["p" /* alphaGreen */])(alpha) : Object(__WEBPACK_IMPORTED_MODULE_0__colors__["q" /* alphaRed */])(alpha);
   var yDistance = 150;
   var yOffset = currentTime / totalTime * yDistance - yDistance / 2;
   var textWidth = ctx.measureText(text).width;
@@ -926,7 +930,7 @@ function slideFadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
 function fadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   ctx.font = fontSize + 'MECC';
   var alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
-  ctx.fillStyle = text[0] === '+' ? Object(__WEBPACK_IMPORTED_MODULE_0__colors__["o" /* alphaGreen */])(alpha) : Object(__WEBPACK_IMPORTED_MODULE_0__colors__["p" /* alphaRed */])(alpha);
+  ctx.fillStyle = text[0] === '+' ? Object(__WEBPACK_IMPORTED_MODULE_0__colors__["p" /* alphaGreen */])(alpha) : Object(__WEBPACK_IMPORTED_MODULE_0__colors__["q" /* alphaRed */])(alpha);
   ctx.fillText(text, x, y);
 }
 
@@ -1896,6 +1900,14 @@ function trimUndefined(map) {
 /* harmony export (immutable) */ __webpack_exports__["p"] = removePartyMember;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_constants__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(19);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
@@ -2075,23 +2087,44 @@ function setPartyTab(state, action) {
 }
 function dragItem(state, action) {
   return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(state, {
-    draggedItem: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(action.payload.item, {
+    slots: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["c" /* mergeSlots */])(state.slots, [Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(action.payload.item, {
       quantity: action.payload.dragQuantity,
-      type: __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG
-    }),
-    draggedOrigin: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(action.payload.item, {
-      quantity: action.payload.originQuantity,
-      x: action.payload.item.xPos - action.payload.x,
-      y: action.payload.item.yPos - action.payload.y
-    })
+      type: __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG,
+      position: 0
+    })].concat(_toConsumableArray(typeof action.payload.originQuantity === 'number' ? [Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(action.payload.item, {
+      quantity: action.payload.originQuantity
+    })] : [])))
   });
 }
 function endDrag(state) {
   return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(state, {
-    draggedItem: null,
-    draggedOrigin: null
+    slots: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["g" /* updatePositionInArray */])(state.slots, __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG, 0, function (item) {
+      return {
+        type: __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG,
+        position: 0
+      };
+    })
   });
-} // export function setItemPosition(state, action) {
+} // draggedItem: updateObject(action.payload.item, {
+//   quantity: action.payload.dragQuantity,
+//   type: SLOTS.DRAG,
+//   position: 0
+// }),
+// draggedOrigin: updateObject(action.payload.item, {
+//   quantity: action.payload.originQuantity,
+// }),
+// slots: mergeSlots(state.slots, [
+//   updateObject(action.payload.item, {
+//     quantity: action.payload.originQuantity
+//   })
+// ])
+// export function endDrag(state) {
+//   return updateObject(state, {
+//     draggedItem: null,
+//     draggedOrigin: null
+//   });
+// }
+// export function setItemPosition(state, action) {
 //   return updateObject(state, {
 //     inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
 //       return updateObject(item, {
@@ -2148,10 +2181,10 @@ function removePartyMember(state, action) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["e"] = updateObject;
 /* unused harmony export updateItemInArray */
-/* unused harmony export updatePositionInArray */
+/* harmony export (immutable) */ __webpack_exports__["g"] = updatePositionInArray;
 /* harmony export (immutable) */ __webpack_exports__["b"] = mergeArrays;
 /* harmony export (immutable) */ __webpack_exports__["c"] = mergeSlots;
-/* harmony export (immutable) */ __webpack_exports__["g"] = updateStory;
+/* harmony export (immutable) */ __webpack_exports__["h"] = updateStory;
 /* harmony export (immutable) */ __webpack_exports__["d"] = updateInventoryChanges;
 /* harmony export (immutable) */ __webpack_exports__["f"] = updatePartyChanges;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getActions;
@@ -2174,7 +2207,7 @@ function updateItemInArray(array, itemId, updateItemCallback) {
 ;
 function updatePositionInArray(array, type, position, updateItemCallback) {
   return array.map(function (item) {
-    if (item.type !== type && item.position !== position) return item;
+    if (!(item.type === type && item.position === position)) return item;
     return updateItemCallback(item);
   });
 }
@@ -2308,7 +2341,7 @@ function mergeArrays(oldArray, newArray) {
 }
 ;
 
-function makeKey(type, position) {
+function makeSlotKey(type, position) {
   return "".concat(type, ",").concat(position);
 }
 
@@ -2319,14 +2352,24 @@ function getSlotProps(_ref) {
       yPos = _ref.yPos,
       width = _ref.width,
       height = _ref.height;
-  return {
-    type: type,
-    position: position,
-    xPos: xPos,
-    yPos: yPos,
-    width: width,
-    height: height
-  };
+
+  if ([xPos, yPos, width, height].every(function (prop) {
+    return prop !== undefined;
+  })) {
+    return {
+      type: type,
+      position: position,
+      xPos: xPos,
+      yPos: yPos,
+      width: width,
+      height: height
+    };
+  } else {
+    return {
+      type: type,
+      position: position
+    };
+  }
 }
 
 function mergeSlots(oldArray, newArray) {
@@ -2339,7 +2382,7 @@ function mergeSlots(oldArray, newArray) {
   try {
     for (var _iterator3 = oldArray[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
       var oldItem = _step3.value;
-      var key = makeKey(oldItem.type, oldItem.position);
+      var key = makeSlotKey(oldItem.type, oldItem.position);
       obj[key] = oldItem;
     }
   } catch (err) {
@@ -2367,13 +2410,9 @@ function mergeSlots(oldArray, newArray) {
     for (var _iterator4 = newArray[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
       var newItem = _step4.value;
 
-      var _key = makeKey(newItem.type, newItem.position);
+      var _key = makeSlotKey(newItem.type, newItem.position);
 
       if (obj[_key]) {
-        // TODO Figure out how to implement this later
-        // if (newItem.hasOwnProperty('quantity') && newItem.quantity === 0) {
-        //   obj[key] = Object.assign(getSlotProps(obj[key]));
-        // }
         obj[_key] = Object.assign(obj[_key], newItem);
       } else if (newItem.hasOwnProperty('srcType') && newItem.hasOwnProperty('srcPosition') && newItem.hasOwnProperty('destType') && newItem.hasOwnProperty('destPosition')) {
         var srcType = newItem.srcType,
@@ -2382,8 +2421,8 @@ function mergeSlots(oldArray, newArray) {
             destPosition = newItem.destPosition,
             rest = _objectWithoutProperties(newItem, ["srcType", "srcPosition", "destType", "destPosition"]);
 
-        var destKey = makeKey(destType, destPosition);
-        var srcKey = makeKey(srcType, srcPosition);
+        var destKey = makeSlotKey(destType, destPosition);
+        var srcKey = makeSlotKey(srcType, srcPosition);
         newObj[destKey] = Object.assign({}, obj[srcKey], getSlotProps(obj[destKey]), rest);
 
         if (compareObjects(obj[destKey], getSlotProps(obj[destKey]))) {
@@ -2413,7 +2452,13 @@ function mergeSlots(oldArray, newArray) {
   var result = [];
 
   for (var prop in obj) {
-    if (obj.hasOwnProperty(prop)) result.push(obj[prop]);
+    if (obj.hasOwnProperty(prop)) {
+      if (obj[prop].hasOwnProperty('quantity') && obj[prop].quantity === 0) {
+        result.push(getSlotProps(obj[prop]));
+      } else {
+        result.push(obj[prop]);
+      }
+    }
   }
 
   return result;
@@ -4325,7 +4370,7 @@ function loginResponse(state, action) {
     slots: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["c" /* mergeSlots */])(state.slots, action.payload.inventory),
     actions: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["a" /* getActions */])(action.payload.inventory, action.payload.tiles, action.payload.position),
     vehicle: action.payload.vehicle || null,
-    stories: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["g" /* updateStory */])(state, action),
+    stories: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["h" /* updateStory */])(state, action),
     inventoryChanges: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["d" /* updateInventoryChanges */])(state, action),
     partyChanges: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["f" /* updatePartyChanges */])(state, action),
     position: position,
@@ -4365,7 +4410,7 @@ function update(state, action) {
     yTarget = null;
   }
 
-  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["g" /* updateStory */])(state, action);
+  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["h" /* updateStory */])(state, action);
   var inventoryChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["d" /* updateInventoryChanges */])(state, action);
   var partyChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["f" /* updatePartyChanges */])(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
@@ -4399,7 +4444,7 @@ function eventResponse(state, action) {
   var positionTarget = typeof action.payload.positionTarget === 'number' ? action.payload.positionTarget : state.positionTarget;
   var xTarget = typeof action.payload.xTarget === 'number' ? action.payload.xTarget : state.xTarget;
   var yTarget = typeof action.payload.yTarget === 'number' ? action.payload.yTarget : state.yTarget;
-  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["g" /* updateStory */])(state, action);
+  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["h" /* updateStory */])(state, action);
   var inventoryChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["d" /* updateInventoryChanges */])(state, action);
   var partyChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["f" /* updatePartyChanges */])(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
@@ -5753,7 +5798,7 @@ function () {
   }, {
     key: "render",
     value: function render(delta) {
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["h" /* FOREST_BLACK */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["i" /* FOREST_BLACK */];
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       this.connect.currentTile && this.camera.render(delta);
       this.overlay.render(delta);
@@ -5766,7 +5811,7 @@ function () {
       }
 
       if (this.dim) {
-        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["j" /* MEDIUM_OPAQUE */];
+        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["k" /* MEDIUM_OPAQUE */];
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       }
     }
@@ -5937,7 +5982,7 @@ function () {
             }
 
             if (dim) {
-              _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["j" /* MEDIUM_OPAQUE */];
+              _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["k" /* MEDIUM_OPAQUE */];
 
               _this.ctx.fillRect(x, y, tileSize, tileSize);
             }
@@ -6188,7 +6233,7 @@ function () {
     value: function renderWindow() {
       this.xStart = this.canvas.width - this.width - this.gutter;
       this.yStart = this.gutter;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["k" /* MEDIUM_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["l" /* MEDIUM_RED */];
       this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
     }
   }, {
@@ -6204,13 +6249,13 @@ function () {
 
       if (rations === 0) {
         text = '0%';
-        color = Object(__WEBPACK_IMPORTED_MODULE_6__colors__["n" /* alphaDarkRed */])(0.9);
+        color = Object(__WEBPACK_IMPORTED_MODULE_6__colors__["o" /* alphaDarkRed */])(0.9);
       } else if (rations === 1) {
         text = '50%';
-        color = Object(__WEBPACK_IMPORTED_MODULE_6__colors__["q" /* alphaYellow */])(0.9);
+        color = Object(__WEBPACK_IMPORTED_MODULE_6__colors__["r" /* alphaYellow */])(0.9);
       } else if (rations === 2) {
         text = '100%';
-        color = Object(__WEBPACK_IMPORTED_MODULE_6__colors__["o" /* alphaGreen */])(0.9);
+        color = Object(__WEBPACK_IMPORTED_MODULE_6__colors__["p" /* alphaGreen */])(0.9);
       }
 
       this.ctx.font = this.fontSize + 'px MECC';
@@ -6235,7 +6280,7 @@ function () {
       var y = this.yStart;
       var slots = [];
       var counter = 0;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["f" /* DARK_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["g" /* DARK_RED */];
 
       for (var yPos = y + this.gutter; yPos < y + this.height; yPos = yPos + this.size + this.gutter) {
         for (var xPos = x + this.gutter; xPos < x + this.width - (this.size + this.gutter); xPos = xPos + this.size + this.gutter) {
@@ -6355,7 +6400,7 @@ function () {
           width = _Array$fill2[0],
           height = _Array$fill2[1];
 
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["f" /* DARK_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["g" /* DARK_RED */];
       this.ctx.fillRect(xPos, yPos, this.size, this.size);
       this.slots.push({
         type: type,
@@ -6399,7 +6444,7 @@ function () {
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["V" /* removePartyMember */])(member.id));
       }
 
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["k" /* MEDIUM_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */];
       this.ctx.fillRect(x - this.gutter, y - this.gutter, this.width, this.height);
       Object(__WEBPACK_IMPORTED_MODULE_4__utils_draw__["c" /* drawById */])(this.ctx, this.iconsXl, member.icon, this.scale, x - this.gutter * 2, y - this.gutter * 2);
       this.renderSlot(member.id, x + this.height, y);
@@ -6494,7 +6539,7 @@ function () {
     value: function renderWindow() {
       this.xStart = this.canvas.width - this.width - this.gutter;
       this.yStart = this.size * 2;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["k" /* MEDIUM_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */];
       this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
     }
   }, {
@@ -6505,7 +6550,7 @@ function () {
       var y = this.yStart;
       var slots = [];
       var counter = 0;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["f" /* DARK_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["g" /* DARK_RED */];
 
       for (var yPos = y + this.gutter; yPos < y + this.height; yPos += this.size + this.gutter) {
         for (var xPos = x + this.gutter; xPos < x + this.width; xPos += this.size + this.gutter) {
@@ -6650,11 +6695,11 @@ function () {
       this.ctx.textAlign = 'alphabetical';
       this.ctx.font = this.fontSize + 'px MECC';
       var titleWidth = this.ctx.measureText(this.current).width;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["k" /* MEDIUM_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["l" /* MEDIUM_RED */];
       this.ctx.fillRect((this.canvas.width - this.barWidth) / 2, this.canvas.height - this.barSize, this.barWidth, this.barSize);
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["k" /* MEDIUM_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["l" /* MEDIUM_RED */];
       this.ctx.fillRect((this.canvas.width - titleWidth) / 2 - 8, this.canvas.height - (this.barSize + this.fontSize + 4), titleWidth + 16, this.fontSize + 4);
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["m" /* SOLID_WHITE */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["n" /* SOLID_WHITE */];
       this.ctx.fillText(this.current, (this.canvas.width - titleWidth) / 2, this.canvas.height - this.barSize);
     }
   }, {
@@ -6755,7 +6800,7 @@ function () {
       currentTile && currentTile.hunting && text.push(currentTile.hunting);
       currentTile && currentTile.fishing && text.push(currentTile.fishing);
       text.forEach(function (line, index) {
-        _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_1__colors__["m" /* SOLID_WHITE */];
+        _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_1__colors__["n" /* SOLID_WHITE */];
         _this.ctx.font = _this.fontSize + 'px MECC';
 
         var lineWidth = _this.ctx.measureText(line).width;
@@ -6866,7 +6911,7 @@ function () {
 
       var pace = this.connect.pace;
       var rations = this.connect.rations;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["m" /* SOLID_WHITE */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["n" /* SOLID_WHITE */];
       this.ctx.font = this.fontSize + 'px MECC';
       var textWidth = this.ctx.measureText('PACE').width;
       this.ctx.fillText('PACE', (this.size * 3 - textWidth) / 2, this.canvas.height - this.size * 2);
@@ -6882,9 +6927,9 @@ function () {
 
         if (typeof button.id === 'number') {
           if (button.id === pace) {
-            _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["c" /* BRIGHT_YELLOW */];
+            _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["d" /* BRIGHT_YELLOW */];
           } else {
-            _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["m" /* SOLID_WHITE */];
+            _this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["n" /* SOLID_WHITE */];
           }
 
           var _textWidth = _this.ctx.measureText(button.id.toString()).width;
@@ -6963,115 +7008,134 @@ function () {
   _createClass(Items, [{
     key: "update",
     value: function update(left, right) {
+      var draggedItem = this.connect.draggedItem;
+
       if (left.x && left.y) {
-        this.connect.draggedItem ? this.dropFullStack(left.x, left.y) : this.grabFullStack(left.x, left.y);
+        draggedItem ? this.dropFullStack(left.x, left.y) : this.grabFullStack(left.x, left.y);
       }
 
       if (right.x && right.y) {
-        this.connect.draggedItem ? this.dropOneItem(right.x, right.y) : this.grabHalfStack(right.x, right.y);
+        draggedItem ? this.dropOneItem(right.x, right.y) : this.grabHalfStack(right.x, right.y);
+      }
+
+      var mouseOffset = this.connect.mouseOffset;
+
+      if (!draggedItem && mouseOffset.x && mouseOffset.y) {
+        var mousePos = this.connect.mousePos;
+        this.grabFullStack(mousePos.x, mousePos.y);
       }
     }
   }, {
     key: "renderItem",
-    value: function renderItem(button, x, y) {
-      Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["c" /* drawById */])(this.ctx, this.items, button.id, this.scale, x, y);
+    value: function renderItem(stack, x, y) {
+      Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["c" /* drawById */])(this.ctx, this.items, stack.id, this.scale, x, y);
 
-      if (button.durability) {
-        Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["e" /* drawDurability */])(this.ctx, this.size, this.scale, button.durability, x, y);
+      if (stack.durability) {
+        Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["e" /* drawDurability */])(this.ctx, this.size, this.scale, stack.durability, x, y);
       } else {
-        if (button.portion) {
-          var portion = parseInt(button.portion);
+        if (stack.portion) {
+          var portion = parseInt(stack.portion);
           var portionWidth = this.ctx.measureText(portion).width;
-          this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["b" /* BRIGHT_RED */];
+          this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["c" /* BRIGHT_RED */];
           this.ctx.fillText(portion, x + this.size - portionWidth, y + this.size);
         }
 
-        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["m" /* SOLID_WHITE */];
-        this.ctx.fillText(button.quantity, x, y + this.fontSize);
+        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["n" /* SOLID_WHITE */];
+        this.ctx.fillText(stack.quantity, x, y + this.fontSize);
       }
     }
   }, {
     key: "renderItems",
     value: function renderItems() {
-      var _this = this;
-
       this.ctx.textAlign = 'alphabetical';
       this.ctx.font = this.fontSize + 'px MECC';
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["m" /* SOLID_WHITE */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["n" /* SOLID_WHITE */];
       var draggedItem = this.connect.draggedItem;
-      var draggedOrigin = this.connect.draggedOrigin;
-      this.buttons = this.connect.slots.map(function (button, index) {
-        var dragged = draggedItem && draggedItem.position === button.position && draggedItem.type === button.type;
-        var origin = draggedOrigin && draggedOrigin.position === button.position && draggedOrigin.type === button.type;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-        if (button.quantity > 0 && !dragged && !origin) {
-          // TODO: Display partial origin
-          _this.renderItem(button, button.xPos, button.yPos);
+      try {
+        for (var _iterator = this.connect.slots[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var slot = _step.value;
+          var type = slot.type,
+              position = slot.position,
+              xPos = slot.xPos,
+              yPos = slot.yPos,
+              quantity = slot.quantity;
+          var drag = draggedItem && draggedItem.position === position && draggedItem.type === type;
 
-          return Object.assign({}, button, {
-            type: button.type,
-            position: button.position,
-            xPos: button.xPos,
-            yPos: button.yPos,
-            width: _this.size,
-            height: _this.size
-          });
-        } else {
-          return button;
+          if (drag) {
+            var mousePos = this.connect.mousePos;
+            this.renderItem(draggedItem, mousePos.x - draggedItem.width / 2, mousePos.y - draggedItem.height / 2);
+          } else if (quantity > 0) {
+            this.renderItem(slot, xPos, yPos);
+          }
         }
-      });
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     }
   }, {
     key: "renderHover",
     value: function renderHover() {
       var mousePos = this.connect.mousePos;
+      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(mousePos.x, mousePos.y, this.connect.slots);
 
-      if (mousePos.x && mousePos.y) {
-        var button = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(mousePos.x, mousePos.y, this.buttons);
-        button && button.name && Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["f" /* drawHover */])(this.ctx, this.fontSize, button);
-      }
-    }
-  }, {
-    key: "renderDrag",
-    value: function renderDrag() {
-      var mousePos = this.connect.mousePos;
-      var mouseOffset = this.connect.mouseOffset;
-      var mouseDrop = this.connect.mouseDrop;
-      var draggedItem = this.connect.draggedItem;
-      var draggedOrigin = this.connect.draggedOrigin;
+      if (stack) {
+        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["b" /* BRIGHT_OPAQUE */];
+        this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
 
-      if (draggedOrigin && draggedOrigin.quantity > 0) {
-        this.renderItem(draggedOrigin, draggedOrigin.xPos, draggedOrigin.yPos);
-      }
-
-      if (!draggedItem && mouseOffset.x && mouseOffset.y) {
-        this.grabFullStack(mousePos.x, mousePos.y);
-      } else if (draggedItem && mouseDrop.x && mouseDrop.y) {
-        this.dropFullStack(mouseDrop.x, mouseDrop.y);
-      } else if (draggedItem) {
-        this.renderItem(draggedItem, mousePos.x + draggedOrigin.x, mousePos.y + draggedOrigin.y);
+        if (!this.connect.draggedItem && stack.name) {
+          Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["f" /* drawHover */])(this.ctx, this.fontSize, stack);
+        }
       }
     }
   }, {
     key: "grabFullStack",
     value: function grabFullStack(x, y) {
-      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
+      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.connect.slots);
 
       if (stack && stack.hasOwnProperty('id')) {
         var dragQuantity = stack.quantity;
         var originQuantity = 0;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity, x, y));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, stack.id, {
+          dragQuantity: dragQuantity,
+          srcType: stack.type,
+          srcPosition: stack.position,
+          destType: __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].DRAG,
+          destPosition: 0
+        }));
       }
     }
   }, {
     key: "grabHalfStack",
     value: function grabHalfStack(x, y) {
-      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
+      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.connect.slots);
 
-      if (stack && stack.hasOwnProperty('id')) {
+      if (stack && stack.hasOwnProperty('id' && stack.quantity > 1)) {
         var dragQuantity = Math.floor(stack.quantity / 2);
         var originQuantity = stack.quantity - dragQuantity;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity, x, y));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, stack.id, {
+          dragQuantity: dragQuantity,
+          srcType: stack.type,
+          srcPosition: stack.position,
+          destType: __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].DRAG,
+          destPosition: 0
+        }));
       }
     }
   }, {
@@ -7083,40 +7147,33 @@ function () {
   }, {
     key: "dropOneItem",
     value: function dropOneItem(x, y) {
-      var draggedItem = this.connect.draggedItem;
-      var draggedOrigin = this.connect.draggedOrigin;
       this.dropItems(x, y, 1);
+      var draggedItem = this.connect.draggedItem;
 
-      if (draggedItem.quantity - 1 === 0) {
+      if (draggedItem.quantity === 1) {
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* endDrag */])());
       } else {
-        var dragQuantity = draggedItem.quantity - 1;
-        var originQuantity = 0;
-        var xOrigin = draggedItem.xPos - draggedOrigin.x;
-        var yOrigin = draggedItem.yPos - draggedOrigin.y;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(draggedItem, dragQuantity, originQuantity, xOrigin, yOrigin));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(draggedItem, draggedItem.quantity - 1));
       }
     }
   }, {
     key: "dropItems",
     value: function dropItems(x, y, quantity) {
-      // TODO: Add quantity argument
       var draggedItem = this.connect.draggedItem;
-      var draggedOrigin = this.connect.draggedOrigin;
       var slot = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.connect.slots);
 
       if (slot) {
-        var equipping = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].PARTY && draggedItem.tags.some(function (tag) {
+        var equipOk = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].PARTY && draggedItem.tags.some(function (tag) {
           return ["farming", "hunting", "fishing"].includes(tag);
         });
-        var eating = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].EATING && draggedItem.tags.includes("food");
-        var neither = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].BACKPACK;
+        var eatingOk = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].EATING && draggedItem.tags.includes("food");
+        var toBackpack = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].BACKPACK;
 
-        if (equipping || eating || neither) {
+        if (equipOk || eatingOk || toBackpack) {
           this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, draggedItem.id, {
             quantity: quantity,
-            srcType: draggedOrigin.type,
-            srcPosition: draggedOrigin.position,
+            srcType: __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].DRAG,
+            srcPosition: 0,
             destType: slot.type,
             destPosition: slot.position
           }));
@@ -7130,7 +7187,6 @@ function () {
     value: function render(delta) {
       this.renderItems();
       this.renderHover();
-      this.renderDrag();
     }
   }]);
 
@@ -7260,7 +7316,7 @@ function () {
       var _this2 = this;
 
       this.ctx.font = this.fontSize + 'px MECC';
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_8__colors__["l" /* PALE_GREEN */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_8__colors__["m" /* PALE_GREEN */];
       var maxMainWidth = this.width - this.fontSize * 2;
       var maxButtonWidth = this.width - this.fontSize * 4;
       var text = Object(__WEBPACK_IMPORTED_MODULE_6__utils_draw__["k" /* splitIntoLines */])(this.ctx, story.text, maxMainWidth);
@@ -7298,7 +7354,7 @@ function () {
       }
 
       if (buttons.length > 1) {
-        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_8__colors__["l" /* PALE_GREEN */];
+        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_8__colors__["m" /* PALE_GREEN */];
         yPos += this.lineHeight * 2;
         this.mainText(prompt, xPos, yPos);
       }
@@ -7331,7 +7387,7 @@ function () {
 
       if (this.stories.length > 0) {
         this.stories = this.stories.map(function (story) {
-          _this3.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_8__colors__["k" /* MEDIUM_RED */];
+          _this3.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_8__colors__["l" /* MEDIUM_RED */];
 
           _this3.ctx.fillRect(_this3.width, _this3.height / 2, _this3.width, _this3.height);
 
@@ -7463,9 +7519,9 @@ function () {
         var yPos = y - _this.sizeXl;
 
         if (button.id === activeTab) {
-          renderLast = _this.renderTab.bind(_this, button, __WEBPACK_IMPORTED_MODULE_5__colors__["k" /* MEDIUM_RED */], x, y, xPos, yPos);
+          renderLast = _this.renderTab.bind(_this, button, __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */], x, y, xPos, yPos);
         } else {
-          _this.renderTab(button, __WEBPACK_IMPORTED_MODULE_5__colors__["f" /* DARK_RED */], x, y, xPos, yPos);
+          _this.renderTab(button, __WEBPACK_IMPORTED_MODULE_5__colors__["g" /* DARK_RED */], x, y, xPos, yPos);
         }
 
         x = x + _this.sizeXl + _this.gutter;
@@ -7483,7 +7539,7 @@ function () {
     value: function renderWindow() {
       var x = (this.canvas.width - this.width) / 2;
       var y = (this.canvas.height - this.height) / 2;
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["k" /* MEDIUM_RED */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */];
       this.ctx.fillRect(x, y, this.width, this.height);
     }
   }, {
@@ -7493,7 +7549,7 @@ function () {
 
       var member = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["a" /* getItemById */])(this.connect.party, this.connect.partyTab);
       this.ctx.font = this.fontSize + 'px MECC';
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* PALE_GREEN */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["m" /* PALE_GREEN */];
       var xPos = (this.canvas.width - this.width) / 2 + this.fontSize;
       var yPos = (this.canvas.height - this.height) / 2 + this.fontSize * 2;
       var lineWidth = this.ctx.measureText(HEALTH).width;
@@ -7692,13 +7748,13 @@ function () {
   }, {
     key: "renderText",
     value: function renderText() {
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["m" /* SOLID_WHITE */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["n" /* SOLID_WHITE */];
       this.title = this.centerText(this.title, 64, 1 / 4);
-      this.ctx.fillStyle = this.connect.connected ? __WEBPACK_IMPORTED_MODULE_6__colors__["d" /* CONNECT_GREEN */] : __WEBPACK_IMPORTED_MODULE_6__colors__["g" /* DISCONNECT_RED */];
+      this.ctx.fillStyle = this.connect.connected ? __WEBPACK_IMPORTED_MODULE_6__colors__["e" /* CONNECT_GREEN */] : __WEBPACK_IMPORTED_MODULE_6__colors__["h" /* DISCONNECT_RED */];
       this.centerText([{
         text: this.connect.connected ? 'CONNECTED' : 'DISCONNECTED'
       }], 32, 9 / 10);
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["m" /* SOLID_WHITE */];
+      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["n" /* SOLID_WHITE */];
       this.buttons = this.centerText(this.buttons, 32, 3 / 4);
     }
   }, {
@@ -7710,7 +7766,7 @@ function () {
       this.renderText();
 
       if (this.dim) {
-        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["e" /* DARK_OPAQUE */];
+        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_6__colors__["f" /* DARK_OPAQUE */];
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       }
     }

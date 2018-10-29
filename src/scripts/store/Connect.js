@@ -1,4 +1,4 @@
-import { UPDATE_TEXT_DURATION } from '../game/constants';
+import { UPDATE_TEXT_DURATION, SLOTS } from '../game/constants';
 
 export default class Connect {
   constructor (store) {
@@ -104,7 +104,11 @@ export default class Connect {
   }
 
   get draggedItem() {
-    return this.store.getState().draggedItem;
+    const slots = this.store.getState().slots;
+    const match = slots.find(slot =>
+      slot.type === SLOTS.DRAG && slot.position === 0 && slot.quantity > 0
+    );
+    return match ? match : null;
   }
 
   get draggedOrigin() {

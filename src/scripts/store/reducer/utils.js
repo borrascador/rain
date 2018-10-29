@@ -13,20 +13,20 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
 
 export function updatePositionInArray(array, type, position, updateItemCallback) {
   return array.map(item => {
-    if (item.type !== type && item.position !== position) return item
+    if (!(item.type === type && item.position === position)) return item
     return updateItemCallback(item);
   });
 };
 
 function compareObjects(a, b) {
-    var aProps = Object.getOwnPropertyNames(a);
-    var bProps = Object.getOwnPropertyNames(b);
-    if (aProps.length != bProps.length) return false;
-    for (let i = 0; i < aProps.length; i++) {
-        let propName = aProps[i];
-        if (a[propName] !== b[propName]) return false;
-    }
-    return true;
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+  if (aProps.length != bProps.length) return false;
+  for (let i = 0; i < aProps.length; i++) {
+    let propName = aProps[i];
+    if (a[propName] !== b[propName]) return false;
+  }
+  return true;
 }
 
 export function mergeArrays(oldArray, newArray) {
@@ -84,29 +84,29 @@ export function mergeArrays(oldArray, newArray) {
   return result;
 };
 
-function makeKey(type, position) {
+function makeSlotKey(type, position) {
   return `${type},${position}`;
 }
 
 function getSlotProps({ type, position, xPos, yPos, width, height }) {
-  return { type, position, xPos, yPos, width, height };
+  if ([xPos, yPos, width, height].every(prop => prop !== undefined)) {
+    return { type, position, xPos, yPos, width, height };
+  } else {
+    return { type, position };
+  }
 }
 
 export function mergeSlots(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
   for (let oldItem of oldArray) {
-    const key = makeKey(oldItem.type, oldItem.position);
+    const key = makeSlotKey(oldItem.type, oldItem.position);
     obj[key] = oldItem;
   };
   let newObj = {};
   for (let newItem of newArray) {
-    const key = makeKey(newItem.type, newItem.position);
+    const key = makeSlotKey(newItem.type, newItem.position);
     if (obj[key]) {
-      // TODO Figure out how to implement this later
-      // if (newItem.hasOwnProperty('quantity') && newItem.quantity === 0) {
-      //   obj[key] = Object.assign(getSlotProps(obj[key]));
-      // }
       obj[key] = Object.assign(obj[key], newItem);
     } else if (
       newItem.hasOwnProperty('srcType') &&
@@ -115,8 +115,8 @@ export function mergeSlots(oldArray, newArray) {
       newItem.hasOwnProperty('destPosition')
     ) {
       const {srcType, srcPosition, destType, destPosition, ...rest} = newItem;
-      const destKey = makeKey(destType, destPosition);
-      const srcKey = makeKey(srcType, srcPosition);
+      const destKey = makeSlotKey(destType, destPosition);
+      const srcKey = makeSlotKey(srcType, srcPosition);
       newObj[destKey] = (
         Object.assign({}, obj[srcKey], getSlotProps(obj[destKey]), rest)
       );
@@ -131,8 +131,13 @@ export function mergeSlots(oldArray, newArray) {
   // convert object of items into array of items
   let result = [];
   for (let prop in obj) {
-    if (obj.hasOwnProperty(prop))
-      result.push(obj[prop]);
+    if (obj.hasOwnProperty(prop)) {
+      if (obj[prop].hasOwnProperty('quantity') && obj[prop].quantity === 0) {
+        result.push(getSlotProps(obj[prop]));
+      } else {
+        result.push(obj[prop]);
+      }
+    }
   }
   return result;
 };

@@ -92,9 +92,9 @@ export const removePartyMember = (id) => ({
 });
 
 export const DRAG_ITEM = 'DRAG_ITEM';
-export const dragItem = (item, dragQuantity, originQuantity, x, y) => ({
+export const dragItem = (item, dragQuantity, originQuantity) => ({
   type: DRAG_ITEM,
-  payload: { item, dragQuantity, originQuantity, x, y }
+  payload: { item, dragQuantity, originQuantity }
 });
 
 export const END_DRAG = 'END_DRAG';

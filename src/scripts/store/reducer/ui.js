@@ -146,24 +146,53 @@ export function setPartyTab(state, action) {
 
 export function dragItem(state, action) {
   return updateObject(state, {
-    draggedItem: updateObject(action.payload.item, {
-      quantity: action.payload.dragQuantity,
-      type: SLOTS.DRAG
-    }),
-    draggedOrigin: updateObject(action.payload.item, {
-      quantity: action.payload.originQuantity,
-      x: action.payload.item.xPos - action.payload.x,
-      y: action.payload.item.yPos - action.payload.y
-    })
+    slots: mergeSlots(state.slots, [
+      updateObject(action.payload.item, {
+        quantity: action.payload.dragQuantity,
+        type: SLOTS.DRAG,
+        position: 0
+      }),
+      ...(typeof action.payload.originQuantity === 'number'
+        ? [
+            updateObject(action.payload.item, {
+              quantity: action.payload.originQuantity
+            })
+          ]
+        : []
+      )
+    ])
   });
 }
 
 export function endDrag(state) {
   return updateObject(state, {
-    draggedItem: null,
-    draggedOrigin: null
+    slots: updatePositionInArray(
+      state.slots, SLOTS.DRAG, 0, (item) => ({ type: SLOTS.DRAG, position: 0 })
+    )
   });
 }
+
+    // draggedItem: updateObject(action.payload.item, {
+    //   quantity: action.payload.dragQuantity,
+    //   type: SLOTS.DRAG,
+    //   position: 0
+    // }),
+    // draggedOrigin: updateObject(action.payload.item, {
+    //   quantity: action.payload.originQuantity,
+    // }),
+    // slots: mergeSlots(state.slots, [
+    //   updateObject(action.payload.item, {
+    //     quantity: action.payload.originQuantity
+    //   })
+    // ])
+
+
+// export function endDrag(state) {
+//   return updateObject(state, {
+//     draggedItem: null,
+//     draggedOrigin: null
+//   });
+// }
 
 // export function setItemPosition(state, action) {
 //   return updateObject(state, {
