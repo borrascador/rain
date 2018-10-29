@@ -2105,50 +2105,9 @@ function endDrag(state) {
       };
     })
   });
-} // draggedItem: updateObject(action.payload.item, {
-//   quantity: action.payload.dragQuantity,
-//   type: SLOTS.DRAG,
-//   position: 0
-// }),
-// draggedOrigin: updateObject(action.payload.item, {
-//   quantity: action.payload.originQuantity,
-// }),
-// slots: mergeSlots(state.slots, [
-//   updateObject(action.payload.item, {
-//     quantity: action.payload.originQuantity
-//   })
-// ])
-// export function endDrag(state) {
-//   return updateObject(state, {
-//     draggedItem: null,
-//     draggedOrigin: null
-//   });
-// }
-// export function setItemPosition(state, action) {
-//   return updateObject(state, {
-//     inventory: updateItemInArray(state.inventory, action.payload.id, (item) => {
-//       return updateObject(item, {
-//         type: action.payload.type,
-//         position: action.payload.position
-//       });
-//     })
-//   });
-// }
-// TODO: Enable this and delete above when server-side item positioning is ready
-// NOTE: See Items.js, line 125
-// export function setItemPosition(state, action) {
-//   const { start, end } = action.payload;
-//   return updateObject(state, {
-//     inventory: updatePositionInArray(
-//       state.inventory, start.type, start.position,
-//       (item) => updateObject(item, { type: end.type, position: end.position })
-//     )
-//   });
-// }
-
+}
 function refreshSlots(state, action) {
   return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(state, {
-    // slots: action.payload.slots
     slots: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["c" /* mergeSlots */])(state.slots, action.payload.slots)
   });
 }
@@ -2769,8 +2728,6 @@ var uiState = {
     'main': []
   },
   zoom: 3,
-  draggedItem: null,
-  draggedOrigin: null,
   slots: []
 };
 var gameState = {
