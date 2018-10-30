@@ -12,8 +12,6 @@ const uiState = {
   partyTab: 0,
   actions: { 'main': [] },
   zoom: 3,
-  draggedItem: null,
-  draggedOrigin: null,
   slots: []
 };
 

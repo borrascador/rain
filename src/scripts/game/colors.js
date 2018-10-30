@@ -14,6 +14,7 @@ export const SOLID_WHITE = "#FFF";
 
 export const FOREST_BLACK = "#010";
 
+export const BRIGHT_OPAQUE = "rgba(256, 256, 256, 0.2)";
 export const MEDIUM_OPAQUE = "rgba(0, 0, 0, 0.6)";
 export const DARK_OPAQUE = "rgba(0, 0, 0, 0.8)";
 

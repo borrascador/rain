@@ -26,7 +26,10 @@ function configureStore () {
 		applyMiddleware(
 			thunkMiddleware,
 			ReduxWebSocketBridge(() => {
-				const rws = new ReconnectingWebSocket('ws://localhost:8887/', [], {});
+				const rws = new ReconnectingWebSocket('ws://localhost:8887/', [], {
+					maxReconnectionDelay: 500,
+					connectionTimeout: 500
+				});
 				rws.addEventListener('close', () => rws._shouldReconnect && rws._connect());
 				return rws;
 			}),

@@ -15,7 +15,7 @@ import GameView from './views/GameView';
 import TitleView from './views/TitleView';
 import { changeMode } from '../store/actions/actions';
 import { MODE } from './constants.js'
-import { clickedLeft } from '../store/actions/actions';
+import { clickedLeft, clickedRight } from '../store/actions/actions';
 
 
 export default class RainGame {
@@ -72,13 +72,15 @@ export default class RainGame {
 		const keys = this.connect.keys;
 		const clickLeft = this.connect.clickLeft;
 		clickLeft.x && clickLeft.y && this.store.dispatch(clickedLeft());
+		const clickRight = this.connect.clickRight;
+		clickRight.x && clickRight.y && this.store.dispatch(clickedRight());
 		switch (this.connect.mode) {
 			case MODE.TITLE:
-				this.titleView.update(keys, clickLeft.x, clickLeft.y);
+				this.titleView.update(keys, clickLeft, clickRight);
 				this.titleView.render(delta);
 				break;
 			default:
-				this.gameView.update(keys, clickLeft.x, clickLeft.y);
+				this.gameView.update(keys, clickLeft, clickRight);
 				this.gameView.render(delta);
 				break;
 		}
