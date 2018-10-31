@@ -114,12 +114,10 @@ export default class Items {
       const originQuantity = 0;
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
       this.store.dispatch(
-        sendEvent(EVENTS.MOVE_ITEM, stack.id, {
+        sendEvent(EVENTS.PICK_UP, stack.id, {
           dragQuantity,
-          srcType: stack.type,
-          srcPosition: stack.position,
-          destType: SLOTS.DRAG,
-          destPosition: 0
+          type: stack.type,
+          position: stack.position,
         })
       );
     }
@@ -132,12 +130,10 @@ export default class Items {
       const originQuantity = stack.quantity - dragQuantity;
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
       this.store.dispatch(
-        sendEvent(EVENTS.MOVE_ITEM, stack.id, {
+        sendEvent(EVENTS.PICK_UP, stack.id, {
           dragQuantity,
-          srcType: stack.type,
-          srcPosition: stack.position,
-          destType: SLOTS.DRAG,
-          destPosition: 0
+          type: stack.type,
+          position: stack.position,
         })
       );
     }
@@ -174,12 +170,10 @@ export default class Items {
       const toBackpack = slot.type === SLOTS.BACKPACK;
       if (equipOk || eatingOk || toBackpack) {
         this.store.dispatch(
-          sendEvent(EVENTS.MOVE_ITEM, draggedItem.id, {
+          sendEvent(EVENTS.PUT_DOWN, draggedItem.id, {
             quantity,
-            srcType: SLOTS.DRAG,
-            srcPosition: 0,
-            destType: slot.type,
-            destPosition: slot.position
+            type: slot.type,
+            position: slot.position
           })
         );
       } else {

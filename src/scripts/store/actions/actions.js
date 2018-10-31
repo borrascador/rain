@@ -147,8 +147,8 @@ export const UPDATE = 'UPDATE';
 export const EVENT_REQUEST = 'EVENT_REQUEST';
 export const EVENT_RESPONSE = 'EVENT_RESPONSE';
 
-export const eventRequest = (type, id, optional) => ({
+export const eventRequest = (eventType, id, optional) => ({
   type: EVENT_REQUEST,
   meta: { send: true },
-  payload: Object.assign({}, { type, id }, optional)
+  payload: Object.assign({}, { eventType, id }, optional)
 });
