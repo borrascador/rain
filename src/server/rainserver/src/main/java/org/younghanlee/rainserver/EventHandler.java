@@ -9,7 +9,7 @@ public class EventHandler {
 		String event_type = event.getString("type");
 		Player p = connection.getPlayer();
 		Tile t;
-		int id;
+		int id, quantity;
 		JSONObject story;
 		JSONObject payload;
 		JSONObject response;
@@ -90,14 +90,20 @@ public class EventHandler {
 				response = p.getDecision().choose(p, id);
 				connection.sendJSON(response);
 				break;
-			case "move_item":
+			case "pick_up":
 				id = event.getInt("id");
-				int srcPosition = event.getInt("srcPosition");
-				int destPosition = event.getInt("destPosition");
-				String srcType = event.getString("srcType");
-				String destType = event.getString("destType");
-				payload = p.moveStack(id, srcPosition, destPosition, srcType, destType);
-				response = Message.EVENT_RESPONSE(payload);
+				quantity = event.getInt("quantity");
+				int srcPosition = event.getInt("position");
+				String srcType = event.getString("type");
+				response = p.pickUp(id, quantity, srcPosition, srcType);
+				connection.sendJSON(response);
+				break;
+			case "put_down":
+				id = event.getInt("id");
+				quantity = event.getInt("quantity");
+				int destPosition = event.getInt("position");
+				String destType = event.getString("type");
+				response = p.putDown(id, quantity, destPosition, destType);
 				connection.sendJSON(response);
 				break;
 			default:
