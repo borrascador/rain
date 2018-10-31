@@ -2,226 +2,270 @@
 	{
 		"id": 0,
 		"name": "tomato",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 20
 	},
 	{
 		"id": 1,
 		"name": "tomato seed",
 		"yield": 0,
-		"tags":["seed"]
+		"tags":["seed"],
+		"max": 100
 	},
 	{
 		"id": 2,
 		"name": "potato",
 		"yield": 2,
-		"tags":["food", "seed"]
+		"tags":["food", "seed"],
+		"max": 20
 	},
 	{
 		"id": 3,
 		"name": "yuca",
 		"yield": 3,
-		"tags":["food", "seed"]
+		"tags":["food", "seed"],
+		"max": 20
 	},
 	{
 		"id": 4,
 		"name": "red meat",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 20
 	},
 	{
 		"id": 5,
 		"name": "hide",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 5
 	},
 	{
 		"id": 6,
 		"name": "fur",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 5
 	},
 	{
 		"id": 7,
 		"name": "sinew",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 20
 	},
 	{
 		"id": 8,
 		"name": "black bean",
 		"yield": 8,
-		"tags":["food", "seed"]
+		"tags":["food", "seed"],
+		"max": 100
 	},
 	{
 		"id": 9,
 		"name": "lima bean",
 		"yield": 9,
-		"tags":["food", "seed"]
+		"tags":["food", "seed"],
+		"max": 100
 	},
 	{
 		"id": 10,
 		"name": "stick",
-		"tags":["farming", "hunting", "fishing"]
+		"tags":["farming", "hunting", "fishing"],
+		"max": 1
 	},
 	{
 		"id": 11,
 		"name": "spear",
-		"tags":["fishing", "hunting"]
+		"tags":["fishing", "hunting"],
+		"max": 1
 	},
 	{
 		"id": 12,
 		"name": "bow and arrow",
-		"tags":["fishing", "hunting"]
+		"tags":["fishing", "hunting"],
+		"max": 1
 	},
 	{
 		"id": 13,
 		"name": "net",
-		"tags":["fishing", "hunting"]
+		"tags":["fishing", "hunting"],
+		"max": 1
 	},
 	{
 		"id": 14,
 		"name": "fish filets",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 20
 	},
 	{
 		"id": 15,
 		"name": "white meat",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 20
 	},
 	{
 		"id": 16,
 		"name": "fish trimmings",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 20
 	},
 	{
 		"id": 17,
 		"name": "fish heads",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 20
 	},
 	{
 		"id": 18,
 		"name": "feathers",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 100
 	},
 	{
 		"id": 20,
 		"name": "big white feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 100
 	},
 	{
 		"id": 21,
 		"name": "big blue feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 100
 	},
 	{
 		"id": 22,
 		"name": "big yellow feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 100
 	},
 	{
 		"id": 23,
 		"name": "big red feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 100
 	},
 	{
 		"id": 24,
 		"name": "big green feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 100
 	},
 	{
 		"id": 25,
 		"name": "small white feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 200
 	},
 	{
 		"id": 26,
 		"name": "small blue feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 200
 	},
 	{
 		"id": 27,
 		"name": "small yellow feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 200
 	},
 	{
 		"id": 28,
 		"name": "small red feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 200
 	},
 	{
 		"id": 29,
 		"name": "small green feather",
-		"tags":["crafting"]
+		"tags":["crafting"],
+		"max": 200
 	},
 	{
 		"id": 30,
 		"name": "corn",
-		"tags":["food", "seed"]
+		"tags":["food", "seed"],
+		"max": 20
 	},
 	{
 		"id": 31,
 		"name": "matches",
-		"tags":[]
+		"tags":[],
+		"max": 1000
 	},
 	{
 		"id": 32,
 		"name": "wood paper",
-		"tags":[]
+		"tags":[],
+		"max": 20
 	},
 	{
 		"id": 33,
 		"name": "wood pulp",
-		"tags":[]
+		"tags":[],
+		"max": 20
 	},
 	{
 		"id": 34,
 		"name": "white paper",
-		"tags":[]
+		"tags":[],
+		"max": 100
 	},
 	{
 		"id": 35,
 		"name": "pen",
-		"tags":[]
+		"tags":[],
+		"max": 1
 	},
 	{
 		"id": 36,
 		"name": "ink",
-		"tags":[]
+		"tags":[],
+		"max": 1
 	},
 	{
 		"id": 37,
 		"name": "tortilla",
-		"tags":[]
+		"tags":[],
+		"max": 20
 	},
 	{
 		"id": 38,
 		"name": "clear jar",
-		"tags":[]
+		"tags":[],
+		"max": 20
 	},
 	{
 		"id": 39,
 		"name": "salt",
-		"tags":[]
+		"tags":[],
+		"max": 1000
 	},
 	{
 		"id": 40,
 		"name": "chef's knife",
-		"tags":[]
+		"tags":[],
+		"max": 1
 	},
 	{
 		"id": 41,
 		"name": "hunting knife",
-		"tags":["hunting", "fishing"]
+		"tags":["hunting", "fishing"],
+		"max": 1
 	},
 	{
 		"id": 42,
 		"name": "resin",
-		"tags":[]
+		"tags":[],
+		"max": 20
 	},
 	{
 		"id": 43,
 		"name": "molasses",
-		"tags":["food"]
+		"tags":["food"],
+		"max": 100
 	},
 	{
 		"id": 44,
 		"name": "Lost city of Z map",
-		"tags": []
+		"tags": [],
+		"max": 1
 	}
 ]

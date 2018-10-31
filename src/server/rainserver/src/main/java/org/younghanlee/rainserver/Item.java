@@ -17,13 +17,13 @@ public class Item {
 	HashSet<String> tags;
 	private int maxStack;
 	
-	public Item(String name, int yield) {
+	public Item(String name, int yield, int maxStack) {
 		this.name = name;
 		if (yield != -1) {
 			this.yield = yield;
 		}
 		this.tags = new HashSet<String>();
-		this.maxStack = 20;
+		this.maxStack = maxStack;
 	}
 	
 	public static HashMap<Integer, Item> readFile() {
@@ -47,7 +47,8 @@ public class Item {
 				yield = -1;
 			}
 			int id = itemObject.getInt("id");
-			Item it = new Item(name, yield);
+			int maxStack = itemObject.getInt("max");
+			Item it = new Item(name, yield, maxStack);
 			JSONArray tags = itemObject.getJSONArray("tags");
 			for (int j = 0; j < tags.length(); j++) {
 				 it.addTag(tags.getString(j));

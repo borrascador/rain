@@ -9,13 +9,14 @@ public class ItemStack {
 	private int quantity;
 	private int position;
 	private String type;
+	private Integer durability;
 	
 	public ItemStack (int id, int quantity, int position, String type){
 		this.id = id;
-		this.quantity = quantity;
 		this.position = position;
 		this.type = type;
-		
+		this.quantity = quantity;
+		this.durability = null;
 	}
 	
 	public int getId() {
@@ -46,12 +47,27 @@ public class ItemStack {
 		return type;
 	}
 	
+	public void setDurability(int durability) {
+		this.durability = durability;
+	}
+	
+	public int getDurability(){
+		return durability;
+	}
+	
 	public Item getItem() {
 		return World.getItem(id);
 	}
 	
+	public ItemStack copy(int new_quantity) {
+		return new ItemStack(id, new_quantity, position, type);
+	}
+	
 	public JSONObject toJSONObject() {
 		JSONObject jo = World.getItem(id).toJSONObject();
+		if (durability != null) {
+			jo.put("durability", durability);
+		}
 		jo.put("quantity", quantity);
 		jo.put("id", id);
 		jo.put("position", position);

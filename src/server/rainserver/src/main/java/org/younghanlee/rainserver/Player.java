@@ -31,7 +31,8 @@ public class Player {
 	
 	private ArrayList<Integer> party; // id of party members
 	private HashMap<Integer, ArrayList<ItemStack>> inventory; // item id, position in inventory 
-	private HashMap<String, ArrayList<Boolean>> occupied;
+	private HashMap<String, ArrayList<ItemStack>> occupied;
+	private ItemStack drag;
 	
 	private Move move; // Initialize with move(), stop with stopMoving()
 	private Hunt hunt; // Initialize with startHunting(), stop with stopHunting()
@@ -41,7 +42,6 @@ public class Player {
 	private String trigger;
 	
 	private HashSet<Integer> buffer; // Which tiles require updates sent in next tick
-
 	
 	public Player(String name, String email, String password) {
 		this.name = name;
@@ -64,10 +64,12 @@ public class Player {
 		capacity.put("BACKPACK", 20);
 		capacity.put("EATING", 3);
 		
-		occupied = new HashMap<String, ArrayList<Boolean>>();
-		occupied.put("BACKPACK", new ArrayList<Boolean>(Collections.nCopies(capacity.get("BACKPACK"), false)));
-		occupied.put("PARTY", new ArrayList<Boolean>(Collections.nCopies(capacity.get("PARTY"), false)));
-		occupied.put("EATING", new ArrayList<Boolean>(Collections.nCopies(capacity.get("EATING"), false)));
+		occupied = new HashMap<String, ArrayList<ItemStack>>();
+		occupied.put("BACKPACK", new ArrayList<ItemStack>(Collections.nCopies(capacity.get("BACKPACK"), null)));
+		occupied.put("PARTY", new ArrayList<ItemStack>(Collections.nCopies(capacity.get("PARTY"), null)));
+		occupied.put("EATING", new ArrayList<ItemStack>(Collections.nCopies(capacity.get("EATING"), null)));
+		
+		drag = null;
 		
 		pace = 0;
 		speed = 4;
@@ -368,7 +370,7 @@ public class Player {
 				
 				for (int item : inventory.keySet()) {
 					for (ItemStack stack : inventory.get(item)) {
-						occupied.get(stack.getType()).set(stack.getPosition(), false);
+						occupied.get(stack.getType()).set(stack.getPosition(), null);
 						ja.put(stack.change(0, null, null));
 					}
 					inventory.remove(item);
@@ -388,15 +390,28 @@ public class Player {
 	
 	public int getOpenPosition(String type) {
 		for (int i=0; i<capacity.get(type); i++) {
-			ArrayList<Boolean> slots = occupied.get(type);
-			if (!slots.get(i)) {
+			ArrayList<ItemStack> slots = occupied.get(type);
+			if (slots.get(i) == null) {
 				return i;
 			}
 		}
 		return -1;
 	}
 	
-	public void addStack(int itemID, ItemStack stack) {
+	public ItemStack findStack(int itemID, int position, String type) {
+		if (!inventory.containsKey(itemID)) {
+			return null;
+		}
+		for (ItemStack stack : inventory.get(itemID)) {
+			if (position == stack.getPosition() && type.equals(stack.getType())) {
+				return stack;
+			}
+		}
+		return null;
+	}
+	
+	public JSONObject addStack(int itemID, ItemStack stack) {
+		JSONObject jo = new JSONObject();
 		if (inventory.containsKey(itemID)) {
 			inventory.get(itemID).add(stack);
 		} else {
@@ -404,6 +419,9 @@ public class Player {
 			list.add(stack);
 			inventory.put(itemID, list);
 		}
+		jo = stack.toJSONObject();
+		occupied.get(stack.getType()).set(stack.getPosition(), stack);
+		return jo;
 	}
 	
 	public JSONArray add(int itemID, int quantity) {
@@ -429,17 +447,24 @@ public class Player {
 		// Create new stacks if necessary
 		while (true) {
 			int p = getOpenPosition("BACKPACK");
-			occupied.get("BACKPACK").set(p, true);
 			System.out.println("test");
 			if (maxStack >= left) {
 				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
+				if (maxStack == 1) {
+					stack.setDurability(100);
+				}
 				addStack(itemID, stack);
+				occupied.get("BACKPACK").set(p, stack);
 				ja.put(stack.toJSONObject());
 				return ja;
 			} else {
 				left -= maxStack;
 				ItemStack stack = new ItemStack(itemID, maxStack, p, "BACKPACK");
+				if (maxStack == 1) {
+					stack.setDurability(100);
+				}
 				addStack(itemID, stack);
+				occupied.get("BACKPACK").set(p, stack);
 				ja.put(stack.toJSONObject());
 			}
 		}
@@ -448,39 +473,7 @@ public class Player {
 	public JSONArray subtract(int itemID, int quantity, boolean requireFull) {
 		JSONArray ja = new JSONArray();
 		int maxStack = World.getItem(itemID).getMaxStack();
-		int left = quantity;
-		if (inventory.containsKey(itemID)){
-			// Top off existing stacks
-			for (ItemStack itemstack : inventory.get(itemID)) {
-				int stackSize = itemstack.getQuantity();
-				if (stackSize < maxStack) {
-					int difference = maxStack - stackSize;
-					if (difference <= left) {
-						ja.put(itemstack.change(stackSize + left, null, null));
-						return ja;
-					} else {
-						left -= difference;
-						ja.put(itemstack.change(maxStack, null, null));
-					}
-				}
-			}
-		}
-		// Create new stacks if necessary
-		while (true) {
-			int p = getOpenPosition("BACKPACK");
-			occupied.get("BACKPACK").set(p, true);
-			if (maxStack <= left) {
-				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
-				addStack(itemID, stack);
-				ja.put(stack.change(left, null, null));
-				return ja;
-			} else {
-				left -= maxStack;
-				ItemStack stack = new ItemStack(itemID, 0, p, "BACKPACK");
-				addStack(itemID, stack);
-				ja.put(stack.change(maxStack, null, null));
-			}
-		}
+		return ja;
 	}
 	
 	public int getQuantity(int itemID) {
@@ -497,7 +490,7 @@ public class Player {
 		JSONArray ja = new JSONArray();
 		for (String type: occupied.keySet()) {
 			for (int i=0; i<capacity.get(type); i++) {
-				occupied.get(type).set(i, false);
+				occupied.get(type).set(i, null);
 			}	
 		}
 		
@@ -510,38 +503,110 @@ public class Player {
 		return ja;
 	}
 	
-	public JSONObject moveStack(int itemID, int srcPosition, int destPosition, String srcType, String destType) {
+	public JSONObject pickUp(int itemID, int quantity, int srcPosition, String srcType) {
 		JSONObject payload = new JSONObject();
-		JSONArray ja = new JSONArray();
-		
-		ItemStack swap = null;
-		
-		// Swap if there is an item at the destination
-		
-		if (occupied.get(destType).get(destPosition)) {
-			for (int item: inventory.keySet()) {
-				for (ItemStack stack : inventory.get(item)) {
-					if (destPosition == stack.getPosition() && destType.equals(stack.getType())) {
-						swap = stack;
-					}
-				}
-			}
-		}
-		
-		for (ItemStack stack : inventory.get(itemID)) {
-			if (srcPosition == stack.getPosition() && srcType.equals(stack.getType())) {
-				ja.put(stack.change(null, destPosition, destType));
-			}
-		}
-		
-		if (swap != null) {
-			ja.put(swap.change(null, srcPosition, srcType));
+		if (drag == null) {
+			String error_message = "pick_up: Already dragging an item.";
+			return Message.ERROR(330, error_message);
 		} else {
-			occupied.get(destType).set(destPosition, true);
-			occupied.get(srcType).set(srcPosition, true);
+			ItemStack stack = findStack(itemID, srcPosition, srcType);
+			if (stack == null) {
+				String error_message = "pick_up: Could not find item " + itemID;
+				error_message += " at " + srcType + ", " + srcPosition;
+				return Message.ERROR(332, error_message);
+			}
+			drag = stack.copy(quantity);
+			if (quantity > stack.getQuantity()) {
+				String error_message = "pick_up: Not enough of item " + itemID;
+				error_message += ". (" + stack.getQuantity() + "/" + quantity;
+				return Message.ERROR(331, error_message);
+			} else {
+				JSONArray ja = new JSONArray();
+				JSONObject jo = new JSONObject();
+				jo.put("srcPosition", srcPosition);
+				jo.put("destPosition", 0);
+				jo.put("srcType", srcType);
+				jo.put("destType", "DRAG");
+				jo.put("quantity", quantity);
+				jo.put("id", itemID);
+				ja.put(jo);
+				
+				JSONObject source = new JSONObject();
+				jo.put("position", srcPosition);
+				jo.put("type", srcType);
+				jo.put("id", itemID);
+				jo.put("quantity", stack.getQuantity() - quantity);
+				ja.put(source);
+				
+				payload.put("inventory", ja);
+				return Message.EVENT_RESPONSE(payload);
+			}
 		}
-		payload.put("inventory", ja);
-		return payload;	
+	}
+	
+	public JSONObject putDown(int itemID, int quantity, int destPosition, String destType) {
+		int q = drag.getQuantity();
+		
+		if (itemID != drag.getId()) {
+			String error_message = "put_down: " + itemID + " does not match id " + drag.getId();
+			return Message.ERROR(335, error_message);
+		}
+		
+		if (quantity > q) {
+			String error_message = "put_down: tried to put down " + quantity;
+			error_message +=	 ". Only have " + q + " in hand";
+			return Message.ERROR(336, error_message);
+		}
+		
+		JSONArray updates = new JSONArray();
+		ItemStack targetStack = occupied.get(destType).get(destPosition);
+		// Target slot has something in it
+		if (targetStack != null) {
+			// Target stack has same item ID
+			if (targetStack.getId() == itemID) {
+				int space = targetStack.getItem().getMaxStack() - targetStack.getQuantity();
+				// Enough space for all in target stack
+				if (quantity <= space) {
+					updates.put(targetStack.change(quantity, null, null));
+					updates.put(drag.change(-quantity, null, null));
+					if (drag.getQuantity() == 0) {
+						drag = null;
+					}
+				} else {
+				// Not enough space for all in target stack
+					updates.put(targetStack.change(space, null, null));
+					updates.put(drag.change(-space, null, null));
+				}
+			// Target stack has different item ID
+			} else {
+				JSONObject pickUpTarget = new JSONObject();
+				pickUpTarget.put("srcPosition", targetStack.getPosition());
+				pickUpTarget.put("destPosition", 0);
+				pickUpTarget.put("srcType", targetStack.getType());
+				pickUpTarget.put("destType", "DRAG");
+				pickUpTarget.put("quantity", targetStack.getQuantity());
+				pickUpTarget.put("id", targetStack.getId());
+				inventory.get(targetStack.getId()).remove(targetStack);
+				updates.put(addStack(itemID, drag));
+			}
+			
+		} else {
+		// Target slot has nothing in it	
+			// Put down full stack
+			if (quantity == q) {
+				drag.setPosition(destPosition);
+				drag.setType(destType);
+				updates.put(addStack(itemID, drag));
+				drag = null;
+			// Put down part of stack
+			} else {
+				drag.setQuantity(q - quantity);
+				updates.put(addStack(itemID, drag.copy(quantity)));
+			}
+		}
+		JSONObject payload = new JSONObject();
+		payload.put("inventory", updates);
+		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public JSONArray inventoryToJSONArray() {
