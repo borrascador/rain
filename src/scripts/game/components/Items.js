@@ -115,7 +115,7 @@ export default class Items {
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
       this.store.dispatch(
         sendEvent(EVENTS.PICK_UP, stack.id, {
-          dragQuantity,
+          quantity: dragQuantity,
           type: stack.type,
           position: stack.position,
         })
@@ -131,7 +131,7 @@ export default class Items {
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
       this.store.dispatch(
         sendEvent(EVENTS.PICK_UP, stack.id, {
-          dragQuantity,
+          quantity: dragQuantity,
           type: stack.type,
           position: stack.position,
         })

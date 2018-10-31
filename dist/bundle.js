@@ -7070,7 +7070,7 @@ function () {
         var originQuantity = 0;
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
-          dragQuantity: dragQuantity,
+          quantity: dragQuantity,
           type: stack.type,
           position: stack.position
         }));
@@ -7086,7 +7086,7 @@ function () {
         var originQuantity = stack.quantity - dragQuantity;
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
-          dragQuantity: dragQuantity,
+          quantity: dragQuantity,
           type: stack.type,
           position: stack.position
         }));
