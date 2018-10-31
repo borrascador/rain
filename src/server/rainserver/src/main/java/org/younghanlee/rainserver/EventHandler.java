@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class EventHandler {
 	public static void handleRequest (JSONObject event, Connection connection){
-		String event_type = event.getString("type");
+		String event_type = event.getString("eventType");
 		Player p = connection.getPlayer();
 		Tile t;
 		int id, quantity;
