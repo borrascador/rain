@@ -505,7 +505,7 @@ public class Player {
 	
 	public JSONObject pickUp(int itemID, int quantity, int srcPosition, String srcType) {
 		JSONObject payload = new JSONObject();
-		if (drag == null) {
+		if (drag != null) {
 			String error_message = "pick_up: Already dragging an item.";
 			return Message.ERROR(330, error_message);
 		} else {
@@ -515,6 +515,7 @@ public class Player {
 				error_message += " at " + srcType + ", " + srcPosition;
 				return Message.ERROR(332, error_message);
 			}
+			
 			drag = stack.copy(quantity);
 			if (quantity > stack.getQuantity()) {
 				String error_message = "pick_up: Not enough of item " + itemID;
@@ -580,14 +581,15 @@ public class Player {
 			// Target stack has different item ID
 			} else {
 				JSONObject pickUpTarget = new JSONObject();
-				pickUpTarget.put("srcPosition", targetStack.getPosition());
-				pickUpTarget.put("destPosition", 0);
-				pickUpTarget.put("srcType", targetStack.getType());
-				pickUpTarget.put("destType", "DRAG");
+				pickUpTarget.put("position", 0);
+				pickUpTarget.put("type", "DRAG");
 				pickUpTarget.put("quantity", targetStack.getQuantity());
 				pickUpTarget.put("id", targetStack.getId());
 				inventory.get(targetStack.getId()).remove(targetStack);
+				drag.setPosition(targetStack.getPosition());
+				drag.setType(targetStack.getType());
 				updates.put(addStack(itemID, drag));
+				updates.put(pickUpTarget);
 			}
 			
 		} else {
