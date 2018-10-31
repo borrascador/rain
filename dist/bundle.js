@@ -339,14 +339,14 @@ var logoutRequest = function logoutRequest(user) {
 var UPDATE = 'UPDATE';
 var EVENT_REQUEST = 'EVENT_REQUEST';
 var EVENT_RESPONSE = 'EVENT_RESPONSE';
-var eventRequest = function eventRequest(type, id, optional) {
+var eventRequest = function eventRequest(eventType, id, optional) {
   return {
     type: EVENT_REQUEST,
     meta: {
       send: true
     },
     payload: Object.assign({}, {
-      type: type,
+      eventType: eventType,
       id: id
     }, optional)
   };
@@ -1118,7 +1118,8 @@ var EVENTS = {
   RATIONS: 'rations',
   DECISION: 'decision',
   PACE: 'pace',
-  MOVE_ITEM: 'move_item'
+  PICK_UP: 'pick_up',
+  PUT_DOWN: 'put_down'
 };
 
 /***/ }),
@@ -7068,12 +7069,10 @@ function () {
         var dragQuantity = stack.quantity;
         var originQuantity = 0;
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, stack.id, {
-          dragQuantity: dragQuantity,
-          srcType: stack.type,
-          srcPosition: stack.position,
-          destType: __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].DRAG,
-          destPosition: 0
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
+          quantity: dragQuantity,
+          type: stack.type,
+          position: stack.position
         }));
       }
     }
@@ -7086,12 +7085,10 @@ function () {
         var dragQuantity = Math.floor(stack.quantity / 2);
         var originQuantity = stack.quantity - dragQuantity;
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, stack.id, {
-          dragQuantity: dragQuantity,
-          srcType: stack.type,
-          srcPosition: stack.position,
-          destType: __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].DRAG,
-          destPosition: 0
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
+          quantity: dragQuantity,
+          type: stack.type,
+          position: stack.position
         }));
       }
     }
@@ -7127,12 +7124,10 @@ function () {
         var toBackpack = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].BACKPACK;
 
         if (equipOk || eatingOk || toBackpack) {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].MOVE_ITEM, draggedItem.id, {
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PUT_DOWN, draggedItem.id, {
             quantity: quantity,
-            srcType: __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].DRAG,
-            srcPosition: 0,
-            destType: slot.type,
-            destPosition: slot.position
+            type: slot.type,
+            position: slot.position
           }));
         } else {
           this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["I" /* error */])(801, "Cannot move item to this slot"));
