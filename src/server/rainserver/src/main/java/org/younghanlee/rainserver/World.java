@@ -55,7 +55,8 @@ public class World {
 		habitats = Habitat.readFile();
 		skills = Skill.readFile();
 		tribes = Tribe.readFile();
-
+			
+		System.out.println("Finished reading json files");
 		
 		Decision.createDecisionHashMap();
 		new RandomEvents();
@@ -63,6 +64,8 @@ public class World {
 		Hunt.addAllChoices();
 		
 		Skeleton.addAll();
+		
+		System.out.println("Added all choices");
 
 		
 		// indexing
