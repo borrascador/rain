@@ -524,19 +524,17 @@ public class Player {
 			} else {
 				JSONArray ja = new JSONArray();
 				JSONObject jo = new JSONObject();
-				jo.put("srcPosition", srcPosition);
-				jo.put("destPosition", 0);
-				jo.put("srcType", srcType);
-				jo.put("destType", "DRAG");
+				jo.put("position", 0);
+				jo.put("type", "DRAG");
 				jo.put("quantity", quantity);
 				jo.put("id", itemID);
 				ja.put(jo);
 				
 				JSONObject source = new JSONObject();
-				jo.put("position", srcPosition);
-				jo.put("type", srcType);
-				jo.put("id", itemID);
-				jo.put("quantity", stack.getQuantity() - quantity);
+				source.put("position", srcPosition);
+				source.put("type", srcType);
+				source.put("id", itemID);
+				source.put("quantity", stack.getQuantity() - quantity);
 				ja.put(source);
 				
 				payload.put("inventory", ja);
