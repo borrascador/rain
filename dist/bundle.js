@@ -69,57 +69,57 @@
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return KEY_DOWN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "K", function() { return keyDown; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "J", function() { return keyDown; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return KEY_UP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "L", function() { return keyUp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "K", function() { return keyUp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return MOUSE_DOWN_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "O", function() { return mouseDownLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "N", function() { return mouseDownLeft; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return MOUSE_DOWN_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "P", function() { return mouseDownRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "O", function() { return mouseDownRight; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return MOUSE_MOVE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Q", function() { return mouseMove; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "P", function() { return mouseMove; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return MOUSE_UP_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R", function() { return mouseUpLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Q", function() { return mouseUpLeft; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return MOUSE_UP_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "S", function() { return mouseUpRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R", function() { return mouseUpRight; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return CLICKED_LEFT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "D", function() { return clickedLeft; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return CLICKED_RIGHT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "E", function() { return clickedRight; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "A", function() { return ZOOM_IN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "X", function() { return zoomIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "W", function() { return zoomIn; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "B", function() { return ZOOM_OUT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Y", function() { return zoomOut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "X", function() { return zoomOut; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "y", function() { return SET_PARTY_TAB; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "W", function() { return setPartyTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "V", function() { return setPartyTab; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return REFRESH_SLOTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "T", function() { return refreshSlots; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "S", function() { return refreshSlots; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CHANGE_MODE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "C", function() { return changeMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return CLOSE_STORY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F", function() { return closeStory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "x", function() { return REMOVE_PARTY_MEMBER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "V", function() { return removePartyMember; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "U", function() { return removePartyMember; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DRAG_ITEM; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "G", function() { return dragItem; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return END_DRAG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H", function() { return endDrag; });
+/* unused harmony export endDrag */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return ERROR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I", function() { return error; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H", function() { return error; });
 /* unused harmony export sendError */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return REGISTER_REQUEST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "w", function() { return REGISTER_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "U", function() { return registerRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "T", function() { return registerRequest; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return LOGIN_REQUEST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return LOGIN_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "M", function() { return loginRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "L", function() { return loginRequest; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return LOGOUT_REQUEST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return LOGOUT_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "N", function() { return logoutRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "M", function() { return logoutRequest; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "z", function() { return UPDATE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return EVENT_REQUEST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return EVENT_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "J", function() { return eventRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I", function() { return eventRequest; });
 // Type and action definitions
 var KEY_DOWN = 'KEY_DOWN';
 var keyDown = function keyDown(key) {
@@ -1011,7 +1011,7 @@ function register(user, email, password, dimCallback, exitRegister) {
     var state = getState();
 
     if (state.connected && !state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["U" /* registerRequest */])(user, email, password));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["T" /* registerRequest */])(user, email, password));
       var exitLoading = Object(__WEBPACK_IMPORTED_MODULE_3__game_dialogs_loading__["a" /* loadingDialog */])(dimCallback);
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
@@ -1029,7 +1029,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["I" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
         Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -1040,7 +1040,7 @@ function login(user, password, dimCallback, exitLogin) {
     var state = getState();
 
     if (state.connected && !state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["M" /* loginRequest */])(user, password));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["L" /* loginRequest */])(user, password));
       var exitLoading = Object(__WEBPACK_IMPORTED_MODULE_3__game_dialogs_loading__["a" /* loadingDialog */])(dimCallback);
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
@@ -1058,7 +1058,7 @@ function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["I" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
         Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -1069,7 +1069,7 @@ function logout(callback) {
     var state = getState();
 
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["N" /* logoutRequest */])());
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["M" /* logoutRequest */])());
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
         callback && callback();
@@ -1078,7 +1078,7 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["I" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -1088,14 +1088,14 @@ function sendEvent(type, id, optional) {
     var state = getState();
 
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["J" /* eventRequest */])(type, id, optional));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["I" /* eventRequest */])(type, id, optional));
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
         clearTimeout(timer);
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["I" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -5533,30 +5533,30 @@ function () {
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["K" /* keyDown */])(event.key));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["J" /* keyDown */])(event.key));
   }, false);
   window.addEventListener('keyup', function (event) {
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["L" /* keyUp */])(event.key));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["K" /* keyUp */])(event.key));
   }, false);
   canvas.addEventListener('mousedown', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["O" /* mouseDownLeft */])(x, y));
-    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["P" /* mouseDownRight */])(x, y));
+    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["N" /* mouseDownLeft */])(x, y));
+    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["O" /* mouseDownRight */])(x, y));
   }, false);
   canvas.addEventListener('mousemove', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["Q" /* mouseMove */])(x, y));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["P" /* mouseMove */])(x, y));
   }, false);
   canvas.addEventListener('mouseup', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["R" /* mouseUpLeft */])(x, y));
-    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["S" /* mouseUpRight */])(x, y));
+    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["Q" /* mouseUpLeft */])(x, y));
+    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["R" /* mouseUpRight */])(x, y));
   }, false);
 }
 
@@ -6089,7 +6089,7 @@ function () {
     key: "render",
     value: function render(delta) {
       var slots = [].concat(this.food.render(delta), this.party.render(delta), this.inventory.render(delta));
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__store_actions_actions__["T" /* refreshSlots */])(slots));
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__store_actions_actions__["S" /* refreshSlots */])(slots));
       this.actionBar.render(delta);
       this.habitat.render(delta);
       this.zoom.render(delta);
@@ -6343,7 +6343,7 @@ function () {
       var button = x && y && Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
 
       if (button) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["W" /* setPartyTab */])(button.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["V" /* setPartyTab */])(button.id));
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["C" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_0__constants__["b" /* MODE */].PARTY));
       }
     }
@@ -6399,7 +6399,7 @@ function () {
         });
       } else if (member.health === 0) {
         x = -1000;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["V" /* removePartyMember */])(member.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["U" /* removePartyMember */])(member.id));
       }
 
       this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */];
@@ -6849,10 +6849,10 @@ function () {
       onClick: __WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["b" /* logout */]
     }, {
       name: 'zoom-out',
-      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["Y" /* zoomOut */]
+      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["X" /* zoomOut */]
     }, {
       name: 'zoom-in',
-      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["X" /* zoomIn */]
+      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["W" /* zoomIn */]
     }];
   }
 
@@ -6973,6 +6973,7 @@ function () {
       }
 
       if (right.x && right.y) {
+        console.log(draggedItem);
         draggedItem ? this.dropOneItem(right.x, right.y) : this.grabHalfStack(right.x, right.y);
       }
 
@@ -7003,12 +7004,13 @@ function () {
       }
     }
   }, {
-    key: "renderItems",
-    value: function renderItems() {
+    key: "render",
+    value: function render(delta) {
       this.ctx.textAlign = 'alphabetical';
       this.ctx.font = this.fontSize + 'px MECC';
-      this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["n" /* SOLID_WHITE */];
       var draggedItem = this.connect.draggedItem;
+      var mousePos = this.connect.mousePos;
+      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(mousePos.x, mousePos.y, this.connect.slots);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -7022,12 +7024,25 @@ function () {
               yPos = slot.yPos,
               quantity = slot.quantity;
           var drag = draggedItem && draggedItem.position === position && draggedItem.type === type;
+          var hover = stack && stack.position === position && stack.type === type; // Render non-dragging items
+
+          if (!drag && quantity > 0) {
+            this.renderItem(slot, xPos, yPos);
+          } // Render hover box and hover text
+
+
+          if (hover) {
+            this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["b" /* BRIGHT_OPAQUE */];
+            this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
+
+            if (!draggedItem && stack.name) {
+              Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["f" /* drawHover */])(this.ctx, this.fontSize, stack);
+            }
+          } // Render dragging item
+
 
           if (drag) {
-            var mousePos = this.connect.mousePos;
             this.renderItem(draggedItem, mousePos.x - draggedItem.width / 2, mousePos.y - draggedItem.height / 2);
-          } else if (quantity > 0) {
-            this.renderItem(slot, xPos, yPos);
           }
         }
       } catch (err) {
@@ -7042,21 +7057,6 @@ function () {
           if (_didIteratorError) {
             throw _iteratorError;
           }
-        }
-      }
-    }
-  }, {
-    key: "renderHover",
-    value: function renderHover() {
-      var mousePos = this.connect.mousePos;
-      var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(mousePos.x, mousePos.y, this.connect.slots);
-
-      if (stack) {
-        this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_7__colors__["b" /* BRIGHT_OPAQUE */];
-        this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
-
-        if (!this.connect.draggedItem && stack.name) {
-          Object(__WEBPACK_IMPORTED_MODULE_1__utils_draw__["f" /* drawHover */])(this.ctx, this.fontSize, stack);
         }
       }
     }
@@ -7081,7 +7081,7 @@ function () {
     value: function grabHalfStack(x, y) {
       var stack = Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.connect.slots);
 
-      if (stack && stack.hasOwnProperty('id' && stack.quantity > 1)) {
+      if (stack && stack.hasOwnProperty('id') && stack.quantity > 1) {
         var dragQuantity = Math.floor(stack.quantity / 2);
         var originQuantity = stack.quantity - dragQuantity;
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
@@ -7095,8 +7095,7 @@ function () {
   }, {
     key: "dropFullStack",
     value: function dropFullStack(x, y) {
-      this.dropItems(x, y, this.connect.draggedItem.quantity);
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* endDrag */])());
+      this.dropItems(x, y, this.connect.draggedItem.quantity); // this.store.dispatch(endDrag());
     }
   }, {
     key: "dropOneItem",
@@ -7104,8 +7103,7 @@ function () {
       this.dropItems(x, y, 1);
       var draggedItem = this.connect.draggedItem;
 
-      if (draggedItem.quantity === 1) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* endDrag */])());
+      if (draggedItem.quantity === 1) {// this.store.dispatch(endDrag());
       } else {
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(draggedItem, draggedItem.quantity - 1));
       }
@@ -7130,15 +7128,9 @@ function () {
             position: slot.position
           }));
         } else {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["I" /* error */])(801, "Cannot move item to this slot"));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* error */])(801, "Cannot move item to this slot"));
         }
       }
-    }
-  }, {
-    key: "render",
-    value: function render(delta) {
-      this.renderItems();
-      this.renderHover();
     }
   }]);
 
@@ -7439,7 +7431,7 @@ function () {
         if (x > xMin && x < xMax && y > yMin && y < yMax) {
           console.log('Click inside party window');
         } else if (button) {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["W" /* setPartyTab */])(button.id));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["V" /* setPartyTab */])(button.id));
         } else {
           this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["C" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_4__constants__["b" /* MODE */].GAME));
         }
@@ -7780,7 +7772,7 @@ function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["c" /* register */])(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_actions__["I" /* error */])(110, 'Passwords do not match'));
+      store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_actions__["H" /* error */])(110, 'Passwords do not match'));
       Object(__WEBPACK_IMPORTED_MODULE_3__failure__["a" /* failureDialog */])(store.getState().errorMessage, dimCallback);
     }
   };

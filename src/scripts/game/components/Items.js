@@ -42,6 +42,7 @@ export default class Items {
         : this.grabFullStack(left.x, left.y);
     }
     if (right.x && right.y) {
+      console.log(draggedItem);
       draggedItem
         ? this.dropOneItem(right.x, right.y)
         : this.grabHalfStack(right.x, right.y);
@@ -71,39 +72,50 @@ export default class Items {
     }
   }
 
-  renderItems() {
+  render(delta) {
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = this.fontSize + 'px MECC';
-    this.ctx.fillStyle = SOLID_WHITE;
     const draggedItem = this.connect.draggedItem;
+    const mousePos = this.connect.mousePos;
+    const stack = screenToImageButton(
+      mousePos.x, mousePos.y, this.connect.slots
+    );
+
     for (let slot of this.connect.slots) {
+
       const { type, position, xPos, yPos, quantity } = slot;
       const drag = draggedItem && (
         draggedItem.position === position &&
         draggedItem.type === type
       );
+      const hover = stack && (
+        stack.position === position &&
+        stack.type === type
+      )
+
+      // Render non-dragging items
+      if (!drag && quantity > 0) {
+        this.renderItem(slot, xPos, yPos);
+      }
+
+      // Render hover box and hover text
+      if (hover) {
+        this.ctx.fillStyle = BRIGHT_OPAQUE;
+        this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
+        if (!draggedItem && stack.name) {
+          drawHover(this.ctx, this.fontSize, stack);
+        }
+      }
+
+      // Render dragging item
       if (drag) {
-        const mousePos = this.connect.mousePos;
         this.renderItem(
           draggedItem,
           mousePos.x - draggedItem.width / 2,
           mousePos.y - draggedItem.height / 2
         );
-      } else if (quantity > 0) {
-        this.renderItem(slot, xPos, yPos);
       }
-    }
-  }
 
-  renderHover() {
-    const mousePos = this.connect.mousePos;
-    const stack = screenToImageButton(mousePos.x, mousePos.y, this.connect.slots);
-    if (stack) {
-      this.ctx.fillStyle = BRIGHT_OPAQUE;
-      this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
-      if (!this.connect.draggedItem && stack.name) {
-        drawHover(this.ctx, this.fontSize, stack);
-      }
     }
   }
 
@@ -125,7 +137,7 @@ export default class Items {
 
   grabHalfStack(x, y) {
     const stack = screenToImageButton(x, y, this.connect.slots);
-    if (stack && stack.hasOwnProperty('id' && stack.quantity > 1)) {
+    if (stack && stack.hasOwnProperty('id') && stack.quantity > 1) {
       const dragQuantity = Math.floor(stack.quantity / 2);
       const originQuantity = stack.quantity - dragQuantity;
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
@@ -141,14 +153,14 @@ export default class Items {
 
   dropFullStack(x, y) {
     this.dropItems(x, y, this.connect.draggedItem.quantity);
-    this.store.dispatch(endDrag());
+    // this.store.dispatch(endDrag());
   }
 
   dropOneItem(x, y) {
     this.dropItems(x, y, 1);
     const draggedItem = this.connect.draggedItem;
     if (draggedItem.quantity === 1) {
-      this.store.dispatch(endDrag());
+      // this.store.dispatch(endDrag());
     } else {
       this.store.dispatch(dragItem(draggedItem, draggedItem.quantity - 1));
     }
@@ -180,10 +192,5 @@ export default class Items {
         this.store.dispatch(error(801, "Cannot move item to this slot"));
       }
     }
-  }
-
-  render(delta) {
-    this.renderItems();
-    this.renderHover();
   }
 }
