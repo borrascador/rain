@@ -91,10 +91,13 @@ public class ItemStack {
 		}
 		
 		if (quantity != null) {
+			System.out.println("TEST");
 			int change = quantity - this.quantity;
 			jo.put("change", change);
 			this.quantity = quantity;
 			jo.put("quantity", quantity);
+			jo.put("position", this.position);
+			jo.put("type", this.type);
 		}
 		
 		jo.put("id", id);

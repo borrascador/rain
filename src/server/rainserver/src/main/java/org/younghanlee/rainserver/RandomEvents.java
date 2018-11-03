@@ -110,7 +110,6 @@ public class RandomEvents {
 		int mod = tick % interval;
 				
 		if (mod == 1) {
-			System.out.println("generating next interval");
 			nextInterval();
 		}
 		// System.out.println(tick + ": " + schedule);

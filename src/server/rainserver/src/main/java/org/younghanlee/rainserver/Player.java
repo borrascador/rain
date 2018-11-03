@@ -447,7 +447,6 @@ public class Player {
 		// Create new stacks if necessary
 		while (true) {
 			int p = getOpenPosition("BACKPACK");
-			System.out.println("test");
 			if (maxStack >= left) {
 				ItemStack stack = new ItemStack(itemID, left, p, "BACKPACK");
 				if (maxStack == 1) {
@@ -503,6 +502,19 @@ public class Player {
 		return ja;
 	}
 	
+	public JSONObject reduceDrag(int quantity) {
+		JSONObject jo = new JSONObject();
+		int newQuantity = drag.getQuantity() - quantity;
+		if (newQuantity == 0) {
+			drag = null;
+		}
+		drag.setQuantity(newQuantity);
+		jo.put("quantity", newQuantity);
+		jo.put("position", 0);
+		jo.put("type", "DRAG");
+		return jo;
+	}
+	
 	public JSONObject pickUp(int itemID, int quantity, int srcPosition, String srcType) {
 		JSONObject payload = new JSONObject();
 		if (drag != null) {
@@ -522,6 +534,11 @@ public class Player {
 				error_message += ". (" + stack.getQuantity() + "/" + quantity;
 				return Message.ERROR(331, error_message);
 			} else {
+				if (quantity == stack.getQuantity()) {
+					occupied.get(srcType).set(srcPosition, null);
+					inventory.get(itemID).remove(stack);
+				}
+				
 				JSONArray ja = new JSONArray();
 				JSONObject jo = new JSONObject();
 				jo.put("position", 0);
@@ -561,27 +578,26 @@ public class Player {
 		ItemStack targetStack = occupied.get(destType).get(destPosition);
 		// Target slot has something in it
 		if (targetStack != null) {
+			int maxStack = targetStack.getItem().getMaxStack();
+			int targetQuantity = targetStack.getQuantity();
 			// Target stack has same item ID
 			if (targetStack.getId() == itemID) {
-				int space = targetStack.getItem().getMaxStack() - targetStack.getQuantity();
+				int space = maxStack - targetQuantity;
 				// Enough space for all in target stack
 				if (quantity <= space) {
-					updates.put(targetStack.change(quantity, null, null));
-					updates.put(drag.change(-quantity, null, null));
-					if (drag.getQuantity() == 0) {
-						drag = null;
-					}
+					updates.put(targetStack.change(targetQuantity + quantity, null, null));
+					updates.put(reduceDrag(quantity));
 				} else {
 				// Not enough space for all in target stack
-					updates.put(targetStack.change(space, null, null));
-					updates.put(drag.change(-space, null, null));
+					updates.put(targetStack.change(maxStack, null, null));
+					updates.put(reduceDrag(space));
 				}
 			// Target stack has different item ID
 			} else {
 				JSONObject pickUpTarget = new JSONObject();
 				pickUpTarget.put("position", 0);
 				pickUpTarget.put("type", "DRAG");
-				pickUpTarget.put("quantity", targetStack.getQuantity());
+				pickUpTarget.put("quantity", targetQuantity);
 				pickUpTarget.put("id", targetStack.getId());
 				inventory.get(targetStack.getId()).remove(targetStack);
 				drag.setPosition(targetStack.getPosition());
@@ -597,11 +613,14 @@ public class Player {
 				drag.setPosition(destPosition);
 				drag.setType(destType);
 				updates.put(addStack(itemID, drag));
-				drag = null;
+				updates.put(reduceDrag(quantity));
 			// Put down part of stack
 			} else {
-				drag.setQuantity(q - quantity);
-				updates.put(addStack(itemID, drag.copy(quantity)));
+				updates.put(drag.change(q - quantity, null, null));
+				ItemStack split = drag.copy(quantity);
+				split.setPosition(destPosition);
+				split.setType(destType);
+				updates.put(addStack(itemID, split));
 			}
 		}
 		JSONObject payload = new JSONObject();
