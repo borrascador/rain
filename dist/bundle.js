@@ -2332,6 +2332,19 @@ function getSlotProps(_ref) {
   }
 }
 
+function getRestProps(item) {
+  var type = item.type,
+      position = item.position,
+      xPos = item.xPos,
+      yPos = item.yPos,
+      width = item.width,
+      height = item.height,
+      quantity = item.quantity,
+      rest = _objectWithoutProperties(item, ["type", "position", "xPos", "yPos", "width", "height", "quantity"]);
+
+  return Object.keys(rest).length > 0 ? rest : null;
+}
+
 function mergeSlots(oldArray, newArray) {
   if (!newArray) return oldArray;
   var obj = {};
@@ -2367,30 +2380,28 @@ function mergeSlots(oldArray, newArray) {
   var _iteratorError4 = undefined;
 
   try {
-    for (var _iterator4 = newArray[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+    var _loop2 = function _loop2() {
       var newItem = _step4.value;
+      var key = makeSlotKey(newItem.type, newItem.position);
 
-      var _key = makeSlotKey(newItem.type, newItem.position);
+      if (obj[key]) {
+        if (newItem.hasOwnProperty('id')) {
+          var _oldItem = oldArray.find(function (oldItem) {
+            return oldItem.id === newItem.id && getRestProps(oldItem);
+          });
 
-      if (obj[_key]) {
-        obj[_key] = Object.assign(obj[_key], newItem);
-      } else if (newItem.hasOwnProperty('srcType') && newItem.hasOwnProperty('srcPosition') && newItem.hasOwnProperty('destType') && newItem.hasOwnProperty('destPosition')) {
-        var srcType = newItem.srcType,
-            srcPosition = newItem.srcPosition,
-            destType = newItem.destType,
-            destPosition = newItem.destPosition,
-            rest = _objectWithoutProperties(newItem, ["srcType", "srcPosition", "destType", "destPosition"]);
-
-        var destKey = makeSlotKey(destType, destPosition);
-        var srcKey = makeSlotKey(srcType, srcPosition);
-        newObj[destKey] = Object.assign({}, obj[srcKey], getSlotProps(obj[destKey]), rest);
-
-        if (compareObjects(obj[destKey], getSlotProps(obj[destKey]))) {
-          newObj[srcKey] = getSlotProps(obj[srcKey]);
+          var meta = _oldItem ? getRestProps(_oldItem) : {};
+          newObj[key] = Object.assign({}, getSlotProps(obj[key]), meta, newItem);
+        } else {
+          obj[key] = Object.assign(obj[key], newItem);
         }
       } else {
-        obj[_key] = newItem;
+        obj[key] = newItem;
       }
+    };
+
+    for (var _iterator4 = newArray[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+      _loop2();
     }
   } catch (err) {
     _didIteratorError4 = true;
@@ -2481,7 +2492,7 @@ function updatePartyChanges(state, action) {
     var _iteratorError5 = undefined;
 
     try {
-      var _loop2 = function _loop2() {
+      var _loop3 = function _loop3() {
         var item = _step5.value;
         var memberChanges = state.partyChanges.filter(function (member) {
           return item.id === member.id;
@@ -2569,7 +2580,7 @@ function updatePartyChanges(state, action) {
       };
 
       for (var _iterator5 = party[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-        var _ret2 = _loop2();
+        var _ret2 = _loop3();
 
         if (_ret2 === "continue") continue;
       }
@@ -6973,7 +6984,6 @@ function () {
       }
 
       if (right.x && right.y) {
-        console.log(draggedItem);
         draggedItem ? this.dropOneItem(right.x, right.y) : this.grabHalfStack(right.x, right.y);
       }
 
