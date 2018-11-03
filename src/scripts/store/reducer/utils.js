@@ -96,6 +96,11 @@ function getSlotProps({ type, position, xPos, yPos, width, height }) {
   }
 }
 
+function getRestProps(item) {
+  const { type, position, xPos, yPos, width, height, quantity, ...rest } = item;
+  return Object.keys(rest).length > 0 ? rest : null;
+}
+
 export function mergeSlots(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
@@ -107,21 +112,14 @@ export function mergeSlots(oldArray, newArray) {
   for (let newItem of newArray) {
     const key = makeSlotKey(newItem.type, newItem.position);
     if (obj[key]) {
-      obj[key] = Object.assign(obj[key], newItem);
-    } else if (
-      newItem.hasOwnProperty('srcType') &&
-      newItem.hasOwnProperty('srcPosition') &&
-      newItem.hasOwnProperty('destType') &&
-      newItem.hasOwnProperty('destPosition')
-    ) {
-      const {srcType, srcPosition, destType, destPosition, ...rest} = newItem;
-      const destKey = makeSlotKey(destType, destPosition);
-      const srcKey = makeSlotKey(srcType, srcPosition);
-      newObj[destKey] = (
-        Object.assign({}, obj[srcKey], getSlotProps(obj[destKey]), rest)
-      );
-      if (compareObjects(obj[destKey], getSlotProps(obj[destKey]))) {
-        newObj[srcKey] = getSlotProps(obj[srcKey]);
+      if (newItem.hasOwnProperty('id')) {
+        const oldItem = oldArray.find(oldItem => {
+          return oldItem.id === newItem.id && getRestProps(oldItem)
+        });
+        const meta = oldItem ? getRestProps(oldItem) : {};
+        newObj[key] = Object.assign({}, getSlotProps(obj[key]), meta, newItem);
+      } else {
+        obj[key] = Object.assign(obj[key], newItem);
       }
     } else {
       obj[key] = newItem;

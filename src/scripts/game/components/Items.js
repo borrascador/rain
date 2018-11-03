@@ -42,7 +42,6 @@ export default class Items {
         : this.grabFullStack(left.x, left.y);
     }
     if (right.x && right.y) {
-      console.log(draggedItem);
       draggedItem
         ? this.dropOneItem(right.x, right.y)
         : this.grabHalfStack(right.x, right.y);
