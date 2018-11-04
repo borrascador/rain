@@ -68,195 +68,154 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return KEY_DOWN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I", function() { return keyDown; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return KEY_UP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "J", function() { return keyUp; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return MOUSE_DOWN_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "M", function() { return mouseDownLeft; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return MOUSE_DOWN_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "N", function() { return mouseDownRight; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return MOUSE_MOVE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "O", function() { return mouseMove; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return MOUSE_UP_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "P", function() { return mouseUpLeft; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return MOUSE_UP_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Q", function() { return mouseUpRight; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return CLICKED_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "C", function() { return clickedLeft; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return CLICKED_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "D", function() { return clickedRight; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "z", function() { return ZOOM_IN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "V", function() { return zoomIn; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "A", function() { return ZOOM_OUT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "W", function() { return zoomOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "x", function() { return SET_PARTY_TAB; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "U", function() { return setPartyTab; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return REFRESH_SLOTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R", function() { return refreshSlots; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CHANGE_MODE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "B", function() { return changeMode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return CLOSE_STORY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "E", function() { return closeStory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "w", function() { return REMOVE_PARTY_MEMBER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "T", function() { return removePartyMember; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DRAG_ITEM; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F", function() { return dragItem; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return ERROR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "G", function() { return error; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return keyDown; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return keyUp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return mouseDownLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return mouseDownRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return mouseMove; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return mouseUpLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return mouseUpRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return clickedLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return clickedRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return zoomIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return zoomOut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return setPartyTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return refreshSlots; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return changeMode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return closeStory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return removePartyMember; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return dragItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return error; });
 /* unused harmony export sendError */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return REGISTER_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return REGISTER_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "S", function() { return registerRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return LOGIN_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return LOGIN_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "K", function() { return loginRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return LOGOUT_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return LOGOUT_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "L", function() { return logoutRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "y", function() { return UPDATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return EVENT_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return EVENT_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H", function() { return eventRequest; });
-// Type and action definitions
-var KEY_DOWN = 'KEY_DOWN';
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return registerRequest; });
+/* unused harmony export registerResponse */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return loginRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return logoutRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return eventRequest; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__types__ = __webpack_require__(87);
+ // Action definitions
+
 var keyDown = function keyDown(key) {
   return {
-    type: KEY_DOWN,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].KEY_DOWN,
     payload: {
       key: key
     }
   };
 };
-var KEY_UP = 'KEY_UP';
 var keyUp = function keyUp(key) {
   return {
-    type: KEY_UP,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].KEY_UP,
     payload: {
       key: key
     }
   };
 };
-var MOUSE_DOWN_LEFT = 'MOUSE_DOWN_LEFT';
 var mouseDownLeft = function mouseDownLeft(x, y) {
   return {
-    type: MOUSE_DOWN_LEFT,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].MOUSE_DOWN_LEFT,
     payload: {
       x: x,
       y: y
     }
   };
 };
-var MOUSE_DOWN_RIGHT = 'MOUSE_DOWN_RIGHT';
 var mouseDownRight = function mouseDownRight(x, y) {
   return {
-    type: MOUSE_DOWN_RIGHT,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].MOUSE_DOWN_RIGHT,
     payload: {
       x: x,
       y: y
     }
   };
 };
-var MOUSE_MOVE = 'MOUSE_MOVE';
 var mouseMove = function mouseMove(x, y) {
   return {
-    type: MOUSE_MOVE,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].MOUSE_MOVE,
     payload: {
       x: x,
       y: y
     }
   };
 };
-var MOUSE_UP_LEFT = 'MOUSE_UP_LEFT';
 var mouseUpLeft = function mouseUpLeft(x, y) {
   return {
-    type: MOUSE_UP_LEFT,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].MOUSE_UP_LEFT,
     payload: {
       x: x,
       y: y
     }
   };
 };
-var MOUSE_UP_RIGHT = 'MOUSE_UP_RIGHT';
 var mouseUpRight = function mouseUpRight(x, y) {
   return {
-    type: MOUSE_UP_RIGHT,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].MOUSE_UP_RIGHT,
     payload: {
       x: x,
       y: y
     }
   };
 };
-var CLICKED_LEFT = 'CLICKED_LEFT';
 var clickedLeft = function clickedLeft() {
   return {
-    type: CLICKED_LEFT
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].CLICKED_LEFT
   };
 };
-var CLICKED_RIGHT = 'CLICKED_RIGHT';
 var clickedRight = function clickedRight() {
   return {
-    type: CLICKED_RIGHT
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].CLICKED_RIGHT
   };
 };
-var ZOOM_IN = 'ZOOM_IN';
 var zoomIn = function zoomIn() {
   return {
-    type: ZOOM_IN
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].ZOOM_IN
   };
 };
-var ZOOM_OUT = 'ZOOM_OUT';
 var zoomOut = function zoomOut() {
   return {
-    type: ZOOM_OUT
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].ZOOM_OUT
   };
 };
-var SET_PARTY_TAB = 'SET_PARTY_TAB';
 var setPartyTab = function setPartyTab(partyTab) {
   return {
-    type: SET_PARTY_TAB,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].SET_PARTY_TAB,
     payload: {
       partyTab: partyTab
     }
   };
 };
-var REFRESH_SLOTS = 'REFRESH_SLOTS';
 var refreshSlots = function refreshSlots(slots) {
   return {
-    type: REFRESH_SLOTS,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].REFRESH_SLOTS,
     payload: {
       slots: slots
     }
   };
 };
-var CHANGE_MODE = 'CHANGE_MODE';
 var changeMode = function changeMode(mode) {
   return {
-    type: CHANGE_MODE,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].CHANGE_MODE,
     payload: {
       mode: mode
     }
   };
 };
-var CLOSE_STORY = 'CLOSE_STORY';
 var closeStory = function closeStory() {
   return {
-    type: CLOSE_STORY
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].CLOSE_STORY
   };
 };
-var REMOVE_PARTY_MEMBER = 'REMOVE_PARTY_MEMBER';
 var removePartyMember = function removePartyMember(id) {
   return {
-    type: REMOVE_PARTY_MEMBER,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].REMOVE_PARTY_MEMBER,
     payload: {
       id: id
     }
   };
 };
-var DRAG_ITEM = 'DRAG_ITEM';
 var dragItem = function dragItem(item, dragQuantity, originQuantity) {
   return {
-    type: DRAG_ITEM,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].DRAG_ITEM,
     payload: {
       item: item,
       dragQuantity: dragQuantity,
@@ -264,10 +223,9 @@ var dragItem = function dragItem(item, dragQuantity, originQuantity) {
     }
   };
 };
-var ERROR = 'ERROR';
 var error = function error(code, message) {
   return {
-    type: ERROR,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].ERROR,
     payload: {
       code: code,
       message: message
@@ -276,7 +234,7 @@ var error = function error(code, message) {
 };
 var sendError = function sendError(code, message) {
   return {
-    type: ERROR,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].ERROR,
     meta: {
       send: true
     },
@@ -286,11 +244,9 @@ var sendError = function sendError(code, message) {
     }
   };
 };
-var REGISTER_REQUEST = 'REGISTER_REQUEST';
-var REGISTER_RESPONSE = 'REGISTER_RESPONSE';
 var registerRequest = function registerRequest(user, email, password) {
   return {
-    type: REGISTER_REQUEST,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].REGISTER_REQUEST,
     meta: {
       send: true
     },
@@ -301,11 +257,14 @@ var registerRequest = function registerRequest(user, email, password) {
     }
   };
 };
-var LOGIN_REQUEST = 'LOGIN_REQUEST';
-var LOGIN_RESPONSE = 'LOGIN_RESPONSE';
+var registerResponse = function registerResponse() {
+  return {
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].REGISTER_RESPONSE
+  };
+};
 var loginRequest = function loginRequest(user, password) {
   return {
-    type: LOGIN_REQUEST,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].LOGIN_REQUEST,
     meta: {
       send: true
     },
@@ -315,11 +274,9 @@ var loginRequest = function loginRequest(user, password) {
     }
   };
 };
-var LOGOUT_REQUEST = 'LOGOUT_REQUEST';
-var LOGOUT_RESPONSE = 'LOGOUT_RESPONSE';
 var logoutRequest = function logoutRequest(user) {
   return {
-    type: LOGOUT_REQUEST,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].LOGOUT_REQUEST,
     meta: {
       send: true
     },
@@ -328,12 +285,9 @@ var logoutRequest = function logoutRequest(user) {
     }
   };
 };
-var UPDATE = 'UPDATE';
-var EVENT_REQUEST = 'EVENT_REQUEST';
-var EVENT_RESPONSE = 'EVENT_RESPONSE';
 var eventRequest = function eventRequest(eventType, id, optional) {
   return {
-    type: EVENT_REQUEST,
+    type: __WEBPACK_IMPORTED_MODULE_0__types__["a" /* ACTIONS */].EVENT_REQUEST,
     meta: {
       send: true
     },
@@ -1003,7 +957,7 @@ function register(user, email, password, dimCallback, exitRegister) {
     var state = getState();
 
     if (state.connected && !state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["S" /* registerRequest */])(user, email, password));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["r" /* registerRequest */])(user, email, password));
       var exitLoading = Object(__WEBPACK_IMPORTED_MODULE_3__game_dialogs_loading__["a" /* loadingDialog */])(dimCallback);
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
@@ -1021,7 +975,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["f" /* error */])(200, 'Response timeout'));
         Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -1032,7 +986,7 @@ function login(user, password, dimCallback, exitLogin) {
     var state = getState();
 
     if (state.connected && !state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["K" /* loginRequest */])(user, password));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["j" /* loginRequest */])(user, password));
       var exitLoading = Object(__WEBPACK_IMPORTED_MODULE_3__game_dialogs_loading__["a" /* loadingDialog */])(dimCallback);
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
@@ -1041,7 +995,7 @@ function login(user, password, dimCallback, exitLogin) {
         clearTimeout(timer);
 
         if (!getState().error) {
-          dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_2__game_constants__["b" /* MODE */].GAME));
+          dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["a" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_2__game_constants__["b" /* MODE */].GAME));
         } else {
           Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
         }
@@ -1050,7 +1004,7 @@ function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["f" /* error */])(200, 'Response timeout'));
         Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -1061,7 +1015,7 @@ function logout(callback) {
     var state = getState();
 
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["L" /* logoutRequest */])());
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["k" /* logoutRequest */])());
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
         callback && callback();
@@ -1070,7 +1024,7 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["f" /* error */])(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -1080,41 +1034,21 @@ function sendEvent(type, id, optional) {
     var state = getState();
 
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* eventRequest */])(type, id, optional));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["g" /* eventRequest */])(type, id, optional));
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
         clearTimeout(timer);
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["f" /* error */])(200, 'Response timeout'));
       }, 2000);
     }
   };
 }
 
 /***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EVENTS; });
-var EVENTS = {
-  PLANT: 'plant',
-  HARVEST: 'harvest',
-  HUNT: 'hunt',
-  FISH: 'fish',
-  ADD_FOOD: 'add_food',
-  REMOVE_FOOD: 'remove_food',
-  MOVE: 'move',
-  RATIONS: 'rations',
-  DECISION: 'decision',
-  PACE: 'pace',
-  PICK_UP: 'pick_up',
-  PUT_DOWN: 'put_down'
-};
-
-/***/ }),
+/* 7 */,
 /* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1251,7 +1185,7 @@ function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_redux_subscriber__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_redux_subscriber___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_redux_subscriber__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__errors__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__actions_actions__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__actions_types__ = __webpack_require__(87);
 
 
 
@@ -1261,9 +1195,19 @@ function () {
 
 
 
+var KEY_DOWN = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].KEY_DOWN,
+    KEY_UP = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].KEY_UP,
+    MOUSE_MOVE = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].MOUSE_MOVE,
+    REFRESH_SLOTS = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].REFRESH_SLOTS,
+    MOUSE_DOWN_LEFT = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].MOUSE_DOWN_LEFT,
+    MOUSE_UP_LEFT = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].MOUSE_UP_LEFT,
+    CLICKED_LEFT = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].CLICKED_LEFT,
+    MOUSE_DOWN_RIGHT = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].MOUSE_DOWN_RIGHT,
+    MOUSE_UP_RIGHT = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].MOUSE_UP_RIGHT,
+    CLICKED_RIGHT = __WEBPACK_IMPORTED_MODULE_8__actions_types__["a" /* ACTIONS */].CLICKED_RIGHT;
+var BLACKLIST = [KEY_DOWN, KEY_UP, MOUSE_MOVE, REFRESH_SLOTS, MOUSE_DOWN_LEFT, MOUSE_UP_LEFT, CLICKED_LEFT, MOUSE_DOWN_RIGHT, MOUSE_UP_RIGHT, CLICKED_RIGHT];
 
 function configureStore() {
-  var BLACKLIST = [__WEBPACK_IMPORTED_MODULE_8__actions_actions__["i" /* KEY_DOWN */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["j" /* KEY_UP */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["q" /* MOUSE_MOVE */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["t" /* REFRESH_SLOTS */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["o" /* MOUSE_DOWN_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["r" /* MOUSE_UP_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["b" /* CLICKED_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["p" /* MOUSE_DOWN_RIGHT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["s" /* MOUSE_UP_RIGHT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["c" /* CLICKED_RIGHT */]];
   var loggerMiddleware = Object(__WEBPACK_IMPORTED_MODULE_1_redux_logger__["createLogger"])({
     predicate: function predicate(getState, action) {
       return !BLACKLIST.includes(action.type);
@@ -4111,7 +4055,7 @@ function applyMiddleware() {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = reducer;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__actions_actions__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_redux_websocket_bridge__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_redux_websocket_bridge___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_redux_websocket_bridge__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ui__ = __webpack_require__(18);
@@ -4122,85 +4066,113 @@ function applyMiddleware() {
 
 
 
+var KEY_DOWN = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].KEY_DOWN,
+    KEY_UP = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].KEY_UP,
+    MOUSE_DOWN_LEFT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].MOUSE_DOWN_LEFT,
+    MOUSE_DOWN_RIGHT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].MOUSE_DOWN_RIGHT,
+    MOUSE_MOVE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].MOUSE_MOVE,
+    MOUSE_UP_LEFT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].MOUSE_UP_LEFT,
+    MOUSE_UP_RIGHT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].MOUSE_UP_RIGHT,
+    CLICKED_LEFT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].CLICKED_LEFT,
+    CLICKED_RIGHT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].CLICKED_RIGHT,
+    ZOOM_IN = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].ZOOM_IN,
+    ZOOM_OUT = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].ZOOM_OUT,
+    SET_PARTY_TAB = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].SET_PARTY_TAB,
+    REFRESH_SLOTS = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].REFRESH_SLOTS,
+    CHANGE_MODE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].CHANGE_MODE,
+    CLOSE_STORY = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].CLOSE_STORY,
+    REMOVE_PARTY_MEMBER = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].REMOVE_PARTY_MEMBER,
+    DRAG_ITEM = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].DRAG_ITEM,
+    END_DRAG = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].END_DRAG,
+    ERROR = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].ERROR,
+    REGISTER_REQUEST = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].REGISTER_REQUEST,
+    REGISTER_RESPONSE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].REGISTER_RESPONSE,
+    LOGIN_REQUEST = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].LOGIN_REQUEST,
+    LOGIN_RESPONSE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].LOGIN_RESPONSE,
+    LOGOUT_REQUEST = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].LOGOUT_REQUEST,
+    LOGOUT_RESPONSE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].LOGOUT_RESPONSE,
+    UPDATE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].UPDATE,
+    EVENT_REQUEST = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].EVENT_REQUEST,
+    EVENT_RESPONSE = __WEBPACK_IMPORTED_MODULE_0__actions_types__["a" /* ACTIONS */].EVENT_RESPONSE;
 function reducer(state, action) {
   if (typeof state === 'undefined') {
     return __WEBPACK_IMPORTED_MODULE_4__initialState__["a" /* initialState */];
   }
 
   switch (action.type) {
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["i" /* KEY_DOWN */]:
+    case KEY_DOWN:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["f" /* keyDown */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["j" /* KEY_UP */]:
+    case KEY_UP:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["g" /* keyUp */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["o" /* MOUSE_DOWN_LEFT */]:
+    case MOUSE_DOWN_LEFT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["i" /* mouseDownLeft */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["p" /* MOUSE_DOWN_RIGHT */]:
+    case MOUSE_DOWN_RIGHT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["j" /* mouseDownRight */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["q" /* MOUSE_MOVE */]:
+    case MOUSE_MOVE:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["k" /* mouseMove */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["r" /* MOUSE_UP_LEFT */]:
+    case MOUSE_UP_LEFT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["l" /* mouseUpLeft */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["s" /* MOUSE_UP_RIGHT */]:
+    case MOUSE_UP_RIGHT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["m" /* mouseUpRight */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["b" /* CLICKED_LEFT */]:
+    case CLICKED_LEFT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["b" /* clickedLeft */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["c" /* CLICKED_RIGHT */]:
+    case CLICKED_RIGHT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["c" /* clickedRight */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["z" /* ZOOM_IN */]:
+    case ZOOM_IN:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["q" /* zoomIn */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["A" /* ZOOM_OUT */]:
+    case ZOOM_OUT:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["r" /* zoomOut */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["x" /* SET_PARTY_TAB */]:
+    case SET_PARTY_TAB:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["p" /* setPartyTab */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["t" /* REFRESH_SLOTS */]:
+    case REFRESH_SLOTS:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["n" /* refreshSlots */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["a" /* CHANGE_MODE */]:
+    case CHANGE_MODE:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["a" /* changeMode */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["d" /* CLOSE_STORY */]:
+    case CLOSE_STORY:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["d" /* closeStory */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["w" /* REMOVE_PARTY_MEMBER */]:
+    case REMOVE_PARTY_MEMBER:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["o" /* removePartyMember */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["e" /* DRAG_ITEM */]:
+    case DRAG_ITEM:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["e" /* dragItem */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["u" /* REGISTER_REQUEST */]:
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["k" /* LOGIN_REQUEST */]:
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["m" /* LOGOUT_REQUEST */]:
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["g" /* EVENT_REQUEST */]:
+    case REGISTER_REQUEST:
+    case LOGIN_REQUEST:
+    case LOGOUT_REQUEST:
+    case EVENT_REQUEST:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["h" /* request */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["f" /* ERROR */]:
+    case ERROR:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["b" /* error */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["v" /* REGISTER_RESPONSE */]:
+    case REGISTER_RESPONSE:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["g" /* registerResponse */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["l" /* LOGIN_RESPONSE */]:
+    case LOGIN_RESPONSE:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["d" /* loginResponse */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["n" /* LOGOUT_RESPONSE */]:
+    case LOGOUT_RESPONSE:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["e" /* logoutResponse */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["y" /* UPDATE */]:
+    case UPDATE:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["i" /* update */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["h" /* EVENT_RESPONSE */]:
+    case EVENT_RESPONSE:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["c" /* eventResponse */])(state, action);
 
     case "@@websocket/".concat(__WEBPACK_IMPORTED_MODULE_1_redux_websocket_bridge__["OPEN"]):
@@ -5484,15 +5456,15 @@ function () {
       this._previousElapsed = elapsed;
 
       if (this.connect.mode !== __WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["a" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE));
         this.gameView = new __WEBPACK_IMPORTED_MODULE_13__views_GameView__["a" /* default */](this.store, this.canvas, this.ctx, this.loader);
       }
 
       var keys = this.connect.keys;
       var clickLeft = this.connect.clickLeft;
-      clickLeft.x && clickLeft.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["C" /* clickedLeft */])());
+      clickLeft.x && clickLeft.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["b" /* clickedLeft */])());
       var clickRight = this.connect.clickRight;
-      clickRight.x && clickRight.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["D" /* clickedRight */])());
+      clickRight.x && clickRight.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["c" /* clickedRight */])());
 
       switch (this.connect.mode) {
         case __WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE:
@@ -5523,30 +5495,30 @@ function () {
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["I" /* keyDown */])(event.key));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["h" /* keyDown */])(event.key));
   }, false);
   window.addEventListener('keyup', function (event) {
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["J" /* keyUp */])(event.key));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["i" /* keyUp */])(event.key));
   }, false);
   canvas.addEventListener('mousedown', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["M" /* mouseDownLeft */])(x, y));
-    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["N" /* mouseDownRight */])(x, y));
+    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["l" /* mouseDownLeft */])(x, y));
+    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["m" /* mouseDownRight */])(x, y));
   }, false);
   canvas.addEventListener('mousemove', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["O" /* mouseMove */])(x, y));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["n" /* mouseMove */])(x, y));
   }, false);
   canvas.addEventListener('mouseup', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["P" /* mouseUpLeft */])(x, y));
-    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["Q" /* mouseUpRight */])(x, y));
+    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["o" /* mouseUpLeft */])(x, y));
+    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["p" /* mouseUpRight */])(x, y));
   }, false);
 }
 
@@ -5779,7 +5751,7 @@ function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_Connect__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_Animation__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_actions_requests__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_events__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_draw__ = __webpack_require__(4);
@@ -5846,7 +5818,7 @@ function () {
             zoom = _this$connect$map.zoom;
         var xCoord = Math.floor((x - tile.xPos) / zoom);
         var yCoord = Math.floor((y - tile.yPos) / zoom);
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_events__["a" /* EVENTS */].MOVE, tile.id, {
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_types__["b" /* EVENTS */].MOVE, tile.id, {
           x: xCoord,
           y: yCoord
         }));
@@ -6079,7 +6051,7 @@ function () {
     key: "render",
     value: function render(delta) {
       var slots = [].concat(this.food.render(delta), this.party.render(delta), this.inventory.render(delta));
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__store_actions_actions__["R" /* refreshSlots */])(slots));
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__store_actions_actions__["q" /* refreshSlots */])(slots));
       this.actionBar.render(delta);
       this.habitat.render(delta);
       this.zoom.render(delta);
@@ -6100,7 +6072,7 @@ function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Food; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_Connect__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_actions_requests__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_actions_events__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_draw__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants__ = __webpack_require__(1);
@@ -6163,12 +6135,12 @@ function () {
   _createClass(Food, [{
     key: "increaseRations",
     value: function increaseRations(rations) {
-      rations < 2 && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_2__store_actions_events__["a" /* EVENTS */].RATIONS, rations + 1));
+      rations < 2 && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_2__store_actions_types__["b" /* EVENTS */].RATIONS, rations + 1));
     }
   }, {
     key: "decreaseRations",
     value: function decreaseRations(rations) {
-      rations > 0 && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_2__store_actions_events__["a" /* EVENTS */].RATIONS, rations - 1));
+      rations > 0 && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_2__store_actions_types__["b" /* EVENTS */].RATIONS, rations - 1));
     }
   }, {
     key: "update",
@@ -6333,8 +6305,8 @@ function () {
       var button = x && y && Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
 
       if (button) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["U" /* setPartyTab */])(button.id));
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_0__constants__["b" /* MODE */].PARTY));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["t" /* setPartyTab */])(button.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["a" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_0__constants__["b" /* MODE */].PARTY));
       }
     }
   }, {
@@ -6389,7 +6361,7 @@ function () {
         });
       } else if (member.health === 0) {
         x = -1000;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["T" /* removePartyMember */])(member.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["s" /* removePartyMember */])(member.id));
       }
 
       this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */];
@@ -6540,7 +6512,7 @@ function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_requests__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store_actions_actions__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__store_actions_events__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__store_actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__colors__ = __webpack_require__(3);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6589,7 +6561,7 @@ function () {
         } else if (button.tag) {
           switch (button.tag) {
             case 'seed':
-              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PLANT, button.id));
+              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].PLANT, button.id));
               this.current = 'main';
               break;
 
@@ -6601,30 +6573,30 @@ function () {
 
               if (currentCrop && currentCrop.stage <= 0) {
                 // TODO <= to ===
-                this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].HARVEST, button.id));
+                this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].HARVEST, button.id));
               }
 
               this.current = 'main';
               break;
 
             case 'hunting':
-              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].HUNT, button.id));
+              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].HUNT, button.id));
               this.current = 'main';
               break;
 
             case 'fishing':
-              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].FISH, button.id));
+              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].FISH, button.id));
               this.current = 'main';
               break;
 
             case 'add_food':
-              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].ADD_FOOD, button.id));
+              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].ADD_FOOD, button.id));
               this.current = 'main'; // COMBAK 'eating' instead?
 
               break;
 
             case 'remove_food':
-              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].REMOVE_FOOD, button.id));
+              this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].REMOVE_FOOD, button.id));
               this.current = 'main'; // COMBAK 'eating' instead?
 
               break;
@@ -6775,7 +6747,7 @@ function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_Connect__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_actions_requests__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_events__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_draw__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__colors__ = __webpack_require__(3);
@@ -6819,19 +6791,19 @@ function () {
     this.buttons = [{
       name: 'PACE',
       onClick: function onClick() {
-        return Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_events__["a" /* EVENTS */].PACE, 0);
+        return Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_types__["b" /* EVENTS */].PACE, 0);
       },
       id: 0
     }, {
       name: 'PACE',
       onClick: function onClick() {
-        return Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_events__["a" /* EVENTS */].PACE, 1);
+        return Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_types__["b" /* EVENTS */].PACE, 1);
       },
       id: 1
     }, {
       name: 'PACE',
       onClick: function onClick() {
-        return Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_events__["a" /* EVENTS */].PACE, 2);
+        return Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_types__["b" /* EVENTS */].PACE, 2);
       },
       id: 2
     }, {
@@ -6839,10 +6811,10 @@ function () {
       onClick: __WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["b" /* logout */]
     }, {
       name: 'zoom-out',
-      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["W" /* zoomOut */]
+      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["v" /* zoomOut */]
     }, {
       name: 'zoom-in',
-      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["V" /* zoomIn */]
+      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["u" /* zoomIn */]
     }];
   }
 
@@ -6913,7 +6885,7 @@ function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_actions__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store_actions_requests__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__store_actions_events__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__store_actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__constants__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__colors__ = __webpack_require__(3);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -7057,8 +7029,8 @@ function () {
       if (stack && stack.hasOwnProperty('id')) {
         var dragQuantity = stack.quantity;
         var originQuantity = 0;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["F" /* dragItem */])(stack, dragQuantity, originQuantity));
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["e" /* dragItem */])(stack, dragQuantity, originQuantity));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].PICK_UP, stack.id, {
           quantity: dragQuantity,
           type: stack.type,
           position: stack.position
@@ -7073,8 +7045,8 @@ function () {
       if (stack && stack.hasOwnProperty('id') && stack.quantity > 1) {
         var dragQuantity = Math.floor(stack.quantity / 2);
         var originQuantity = stack.quantity - dragQuantity;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["F" /* dragItem */])(stack, dragQuantity, originQuantity));
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["e" /* dragItem */])(stack, dragQuantity, originQuantity));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].PICK_UP, stack.id, {
           quantity: dragQuantity,
           type: stack.type,
           position: stack.position
@@ -7091,7 +7063,7 @@ function () {
     value: function dropOneItem(x, y) {
       this.dropItems(x, y, 1);
       var draggedItem = this.connect.draggedItem;
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["F" /* dragItem */])(draggedItem, draggedItem.quantity - 1));
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["e" /* dragItem */])(draggedItem, draggedItem.quantity - 1));
     }
   }, {
     key: "dropItems",
@@ -7107,13 +7079,13 @@ function () {
         var toBackpack = slot.type === __WEBPACK_IMPORTED_MODULE_6__constants__["c" /* SLOTS */].BACKPACK;
 
         if (equipOk || eatingOk || toBackpack) {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PUT_DOWN, draggedItem.id, {
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_types__["b" /* EVENTS */].PUT_DOWN, draggedItem.id, {
             quantity: quantity,
             type: slot.type,
             position: slot.position
           }));
         } else {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* error */])(801, "Cannot move item to this slot"));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["f" /* error */])(801, "Cannot move item to this slot"));
         }
       }
     }
@@ -7133,7 +7105,7 @@ function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_actions_requests__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_events__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_actions_types__ = __webpack_require__(87);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__store_Connect__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__utils_draw__ = __webpack_require__(4);
@@ -7186,10 +7158,10 @@ function () {
   _createClass(Story, [{
     key: "select",
     value: function select(button, story) {
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["E" /* closeStory */])());
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["d" /* closeStory */])());
 
       if (story.canDispatch) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_events__["a" /* EVENTS */].DECISION, button.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_types__["b" /* EVENTS */].DECISION, button.id));
       }
 
       this.selected = null;
@@ -7416,9 +7388,9 @@ function () {
         if (x > xMin && x < xMax && y > yMin && y < yMax) {
           console.log('Click inside party window');
         } else if (button) {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["U" /* setPartyTab */])(button.id));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["t" /* setPartyTab */])(button.id));
         } else {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_4__constants__["b" /* MODE */].GAME));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["a" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_4__constants__["b" /* MODE */].GAME));
         }
       }
     }
@@ -7757,7 +7729,7 @@ function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["c" /* register */])(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_actions__["G" /* error */])(110, 'Passwords do not match'));
+      store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_actions__["f" /* error */])(110, 'Passwords do not match'));
       Object(__WEBPACK_IMPORTED_MODULE_3__failure__["a" /* failureDialog */])(store.getState().errorMessage, dimCallback);
     }
   };
@@ -7815,6 +7787,57 @@ function loginDialog(store, setDim) {
   content.append(title, username.line, password.line, buttons);
   dialog.append(content);
 }
+
+/***/ }),
+/* 87 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ACTIONS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return EVENTS; });
+var ACTIONS = {
+  KEY_DOWN: 'KEY_DOWN',
+  KEY_UP: 'KEY_UP',
+  MOUSE_DOWN_LEFT: 'MOUSE_DOWN_LEFT',
+  MOUSE_DOWN_RIGHT: 'MOUSE_DOWN_RIGHT',
+  MOUSE_MOVE: 'MOUSE_MOVE',
+  MOUSE_UP_LEFT: 'MOUSE_UP_LEFT',
+  MOUSE_UP_RIGHT: 'MOUSE_UP_RIGHT',
+  CLICKED_LEFT: 'CLICKED_LEFT',
+  CLICKED_RIGHT: 'CLICKED_RIGHT',
+  ZOOM_IN: 'ZOOM_IN',
+  ZOOM_OUT: 'ZOOM_OUT',
+  SET_PARTY_TAB: 'SET_PARTY_TAB',
+  REFRESH_SLOTS: 'REFRESH_SLOTS',
+  CHANGE_MODE: 'CHANGE_MODE',
+  CLOSE_STORY: 'CLOSE_STORY',
+  REMOVE_PARTY_MEMBER: 'REMOVE_PARTY_MEMBER',
+  DRAG_ITEM: 'DRAG_ITEM',
+  ERROR: 'ERROR',
+  REGISTER_REQUEST: 'REGISTER_REQUEST',
+  REGISTER_RESPONSE: 'REGISTER_RESPONSE',
+  LOGIN_REQUEST: 'LOGIN_REQUEST',
+  LOGIN_RESPONSE: 'LOGIN_RESPONSE',
+  LOGOUT_REQUEST: 'LOGOUT_REQUEST',
+  LOGOUT_RESPONSE: 'LOGOUT_RESPONSE',
+  UPDATE: 'UPDATE',
+  EVENT_REQUEST: 'EVENT_REQUEST',
+  EVENT_RESPONSE: 'EVENT_RESPONSE'
+};
+var EVENTS = {
+  PLANT: 'plant',
+  HARVEST: 'harvest',
+  HUNT: 'hunt',
+  FISH: 'fish',
+  ADD_FOOD: 'add_food',
+  REMOVE_FOOD: 'remove_food',
+  MOVE: 'move',
+  RATIONS: 'rations',
+  DECISION: 'decision',
+  PACE: 'pace',
+  PICK_UP: 'pick_up',
+  PUT_DOWN: 'put_down'
+};
 
 /***/ })
 /******/ ]);

@@ -3,7 +3,7 @@ import { drawById, drawByName, drawHover } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
 import { sendError } from '../../store/actions/actions';
-import { EVENTS } from '../../store/actions/events';
+import { EVENTS } from '../../store/actions/types';
 import { DARK_RED, MEDIUM_RED, SOLID_WHITE } from '../colors';
 
 export default class ActionBar {

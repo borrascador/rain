@@ -1,6 +1,6 @@
 import Connect from '../../store/Connect';
 import { sendEvent } from '../../store/actions/requests';
-import { EVENTS } from '../../store/actions/events';
+import { EVENTS } from '../../store/actions/types';
 import { screenToImageButton } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 import { SLOTS } from '../constants';

@@ -1,7 +1,7 @@
 import { MODE } from '../constants';
 import { clicked, changeMode, closeStory } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
-import { EVENTS } from '../../store/actions/events';
+import { EVENTS } from '../../store/actions/types';
 import Connect from '../../store/Connect';
 import { screenToTextButton, screenToImageButton, getItemById } from './utils';
 import {

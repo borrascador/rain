@@ -3,7 +3,7 @@ import { drawById, drawHover, drawDurability } from '../utils/draw';
 import { screenToImageButton } from './utils';
 import { dragItem, error } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
-import { EVENTS } from '../../store/actions/events';
+import { EVENTS } from '../../store/actions/types';
 import { SLOTS } from '../constants';
 import { BRIGHT_RED, SOLID_WHITE, BRIGHT_OPAQUE } from '../colors';
 

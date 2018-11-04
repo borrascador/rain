@@ -6,18 +6,21 @@ import ReduxWebSocketBridge from 'redux-websocket-bridge';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import initSubscriber from 'redux-subscriber';
 import { errorLogger } from './errors';
-import {
+import { ACTIONS } from './actions/types';
+
+const {
 	KEY_DOWN, KEY_UP, MOUSE_MOVE, REFRESH_SLOTS,
 	MOUSE_DOWN_LEFT, MOUSE_UP_LEFT, CLICKED_LEFT,
 	MOUSE_DOWN_RIGHT, MOUSE_UP_RIGHT, CLICKED_RIGHT,
-} from './actions/actions';
+} = ACTIONS;
+
+const BLACKLIST = [
+	KEY_DOWN, KEY_UP, MOUSE_MOVE, REFRESH_SLOTS,
+	MOUSE_DOWN_LEFT, MOUSE_UP_LEFT, CLICKED_LEFT,
+	MOUSE_DOWN_RIGHT, MOUSE_UP_RIGHT, CLICKED_RIGHT,
+];
 
 function configureStore () {
-	const BLACKLIST = [
-		KEY_DOWN, KEY_UP, MOUSE_MOVE, REFRESH_SLOTS,
-		MOUSE_DOWN_LEFT, MOUSE_UP_LEFT, CLICKED_LEFT,
-		MOUSE_DOWN_RIGHT, MOUSE_UP_RIGHT, CLICKED_RIGHT,
-	];
 	const loggerMiddleware = createLogger({
 		predicate: (getState, action) => !BLACKLIST.includes(action.type)
 	});
