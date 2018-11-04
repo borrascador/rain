@@ -97,11 +97,6 @@ export const dragItem = (item, dragQuantity, originQuantity) => ({
   payload: { item, dragQuantity, originQuantity }
 });
 
-export const END_DRAG = 'END_DRAG';
-export const endDrag = () => ({
-  type: END_DRAG
-});
-
 export const ERROR = 'ERROR';
 
 export const error = (code, message) => ({

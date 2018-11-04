@@ -68,58 +68,56 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return KEY_DOWN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "J", function() { return keyDown; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return KEY_UP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "K", function() { return keyUp; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return MOUSE_DOWN_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "N", function() { return mouseDownLeft; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return MOUSE_DOWN_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "O", function() { return mouseDownRight; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return MOUSE_MOVE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "P", function() { return mouseMove; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return MOUSE_UP_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Q", function() { return mouseUpLeft; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return MOUSE_UP_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R", function() { return mouseUpRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return KEY_DOWN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I", function() { return keyDown; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return KEY_UP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "J", function() { return keyUp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return MOUSE_DOWN_LEFT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "M", function() { return mouseDownLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "p", function() { return MOUSE_DOWN_RIGHT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "N", function() { return mouseDownRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "q", function() { return MOUSE_MOVE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "O", function() { return mouseMove; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return MOUSE_UP_LEFT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "P", function() { return mouseUpLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "s", function() { return MOUSE_UP_RIGHT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Q", function() { return mouseUpRight; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return CLICKED_LEFT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "D", function() { return clickedLeft; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "C", function() { return clickedLeft; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return CLICKED_RIGHT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "E", function() { return clickedRight; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "A", function() { return ZOOM_IN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "W", function() { return zoomIn; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "B", function() { return ZOOM_OUT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "X", function() { return zoomOut; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "y", function() { return SET_PARTY_TAB; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "V", function() { return setPartyTab; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return REFRESH_SLOTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "S", function() { return refreshSlots; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "D", function() { return clickedRight; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "z", function() { return ZOOM_IN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "V", function() { return zoomIn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "A", function() { return ZOOM_OUT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "W", function() { return zoomOut; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "x", function() { return SET_PARTY_TAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "U", function() { return setPartyTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return REFRESH_SLOTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "R", function() { return refreshSlots; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CHANGE_MODE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "C", function() { return changeMode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "B", function() { return changeMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return CLOSE_STORY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F", function() { return closeStory; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "x", function() { return REMOVE_PARTY_MEMBER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "U", function() { return removePartyMember; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "E", function() { return closeStory; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "w", function() { return REMOVE_PARTY_MEMBER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "T", function() { return removePartyMember; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DRAG_ITEM; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "G", function() { return dragItem; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return END_DRAG; });
-/* unused harmony export endDrag */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return ERROR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H", function() { return error; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "F", function() { return dragItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return ERROR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "G", function() { return error; });
 /* unused harmony export sendError */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return REGISTER_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "w", function() { return REGISTER_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "T", function() { return registerRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return LOGIN_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return LOGIN_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "L", function() { return loginRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return LOGOUT_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "o", function() { return LOGOUT_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "M", function() { return logoutRequest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "z", function() { return UPDATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return EVENT_REQUEST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return EVENT_RESPONSE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "I", function() { return eventRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "u", function() { return REGISTER_REQUEST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "v", function() { return REGISTER_RESPONSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "S", function() { return registerRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return LOGIN_REQUEST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "l", function() { return LOGIN_RESPONSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "K", function() { return loginRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "m", function() { return LOGOUT_REQUEST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "n", function() { return LOGOUT_RESPONSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "L", function() { return logoutRequest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "y", function() { return UPDATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return EVENT_REQUEST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return EVENT_RESPONSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "H", function() { return eventRequest; });
 // Type and action definitions
 var KEY_DOWN = 'KEY_DOWN';
 var keyDown = function keyDown(key) {
@@ -264,12 +262,6 @@ var dragItem = function dragItem(item, dragQuantity, originQuantity) {
       dragQuantity: dragQuantity,
       originQuantity: originQuantity
     }
-  };
-};
-var END_DRAG = 'END_DRAG';
-var endDrag = function endDrag() {
-  return {
-    type: END_DRAG
   };
 };
 var ERROR = 'ERROR';
@@ -1011,7 +1003,7 @@ function register(user, email, password, dimCallback, exitRegister) {
     var state = getState();
 
     if (state.connected && !state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["T" /* registerRequest */])(user, email, password));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["S" /* registerRequest */])(user, email, password));
       var exitLoading = Object(__WEBPACK_IMPORTED_MODULE_3__game_dialogs_loading__["a" /* loadingDialog */])(dimCallback);
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
@@ -1029,7 +1021,7 @@ function register(user, email, password, dimCallback, exitRegister) {
         unsubscribe();
         exitRegister();
         exitLoading();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
         Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -1040,7 +1032,7 @@ function login(user, password, dimCallback, exitLogin) {
     var state = getState();
 
     if (state.connected && !state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["L" /* loginRequest */])(user, password));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["K" /* loginRequest */])(user, password));
       var exitLoading = Object(__WEBPACK_IMPORTED_MODULE_3__game_dialogs_loading__["a" /* loadingDialog */])(dimCallback);
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
@@ -1049,7 +1041,7 @@ function login(user, password, dimCallback, exitLogin) {
         clearTimeout(timer);
 
         if (!getState().error) {
-          dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["C" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_2__game_constants__["b" /* MODE */].GAME));
+          dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_2__game_constants__["b" /* MODE */].GAME));
         } else {
           Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
         }
@@ -1058,7 +1050,7 @@ function login(user, password, dimCallback, exitLogin) {
         unsubscribe();
         exitLogin();
         exitLoading();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
         Object(__WEBPACK_IMPORTED_MODULE_5__game_dialogs_failure__["a" /* failureDialog */])(getState().errorMessage, dimCallback);
       }, 2000);
     }
@@ -1069,7 +1061,7 @@ function logout(callback) {
     var state = getState();
 
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["M" /* logoutRequest */])());
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["L" /* logoutRequest */])());
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
         callback && callback();
@@ -1078,7 +1070,7 @@ function logout(callback) {
       var timer = setTimeout(function () {
         unsubscribe();
         callback && callback();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -1088,14 +1080,14 @@ function sendEvent(type, id, optional) {
     var state = getState();
 
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["I" /* eventRequest */])(type, id, optional));
+      dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* eventRequest */])(type, id, optional));
       var unsubscribe = Object(__WEBPACK_IMPORTED_MODULE_1__store__["b" /* subscribe */])('sending', function (state) {
         unsubscribe();
         clearTimeout(timer);
       });
       var timer = setTimeout(function () {
         unsubscribe();
-        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["H" /* error */])(200, 'Response timeout'));
+        getState().sending && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__actions__["G" /* error */])(200, 'Response timeout'));
       }, 2000);
     }
   };
@@ -1271,7 +1263,7 @@ function () {
 
 
 function configureStore() {
-  var BLACKLIST = [__WEBPACK_IMPORTED_MODULE_8__actions_actions__["j" /* KEY_DOWN */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["k" /* KEY_UP */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["r" /* MOUSE_MOVE */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["u" /* REFRESH_SLOTS */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["p" /* MOUSE_DOWN_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["s" /* MOUSE_UP_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["b" /* CLICKED_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["q" /* MOUSE_DOWN_RIGHT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["t" /* MOUSE_UP_RIGHT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["c" /* CLICKED_RIGHT */]];
+  var BLACKLIST = [__WEBPACK_IMPORTED_MODULE_8__actions_actions__["i" /* KEY_DOWN */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["j" /* KEY_UP */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["q" /* MOUSE_MOVE */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["t" /* REFRESH_SLOTS */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["o" /* MOUSE_DOWN_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["r" /* MOUSE_UP_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["b" /* CLICKED_LEFT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["p" /* MOUSE_DOWN_RIGHT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["s" /* MOUSE_UP_RIGHT */], __WEBPACK_IMPORTED_MODULE_8__actions_actions__["c" /* CLICKED_RIGHT */]];
   var loggerMiddleware = Object(__WEBPACK_IMPORTED_MODULE_1_redux_logger__["createLogger"])({
     predicate: function predicate(getState, action) {
       return !BLACKLIST.includes(action.type);
@@ -1880,25 +1872,24 @@ function trimUndefined(map) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["i"] = makeKeys;
-/* harmony export (immutable) */ __webpack_exports__["g"] = keyDown;
-/* harmony export (immutable) */ __webpack_exports__["h"] = keyUp;
-/* harmony export (immutable) */ __webpack_exports__["j"] = mouseDownLeft;
-/* harmony export (immutable) */ __webpack_exports__["k"] = mouseDownRight;
-/* harmony export (immutable) */ __webpack_exports__["l"] = mouseMove;
-/* harmony export (immutable) */ __webpack_exports__["m"] = mouseUpLeft;
-/* harmony export (immutable) */ __webpack_exports__["n"] = mouseUpRight;
+/* harmony export (immutable) */ __webpack_exports__["h"] = makeKeys;
+/* harmony export (immutable) */ __webpack_exports__["f"] = keyDown;
+/* harmony export (immutable) */ __webpack_exports__["g"] = keyUp;
+/* harmony export (immutable) */ __webpack_exports__["i"] = mouseDownLeft;
+/* harmony export (immutable) */ __webpack_exports__["j"] = mouseDownRight;
+/* harmony export (immutable) */ __webpack_exports__["k"] = mouseMove;
+/* harmony export (immutable) */ __webpack_exports__["l"] = mouseUpLeft;
+/* harmony export (immutable) */ __webpack_exports__["m"] = mouseUpRight;
 /* harmony export (immutable) */ __webpack_exports__["b"] = clickedLeft;
 /* harmony export (immutable) */ __webpack_exports__["c"] = clickedRight;
-/* harmony export (immutable) */ __webpack_exports__["r"] = zoomIn;
-/* harmony export (immutable) */ __webpack_exports__["s"] = zoomOut;
-/* harmony export (immutable) */ __webpack_exports__["q"] = setPartyTab;
+/* harmony export (immutable) */ __webpack_exports__["q"] = zoomIn;
+/* harmony export (immutable) */ __webpack_exports__["r"] = zoomOut;
+/* harmony export (immutable) */ __webpack_exports__["p"] = setPartyTab;
 /* harmony export (immutable) */ __webpack_exports__["e"] = dragItem;
-/* harmony export (immutable) */ __webpack_exports__["f"] = endDrag;
-/* harmony export (immutable) */ __webpack_exports__["o"] = refreshSlots;
+/* harmony export (immutable) */ __webpack_exports__["n"] = refreshSlots;
 /* harmony export (immutable) */ __webpack_exports__["a"] = changeMode;
 /* harmony export (immutable) */ __webpack_exports__["d"] = closeStory;
-/* harmony export (immutable) */ __webpack_exports__["p"] = removePartyMember;
+/* harmony export (immutable) */ __webpack_exports__["o"] = removePartyMember;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_constants__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(19);
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -2097,16 +2088,6 @@ function dragItem(state, action) {
     })] : [])))
   });
 }
-function endDrag(state) {
-  return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(state, {
-    slots: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["g" /* updatePositionInArray */])(state.slots, __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG, 0, function (item) {
-      return {
-        type: __WEBPACK_IMPORTED_MODULE_0__game_constants__["c" /* SLOTS */].DRAG,
-        position: 0
-      };
-    })
-  });
-}
 function refreshSlots(state, action) {
   return Object(__WEBPACK_IMPORTED_MODULE_1__utils__["e" /* updateObject */])(state, {
     slots: Object(__WEBPACK_IMPORTED_MODULE_1__utils__["c" /* mergeSlots */])(state.slots, action.payload.slots)
@@ -2141,10 +2122,10 @@ function removePartyMember(state, action) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["e"] = updateObject;
 /* unused harmony export updateItemInArray */
-/* harmony export (immutable) */ __webpack_exports__["g"] = updatePositionInArray;
+/* unused harmony export updatePositionInArray */
 /* harmony export (immutable) */ __webpack_exports__["b"] = mergeArrays;
 /* harmony export (immutable) */ __webpack_exports__["c"] = mergeSlots;
-/* harmony export (immutable) */ __webpack_exports__["h"] = updateStory;
+/* harmony export (immutable) */ __webpack_exports__["g"] = updateStory;
 /* harmony export (immutable) */ __webpack_exports__["d"] = updateInventoryChanges;
 /* harmony export (immutable) */ __webpack_exports__["f"] = updatePartyChanges;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getActions;
@@ -2332,7 +2313,7 @@ function getSlotProps(_ref) {
   }
 }
 
-function getRestProps(item) {
+function getRestProps(item, destType) {
   var type = item.type,
       position = item.position,
       xPos = item.xPos,
@@ -2340,7 +2321,8 @@ function getRestProps(item) {
       width = item.width,
       height = item.height,
       quantity = item.quantity,
-      rest = _objectWithoutProperties(item, ["type", "position", "xPos", "yPos", "width", "height", "quantity"]);
+      rest = _objectWithoutProperties(item, ["type", "position", "xPos", "yPos", "width", "height", "quantity"]); // TODO Remove portion if destType = SLOTS.BACKPACK
+
 
   return Object.keys(rest).length > 0 ? rest : null;
 }
@@ -2386,11 +2368,11 @@ function mergeSlots(oldArray, newArray) {
 
       if (obj[key]) {
         if (newItem.hasOwnProperty('id')) {
-          var _oldItem = oldArray.find(function (oldItem) {
-            return oldItem.id === newItem.id && getRestProps(oldItem);
+          var _oldItem = oldArray.find(function (item) {
+            return item.id === newItem.id && getRestProps(item, newItem.type);
           });
 
-          var meta = _oldItem ? getRestProps(_oldItem) : {};
+          var meta = _oldItem ? getRestProps(_oldItem, newItem.type) : {};
           newObj[key] = Object.assign({}, getSlotProps(obj[key]), meta, newItem);
         } else {
           obj[key] = Object.assign(obj[key], newItem);
@@ -2791,7 +2773,7 @@ var inputState = {
     x: null,
     y: null
   },
-  keys: Object(__WEBPACK_IMPORTED_MODULE_2__ui__["i" /* makeKeys */])()
+  keys: Object(__WEBPACK_IMPORTED_MODULE_2__ui__["h" /* makeKeys */])()
 };
 var connectionState = {
   connected: false,
@@ -4146,26 +4128,26 @@ function reducer(state, action) {
   }
 
   switch (action.type) {
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["j" /* KEY_DOWN */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["g" /* keyDown */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["i" /* KEY_DOWN */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["f" /* keyDown */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["k" /* KEY_UP */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["h" /* keyUp */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["j" /* KEY_UP */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["g" /* keyUp */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["p" /* MOUSE_DOWN_LEFT */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["j" /* mouseDownLeft */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["o" /* MOUSE_DOWN_LEFT */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["i" /* mouseDownLeft */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["q" /* MOUSE_DOWN_RIGHT */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["k" /* mouseDownRight */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["p" /* MOUSE_DOWN_RIGHT */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["j" /* mouseDownRight */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["r" /* MOUSE_MOVE */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["l" /* mouseMove */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["q" /* MOUSE_MOVE */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["k" /* mouseMove */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["s" /* MOUSE_UP_LEFT */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["m" /* mouseUpLeft */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["r" /* MOUSE_UP_LEFT */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["l" /* mouseUpLeft */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["t" /* MOUSE_UP_RIGHT */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["n" /* mouseUpRight */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["s" /* MOUSE_UP_RIGHT */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["m" /* mouseUpRight */])(state, action);
 
     case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["b" /* CLICKED_LEFT */]:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["b" /* clickedLeft */])(state);
@@ -4173,17 +4155,17 @@ function reducer(state, action) {
     case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["c" /* CLICKED_RIGHT */]:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["c" /* clickedRight */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["A" /* ZOOM_IN */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["r" /* zoomIn */])(state);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["z" /* ZOOM_IN */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["q" /* zoomIn */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["B" /* ZOOM_OUT */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["s" /* zoomOut */])(state);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["A" /* ZOOM_OUT */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["r" /* zoomOut */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["y" /* SET_PARTY_TAB */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["q" /* setPartyTab */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["x" /* SET_PARTY_TAB */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["p" /* setPartyTab */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["u" /* REFRESH_SLOTS */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["o" /* refreshSlots */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["t" /* REFRESH_SLOTS */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["n" /* refreshSlots */])(state, action);
 
     case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["a" /* CHANGE_MODE */]:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["a" /* changeMode */])(state, action);
@@ -4191,37 +4173,34 @@ function reducer(state, action) {
     case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["d" /* CLOSE_STORY */]:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["d" /* closeStory */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["x" /* REMOVE_PARTY_MEMBER */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["p" /* removePartyMember */])(state, action);
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["w" /* REMOVE_PARTY_MEMBER */]:
+      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["o" /* removePartyMember */])(state, action);
 
     case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["e" /* DRAG_ITEM */]:
       return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["e" /* dragItem */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["f" /* END_DRAG */]:
-      return Object(__WEBPACK_IMPORTED_MODULE_2__ui__["f" /* endDrag */])(state, action);
-
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["v" /* REGISTER_REQUEST */]:
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["l" /* LOGIN_REQUEST */]:
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["n" /* LOGOUT_REQUEST */]:
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["h" /* EVENT_REQUEST */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["u" /* REGISTER_REQUEST */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["k" /* LOGIN_REQUEST */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["m" /* LOGOUT_REQUEST */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["g" /* EVENT_REQUEST */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["h" /* request */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["g" /* ERROR */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["f" /* ERROR */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["b" /* error */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["w" /* REGISTER_RESPONSE */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["v" /* REGISTER_RESPONSE */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["g" /* registerResponse */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["m" /* LOGIN_RESPONSE */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["l" /* LOGIN_RESPONSE */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["d" /* loginResponse */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["o" /* LOGOUT_RESPONSE */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["n" /* LOGOUT_RESPONSE */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["e" /* logoutResponse */])(state);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["z" /* UPDATE */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["y" /* UPDATE */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["i" /* update */])(state, action);
 
-    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["i" /* EVENT_RESPONSE */]:
+    case __WEBPACK_IMPORTED_MODULE_0__actions_actions__["h" /* EVENT_RESPONSE */]:
       return Object(__WEBPACK_IMPORTED_MODULE_3__game__["c" /* eventResponse */])(state, action);
 
     case "@@websocket/".concat(__WEBPACK_IMPORTED_MODULE_1_redux_websocket_bridge__["OPEN"]):
@@ -4339,7 +4318,7 @@ function loginResponse(state, action) {
     slots: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["c" /* mergeSlots */])(state.slots, action.payload.inventory),
     actions: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["a" /* getActions */])(action.payload.inventory, action.payload.tiles, action.payload.position),
     vehicle: action.payload.vehicle || null,
-    stories: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["h" /* updateStory */])(state, action),
+    stories: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["g" /* updateStory */])(state, action),
     inventoryChanges: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["d" /* updateInventoryChanges */])(state, action),
     partyChanges: Object(__WEBPACK_IMPORTED_MODULE_0__utils__["f" /* updatePartyChanges */])(state, action),
     position: position,
@@ -4379,7 +4358,7 @@ function update(state, action) {
     yTarget = null;
   }
 
-  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["h" /* updateStory */])(state, action);
+  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["g" /* updateStory */])(state, action);
   var inventoryChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["d" /* updateInventoryChanges */])(state, action);
   var partyChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["f" /* updatePartyChanges */])(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
@@ -4413,7 +4392,7 @@ function eventResponse(state, action) {
   var positionTarget = typeof action.payload.positionTarget === 'number' ? action.payload.positionTarget : state.positionTarget;
   var xTarget = typeof action.payload.xTarget === 'number' ? action.payload.xTarget : state.xTarget;
   var yTarget = typeof action.payload.yTarget === 'number' ? action.payload.yTarget : state.yTarget;
-  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["h" /* updateStory */])(state, action);
+  var stories = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["g" /* updateStory */])(state, action);
   var inventoryChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["d" /* updateInventoryChanges */])(state, action);
   var partyChanges = Object(__WEBPACK_IMPORTED_MODULE_0__utils__["f" /* updatePartyChanges */])(state, action);
   var pace = [0, 1, 2].includes(action.payload.pace) ? action.payload.pace : state.pace;
@@ -5505,15 +5484,15 @@ function () {
       this._previousElapsed = elapsed;
 
       if (this.connect.mode !== __WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE && (this.connect.connected === false || this.connect.loggedIn === false)) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["C" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE));
         this.gameView = new __WEBPACK_IMPORTED_MODULE_13__views_GameView__["a" /* default */](this.store, this.canvas, this.ctx, this.loader);
       }
 
       var keys = this.connect.keys;
       var clickLeft = this.connect.clickLeft;
-      clickLeft.x && clickLeft.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["D" /* clickedLeft */])());
+      clickLeft.x && clickLeft.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["C" /* clickedLeft */])());
       var clickRight = this.connect.clickRight;
-      clickRight.x && clickRight.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["E" /* clickedRight */])());
+      clickRight.x && clickRight.y && this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_15__store_actions_actions__["D" /* clickedRight */])());
 
       switch (this.connect.mode) {
         case __WEBPACK_IMPORTED_MODULE_16__constants_js__["b" /* MODE */].TITLE:
@@ -5544,30 +5523,30 @@ function () {
 
 function addInputListeners(dispatch, canvas) {
   window.addEventListener('keydown', function (event) {
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["J" /* keyDown */])(event.key));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["I" /* keyDown */])(event.key));
   }, false);
   window.addEventListener('keyup', function (event) {
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["K" /* keyUp */])(event.key));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["J" /* keyUp */])(event.key));
   }, false);
   canvas.addEventListener('mousedown', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["N" /* mouseDownLeft */])(x, y));
-    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["O" /* mouseDownRight */])(x, y));
+    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["M" /* mouseDownLeft */])(x, y));
+    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["N" /* mouseDownRight */])(x, y));
   }, false);
   canvas.addEventListener('mousemove', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["P" /* mouseMove */])(x, y));
+    dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["O" /* mouseMove */])(x, y));
   }, false);
   canvas.addEventListener('mouseup', function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["Q" /* mouseUpLeft */])(x, y));
-    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["R" /* mouseUpRight */])(x, y));
+    event.button === 0 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["P" /* mouseUpLeft */])(x, y));
+    event.button === 2 && dispatch(Object(__WEBPACK_IMPORTED_MODULE_0__store_actions_actions__["Q" /* mouseUpRight */])(x, y));
   }, false);
 }
 
@@ -6100,7 +6079,7 @@ function () {
     key: "render",
     value: function render(delta) {
       var slots = [].concat(this.food.render(delta), this.party.render(delta), this.inventory.render(delta));
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__store_actions_actions__["S" /* refreshSlots */])(slots));
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__store_actions_actions__["R" /* refreshSlots */])(slots));
       this.actionBar.render(delta);
       this.habitat.render(delta);
       this.zoom.render(delta);
@@ -6354,8 +6333,8 @@ function () {
       var button = x && y && Object(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* screenToImageButton */])(x, y, this.buttons);
 
       if (button) {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["V" /* setPartyTab */])(button.id));
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["C" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_0__constants__["b" /* MODE */].PARTY));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["U" /* setPartyTab */])(button.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_0__constants__["b" /* MODE */].PARTY));
       }
     }
   }, {
@@ -6410,7 +6389,7 @@ function () {
         });
       } else if (member.health === 0) {
         x = -1000;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["U" /* removePartyMember */])(member.id));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["T" /* removePartyMember */])(member.id));
       }
 
       this.ctx.fillStyle = __WEBPACK_IMPORTED_MODULE_5__colors__["l" /* MEDIUM_RED */];
@@ -6860,10 +6839,10 @@ function () {
       onClick: __WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["b" /* logout */]
     }, {
       name: 'zoom-out',
-      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["X" /* zoomOut */]
+      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["W" /* zoomOut */]
     }, {
       name: 'zoom-in',
-      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["W" /* zoomIn */]
+      onClick: __WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["V" /* zoomIn */]
     }];
   }
 
@@ -7078,7 +7057,7 @@ function () {
       if (stack && stack.hasOwnProperty('id')) {
         var dragQuantity = stack.quantity;
         var originQuantity = 0;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["F" /* dragItem */])(stack, dragQuantity, originQuantity));
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
           quantity: dragQuantity,
           type: stack.type,
@@ -7094,7 +7073,7 @@ function () {
       if (stack && stack.hasOwnProperty('id') && stack.quantity > 1) {
         var dragQuantity = Math.floor(stack.quantity / 2);
         var originQuantity = stack.quantity - dragQuantity;
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(stack, dragQuantity, originQuantity));
+        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["F" /* dragItem */])(stack, dragQuantity, originQuantity));
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_5__store_actions_events__["a" /* EVENTS */].PICK_UP, stack.id, {
           quantity: dragQuantity,
           type: stack.type,
@@ -7105,18 +7084,14 @@ function () {
   }, {
     key: "dropFullStack",
     value: function dropFullStack(x, y) {
-      this.dropItems(x, y, this.connect.draggedItem.quantity); // this.store.dispatch(endDrag());
+      this.dropItems(x, y, this.connect.draggedItem.quantity);
     }
   }, {
     key: "dropOneItem",
     value: function dropOneItem(x, y) {
       this.dropItems(x, y, 1);
       var draggedItem = this.connect.draggedItem;
-
-      if (draggedItem.quantity === 1) {// this.store.dispatch(endDrag());
-      } else {
-        this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* dragItem */])(draggedItem, draggedItem.quantity - 1));
-      }
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["F" /* dragItem */])(draggedItem, draggedItem.quantity - 1));
     }
   }, {
     key: "dropItems",
@@ -7138,7 +7113,7 @@ function () {
             position: slot.position
           }));
         } else {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["H" /* error */])(801, "Cannot move item to this slot"));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["G" /* error */])(801, "Cannot move item to this slot"));
         }
       }
     }
@@ -7211,7 +7186,7 @@ function () {
   _createClass(Story, [{
     key: "select",
     value: function select(button, story) {
-      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["F" /* closeStory */])());
+      this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_actions__["E" /* closeStory */])());
 
       if (story.canDispatch) {
         this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_requests__["d" /* sendEvent */])(__WEBPACK_IMPORTED_MODULE_3__store_actions_events__["a" /* EVENTS */].DECISION, button.id));
@@ -7441,9 +7416,9 @@ function () {
         if (x > xMin && x < xMax && y > yMin && y < yMax) {
           console.log('Click inside party window');
         } else if (button) {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["V" /* setPartyTab */])(button.id));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["U" /* setPartyTab */])(button.id));
         } else {
-          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["C" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_4__constants__["b" /* MODE */].GAME));
+          this.store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__store_actions_actions__["B" /* changeMode */])(__WEBPACK_IMPORTED_MODULE_4__constants__["b" /* MODE */].GAME));
         }
       }
     }
@@ -7782,7 +7757,7 @@ function registerDialog(store, setDim) {
     if (passwordText1 === passwordText2) {
       store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_1__store_actions_requests__["c" /* register */])(usernameText, emailText, passwordText1, dimCallback, exitDialog));
     } else {
-      store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_actions__["H" /* error */])(110, 'Passwords do not match'));
+      store.dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__store_actions_actions__["G" /* error */])(110, 'Passwords do not match'));
       Object(__WEBPACK_IMPORTED_MODULE_3__failure__["a" /* failureDialog */])(store.getState().errorMessage, dimCallback);
     }
   };

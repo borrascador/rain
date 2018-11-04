@@ -59,8 +59,6 @@ export default function reducer(state, action) {
       return removePartyMember(state, action);
     case DRAG_ITEM:
       return dragItem(state, action);
-    case END_DRAG:
-      return endDrag(state, action);
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:

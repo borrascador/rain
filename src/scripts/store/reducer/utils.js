@@ -96,8 +96,9 @@ function getSlotProps({ type, position, xPos, yPos, width, height }) {
   }
 }
 
-function getRestProps(item) {
+function getRestProps(item, destType) {
   const { type, position, xPos, yPos, width, height, quantity, ...rest } = item;
+  // TODO Remove portion if destType = SLOTS.BACKPACK
   return Object.keys(rest).length > 0 ? rest : null;
 }
 
@@ -113,10 +114,10 @@ export function mergeSlots(oldArray, newArray) {
     const key = makeSlotKey(newItem.type, newItem.position);
     if (obj[key]) {
       if (newItem.hasOwnProperty('id')) {
-        const oldItem = oldArray.find(oldItem => {
-          return oldItem.id === newItem.id && getRestProps(oldItem)
+        const oldItem = oldArray.find(item => {
+          return item.id === newItem.id && getRestProps(item, newItem.type)
         });
-        const meta = oldItem ? getRestProps(oldItem) : {};
+        const meta = oldItem ? getRestProps(oldItem, newItem.type) : {};
         newObj[key] = Object.assign({}, getSlotProps(obj[key]), meta, newItem);
       } else {
         obj[key] = Object.assign(obj[key], newItem);

@@ -1,15 +1,11 @@
 import Connect from '../../store/Connect';
 import { drawById, drawHover, drawDurability } from '../utils/draw';
 import { screenToImageButton } from './utils';
-import {
-  changeMode, clickedRight, dragItem, endDrag, error
-} from '../../store/actions/actions';
+import { dragItem, error } from '../../store/actions/actions';
 import { sendEvent } from '../../store/actions/requests';
 import { EVENTS } from '../../store/actions/events';
-import { MODE, SLOTS } from '../constants';
-import {
-  DARK_RED, MEDIUM_RED, BRIGHT_RED, SOLID_WHITE, BRIGHT_OPAQUE
-} from '../colors';
+import { SLOTS } from '../constants';
+import { BRIGHT_RED, SOLID_WHITE, BRIGHT_OPAQUE } from '../colors';
 
 export default class Items {
 
@@ -152,17 +148,12 @@ export default class Items {
 
   dropFullStack(x, y) {
     this.dropItems(x, y, this.connect.draggedItem.quantity);
-    // this.store.dispatch(endDrag());
   }
 
   dropOneItem(x, y) {
     this.dropItems(x, y, 1);
     const draggedItem = this.connect.draggedItem;
-    if (draggedItem.quantity === 1) {
-      // this.store.dispatch(endDrag());
-    } else {
-      this.store.dispatch(dragItem(draggedItem, draggedItem.quantity - 1));
-    }
+    this.store.dispatch(dragItem(draggedItem, draggedItem.quantity - 1));
   }
 
   dropItems(x, y, quantity) {
