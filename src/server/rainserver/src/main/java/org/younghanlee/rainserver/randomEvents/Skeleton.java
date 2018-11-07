@@ -121,7 +121,7 @@ public class Skeleton {
 	
 	public static IRandomEvent skeleton = new IRandomEvent (){
 		public double generateChance(Player p) {
-			return 100;
+			return 1;
 		}
 		public JSONObject result(Player p) {
 			String[] choiceNames = {"skeleton_openBag", "skeleton_leave"};
