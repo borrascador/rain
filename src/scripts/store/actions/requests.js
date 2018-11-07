@@ -99,3 +99,17 @@ export function sendEvent(type, id, optional) {
     }
   }
 }
+
+if (process.env.NODE_ENV === 'development') {
+  Object.assign(
+    window,
+    {
+      requests: {
+        register,
+        login,
+        logout,
+        sendEvent
+      }
+    }
+  );
+}
