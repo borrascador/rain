@@ -506,10 +506,12 @@ public class Player {
 		JSONObject jo = new JSONObject();
 		int newQuantity = drag.getQuantity() - quantity;
 		if (newQuantity == 0) {
+			jo.put("quantity", newQuantity);
 			drag = null;
+		} else {
+			drag.setQuantity(newQuantity);
+			jo.put("quantity", newQuantity);
 		}
-		drag.setQuantity(newQuantity);
-		jo.put("quantity", newQuantity);
 		jo.put("position", 0);
 		jo.put("type", "DRAG");
 		return jo;
@@ -552,6 +554,7 @@ public class Player {
 				source.put("type", srcType);
 				source.put("id", itemID);
 				source.put("quantity", stack.getQuantity() - quantity);
+				stack.setQuantity(stack.getQuantity() - quantity);
 				ja.put(source);
 				
 				payload.put("inventory", ja);
@@ -603,6 +606,8 @@ public class Player {
 				drag.setPosition(targetStack.getPosition());
 				drag.setType(targetStack.getType());
 				updates.put(addStack(itemID, drag));
+				System.out.println(targetStack.toJSONObject());
+				drag = targetStack;
 				updates.put(pickUpTarget);
 			}
 			
@@ -616,7 +621,7 @@ public class Player {
 				updates.put(reduceDrag(quantity));
 			// Put down part of stack
 			} else {
-				updates.put(drag.change(q - quantity, null, null));
+				updates.put(reduceDrag(quantity));
 				ItemStack split = drag.copy(quantity);
 				split.setPosition(destPosition);
 				split.setType(destType);
