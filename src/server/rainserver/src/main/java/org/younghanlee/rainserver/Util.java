@@ -7,6 +7,16 @@ public class Util{
 		return (int)(Math.random() * (max + 1));
 	}
 	
+	public static int choice(int[] array) {
+		int index = randomInt(array.length);
+		return array[index];
+	}
+	
+	public static String choice(String[] array) {
+		int index = randomInt(array.length - 1);
+		return array[index];
+	}
+	
 	public static int randomRoll(int base, float multiplier) {
 		return Math.round(randomInt(base) * multiplier);
 	}

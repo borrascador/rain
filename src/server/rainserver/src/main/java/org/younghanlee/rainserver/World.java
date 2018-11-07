@@ -63,6 +63,7 @@ public class World {
 		
 		Hunt.addAllChoices();
 		
+		FindItem.addAll();
 		Skeleton.addAll();
 		
 		System.out.println("Added all choices");
