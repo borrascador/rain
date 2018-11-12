@@ -67,11 +67,11 @@ public class Tribe {
 	public JSONArray generateParty(Player p) {
 		JSONArray party = new JSONArray();
 		for (int i=0; i<partySize; i++) {
-			int member_id = p.addMember("Party Member " + i, Player.randomInt(2));
+			int member_id = p.addMember("Party Member " + i, Util.randomInt(2));
 			HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
 			for (int id: skills.keySet()) {
-				if (Player.randomInt(100) < skills.get(id)) {
-					newSkills.put(id, 0);
+				if (Util.randomInt(100) < skills.get(id)) {
+					newSkills.put(id, 1);
 				} 
 			}
 			Member m = World.getMember(member_id);
@@ -83,10 +83,10 @@ public class Tribe {
 
 	
 	public JSONArray generateInventory(Player p) {
+		System.out.println("Generating inventory");
 		JSONArray inventory = new JSONArray();
 		for (int id: items.keySet()) {
-			int quantity = items.get(id);
-			inventory.put(World.getItem(id).change(id, quantity, p, false));
+			Util.concat(inventory, p.add(id, items.get(id)));
 		}
 		return inventory;
 	}

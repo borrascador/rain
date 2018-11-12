@@ -1,6 +1,7 @@
 import Connect from '../../store/Connect';
-import { logout, sendEvent } from '../../store/actions/requests';
 import { zoomIn, zoomOut } from '../../store/actions/actions';
+import { logout, sendEvent } from '../../store/actions/requests';
+import { EVENTS } from '../../store/actions/types';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
 import { SOLID_WHITE, BRIGHT_YELLOW } from '../colors';
@@ -21,15 +22,12 @@ export default class Zoom {
     this.ctx.font = this.fontSize + 'px MECC';
 
     this.buttons = [
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 0), id: 0 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 1), id: 1 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 2), id: 2 },
       { name: 'settings', onClick: logout },
       { name: 'zoom-out', onClick: zoomOut },
-      { name: 'zoom-in', onClick: zoomIn },
-      { name: 'PACE', onClick: () => sendEvent('pace', 2), id: 2 },
-      { name: 'PACE', onClick: () => sendEvent('pace', 1), id: 1 },
-      { name: 'PACE', onClick: () => sendEvent('pace', 0), id: 0 },
-      { name: 'RATIONS', onClick: () => sendEvent('rations', 2), id: 2 },
-      { name: 'RATIONS', onClick: () => sendEvent('rations', 1), id: 1 },
-      { name: 'RATIONS', onClick: () => sendEvent('rations', 0), id: 0 }
+      { name: 'zoom-in', onClick: zoomIn }
     ];
   }
 
@@ -41,34 +39,35 @@ export default class Zoom {
   render(delta) {
     const pace = this.connect.pace;
     const rations = this.connect.rations;
+    this.ctx.fillStyle = SOLID_WHITE;
+    this.ctx.font = this.fontSize + 'px MECC';
+    const textWidth = this.ctx.measureText('PACE').width;
+    this.ctx.fillText(
+      'PACE',
+      (this.size * 3 - textWidth) / 2,
+      this.canvas.height - this.size * 2
+    );
     this.buttons = this.buttons.map((button, index) => {
-      const x = this.canvas.width - (this.size * (index % 3 + 1));
-      const y = Math.floor(index / 3) * this.size;
-
-      if (typeof button.id === "number") {
-        if ((button.name === "PACE" && button.id === pace) || (button.name === "RATIONS" && button.id === rations)) {
+      const xPos = this.size * (index % 3);
+      const yPos = this.canvas.height - this.size * 2 + Math.floor(index / 3) * this.size;
+      const [width, height] = Array(2).fill(this.size);
+      if (typeof button.id === 'number') {
+        if (button.id === pace) {
           this.ctx.fillStyle = BRIGHT_YELLOW;
         } else {
           this.ctx.fillStyle = SOLID_WHITE;
         }
-        this.ctx.font = this.fontSize + 'px MECC';
         const textWidth = this.ctx.measureText(button.id.toString()).width;
-        this.ctx.fillText(button.id, x + (this.size - textWidth) / 2, y + (this.size + this.fontSize) / 2);
-        if (button.id === 0) {
-          const labelWidth = this.ctx.measureText(button.name).width;
-          this.ctx.fillStyle = SOLID_WHITE;
-          this.ctx.fillText(button.name, x - labelWidth - this.size / 4, y + (this.size + this.fontSize) / 2);
-        }
+        this.ctx.fillText(
+          button.id,
+          xPos + (this.size - textWidth) / 2,
+          yPos + (this.size + this.fontSize) / 2
+        );
       } else {
-        drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y);
+        drawByName(this.ctx, this.iconsXl, button.name, this.scale, xPos, yPos);
       }
 
-      return Object.assign({}, button, {
-        xPos: x,
-        yPos: y,
-        width: this.size,
-        height: this.size
-      });
+      return Object.assign({}, button, { xPos, yPos, width, height });
     });
   }
 }

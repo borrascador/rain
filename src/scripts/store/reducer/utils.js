@@ -11,6 +11,24 @@ export function updateItemInArray(array, itemId, updateItemCallback) {
   });
 };
 
+export function updatePositionInArray(array, type, position, updateItemCallback) {
+  return array.map(item => {
+    if (!(item.type === type && item.position === position)) return item
+    return updateItemCallback(item);
+  });
+};
+
+function compareObjects(a, b) {
+  var aProps = Object.getOwnPropertyNames(a);
+  var bProps = Object.getOwnPropertyNames(b);
+  if (aProps.length != bProps.length) return false;
+  for (let i = 0; i < aProps.length; i++) {
+    let propName = aProps[i];
+    if (a[propName] !== b[propName]) return false;
+  }
+  return true;
+}
+
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   let obj = {};
@@ -19,9 +37,13 @@ export function mergeArrays(oldArray, newArray) {
   };
   for (let newItem of newArray) {
     if (obj.hasOwnProperty(newItem.id)) {
-      if (newItem.quantity === 0 || newItem.health === 0) {
+      if (newItem.quantity === 0) {
         delete obj[newItem.id];
         break;
+      } else if (newItem.health === 0 && !obj[newItem.id].hasOwnProperty('timestamp')) {
+        obj[newItem.id] = Object.assign(obj[newItem.id], newItem, {
+          timestamp: Date.now()
+        });
       } else {
         obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
       }
@@ -62,6 +84,63 @@ export function mergeArrays(oldArray, newArray) {
   return result;
 };
 
+function makeSlotKey(type, position) {
+  return `${type},${position}`;
+}
+
+function getSlotProps({ type, position, xPos, yPos, width, height }) {
+  if ([xPos, yPos, width, height].every(prop => prop !== undefined)) {
+    return { type, position, xPos, yPos, width, height };
+  } else {
+    return { type, position };
+  }
+}
+
+function getRestProps(item, destType) {
+  const { type, position, xPos, yPos, width, height, quantity, ...rest } = item;
+  // TODO Remove portion if destType = SLOTS.BACKPACK
+  return Object.keys(rest).length > 0 ? rest : null;
+}
+
+export function mergeSlots(oldArray, newArray) {
+  if (!newArray) return oldArray;
+  let obj = {};
+  for (let oldItem of oldArray) {
+    const key = makeSlotKey(oldItem.type, oldItem.position);
+    obj[key] = oldItem;
+  };
+  let newObj = {};
+  for (let newItem of newArray) {
+    const key = makeSlotKey(newItem.type, newItem.position);
+    if (obj[key]) {
+      if (newItem.hasOwnProperty('id')) {
+        const oldItem = oldArray.find(item => {
+          return item.id === newItem.id && getRestProps(item, newItem.type)
+        });
+        const meta = oldItem ? getRestProps(oldItem, newItem.type) : {};
+        newObj[key] = Object.assign({}, getSlotProps(obj[key]), meta, newItem);
+      } else {
+        obj[key] = Object.assign(obj[key], newItem);
+      }
+    } else {
+      obj[key] = newItem;
+    }
+  }
+  obj = Object.assign(obj, newObj);
+  // convert object of items into array of items
+  let result = [];
+  for (let prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      if (obj[prop].hasOwnProperty('quantity') && obj[prop].quantity === 0) {
+        result.push(getSlotProps(obj[prop]));
+      } else {
+        result.push(obj[prop]);
+      }
+    }
+  }
+  return result;
+};
+
 export function updateStory(state, action) {
   if (action.payload.story) {
     return state.stories.concat([
@@ -69,6 +148,7 @@ export function updateStory(state, action) {
         inventoryChanges: action.payload.inventory || [],
         partyChanges: action.payload.party || [],
         buttons: action.payload.story.buttons || [ { text: 'OK', id: 1 } ],
+        canDispatch: action.payload.story.buttons ? true : false,
         timestamp: Date.now()
       })
     ]);
@@ -114,9 +194,11 @@ export function updatePartyChanges(state, action) {
   if (party && party.length > 0) {
     let changes = [];
     const now = Date.now();
-    party.forEach(item => {
-      const filtered = state.partyChanges.filter(member => item.id === member.id);
-      let timestamp = getTimestamp(filtered, UPDATE_TEXT_DURATION, now)
+    for (let item of party) {
+      const memberChanges = state.partyChanges.filter(member => item.id === member.id);
+      let timestamp = getTimestamp(memberChanges, UPDATE_TEXT_DURATION, now)
+
+      // NOTE Check for health changes
       if (item.hasOwnProperty('health_change') && item.health_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
@@ -126,6 +208,32 @@ export function updatePartyChanges(state, action) {
         }));
         timestamp += UPDATE_TEXT_DURATION;
       }
+
+      // Check for new or dead party members
+      // NOTE loggedIn tests whether the user is starting a new session
+      if (item.hasOwnProperty('health') && state.loggedIn === true) {
+        const match = state.party.find(member => member.id === item.id)
+        if (!match) {
+          changes.push(Object.assign({}, {
+            id: item.id,
+            change: 1,
+            name: item.name,
+            timestamp: timestamp
+          }));
+          timestamp += UPDATE_TEXT_DURATION;
+        } else if (item.health === 0) {
+          changes.push(Object.assign({}, {
+            id: item.id,
+            change: -1,
+            name: item.name,
+            timestamp: timestamp
+          }));
+          timestamp += UPDATE_TEXT_DURATION;
+          continue;
+        }
+      }
+
+      // Check for jeito changes
       if (item.hasOwnProperty('jeito_change') && item.jeito_change !== 0) {
         changes.push(Object.assign({}, {
           id: item.id,
@@ -135,6 +243,8 @@ export function updatePartyChanges(state, action) {
         }));
         timestamp += UPDATE_TEXT_DURATION;
       }
+
+      // Check for skill changes
       if (item.hasOwnProperty('skill_changes') && item.skill_changes.length > 0) {
         changes = changes.concat(
           item.skill_changes.map(change => {
@@ -149,6 +259,8 @@ export function updatePartyChanges(state, action) {
           })
         );
       }
+
+      // Check for modifier changes
       if (item.hasOwnProperty('modifier_changes') && item.modifier_changes.length > 0) {
         changes = changes.concat(
           item.modifier_changes.map(change => {
@@ -164,19 +276,19 @@ export function updatePartyChanges(state, action) {
           })
         );
       }
-    });
+    }
     return state.partyChanges.concat(changes);
   } else {
     return state.partyChanges;
   }
 }
 
-export function getActions(inventory, eating, tiles, position) {
+export function getActions(inventory, tiles, position) {
   let actions = { 'main': [] };
 
   let itemsByTag = {};
   inventory.length > 0 && inventory.forEach(item => {
-    item.tags.forEach((tag, index) => {
+    item.tags && item.tags.forEach((tag, index) => {
       if (itemsByTag[tag]) {
         itemsByTag[tag].push(item);
       } else {
@@ -184,33 +296,6 @@ export function getActions(inventory, eating, tiles, position) {
       }
     });
   });
-
-  actions['main'].push({ target: 'eating', id: 15, tileset: 'icons' });
-  actions['eating'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ];
-  if (itemsByTag['food']) {
-    actions['eating'] = actions['eating'].concat(
-      eating.map(food => {
-        const matchedFood = itemsByTag['food'].find(item => item.id === food.id);
-        return Object.assign({}, food, {
-          tag: 'remove_food',
-          name: `remove ${matchedFood.name}`,
-          tileset: 'items'
-        });
-      })
-    );
-    actions['food'] = [ { target: 'eating', name: 'back', id: 18, tileset: 'icons' } ]
-    .concat(
-      itemsByTag['food']
-      .filter(invItem => !eating.find(eatItem => invItem.id === eatItem.id))
-      .map(item => {
-        return { tag: 'add_food', name: `add ${item.name}`, id: item.id, tileset: 'items' }
-      })
-    );
-  }
-
-  if (eating.length < 3) {
-    actions['eating'].push({ target: 'food', name: 'add new food', id: 33, tileset: 'icons' })
-  }
 
   if (itemsByTag['seed']) {
     actions['main'].push({ target: 'seed', id: 10, tileset: 'icons' });

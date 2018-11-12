@@ -1,11 +1,11 @@
-import {MODE} from '../constants';
-import {changeMode} from '../../store/actions/actions';
-import Connect from '../../store/Connect';
-import Zoom from './Zoom';
+import Food from './Food';
 import Party from './Party';
-import Vehicle from './Vehicle';
-import Habitat from './Habitat';
 import Inventory from './Inventory';
+import ActionBar from '../components/ActionBar';
+import Habitat from './Habitat';
+import Zoom from './Zoom';
+import Items from './Items';
+import { refreshSlots } from '../../store/actions/actions';
 
 export default class Overlay {
   constructor (store, canvas, ctx, loader, setDim) {
@@ -14,26 +14,35 @@ export default class Overlay {
     this.ctx = ctx;
     this.loader = loader;
 
-    this.zoom = new Zoom(this.store, this.canvas, this.ctx, this.loader);
+    this.food = new Food(this.store, this.canvas, this.ctx, this.loader);
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
-    this.vehicle = new Vehicle(this.store, this.canvas, this.ctx, this.loader);
+    this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader);
+    this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
     this.habitat = new Habitat(this.store, this.canvas, this.ctx, this.loader);
-    this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader, setDim);
+    this.zoom = new Zoom(this.store, this.canvas, this.ctx, this.loader);
+    this.items = new Items(this.store, this.canvas, this.ctx, this.loader);
   }
 
-  update(x, y) {
-    this.zoom.update(x, y);
-    this.party.update(x, y);
-    this.vehicle.update(x, y);
-    this.habitat.update(x, y);
-    this.inventory.update(x, y);
+  update(left, right) {
+    this.food.update(left.x, left.y);
+    this.party.update(left.x, left.y);
+    this.inventory.update(left.x, left.y);
+    this.actionBar.update(left.x, left.y);
+    this.habitat.update(left.x, left.y);
+    this.zoom.update(left.x, left.y);
+    this.items.update(left, right);
   }
 
   render(delta) {
-    this.zoom.render(delta);
-    this.party.render(delta);
-    this.vehicle.render(delta);
+    const slots = [].concat(
+      this.food.render(delta),
+      this.party.render(delta),
+      this.inventory.render(delta)
+    );
+    this.store.dispatch(refreshSlots(slots));
+    this.actionBar.render(delta);
     this.habitat.render(delta);
-    this.inventory.render(delta);
+    this.zoom.render(delta);
+    this.items.render(delta);
   }
 }

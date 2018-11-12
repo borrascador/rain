@@ -1,56 +1,68 @@
 import Connect from '../../store/Connect';
-import Animation from '../utils/Animation';
+import { drawById, drawHover, drawDurability } from '../utils/draw';
 import { screenToImageButton } from './utils';
-import { drawByName, slideFadeText } from '../utils/draw';
 import { changeMode } from '../../store/actions/actions';
-import { MODE, UPDATE_TEXT_DURATION } from '../constants';
+import { MODE, SLOTS } from '../constants';
+import { DARK_RED, MEDIUM_RED, BRIGHT_RED, SOLID_WHITE } from '../colors';
 
 export default class Inventory {
-  constructor (store, canvas, ctx, loader, setDim) {
+  constructor (store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
     this.connect = new Connect(this.store);
 
-    this.scale = 4;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
-    this.fontSize = 32;
-    this.animate = new Animation(this.scale, this.scale, 0.5);
+    this.icons = loader.getImage('icons');
+    this.items = loader.getImage('items');
 
-    this.buttons = [ { name: 'pack-big' } ];
+    this.fontSize = 16;
+
+    this.scale = 4;
+    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.gutter = this.size / this.scale;
+
+    this.unitWidth = 4;
+    this.unitHeight = 5;
+    this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
+    this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
   }
 
   update(x, y) {
-    if (x && y && screenToImageButton(x, y, this.buttons)) {
-      this.store.dispatch(changeMode(MODE.INVENTORY));
+
+  }
+
+  renderWindow() {
+    this.xStart = this.canvas.width - this.width - this.gutter;
+    this.yStart = this.size * 2;
+    this.ctx.fillStyle = MEDIUM_RED;
+    this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
+  }
+
+  renderSlots() {
+    // const [xMax, yMax] = [this.xStart + this.width, this.yStart + this.height]
+    const x = this.xStart;
+    const y = this.yStart;
+    let slots = [];
+    let counter = 0;
+    this.ctx.fillStyle = DARK_RED;
+    for (let yPos = y + this.gutter; yPos < y + this.height; yPos += this.size + this.gutter) {
+      for (let xPos = x + this.gutter; xPos < x + this.width; xPos += this.size + this.gutter) {
+        this.ctx.fillRect(xPos, yPos, this.size, this.size);
+        slots.push({
+          type: SLOTS.BACKPACK,
+          position: counter++,
+          xPos,
+          yPos,
+          width: this.size,
+          height: this.size
+        });
+      }
     }
+    return slots;
   }
 
   render(delta) {
-    this.animate.tick(delta);
-    const x = this.canvas.width - this.size;
-    const y = this.canvas.height / 2 - this.size / 2;
-
-    const inventoryChanges = this.connect.inventoryChanges;
-    const currentTime = Date.now();
-    inventoryChanges.forEach(item => {
-      const elapsed = currentTime - item.timestamp;
-      if (elapsed > 0 && elapsed < UPDATE_TEXT_DURATION) {
-        const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
-        const yPos = y + this.size / 2;
-        slideFadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, x, yPos);
-      }
-    });
-
-    this.buttons = this.buttons.map(button => {
-      drawByName(this.ctx, this.iconsXl, button.name, this.scale, x, y + this.animate.getValue());
-      return Object.assign({}, button, {
-        xPos: x,
-        yPos: y,
-        width: this.size,
-        height: this.size
-      });
-    });
+    this.renderWindow();
+    return this.renderSlots();
   }
 }

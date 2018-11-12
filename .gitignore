@@ -1,5 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# class files
+*.class
+
 # dependencies
 /node_modules
 
@@ -35,4 +38,3 @@ Session.vim
 
 # Auto-generated tag files
 tags
-~

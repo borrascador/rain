@@ -125,17 +125,51 @@ export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, 
   };
 }
 
-export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, selected) {
+export function buttonText(canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, selected, icons, scale) {
   let x = xPos + fontSize * 2;
   let y = yPos;
-  return buttons.map((button, idx) => {
+  let result = [];
+  buttons.forEach((button, idx) => {
+    if (result.length > 0 && result[result.length - 1].hoverText) {
+      y += lineHeight / 4;
+    }
     ctx.fillStyle = (selected && selected.id === button.id) ? BRIGHT_YELLOW : PALE_GREEN;
     ctx.fillText(`${button.oneIndex}.`, xPos, y);
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
-    y = coords.yPos + lineHeight;
-    return Object.assign({}, button, coords, {
+    result.push(Object.assign({}, button, coords, {
       xPos: xPos,
       width: coords.width + fontSize * 2
+    }));
+    y = coords.yPos + lineHeight;
+    if (button.multipliers) {
+      y += lineHeight / 4;
+      const multipliers = drawMultipliers(
+        ctx, icons, scale, fontSize, lineHeight, button.multipliers, x, y
+      );
+      result.push(...multipliers);
+      y = multipliers[multipliers.length - 1].yPos + lineHeight * 2;
+    }
+  });
+  return result;
+}
+
+export function drawMultipliers(ctx, img, scale, fontSize, lineHeight, multipliers, xPos, yPos) {
+  const size = img.tileset.tilewidth * scale;
+  let x = xPos;
+  return multipliers.map((item, index) => {
+    ctx.fillStyle = item.value > 1 ? BRIGHT_GREEN : BRIGHT_RED;
+    const sign = item.value > 1 ? '+' : '-';
+    const text = `${sign}${item.value}%`;
+    const width = ctx.measureText(text).width;
+    ctx.fillText(text, x, yPos);
+    drawById(ctx, img, item.icon, scale, x + width, yPos - lineHeight);
+    x += width + size * 4/3;
+    return Object.assign({}, item, {
+      xPos: x - width - size * 4/3,
+      yPos: yPos - lineHeight,
+      width: width + size,
+      height: size,
+      hoverText: `${text} ${item.name}`
     });
   });
 }
@@ -165,7 +199,7 @@ export function splitIntoLines(ctx, text, maxWidth) {
 }
 
 export function drawHover(ctx, fontSize, button) {
-  const text = button.name || button.target || 'no text';
+  const text = button.hoverText || button.name || button.target || 'no text';
   const textWidth = ctx.measureText(text).width;
   const padding = 8;
 

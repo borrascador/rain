@@ -1,0 +1,180 @@
+package org.younghanlee.rainserver;
+
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class Move {
+	private int target;
+	private int xTarget;
+	private int yTarget;
+	private int pace; // set at 1
+	private String direction; // north, south, east, west
+	
+	public Move(int target, int x, int y, Player p) {
+		this.target = target;
+		xTarget = x;
+		yTarget = y;
+		pace = 1;
+		final int width = World.getWidth();
+		int difference = target - p.getPosition();
+		switch (difference) {
+			case 0:
+				if (x > p.getX()) {
+					direction = "east";
+				} else {
+					direction = "west";
+				}
+				break;
+			case 1:
+				direction = "east";
+				break;
+			case -1:
+				direction = "west";
+				break;
+			default:
+				if (difference == width) {
+					direction = "south";
+				} else if (difference == -width) {
+					direction = "north";
+				}
+				break;		
+		}
+		
+	}
+	
+	public void setPace(int n) {
+		pace = n;
+	}
+	
+	public int nStepsTowards(int n, int src, int dst) {
+		int t;
+		if (src == dst) {
+			return src;
+		} else if (src < dst) {
+			t = src + n;
+			if (t > dst) {
+				t = dst;
+			}
+		} else {
+			t = src - n;
+			if (t < dst) {
+				t = dst;
+			}
+		}
+		return t;
+	}
+	
+	public JSONObject tick(Player p) {
+		int position = p.getPosition();
+		boolean withinTile = (position == target);
+		int x = p.getX();
+		int y = p.getY();
+		int speed = pace * p.getSpeed();
+		int newX;
+		int newY;
+		JSONArray tiles = null;
+		switch (direction) {
+			case "east":
+				newX = x + speed;
+				if (!withinTile) {
+					newX = newX % 32;
+				}
+				if (newX < x) {
+					position = position + 1;
+					p.setPosition(position);
+					tiles = p.inSightArray();
+				}
+				if (position == target && newX > xTarget){
+					newX = xTarget;
+				}
+				x = newX;
+				p.setX(newX);
+				y = nStepsTowards(speed, y, yTarget);
+				p.setY(y);
+				break;
+			case "west":
+				newX = x - speed;
+				if (!withinTile) {
+					newX = Math.floorMod(newX, 32);
+				}
+				if (newX > x) {
+					position = position - 1;
+					p.setPosition(position);
+					tiles = p.inSightArray();
+				}
+				if (position == target && newX < xTarget){
+					newX = xTarget;
+				}
+				x = newX;
+				p.setX(newX);
+				y = nStepsTowards(speed, y, yTarget);
+				p.setY(y);
+				break;
+			case "south":
+				newY = (y + speed);
+				if (!withinTile) {
+					newY = newY % 32;
+				}
+				
+				if (newY < y) {
+					position = position + World.getWidth();
+					p.setPosition(position);
+					tiles = p.inSightArray();
+				}
+				if (position == target && newY > yTarget){
+					newY= yTarget;
+				}
+				y = newY;
+				p.setY(newY);
+				x = nStepsTowards(speed, x, xTarget);
+				p.setX(x);
+				break;
+			case "north":
+				newY = y - speed;
+				if (!withinTile) {
+					newY = Math.floorMod(newY, 32);
+				}
+				if (newY > y) {
+					position = position - World.getWidth();
+					p.setPosition(position);
+					tiles = p.inSightArray();
+				}
+				if (position == target && newY < yTarget){
+					newY= yTarget;
+				}
+				y = newY;
+				p.setY(newY);
+				x = nStepsTowards(speed, x, xTarget);
+				p.setX(x);
+				break;	
+		}
+		
+		World.getTile(position).updateNeighbors(p, 1);
+		
+		JSONObject payload = new JSONObject();
+		IRandomEvent r = p.getRandomEvent();
+		if (r != null && p.getTrigger() == "move") {
+			System.out.println("Executing random event");
+			payload = r.result(p);
+			p.stopMoving();
+			p.setRandomEvent(null);
+		}
+		if (x == xTarget && y == yTarget && position == target) {
+			p.stopMoving();
+			payload.put("pace", 0);
+		}
+		if (tiles != null) {
+			payload.put("tiles", tiles);		
+		}
+		payload.put("position", position);
+		payload.put("xCoord", x);
+		payload.put("yCoord", y);
+
+		return payload;
+	}
+	
+
+	
+}

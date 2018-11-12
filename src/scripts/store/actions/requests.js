@@ -47,7 +47,7 @@ export function login(user, password, dimCallback, exitLogin) {
         exitLoading();
         clearTimeout(timer);
         if (!getState().error) {
-          dispatch(changeMode(MODE.MAP));
+          dispatch(changeMode(MODE.GAME));
         } else {
           failureDialog(getState().errorMessage, dimCallback);
         }
@@ -83,11 +83,11 @@ export function logout(callback) {
   }
 }
 
-export function sendEvent(type, id) {
+export function sendEvent(type, id, optional) {
   return (dispatch, getState) => {
     const state = getState();
     if (state.connected && state.loggedIn && !state.sending) {
-      dispatch(eventRequest(type, id));
+      dispatch(eventRequest(type, id, optional));
       const unsubscribe = subscribe('sending', state => {
         unsubscribe();
         clearTimeout(timer);
@@ -98,4 +98,18 @@ export function sendEvent(type, id) {
       }, 2000);
     }
   }
+}
+
+if (process.env.NODE_ENV === 'development') {
+  Object.assign(
+    window,
+    {
+      requests: {
+        register,
+        login,
+        logout,
+        sendEvent
+      }
+    }
+  );
 }

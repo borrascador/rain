@@ -54,12 +54,13 @@ public class Message {
 		JSONObject payload = new JSONObject();
 		payload.put("position", p.getPosition());
 		payload.put("tiles", tiles);
+		payload.put("xCoord", p.getX());
+		payload.put("yCoord", p.getY());
 		payload.put("sight", p.getSight());
 		payload.put("pace", p.getPace());
 		payload.put("rations", p.getRations());
-		payload.put("inventory", p.backpackToJSONArray());
+		payload.put("inventory", p.inventoryToJSONArray());
 		payload.put("party", p.partyToJSONArray());
-		payload.put("eating", p.eatingToJSONArray());
 		jo.accumulate("payload", payload);
 		return jo;
 	}

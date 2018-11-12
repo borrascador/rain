@@ -1,4 +1,4 @@
-import { UPDATE_TEXT_DURATION } from '../game/constants';
+import { UPDATE_TEXT_DURATION, SLOTS } from '../game/constants';
 
 export default class Connect {
   constructor (store) {
@@ -37,11 +37,6 @@ export default class Connect {
     return this.store.getState().actions;
   }
 
-  get click() {
-    const {xClick, yClick} = this.store.getState();
-    return {xClick, yClick,};
-  }
-
   get keys() {
     const allKeys = this.store.getState().keys;
     const trueKeys = Object.keys(allKeys).filter(x => {
@@ -50,14 +45,32 @@ export default class Connect {
     return trueKeys;
   }
 
-  get offset() {
-    const {xOffset, yOffset} = this.store.getState();
-    return {xOffset, yOffset,};
+  get mouseDownLeft() {
+    return this.store.getState().mouseDownLeft;
   }
 
-  get mouse() {
-    const {xMouse, yMouse} = this.store.getState();
-    return {xMouse, yMouse,};
+  get mouseDownRight() {
+    return this.store.getState().mouseDownRight;
+  }
+
+  get mouseDrop() {
+    return this.store.getState().mouseDrop;
+  }
+
+  get mouseOffset() {
+    return this.store.getState().mouseOffset;
+  }
+
+  get mousePos() {
+    return this.store.getState().mousePos;
+  }
+
+  get clickLeft() {
+    return this.store.getState().clickLeft;
+  }
+
+  get clickRight() {
+    return this.store.getState().clickRight;
   }
 
   get stories() {
@@ -65,12 +78,12 @@ export default class Connect {
   }
 
   get map() {
-    const { position, tiles, sight, zoom} = this.store.getState();
+    const { position, xCoord, yCoord, positionTarget, xTarget, yTarget, tiles, sight, zoom } = this.store.getState();
     const { x, y } = tiles.find(tile => tile.id === position);
-    const pos = {};
-    pos.x = x;
-    pos.y = y;
-    return { pos, tiles, sight, zoom, };
+    const pos = { x, y };
+    const coords = { x: xCoord, y: yCoord };
+    const coordsTarget = { x: xTarget, y: yTarget };
+    return { pos, coords, positionTarget, coordsTarget, tiles, sight, zoom, };
   }
 
   get currentTile() {
@@ -84,6 +97,22 @@ export default class Connect {
 
   get inventory() {
     return this.store.getState().inventory;
+  }
+
+  get slots() {
+    return this.store.getState().slots;
+  }
+
+  get draggedItem() {
+    const slots = this.store.getState().slots;
+    const match = slots.find(slot =>
+      slot.type === SLOTS.DRAG && slot.position === 0 && slot.quantity > 0
+    );
+    return match ? match : null;
+  }
+
+  get draggedOrigin() {
+    return this.store.getState().draggedOrigin;
   }
 
   get party() {

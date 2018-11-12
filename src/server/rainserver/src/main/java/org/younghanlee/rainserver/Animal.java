@@ -1,5 +1,9 @@
 package org.younghanlee.rainserver;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.json.JSONArray;
@@ -32,6 +36,7 @@ public class Animal {
 		}
 	}
 	
+	
 	public Animal(JSONObject jo) {
 		this.name = jo.getString("name");
 		if (jo.has("number")){
@@ -59,6 +64,25 @@ public class Animal {
 		}
 	}
 	
+	public static HashMap<Integer, Animal> readFile() {
+		JSONArray ja = null;
+		try {
+			ja = new JSONArray(new String(Files.readAllBytes(Paths.get("json/animals.json"))));
+		} catch (IOException e) {
+			System.out.println("Animals file "+ "animals.json" + " not found.");
+			System.exit(1);
+		}
+		
+		HashMap<Integer, Animal> animals = new HashMap<Integer, Animal>();
+		JSONObject animalObject;
+		for (int i = 0; i < ja.length(); i++) {
+			animalObject = ja.getJSONObject(i);
+			int id = animalObject.getInt("id");
+			animals.put(id, new Animal(animalObject));
+		}
+		return animals;
+	}
+	
 	public boolean isFish() {
 		return fish;
 	}
@@ -84,11 +108,17 @@ public class Animal {
 	}
 	
 	public boolean flee(Player p) {
-		return Player.randomInt(100) > speed;
+		return Util.randomInt(100) > speed;
 	}
 	
-	public boolean fight(Player p) {
-		return Player.randomInt(100) > strength;
+	public boolean fight(Player p, float multiplier) {
+		int partySize = p.partySize();
+		int base = 0;
+		for (int i=0; i<partySize; i++) {
+			base += World.getMember(p.getPartyMember(i)).getStrength();
+		}
+		int value = Util.randomRoll(base, multiplier);
+		return value > strength;
 	}
 	
 	public JSONArray rollDrop(Player p, int n) {
@@ -99,12 +129,12 @@ public class Animal {
 			// roll n times
 			for (int i=0; i<n; i++) {
 				if (Math.random() < d.rarity) {
-					value += Player.randomInt(d.max - d.min) + d.min;
+					value += Util.randomInt(d.max - d.min) + d.min;
 				}		
 			}
 			if (value > 0) {
-				JSONObject itemObject = World.getItem(item).change(item, value, p, false);
-				items.put(itemObject);
+				JSONArray drop = p.add(item, value);
+				Util.concat(items, drop);
 			}
 		}
 		return items;

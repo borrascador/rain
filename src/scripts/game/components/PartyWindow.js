@@ -45,11 +45,11 @@ export default class PartyWindow {
       const yMax = yMin + this.height;
       const button = screenToImageButton(x, y, this.party)
       if (x > xMin && x < xMax && y > yMin && y < yMax) {
-        console.log('hit');
+        console.log('Click inside party window');
       } else if (button) {
         this.store.dispatch(setPartyTab(button.id));
       } else {
-        this.store.dispatch(changeMode(MODE.MAP));
+        this.store.dispatch(changeMode(MODE.GAME));
       }
     }
   }
@@ -110,20 +110,20 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     this.ctx.fillText(HEALTH, xPos, yPos);
-    [...Array(member.jeito)].map((_, i) => {
+    [...Array(member.health)].map((_, index) => {
       drawByName(
         this.ctx, this.icons, 'heart', this.scale,
-        xPos + lineWidth + 8 + i * (this.size + 8),
+        xPos + lineWidth + 8 + index * (this.size + 8),
         yPos - this.iconOffset
       );
     });
 
     yPos += this.lineHeight;
     this.ctx.fillText(JEITO, xPos, yPos);
-    [...Array(member.jeito)].map((_, i) => {
+    [...Array(member.jeito)].map((_, index) => {
       drawByName(
         this.ctx, this.icons, 'bolt', this.scale,
-        xPos + lineWidth + 8 + i * (this.size + 8),
+        xPos + lineWidth + 8 + index * (this.size + 8),
         yPos - this.iconOffset
       );
     });
@@ -133,14 +133,14 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     if (Array.isArray(member.skills)) {
-      this.skills = member.skills.map((skill, i) => {
+      this.skills = member.skills.map((skill, index) => {
         drawByName(
           this.ctx, this.icons, 'question', this.scale,
-          xPos + i * (this.size + 8),
+          xPos + index * (this.size + 8),
           yPos - this.iconOffset
         );
         return Object.assign({}, skill, {
-          xPos: xPos + i * (this.size + 8),
+          xPos: xPos + index * (this.size + 8),
           yPos: yPos - this.iconOffset,
           width: this.size,
           height: this.size
@@ -155,14 +155,14 @@ export default class PartyWindow {
 
     yPos += this.lineHeight;
     if (Array.isArray(member.modifiers)) {
-      this.modifiers = member.modifiers.map((modifier, i) => {
+      this.modifiers = member.modifiers.map((modifier, index) => {
         drawByName(
           this.ctx, this.icons, 'question', this.scale,
-          xPos + i * (this.size + 8),
+          xPos + index * (this.size + 8),
           yPos - this.iconOffset
         );
         return Object.assign({}, modifier, {
-          xPos: xPos + i * (this.size + 8),
+          xPos: xPos + index * (this.size + 8),
           yPos: yPos - this.iconOffset,
           width: this.size,
           height: this.size
@@ -174,12 +174,16 @@ export default class PartyWindow {
   }
 
   renderHover() {
-    const { xMouse, yMouse } = this.connect.mouse;
-    if (xMouse && yMouse) {
-      const buttonList = this.party.concat(this.skills, this.modifiers);
-      const button = screenToImageButton(xMouse, yMouse, buttonList);
-      if (button && button.id !== this.connect.partyTab) {
-        drawHover(this.ctx, this.fontSize, button);
+    const mousePos = this.connect.mousePos;
+    if (mousePos.x && mousePos.y) {
+      const hoverTab = screenToImageButton(mousePos.x, mousePos.y, this.party);
+      if (hoverTab && hoverTab.id !== this.connect.partyTab) {
+        drawHover(this.ctx, this.fontSize, hoverTab);
+      }
+      const iconList = this.skills.concat(this.modifiers);
+      const hoverIcon = screenToImageButton(mousePos.x, mousePos.y, iconList);
+      if (hoverIcon) {
+        drawHover(this.ctx, this.fontSize, hoverIcon);
       }
     }
   }

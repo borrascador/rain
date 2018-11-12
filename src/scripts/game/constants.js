@@ -5,16 +5,24 @@ export const UPDATE_TEXT_OFFSET = 500; // minimum ms between each update text
 export const LAYER = {
   BOTTOM: "BOTTOM",
   MIDDLE: "MIDDLE",
-  TOP: "TOP",
+  TOP: "TOP"
 };
+
 export const MODE = {
-  MAP: "MAP",
+  GAME: "GAME",
   STORY: "STORY",
   PARTY: "PARTY",
-  INVENTORY: "INVENTORY",
   TITLE: "TITLE"
 };
+
+export const SLOTS = {
+  BACKPACK: 'BACKPACK',
+  EATING: 'EATING',
+  PARTY: 'PARTY',
+  DRAG: 'DRAG'
+};
+
 export const VEHICLE = {
   JEEP: "jeep",
-  CANOE: "canoe",
+  CANOE: "canoe"
 };
