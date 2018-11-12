@@ -1,51 +1,23 @@
 import reducer from './index.js';
 import { initialState } from './initialState';
 import * as actions from '../actions/actions';
+import { ACTIONS, EVENTS } from '../actions/types';
 
 describe('reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState)
   })
 
-  it('should handle ADD_TODO', () => {
+  it('should ZOOM_IN correctly', () => {
     expect(
-      reducer([], {
-        type: types.ADD_TODO,
-        text: 'Run the tests'
+      reducer(initialState, {
+        type: actions.ZOOM_IN
       })
-    ).toEqual([
-      {
-        text: 'Run the tests',
-        completed: false,
-        id: 0
-      }
-    ])
-
-    expect(
-      reducer(
-        [
-          {
-            text: 'Use Redux',
-            completed: false,
-            id: 0
-          }
-        ],
-        {
-          type: types.ADD_TODO,
-          text: 'Run the tests'
-        }
+    ).toEqual(
+      Object.assign(
+        initialState,
+        { zoom: 2 }
       )
-    ).toEqual([
-      {
-        text: 'Run the tests',
-        completed: false,
-        id: 1
-      },
-      {
-        text: 'Use Redux',
-        completed: false,
-        id: 0
-      }
-    ])
+    )
   })
 })
