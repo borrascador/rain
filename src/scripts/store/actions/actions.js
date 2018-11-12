@@ -120,37 +120,3 @@ export const eventRequest = (eventType, id, optional) => ({
   meta: { send: true },
   payload: Object.assign({}, { eventType, id }, optional)
 });
-
-if (process.env.NODE_ENV === 'development') {
-  Object.assign(
-    window,
-    {
-      actions: {
-        keyDown,
-        keyUp,
-        mouseDownLeft,
-        mouseDownRight,
-        mouseMove,
-        mouseUpLeft,
-        mouseUpRight,
-        clickedLeft,
-        clickedRight,
-        zoomIn,
-        zoomOut,
-        setPartyTab,
-        refreshSlots,
-        changeMode,
-        closeStory,
-        removePartyMember,
-        dragItem,
-        error,
-        sendError,
-        registerRequest,
-        registerResponse,
-        loginRequest,
-        logoutRequest,
-        eventRequest
-      }
-    }
-  );
-}
