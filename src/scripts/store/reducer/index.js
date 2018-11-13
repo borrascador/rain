@@ -1,11 +1,4 @@
-import {
-  KEY_DOWN, KEY_UP,
-  MOUSE_DOWN_LEFT, MOUSE_DOWN_RIGHT, MOUSE_MOVE, MOUSE_UP_LEFT, MOUSE_UP_RIGHT,
-  CLICKED_LEFT, CLICKED_RIGHT, ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, REFRESH_SLOTS,
-  CHANGE_MODE, CLOSE_STORY, REMOVE_PARTY_MEMBER, DRAG_ITEM, END_DRAG, ERROR,
-  REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
-  LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
-} from '../actions/actions';
+import { ACTIONS } from '../actions/types';
 import { OPEN, CLOSE, MESSAGE } from 'redux-websocket-bridge';
 import {
   keyDown, keyUp,
@@ -19,6 +12,15 @@ import {
   update, eventResponse, openSocket, closeSocket
 } from './game';
 import { initialState } from './initialState';
+
+const {
+  KEY_DOWN, KEY_UP,
+  MOUSE_DOWN_LEFT, MOUSE_DOWN_RIGHT, MOUSE_MOVE, MOUSE_UP_LEFT, MOUSE_UP_RIGHT,
+  CLICKED_LEFT, CLICKED_RIGHT, ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, REFRESH_SLOTS,
+  CHANGE_MODE, CLOSE_STORY, REMOVE_PARTY_MEMBER, DRAG_ITEM, END_DRAG, ERROR,
+  REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE
+} = ACTIONS;
 
 export default function reducer(state, action) {
   if (typeof state === 'undefined') {
@@ -59,8 +61,6 @@ export default function reducer(state, action) {
       return removePartyMember(state, action);
     case DRAG_ITEM:
       return dragItem(state, action);
-    case END_DRAG:
-      return endDrag(state, action);
     case REGISTER_REQUEST:
     case LOGIN_REQUEST:
     case LOGOUT_REQUEST:

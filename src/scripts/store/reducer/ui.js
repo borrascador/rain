@@ -164,14 +164,6 @@ export function dragItem(state, action) {
   });
 }
 
-export function endDrag(state) {
-  return updateObject(state, {
-    slots: updatePositionInArray(
-      state.slots, SLOTS.DRAG, 0, (item) => ({ type: SLOTS.DRAG, position: 0 })
-    )
-  });
-}
-
 export function refreshSlots(state, action) {
   return updateObject(state, {
     slots: mergeSlots(state.slots, action.payload.slots)

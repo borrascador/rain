@@ -1,7 +1,7 @@
 import Connect from '../../store/Connect';
 import { zoomIn, zoomOut } from '../../store/actions/actions';
 import { logout, sendEvent } from '../../store/actions/requests';
-import { EVENTS } from '../../store/actions/events';
+import { EVENTS } from '../../store/actions/types';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
 import { SOLID_WHITE, BRIGHT_YELLOW } from '../colors';

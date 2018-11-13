@@ -1,7 +1,7 @@
 import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import { sendEvent } from '../../store/actions/requests';
-import { EVENTS } from '../../store/actions/events';
+import { EVENTS } from '../../store/actions/types';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
 import { drawById, drawByName, drawHover } from '../utils/draw';

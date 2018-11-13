@@ -1,43 +1,34 @@
 import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
+import { reconnectingBridge } from './middleware/reconnectingBridge';
+import { errorLogger } from './middleware/errorLogger';
+import { actionLogger } from './middleware/actionLogger';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from './reducer';
-import ReduxWebSocketBridge from 'redux-websocket-bridge';
-import ReconnectingWebSocket from 'reconnecting-websocket';
 import initSubscriber from 'redux-subscriber';
-import { errorLogger } from './errors';
-import {
-	KEY_DOWN, KEY_UP, MOUSE_MOVE, REFRESH_SLOTS,
-	MOUSE_DOWN_LEFT, MOUSE_UP_LEFT, CLICKED_LEFT,
-	MOUSE_DOWN_RIGHT, MOUSE_UP_RIGHT, CLICKED_RIGHT,
-} from './actions/actions';
+import * as actions from './actions/actions';
+import * as requests from './actions/requests';
 
 function configureStore () {
-	const BLACKLIST = [
-		KEY_DOWN, KEY_UP, MOUSE_MOVE, REFRESH_SLOTS,
-		MOUSE_DOWN_LEFT, MOUSE_UP_LEFT, CLICKED_LEFT,
-		MOUSE_DOWN_RIGHT, MOUSE_UP_RIGHT, CLICKED_RIGHT,
+	let middleware = [
+		thunkMiddleware,
+		reconnectingBridge,
+		errorLogger
 	];
-	const loggerMiddleware = createLogger({
-		predicate: (getState, action) => !BLACKLIST.includes(action.type)
-	});
+
+	if (process.env.NODE_ENV === 'development') {
+	  middleware = [...middleware, actionLogger];
+	}
+
 	return createStore(
-		reducer,
-		applyMiddleware(
-			thunkMiddleware,
-			ReduxWebSocketBridge(() => {
-				const rws = new ReconnectingWebSocket('ws://localhost:8887/', [], {
-					maxReconnectionDelay: 500,
-					connectionTimeout: 500
-				});
-				rws.addEventListener('close', () => rws._shouldReconnect && rws._connect());
-				return rws;
-			}),
-			errorLogger,
-			loggerMiddleware
-		)
+	  reducer,
+	  applyMiddleware(...middleware)
 	)
 }
 
 export const store = configureStore();
 export const subscribe = initSubscriber(store);
+
+// NOTE: Exposes store, actions, and requests to console in development mode
+if (process.env.NODE_ENV === 'development') {
+	Object.assign(window, { store, actions, requests });
+}

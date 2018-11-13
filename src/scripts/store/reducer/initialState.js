@@ -67,3 +67,12 @@ export const initialState = Object.assign({},
   inputState,
   connectionState
 );
+
+export const newInitialState = (newState) => {
+  return (
+    Object.assign(
+      JSON.parse(JSON.stringify(initialState)),
+      newState || {}
+    )
+  );
+}
