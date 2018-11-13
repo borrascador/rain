@@ -109,14 +109,33 @@ export const loginRequest = (user, password) => ({
   payload: { user, password }
 });
 
+export const loginResponse = (payload) => ({
+  type: ACTIONS.LOGIN_RESPONSE,
+  payload
+})
+
 export const logoutRequest = (user) => ({
   type: ACTIONS.LOGOUT_REQUEST,
   meta: { send: true },
   payload: { user }
 });
 
+export const logoutResponse = () => ({
+  type: ACTIONS.LOGOUT_RESPONSE
+})
+
 export const eventRequest = (eventType, id, optional) => ({
   type: ACTIONS.EVENT_REQUEST,
   meta: { send: true },
   payload: Object.assign({}, { eventType, id }, optional)
+});
+
+export const eventResponse = (payload) => ({
+  type: ACTIONS.EVENT_RESPONSE,
+  payload
+});
+
+export const update = (payload) => ({
+  type: ACTIONS.UPDATE,
+  payload
 });

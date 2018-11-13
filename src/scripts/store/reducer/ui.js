@@ -4,6 +4,7 @@ import {
 } from './utils';
 
 export function makeKeys() {
+  // Misc. keys
   let keys = {
     "ArrowUp": false,
     "ArrowDown": false,
@@ -14,12 +15,15 @@ export function makeKeys() {
     "Delete": false,
     "Escape": false,
   };
+  // Digits 0-9
   for (let i = 48; i <= 57 ; i++) {
     keys[String.fromCharCode(i)] = false;
   }
+  // Upper A-Z
   for (let i = 65; i <= 90 ; i++) {
     keys[String.fromCharCode(i)] = false;
   }
+  // Lower a-z
   for (let i = 97; i <= 122; i++) {
     keys[String.fromCharCode(i)] = false;
   }
