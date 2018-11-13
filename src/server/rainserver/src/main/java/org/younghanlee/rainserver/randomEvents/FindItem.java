@@ -25,7 +25,9 @@ public class FindItem{
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
 			JSONObject payload = new JSONObject();
 			payload.put("inventory", p.add(item_id, 1));
-			payload.put("story", "You pick up the item.");
+			JSONObject story = new JSONObject();
+			story.put("text", "You pick up the item.");
+			payload.put("story", story);
 			p.removeDecision();
 			return Message.EVENT_RESPONSE(payload);
 		}
@@ -40,7 +42,9 @@ public class FindItem{
 		}
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
 			JSONObject payload = new JSONObject();
-			payload.put("story", "You decide not to take the item.");
+			JSONObject story = new JSONObject();
+			story.put("text", "You decide not to take the item.");
+			payload.put("story", story);
 			p.removeDecision();
 			return Message.EVENT_RESPONSE(payload);
 		}
