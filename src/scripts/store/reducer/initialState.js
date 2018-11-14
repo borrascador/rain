@@ -1,5 +1,4 @@
 import { MODE, VEHICLE } from '../../game/constants';
-import keys from '../../../data/keys.json';
 import { makeKeys } from './ui';
 
 // import party from '../../../data/party.json';

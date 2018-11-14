@@ -14,5 +14,6 @@ const BLACKLIST = [
 ];
 
 export const actionLogger = createLogger({
-  predicate: (getState, action) => !BLACKLIST.includes(action.type)
+  predicate: (getState, action) => !BLACKLIST.includes(action.type),
+	collapsed: true
 });
