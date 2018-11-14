@@ -4,7 +4,9 @@ import { screenToImageButton } from './utils';
 import { sendEvent } from '../../store/actions/requests';
 import { sendError } from '../../store/actions/actions';
 import { EVENTS } from '../../store/actions/types';
-import { DARK_RED, MEDIUM_RED, SOLID_WHITE } from '../colors';
+import {
+  DARK_RED, MEDIUM_RED, SOLID_WHITE, alphaGreen, alphaDarkRed
+} from '../colors';
 
 export default class ActionBar {
   constructor (store, canvas, ctx, loader) {
@@ -35,7 +37,7 @@ export default class ActionBar {
       } else if (button.tag) {
         switch (button.tag) {
           case 'seed':
-            this.store.dispatch(sendEvent(EVENTS.PLANT, button.id))
+            this.store.dispatch(sendEvent(EVENTS.PLANT, { id: button.id }))
             this.current = 'main';
             break;
           case 'harvest':
@@ -44,28 +46,30 @@ export default class ActionBar {
               crop.name === button.name
             );
             if (currentCrop && currentCrop.stage <= 0) { // TODO <= to ===
-              this.store.dispatch(sendEvent(EVENTS.HARVEST, button.id));
+              this.store.dispatch(sendEvent(EVENTS.HARVEST, { id: button.id }));
             }
             this.current = 'main';
             break;
           case 'hunting':
-            this.store.dispatch(sendEvent(EVENTS.HUNT, button.id))
+            this.store.dispatch(
+              sendEvent(this.connect.hunting ? EVENTS.STOP_HUNT : EVENTS.START_HUNT)
+            )
             this.current = 'main';
             break;
           case 'fishing':
-            this.store.dispatch(sendEvent(EVENTS.FISH, button.id))
+            this.store.dispatch(sendEvent(EVENTS.FISH, { id: button.id }))
             this.current = 'main';
             break;
           case 'add_food':
-            this.store.dispatch(sendEvent(EVENTS.ADD_FOOD, button.id))
+            this.store.dispatch(sendEvent(EVENTS.ADD_FOOD, { id: button.id }))
             this.current = 'main'; // COMBAK 'eating' instead?
             break;
           case 'remove_food':
-            this.store.dispatch(sendEvent(EVENTS.REMOVE_FOOD, button.id))
+            this.store.dispatch(sendEvent(EVENTS.REMOVE_FOOD, { id: button.id }))
             this.current = 'main'; // COMBAK 'eating' instead?
             break;
           default:
-            this.store.dispatch(sendEvent(button.tag, button.id)) // DEBUG
+            this.store.dispatch(sendEvent(button.tag, { id: button.id })) // DEBUG
             break;
         }
       }
@@ -110,6 +114,17 @@ export default class ActionBar {
         drawById(this.ctx, this.icons, button.id, this.scale, x, buttonY);
       } else if (button.tileset === 'items') {
         drawById(this.ctx, this.items, button.id, this.scale, x, buttonY);
+      }
+      if (button.tag === 'hunting') {
+        this.ctx.font = this.fontSize + 'px MECC';
+        const text = this.connect.hunting ? 'ON' : 'OFF';
+        const textWidth = this.ctx.measureText(text).width;
+        this.ctx.fillStyle = this.connect.hunting ? alphaGreen(0.9) : alphaDarkRed(0.9);
+        this.ctx.fillText(
+          text,
+          x + (this.size - textWidth) / 2,
+          buttonY + (this.size + this.fontSize) / 2
+        );
       }
       return Object.assign({}, button, {
         xPos: x,

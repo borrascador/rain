@@ -45,7 +45,9 @@ export default class Camera {
       const { pos, zoom } = this.connect.map;
       const xCoord = Math.floor((x - tile.xPos) / zoom);
       const yCoord = Math.floor((y - tile.yPos) / zoom);
-      this.store.dispatch(sendEvent(EVENTS.MOVE, tile.id, { x: xCoord, y: yCoord }));
+      this.store.dispatch(
+        sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
+      );
     }
   }
 

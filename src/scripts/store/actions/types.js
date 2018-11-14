@@ -31,7 +31,8 @@ export const ACTIONS = {
 export const EVENTS = {
   PLANT: 'plant',
   HARVEST: 'harvest',
-  HUNT: 'hunt',
+  START_HUNT: 'start_hunt',
+  STOP_HUNT: 'stop_hunt',
   FISH: 'fish',
   ADD_FOOD: 'add_food',
   REMOVE_FOOD: 'remove_food',

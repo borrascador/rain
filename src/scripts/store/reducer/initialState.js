@@ -29,7 +29,8 @@ const gameState = {
   yTarget: null,
   sight: null,
   pace: null,
-  rations: null
+  rations: null,
+  hunting: false
 };
 
 const inputState = {

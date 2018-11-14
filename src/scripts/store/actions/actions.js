@@ -124,10 +124,10 @@ export const logoutResponse = () => ({
   type: ACTIONS.LOGOUT_RESPONSE
 })
 
-export const eventRequest = (eventType, id, optional) => ({
+export const eventRequest = (eventType, fields) => ({
   type: ACTIONS.EVENT_REQUEST,
   meta: { send: true },
-  payload: Object.assign({}, { eventType, id }, optional)
+  payload: Object.assign({}, { eventType }, fields)
 });
 
 export const eventResponse = (payload) => ({

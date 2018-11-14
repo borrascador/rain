@@ -46,7 +46,7 @@ export default class Story {
   select(button, story) {
     this.store.dispatch(closeStory());
     if (story.canDispatch) {
-      this.store.dispatch(sendEvent(EVENTS.DECISION, button.id));
+      this.store.dispatch(sendEvent(EVENTS.DECISION, { id: button.id }));
     }
     this.selected = null;
   }
