@@ -123,7 +123,7 @@ export function clickedRight(state) {
 }
 
 export function zoomIn(state) {
-  if (state.zoom < 5) {
+  if (state.zoom < 10) { // COMBAK Makes tests fail
     return updateObject(state, {
       zoom: state.zoom + 1
     })

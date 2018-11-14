@@ -4,7 +4,7 @@ import { sendEvent } from '../../store/actions/requests';
 import { EVENTS } from '../../store/actions/types';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
-import { drawById, drawByName, drawHover } from '../utils/draw';
+import { drawById, drawByName, drawHover, fillInverseCircle } from '../utils/draw';
 import { MEDIUM_OPAQUE } from '../colors';
 
 const {BOTTOM, MIDDLE} = LAYER;
@@ -147,5 +147,7 @@ export default class Camera {
       (this.canvas.width - iconSize) / 2,
       (this.canvas.height - iconSize) / 2
     );
+
+    fillInverseCircle(this.ctx, this.canvas, 300);
   }
 }

@@ -1,6 +1,6 @@
 import {
-  BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN, SOLID_WHITE,
-  alphaGreen, alphaRed
+  BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN,
+  SOLID_WHITE, FOREST_BLACK, alphaForestBlack, alphaGreen, alphaRed
 } from '../colors';
 
 export function drawById (ctx, img, id, zoom, x, y) {
@@ -253,4 +253,30 @@ export function fadeText(ctx, currentTime, totalTime, fontSize, text, x, y) {
   const alpha = 1 - Math.abs(totalTime / 2 - currentTime) / (totalTime / 2);
   ctx.fillStyle = text[0] === '+' ? alphaGreen(alpha) : alphaRed(alpha);
   ctx.fillText(text, x, y);
+}
+
+export function fillInverseCircle(ctx, canvas, radius) {
+  const { width, height } = canvas;
+  const x = width / 2;
+  const y = height / 2;
+
+  // Circular gradient for center of screen
+  // Add 1 to this radius to prevent clipping
+  const innerRadius = 0;
+  const outerRadius = radius + 1;
+  var gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
+  gradient.addColorStop(0, alphaForestBlack(0));
+  gradient.addColorStop(0.75, alphaForestBlack(0.9));
+  gradient.addColorStop(1, FOREST_BLACK);
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.arc(x, y, radius + 1, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // Inverse circle for remainder of screen
+  ctx.fillStyle = FOREST_BLACK;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.rect(width, 0, -width, height);
+  ctx.fill();
 }
