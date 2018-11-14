@@ -101,14 +101,6 @@ export function update(state, action) {
     ? action.payload.xTarget : state.xTarget
   let yTarget = typeof action.payload.yTarget === 'number'
     ? action.payload.yTarget : state.yTarget;
-  if (
-    positionTarget !== null && positionTarget === position &&
-    xTarget === xCoord && yTarget === yCoord
-  ) {
-    positionTarget = null;
-    xTarget = null;
-    yTarget = null;
-  }
   const stories = updateStory(state, action);
   const inventoryChanges = updateInventoryChanges(state, action);
   const partyChanges = updatePartyChanges(state, action);
@@ -118,6 +110,14 @@ export function update(state, action) {
   const rations = [0,1,2].includes(action.payload.rations)
     ? action.payload.rations
     : state.rations;
+  if (
+    (positionTarget !== null && positionTarget === position &&
+    xTarget === xCoord && yTarget === yCoord) || pace === 0
+  ) {
+    positionTarget = null;
+    xTarget = null;
+    yTarget = null;
+  }
   const actions = getActions(slots, tiles, position);
   return Object.assign({}, state, {
     slots,
@@ -148,11 +148,11 @@ export function eventResponse(state, action) {
     ? action.payload.xCoord : state.xCoord
   const yCoord = typeof action.payload.yCoord === 'number'
     ? action.payload.yCoord : state.yCoord;
-  const positionTarget = typeof action.payload.positionTarget === 'number'
+  let positionTarget = typeof action.payload.positionTarget === 'number'
     ? action.payload.positionTarget : state.positionTarget;
-  const xTarget = typeof action.payload.xTarget === 'number'
+  let xTarget = typeof action.payload.xTarget === 'number'
     ? action.payload.xTarget : state.xTarget
-  const yTarget = typeof action.payload.yTarget === 'number'
+  let yTarget = typeof action.payload.yTarget === 'number'
     ? action.payload.yTarget : state.yTarget;
   const stories = updateStory(state, action);
   const inventoryChanges = updateInventoryChanges(state, action);
@@ -163,6 +163,14 @@ export function eventResponse(state, action) {
   const rations = [0,1,2].includes(action.payload.rations)
     ? action.payload.rations
     : state.rations;
+  if (
+    (positionTarget !== null && positionTarget === position &&
+    xTarget === xCoord && yTarget === yCoord) || pace === 0
+  ) {
+    positionTarget = null;
+    xTarget = null;
+    yTarget = null;
+  }
   const actions = getActions(slots, tiles, position);
   return Object.assign({}, state, {
     sending: false,
