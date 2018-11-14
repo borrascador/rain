@@ -193,8 +193,20 @@ public class Player {
 			connection.sendJSON(Message.UPDATE(payload));
 		}
 		
-		if (randomEvent != null && trigger == null) {
-			connection.sendJSON(Message.UPDATE(randomEvent.result(this)));
+		if (randomEvent != null) {
+			switch (trigger) {
+				case "move":
+					if (move != null) {
+						JSONObject result = randomEvent.result(this);
+						result.put("pace", 0);
+						stopMoving();
+						connection.sendJSON(Message.UPDATE(result));
+					}
+					break;
+				default:
+					connection.sendJSON(Message.UPDATE(randomEvent.result(this)));
+					break;
+			}
 			randomEvent = null;
 		}
 		return;

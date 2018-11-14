@@ -46,6 +46,9 @@ public class EventHandler {
 				p.setPace(pace);
 				payload = new JSONObject();
 				payload.put("pace", p.getPace());
+				if (pace == 0) {
+					p.stopMoving();
+				}
 				response = Message.EVENT_RESPONSE(payload);
 				connection.sendJSON(response);
 				break;
