@@ -299,6 +299,7 @@ public class Player {
 		return pace;
 	}
 	public void setPace(int n) {
+		pace = n;
 		if (move != null) {
 			move.setPace(n);
 		}
