@@ -299,9 +299,8 @@ public class Player {
 		return pace;
 	}
 	public void setPace(int n) {
-		if (move != null) {
-			move.setPace(n);
-		}
+		pace = n;
+		move.setPace(n);
 	}
 	
 	public int getRations() {
