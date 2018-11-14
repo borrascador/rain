@@ -130,4 +130,8 @@ export default class Connect {
   get rations() {
     return this.store.getState().rations;
   }
+
+  get hunting() {
+    return this.store.getState().hunting;
+  }
 }

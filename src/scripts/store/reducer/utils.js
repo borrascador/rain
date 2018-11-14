@@ -283,7 +283,7 @@ export function updatePartyChanges(state, action) {
   }
 }
 
-export function getActions(inventory, tiles, position) {
+export function getActions(inventory, tiles, position, hunting) {
   let actions = { 'main': [] };
 
   let itemsByTag = {};
@@ -332,15 +332,10 @@ export function getActions(inventory, tiles, position) {
     );
   }
 
-  if (currentTile && currentTile.hunting && itemsByTag['hunting']) {
-    actions['main'].push({ target: 'hunting', id: 16, tileset: 'icons' });
-    actions['hunting'] = [ { target: 'main', name: 'back', id: 18, tileset: 'icons' } ]
-    .concat(
-      itemsByTag['hunting']
-      .map(item => {
-        return { tag: 'hunting', name: item.name, id: item.id, tileset: 'items' }
-      })
-    );
+  // TODO: Should I use hunting state to set `name` and `tag`?
+  if (currentTile && currentTile.hunting) {
+    const name = hunting ? 'stop hunting' : 'start hunting';
+    actions['main'].push({ tag: 'hunting', name, id: 16, tileset: 'icons' });
   }
 
   return actions;

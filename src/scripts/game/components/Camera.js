@@ -4,7 +4,7 @@ import { sendEvent } from '../../store/actions/requests';
 import { EVENTS } from '../../store/actions/types';
 import { LAYER } from '../constants'
 import { screenToImageButton } from './utils';
-import { drawById, drawByName, drawHover } from '../utils/draw';
+import { drawById, drawByName, drawHover, fillInverseCircle } from '../utils/draw';
 import { MEDIUM_OPAQUE } from '../colors';
 
 const {BOTTOM, MIDDLE} = LAYER;
@@ -45,7 +45,9 @@ export default class Camera {
       const { pos, zoom } = this.connect.map;
       const xCoord = Math.floor((x - tile.xPos) / zoom);
       const yCoord = Math.floor((y - tile.yPos) / zoom);
-      this.store.dispatch(sendEvent(EVENTS.MOVE, tile.id, { x: xCoord, y: yCoord }));
+      this.store.dispatch(
+        sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
+      );
     }
   }
 
@@ -147,5 +149,7 @@ export default class Camera {
       (this.canvas.width - iconSize) / 2,
       (this.canvas.height - iconSize) / 2
     );
+
+    fillInverseCircle(this.ctx, this.canvas, 300);
   }
 }

@@ -22,9 +22,9 @@ export default class Zoom {
     this.ctx.font = this.fontSize + 'px MECC';
 
     this.buttons = [
-      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 0), id: 0 },
-      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 1), id: 1 },
-      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, 2), id: 2 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, { id: 0 }), id: 0 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, { id: 1 }), id: 1 },
+      { name: 'PACE', onClick: () => sendEvent(EVENTS.PACE, { id: 2 }), id: 2 },
       { name: 'settings', onClick: logout },
       { name: 'zoom-out', onClick: zoomOut },
       { name: 'zoom-in', onClick: zoomIn }

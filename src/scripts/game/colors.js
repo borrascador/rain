@@ -12,7 +12,7 @@ export const BRIGHT_YELLOW = "#FF0";
 
 export const SOLID_WHITE = "#FFF";
 
-export const FOREST_BLACK = "#010";
+export const FOREST_BLACK = "rgba(0, 16, 0, 1)";
 
 export const BRIGHT_OPAQUE = "rgba(256, 256, 256, 0.2)";
 export const MEDIUM_OPAQUE = "rgba(0, 0, 0, 0.6)";
@@ -32,4 +32,8 @@ export function alphaRed(alpha) {
 
 export function alphaDarkRed(alpha) {
   return `rgba(128, 0, 0, ${alpha})`
+}
+
+export function alphaForestBlack(alpha) {
+  return `rgba(0, 16, 0, ${alpha})`;
 }
