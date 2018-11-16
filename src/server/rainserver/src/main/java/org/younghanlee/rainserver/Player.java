@@ -401,7 +401,7 @@ public class Player {
 				for (int item : inventory.keySet()) {
 					for (ItemStack stack : inventory.get(item)) {
 						occupied.get(stack.getType()).set(stack.getPosition(), null);
-						ja.put(stack.change(0, null, null));
+						ja.put(stack.change(0, this));
 					}
 					inventory.remove(item);
 				}
@@ -449,8 +449,13 @@ public class Player {
 			list.add(stack);
 			inventory.put(itemID, list);
 		}
-		jo = stack.toJSONObject();
-		occupied.get(stack.getType()).set(stack.getPosition(), stack);
+		jo = stack.toJSONObject(this);
+		int position = stack.getPosition();
+		occupied.get(stack.getType()).set(position, stack);
+		if (stack.getType() == "party") {
+			Member m = World.getMember(party.get(position));
+			m.equip(stack);
+		}
 		return jo;
 	}
 	
@@ -465,11 +470,11 @@ public class Player {
 				if (stackSize < maxStack) {
 					int difference = maxStack - stackSize;
 					if (difference >= left) {
-						ja.put(itemstack.change(stackSize + left, null, null));
+						ja.put(itemstack.change(stackSize + left, this));
 						return ja;
 					} else {
 						left -= difference;
-						ja.put(itemstack.change(maxStack, null, null));
+						ja.put(itemstack.change(maxStack, this));
 					}
 				}
 			}
@@ -484,7 +489,7 @@ public class Player {
 				}
 				addStack(itemID, stack);
 				occupied.get("BACKPACK").set(p, stack);
-				ja.put(stack.toJSONObject());
+				ja.put(stack.toJSONObject(this));
 				return ja;
 			} else {
 				left -= maxStack;
@@ -494,7 +499,7 @@ public class Player {
 				}
 				addStack(itemID, stack);
 				occupied.get("BACKPACK").set(p, stack);
-				ja.put(stack.toJSONObject());
+				ja.put(stack.toJSONObject(this));
 			}
 		}
 	}
@@ -525,7 +530,7 @@ public class Player {
 		
 		for (int item : inventory.keySet()) {
 			for (ItemStack stack : inventory.get(item)) {
-				ja.put(stack.change(0, null, null));
+				ja.put(stack.change(0, this));
 			}
 			inventory.remove(item);
 		}
@@ -569,6 +574,10 @@ public class Player {
 				if (quantity == stack.getQuantity()) {
 					occupied.get(srcType).set(srcPosition, null);
 					inventory.get(itemID).remove(stack);
+					if (srcType == "party") {
+						Member m = World.getMember(party.get(srcPosition));
+						m.unequip(stack);
+					}
 				}
 				
 				JSONArray ja = new JSONArray();
@@ -580,7 +589,12 @@ public class Player {
 				ja.put(jo);
 				
 				JSONObject source = new JSONObject();
-				source.put("position", srcPosition);
+				if (srcType == "party") {
+					source.put("position", party.get(srcPosition));
+				} else {
+					source.put("position", srcPosition);
+				}
+				
 				source.put("type", srcType);
 				source.put("id", itemID);
 				source.put("quantity", stack.getQuantity() - quantity);
@@ -618,11 +632,11 @@ public class Player {
 				int space = maxStack - targetQuantity;
 				// Enough space for all in target stack
 				if (quantity <= space) {
-					updates.put(targetStack.change(targetQuantity + quantity, null, null));
+					updates.put(targetStack.change(targetQuantity + quantity, this));
 					updates.put(reduceDrag(quantity));
 				} else {
 				// Not enough space for all in target stack
-					updates.put(targetStack.change(maxStack, null, null));
+					updates.put(targetStack.change(maxStack, this));
 					updates.put(reduceDrag(space));
 				}
 			// Target stack has different item ID
@@ -636,7 +650,6 @@ public class Player {
 				drag.setPosition(targetStack.getPosition());
 				drag.setType(targetStack.getType());
 				updates.put(addStack(itemID, drag));
-				System.out.println(targetStack.toJSONObject());
 				drag = targetStack;
 				updates.put(pickUpTarget);
 			}
@@ -667,7 +680,7 @@ public class Player {
 		JSONArray ja = new JSONArray();
 		for (int item: inventory.keySet()) {
 			for (ItemStack itemstack: inventory.get(item)) {
-				ja.put(itemstack.toJSONObject());
+				ja.put(itemstack.toJSONObject(this));
 			}
 		}
 		return ja;
@@ -692,6 +705,10 @@ public class Player {
 	
 	public int getPartyMember(int index) {
 		return party.get(index);
+	}
+	
+	public int indexOfPartyMember(int id) {
+		return party.indexOf(id);
 	}
 	
 	public JSONArray partyToJSONArray() {

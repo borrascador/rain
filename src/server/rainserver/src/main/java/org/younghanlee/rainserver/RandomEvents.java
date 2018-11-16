@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.json.JSONObject;
 
 public class RandomEvents {
-	private static int interval = 10; 
+	private static int interval = 20; 
 	private static double chance = 1.0;
 	private static HashMap<Integer, ArrayList<Player>> schedule;
 	private static ArrayList<IRandomEvent> moveEvents;
@@ -22,9 +22,9 @@ public class RandomEvents {
 		huntingEvents = new ArrayList<IRandomEvent>();
 		randomEvents = new ArrayList<IRandomEvent>();
 		eventOdds = new HashMap<String, Double>();
-		eventOdds.put("move", 0.0);
+		eventOdds.put("move", 0.3);
 		eventOdds.put("hunting", 0.6);
-		eventOdds.put("random", 0.0);
+		eventOdds.put("random", 0.1);
 		eventOdds.put("farming", 0.0);
 		eventLists = new HashMap<String, ArrayList<IRandomEvent>>();
 		eventLists.put("move", moveEvents);
