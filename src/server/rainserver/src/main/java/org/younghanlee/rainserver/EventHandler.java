@@ -60,33 +60,19 @@ public class EventHandler {
 				response = Message.EVENT_RESPONSE(payload);
 				connection.sendJSON(response);
 				break;
-			case "hunt":
-				id = event.getInt("id");
-				t = World.getTile(p.getPosition());
-				if (t.hasHabitat("hunting")){
-					int habitat_id = t.getHabitat("hunting");
-					p.startHunting("hunting", id, habitat_id);
-					response = p.getHunt().getNext();
-					connection.sendJSON(response);
-				}
+			case "start_hunt":
+				p.startHunting();
+				payload = new JSONObject();
+				payload.put("hunting", true);
+				response = Message.EVENT_RESPONSE(payload);
+				connection.sendJSON(response);
 				break;
-			case "fish":
-				id = event.getInt("id");
-				t = World.getTile(p.getPosition());
-				if (t.hasHabitat("fishing")){
-					int depth = t.getDepth();
-					story = new JSONObject();
-					String[] choiceNames = {"fishDeep", "fishShallow"};
-					String storyText = "You estimate the water here to be at least " + depth +" deep.";
-					Decision d = new Decision(choiceNames, storyText, p);
-					p.setDecision(d);
-					story.put("text", storyText);
-					story.put("buttons", p.getDecision().buttons(p));
-					payload = new JSONObject();
-					payload.put("story", story);
-					response = Message.EVENT_RESPONSE(payload);
-					connection.sendJSON(response);
-				}
+			case "stop_hunt":
+				p.stopHunting();
+				payload = new JSONObject();
+				payload.put("hunting", false);
+				response = Message.EVENT_RESPONSE(payload);
+				connection.sendJSON(response);
 				break;
 			case "decision":
 				id = event.getInt("id");
