@@ -84,6 +84,9 @@ public class EventHandler {
 				quantity = event.getInt("quantity");
 				int srcPosition = event.getInt("position");
 				String srcType = event.getString("type");
+				if (srcType == "party") {
+					srcPosition = p.indexOfPartyMember(srcPosition);
+				}
 				response = p.pickUp(id, quantity, srcPosition, srcType);
 				connection.sendJSON(response);
 				break;

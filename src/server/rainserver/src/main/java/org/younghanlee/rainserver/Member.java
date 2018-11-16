@@ -15,6 +15,7 @@ public class Member {
 	private int strength;
 	private int speed;
 	private int jeito;
+	private ArrayList<ItemStack> equipment;
 	private HashMap<Integer, Integer> skills; // id, rank
 	private HashMap<Integer, Integer> modifiers; // id, timer
 	
@@ -26,12 +27,21 @@ public class Member {
 		this.health = 5;
 		this.regen = 10;
 		this.jeito = 5;
+		this.equipment = new ArrayList<ItemStack>();
 		this.skills = new HashMap<Integer, Integer>();
 		this.modifiers = new HashMap<Integer, Integer>();
 	}
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public void equip(ItemStack i) {
+		equipment.add(i);
+	}
+	
+	public void unequip(ItemStack i) {
+		equipment.remove(i);
 	}
 	
 	public int getIcon() {
