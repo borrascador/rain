@@ -35,11 +35,13 @@ public class Player {
 	private ItemStack drag;
 	
 	private Move move; // Initialize with move(), stop with stopMoving()
-	private Hunt hunt; // Initialize with startHunting(), stop with stopHunting()
+	private Boolean hunting;
 	private Decision decision;
 	
 	private IRandomEvent randomEvent;
+	private boolean randomEventFlag;
 	private String trigger;
+	private HashMap<String, Object> eventArgs;
 	
 	private HashSet<Integer> buffer; // Which tiles require updates sent in next tick
 	
@@ -75,8 +77,10 @@ public class Player {
 		speed = 4;
 		rations = 1;
 		
-		hunt = null;
 		move = null;
+		hunting = false;
+		randomEvent = null;
+		randomEventFlag = false;
 		
 		// First decision is choose tribe. Create and attach this decision to this player.
 		String [] choiceNames = new String[World.numTribes()];
@@ -88,6 +92,7 @@ public class Player {
 		this.decision = d;
 
 		this.buffer = new HashSet<Integer>();
+		eventArgs = new HashMap<String, Object>();
 	}
 	
 	public String getHash() {
@@ -193,23 +198,40 @@ public class Player {
 			connection.sendJSON(Message.UPDATE(payload));
 		}
 		
-		if (randomEvent != null) {
+		if (randomEventFlag) {
+			randomEventFlag = false;
 			switch (trigger) {
 				case "move":
 					if (move != null) {
 						JSONObject result = randomEvent.result(this);
 						result.put("pace", 0);
 						stopMoving();
-						connection.sendJSON(Message.UPDATE(result));
+						connection.sendJSON(result);
 					}
 					break;
+					
+				case "hunting":
+					if (hunting) {
+						JSONObject result = randomEvent.result(this);
+						connection.sendJSON(result);
+					}
+					break;
+					
 				default:
-					connection.sendJSON(Message.UPDATE(randomEvent.result(this)));
+					connection.sendJSON(randomEvent.result(this));
 					break;
 			}
 			randomEvent = null;
 		}
 		return;
+	}
+	
+	public void setEventArg(String key, Object value) {
+		eventArgs.put(key, value);
+	}
+	
+	public Object getEventArg(String key) {
+		return eventArgs.get(key);
 	}
 	
 	public void setPosition(int position) { // Also edit tile visitors appropriately
@@ -299,8 +321,8 @@ public class Player {
 		return pace;
 	}
 	public void setPace(int n) {
-		pace = n;
 		if (move != null) {
+			pace = n;
 			move.setPace(n);
 		}
 	}
@@ -313,22 +335,16 @@ public class Player {
 		rations = n;
 	}
 	
-	public void startHunting(String huntOrFish, int weapon, int habitat_id) {
-		hunt = new Hunt(huntOrFish, this, weapon, habitat_id);
+	public void startHunting() {
+		hunting = true;
+	}
+	
+	public void stopHunting() {
+		hunting = false;
 	}
 	
 	public void removeDecision() {
 		decision = null;
-	}
-	
-	public String stopHunting() {
-		String s =  hunt.huntOrFish();
-		hunt = null;
-		return s;
-	}
-	
-	public Hunt getHunt(){
-		return hunt;
 	}
 	
 	public void setDecision(Decision d) {
@@ -345,6 +361,7 @@ public class Player {
 
 	public void setRandomEvent(IRandomEvent r) {
 		this.randomEvent = r;
+		randomEventFlag = true;
 	}
 	
 	public String getTrigger() {

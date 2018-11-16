@@ -16,14 +16,14 @@ import org.younghanlee.rainserver.Util;
 
 public class FindItem{
 	
-	public static int item_id;
-	
 	public static IChoice findItem_take = new IChoice(){
 		public String getText(Player p) {
+			int item_id = (int) p.getEventArg("findItem");
 			return "Take " + World.getItem(item_id).getName();
 		}
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
 			JSONObject payload = new JSONObject();
+			int item_id = (int) p.getEventArg("findItem");
 			payload.put("inventory", p.add(item_id, 1));
 			JSONObject story = new JSONObject();
 			story.put("text", "You pick up the item.");
@@ -38,6 +38,7 @@ public class FindItem{
 
 	public static IChoice findItem_leave = new IChoice(){
 		public String getText(Player p) {
+			int item_id = (int) p.getEventArg("findItem");
 			return "Leave " + World.getItem(item_id).getName();
 		}
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
@@ -62,7 +63,8 @@ public class FindItem{
 			int[] items = {10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 38};
 			String[] prefix = {"You discover an item: ", "You spot an item: "};
 			String[] suffix = {"."};
-			item_id = Util.choice(items);
+			int item_id = Util.choice(items);
+			p.setEventArg("findItem", item_id);
 			String item = World.getItem(item_id).getName();
 			String story = Util.choice(prefix) + item + Util.choice(suffix);
 			Decision d = new Decision(choiceNames, story, p);
