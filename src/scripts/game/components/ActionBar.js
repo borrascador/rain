@@ -5,7 +5,7 @@ import { sendEvent } from '../../store/actions/requests';
 import { sendError } from '../../store/actions/actions';
 import { EVENTS } from '../../store/actions/types';
 import {
-  DARK_RED, MEDIUM_RED, SOLID_WHITE, alphaGreen, alphaDarkRed
+  BRIGHT_GREEN, BRIGHT_RED, DARK_RED, MEDIUM_RED, SOLID_WHITE
 } from '../colors';
 
 export default class ActionBar {
@@ -119,11 +119,11 @@ export default class ActionBar {
         this.ctx.font = this.fontSize + 'px MECC';
         const text = this.connect.hunting ? 'ON' : 'OFF';
         const textWidth = this.ctx.measureText(text).width;
-        this.ctx.fillStyle = this.connect.hunting ? alphaGreen(0.9) : alphaDarkRed(0.9);
+        this.ctx.fillStyle = this.connect.hunting ? BRIGHT_GREEN : BRIGHT_RED;
         this.ctx.fillText(
           text,
-          x + (this.size - textWidth) / 2,
-          buttonY + (this.size + this.fontSize) / 2
+          x + 2 + (this.buttonSize - textWidth) / 2,
+          buttonY + 6 + this.buttonSize
         );
       }
       return Object.assign({}, button, {

@@ -1,6 +1,6 @@
 import {
   BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN,
-  SOLID_WHITE, FOREST_BLACK, alphaForestBlack, alphaGreen, alphaRed
+  SOLID_WHITE, FOREST_BLACK, alphaForestBlack, alphaGreen, alphaRed, alphaYellow
 } from '../colors';
 
 export function drawById (ctx, img, id, zoom, x, y) {
@@ -262,9 +262,9 @@ export function fillInverseCircle(ctx, canvas, radius) {
 
   // Circular gradient for center of screen
   // Add 1 to this radius to prevent clipping
-  const innerRadius = 0;
-  const outerRadius = radius + 1;
-  var gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
+  let innerRadius = 0;
+  let outerRadius = radius + 1;
+  let gradient = ctx.createRadialGradient(x, y, innerRadius, x, y, outerRadius);
   gradient.addColorStop(0, alphaForestBlack(0));
   gradient.addColorStop(0.75, alphaForestBlack(0.9));
   gradient.addColorStop(1, FOREST_BLACK);
