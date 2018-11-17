@@ -30,18 +30,19 @@ public class Util{
 		ArrayList<Double> cumulative_odds = new ArrayList<Double>();
 		double sum = 0;
 		
+		double total = 0.0;
+		for (double entry : odds.values()) {
+			total += entry;
+		}
+		
 		for (HashMap.Entry<Integer, Double> entry: odds.entrySet()) {
 			int id = entry.getKey();
 			double o = entry.getValue();
 			if (o > 0) {
 				ids.add(id);
 				sum += o;
-				cumulative_odds.add(sum);
+				cumulative_odds.add(sum/total);
 			}
-		}
-		
-		for (double entry : cumulative_odds) {
-			entry = entry/sum;
 		}
 		
 		double r = Math.random();
@@ -58,7 +59,7 @@ public class Util{
 		ArrayList<Double> cumulative_odds = new ArrayList<Double>();
 		
 		double total = 0.0;
-		for (double entry : cumulative_odds) {
+		for (double entry : odds.values()) {
 			total += entry;
 		}
 		

@@ -61,9 +61,7 @@ public class Tile {
 	}
 	
 	public void removeVisitor(Player p) {
-		System.out.println("BEFORE REMOVE " + visitors);
 		visitors.remove(p);
-		System.out.println("REMOVE " + visitors);
 		updateNeighbors(p, 1);
 	}
 	
