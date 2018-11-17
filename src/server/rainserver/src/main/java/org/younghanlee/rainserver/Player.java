@@ -35,11 +35,13 @@ public class Player {
 	private ItemStack drag;
 	
 	private Move move; // Initialize with move(), stop with stopMoving()
-	private Hunt hunt; // Initialize with startHunting(), stop with stopHunting()
+	private Boolean hunting;
 	private Decision decision;
 	
 	private IRandomEvent randomEvent;
+	private boolean randomEventFlag;
 	private String trigger;
+	private HashMap<String, Object> eventArgs;
 	
 	private HashSet<Integer> buffer; // Which tiles require updates sent in next tick
 	
@@ -75,8 +77,10 @@ public class Player {
 		speed = 4;
 		rations = 1;
 		
-		hunt = null;
 		move = null;
+		hunting = false;
+		randomEvent = null;
+		randomEventFlag = false;
 		
 		// First decision is choose tribe. Create and attach this decision to this player.
 		String [] choiceNames = new String[World.numTribes()];
@@ -88,6 +92,7 @@ public class Player {
 		this.decision = d;
 
 		this.buffer = new HashSet<Integer>();
+		eventArgs = new HashMap<String, Object>();
 	}
 	
 	public String getHash() {
@@ -193,23 +198,40 @@ public class Player {
 			connection.sendJSON(Message.UPDATE(payload));
 		}
 		
-		if (randomEvent != null) {
+		if (randomEventFlag) {
+			randomEventFlag = false;
 			switch (trigger) {
 				case "move":
 					if (move != null) {
 						JSONObject result = randomEvent.result(this);
 						result.put("pace", 0);
 						stopMoving();
-						connection.sendJSON(Message.UPDATE(result));
+						connection.sendJSON(result);
 					}
 					break;
+					
+				case "hunting":
+					if (hunting) {
+						JSONObject result = randomEvent.result(this);
+						connection.sendJSON(result);
+					}
+					break;
+					
 				default:
-					connection.sendJSON(Message.UPDATE(randomEvent.result(this)));
+					connection.sendJSON(randomEvent.result(this));
 					break;
 			}
 			randomEvent = null;
 		}
 		return;
+	}
+	
+	public void setEventArg(String key, Object value) {
+		eventArgs.put(key, value);
+	}
+	
+	public Object getEventArg(String key) {
+		return eventArgs.get(key);
 	}
 	
 	public void setPosition(int position) { // Also edit tile visitors appropriately
@@ -299,8 +321,8 @@ public class Player {
 		return pace;
 	}
 	public void setPace(int n) {
-		pace = n;
 		if (move != null) {
+			pace = n;
 			move.setPace(n);
 		}
 	}
@@ -313,22 +335,16 @@ public class Player {
 		rations = n;
 	}
 	
-	public void startHunting(String huntOrFish, int weapon, int habitat_id) {
-		hunt = new Hunt(huntOrFish, this, weapon, habitat_id);
+	public void startHunting() {
+		hunting = true;
+	}
+	
+	public void stopHunting() {
+		hunting = false;
 	}
 	
 	public void removeDecision() {
 		decision = null;
-	}
-	
-	public String stopHunting() {
-		String s =  hunt.huntOrFish();
-		hunt = null;
-		return s;
-	}
-	
-	public Hunt getHunt(){
-		return hunt;
 	}
 	
 	public void setDecision(Decision d) {
@@ -345,6 +361,7 @@ public class Player {
 
 	public void setRandomEvent(IRandomEvent r) {
 		this.randomEvent = r;
+		randomEventFlag = true;
 	}
 	
 	public String getTrigger() {
@@ -384,7 +401,7 @@ public class Player {
 				for (int item : inventory.keySet()) {
 					for (ItemStack stack : inventory.get(item)) {
 						occupied.get(stack.getType()).set(stack.getPosition(), null);
-						ja.put(stack.change(0, null, null));
+						ja.put(stack.change(0, this));
 					}
 					inventory.remove(item);
 				}
@@ -432,8 +449,13 @@ public class Player {
 			list.add(stack);
 			inventory.put(itemID, list);
 		}
-		jo = stack.toJSONObject();
-		occupied.get(stack.getType()).set(stack.getPosition(), stack);
+		jo = stack.toJSONObject(this);
+		int position = stack.getPosition();
+		occupied.get(stack.getType()).set(position, stack);
+		if (stack.getType() == "party") {
+			Member m = World.getMember(party.get(position));
+			m.equip(stack);
+		}
 		return jo;
 	}
 	
@@ -448,11 +470,11 @@ public class Player {
 				if (stackSize < maxStack) {
 					int difference = maxStack - stackSize;
 					if (difference >= left) {
-						ja.put(itemstack.change(stackSize + left, null, null));
+						ja.put(itemstack.change(stackSize + left, this));
 						return ja;
 					} else {
 						left -= difference;
-						ja.put(itemstack.change(maxStack, null, null));
+						ja.put(itemstack.change(maxStack, this));
 					}
 				}
 			}
@@ -467,7 +489,7 @@ public class Player {
 				}
 				addStack(itemID, stack);
 				occupied.get("BACKPACK").set(p, stack);
-				ja.put(stack.toJSONObject());
+				ja.put(stack.toJSONObject(this));
 				return ja;
 			} else {
 				left -= maxStack;
@@ -477,7 +499,7 @@ public class Player {
 				}
 				addStack(itemID, stack);
 				occupied.get("BACKPACK").set(p, stack);
-				ja.put(stack.toJSONObject());
+				ja.put(stack.toJSONObject(this));
 			}
 		}
 	}
@@ -508,7 +530,7 @@ public class Player {
 		
 		for (int item : inventory.keySet()) {
 			for (ItemStack stack : inventory.get(item)) {
-				ja.put(stack.change(0, null, null));
+				ja.put(stack.change(0, this));
 			}
 			inventory.remove(item);
 		}
@@ -552,6 +574,10 @@ public class Player {
 				if (quantity == stack.getQuantity()) {
 					occupied.get(srcType).set(srcPosition, null);
 					inventory.get(itemID).remove(stack);
+					if (srcType == "party") {
+						Member m = World.getMember(party.get(srcPosition));
+						m.unequip(stack);
+					}
 				}
 				
 				JSONArray ja = new JSONArray();
@@ -563,7 +589,12 @@ public class Player {
 				ja.put(jo);
 				
 				JSONObject source = new JSONObject();
-				source.put("position", srcPosition);
+				if (srcType == "party") {
+					source.put("position", party.get(srcPosition));
+				} else {
+					source.put("position", srcPosition);
+				}
+				
 				source.put("type", srcType);
 				source.put("id", itemID);
 				source.put("quantity", stack.getQuantity() - quantity);
@@ -601,11 +632,11 @@ public class Player {
 				int space = maxStack - targetQuantity;
 				// Enough space for all in target stack
 				if (quantity <= space) {
-					updates.put(targetStack.change(targetQuantity + quantity, null, null));
+					updates.put(targetStack.change(targetQuantity + quantity, this));
 					updates.put(reduceDrag(quantity));
 				} else {
 				// Not enough space for all in target stack
-					updates.put(targetStack.change(maxStack, null, null));
+					updates.put(targetStack.change(maxStack, this));
 					updates.put(reduceDrag(space));
 				}
 			// Target stack has different item ID
@@ -619,7 +650,6 @@ public class Player {
 				drag.setPosition(targetStack.getPosition());
 				drag.setType(targetStack.getType());
 				updates.put(addStack(itemID, drag));
-				System.out.println(targetStack.toJSONObject());
 				drag = targetStack;
 				updates.put(pickUpTarget);
 			}
@@ -650,7 +680,7 @@ public class Player {
 		JSONArray ja = new JSONArray();
 		for (int item: inventory.keySet()) {
 			for (ItemStack itemstack: inventory.get(item)) {
-				ja.put(itemstack.toJSONObject());
+				ja.put(itemstack.toJSONObject(this));
 			}
 		}
 		return ja;
@@ -675,6 +705,10 @@ public class Player {
 	
 	public int getPartyMember(int index) {
 		return party.get(index);
+	}
+	
+	public int indexOfPartyMember(int id) {
+		return party.indexOf(id);
 	}
 	
 	public JSONArray partyToJSONArray() {

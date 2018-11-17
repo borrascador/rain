@@ -61,10 +61,9 @@ public class World {
 		Decision.createDecisionHashMap();
 		new RandomEvents();
 		
-		Hunt.addAllChoices();
-		
 		FindItem.addAll();
 		Skeleton.addAll();
+		AnimalEncounter.addAll();
 		
 		System.out.println("Added all choices");
 

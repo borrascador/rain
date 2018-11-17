@@ -1,5 +1,8 @@
 package org.younghanlee.rainserver;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.json.JSONArray;
 
 public class Util{
@@ -15,6 +18,69 @@ public class Util{
 	public static String choice(String[] array) {
 		int index = randomInt(array.length - 1);
 		return array[index];
+	}
+	
+	public static IRandomEvent choice(ArrayList<IRandomEvent> array) {
+		int index = randomInt(array.size() - 1);
+		return array.get(index);
+	}
+	
+	public static int intChoice(HashMap<Integer, Double> odds) {
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		ArrayList<Double> cumulative_odds = new ArrayList<Double>();
+		double sum = 0;
+		
+		for (HashMap.Entry<Integer, Double> entry: odds.entrySet()) {
+			int id = entry.getKey();
+			double o = entry.getValue();
+			if (o > 0) {
+				ids.add(id);
+				sum += o;
+				cumulative_odds.add(sum);
+			}
+		}
+		
+		for (double entry : cumulative_odds) {
+			entry = entry/sum;
+		}
+		
+		double r = Math.random();
+		for (int i=0; i<cumulative_odds.size(); i++) {
+			if (r<cumulative_odds.get(i)) {
+				return ids.get(i);
+			}
+		}
+		return -1;
+	}
+	
+	public static String stringChoice(HashMap<String, Double> odds) {
+		ArrayList<String> ids = new ArrayList<String>();
+		ArrayList<Double> cumulative_odds = new ArrayList<Double>();
+		
+		double total = 0.0;
+		for (double entry : cumulative_odds) {
+			total += entry;
+		}
+		
+		double sum = 0.0;
+		
+		for (HashMap.Entry<String, Double> entry: odds.entrySet()) {
+			String id = entry.getKey();
+			double o = entry.getValue();
+			if (o > 0.0) {
+				ids.add(id);
+				sum += o;
+				cumulative_odds.add(sum/total);
+			}
+		}
+		
+		double r = Math.random();
+		for (int i=0; i<cumulative_odds.size(); i++) {
+			if (r<cumulative_odds.get(i)) {
+				return ids.get(i);
+			}
+		}
+		return "";
 	}
 	
 	public static int randomRoll(int base, float multiplier) {

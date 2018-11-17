@@ -63,40 +63,36 @@ public class ItemStack {
 		return new ItemStack(id, new_quantity, position, type);
 	}
 	
-	public JSONObject toJSONObject() {
+	public JSONObject toJSONObject(Player p) {
 		JSONObject jo = World.getItem(id).toJSONObject();
 		if (durability != null) {
 			jo.put("durability", durability);
 		}
 		jo.put("quantity", quantity);
 		jo.put("id", id);
-		jo.put("position", position);
+		if (this.type == "party") {
+			jo.put("position", p.getPartyMember(this.position));
+		} else {
+			jo.put("position", this.position);
+		}
 		jo.put("type", type);
 		return jo;
 	}
 	
-	// returns JSONObject containing id, srcPosition, destPosition, srcType, destType, quantity, change
-	public JSONObject change(Integer quantity, Integer position, String type) {
+	
+	public JSONObject change(Integer quantity, Player p) {
 		JSONObject jo = new JSONObject();
-		if (type != null || position != null) {
-			jo.put("srcPosition", this.position);
-			this.position = position;
-			jo.put("destPosition", position);
-			
-			if (type != null) {
-				jo.put("srcType", this.type);
-				this.type = type;
-				jo.put("destType", type);
-			}
-		}
 		
 		if (quantity != null) {
-			System.out.println("TEST");
 			int change = quantity - this.quantity;
 			jo.put("change", change);
 			this.quantity = quantity;
 			jo.put("quantity", quantity);
-			jo.put("position", this.position);
+			if (this.type == "party") {
+				jo.put("position", p.getPartyMember(this.position));
+			} else {
+				jo.put("position", this.position);
+			}
 			jo.put("type", this.type);
 		}
 		

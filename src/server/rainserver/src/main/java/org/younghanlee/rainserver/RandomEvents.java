@@ -6,30 +6,30 @@ import java.util.HashMap;
 import org.json.JSONObject;
 
 public class RandomEvents {
-	private static int interval = 10; 
+	private static int interval = 20; 
 	private static double chance = 1.0;
 	private static HashMap<Integer, ArrayList<Player>> schedule;
 	private static ArrayList<IRandomEvent> moveEvents;
 	private static ArrayList<IRandomEvent> farmingEvents;
-	private static ArrayList<IRandomEvent> fishingEvents;
+	private static ArrayList<IRandomEvent> huntingEvents;
 	private static ArrayList<IRandomEvent> randomEvents;
-	private static HashMap<Double, String> eventOdds;
+	private static HashMap<String, Double> eventOdds;
 	private static HashMap<String, ArrayList<IRandomEvent>> eventLists;
 	
 	public RandomEvents() {
 		moveEvents = new ArrayList<IRandomEvent>();
 		farmingEvents = new ArrayList<IRandomEvent>();
-		fishingEvents = new ArrayList<IRandomEvent>();
+		huntingEvents = new ArrayList<IRandomEvent>();
 		randomEvents = new ArrayList<IRandomEvent>();
-		eventOdds = new HashMap<Double, String>();
-		eventOdds.put(1.0, "move");
-		eventOdds.put(2.0, "farming");
-		eventOdds.put(2.0, "fishing");
-		eventOdds.put(2.0, "random");
+		eventOdds = new HashMap<String, Double>();
+		eventOdds.put("move", 0.3);
+		eventOdds.put("hunting", 0.6);
+		eventOdds.put("random", 0.1);
+		eventOdds.put("farming", 0.0);
 		eventLists = new HashMap<String, ArrayList<IRandomEvent>>();
 		eventLists.put("move", moveEvents);
 		eventLists.put("farming", farmingEvents);	
-		eventLists.put("fishing", fishingEvents);
+		eventLists.put("hunting", huntingEvents);
 		eventLists.put("random", randomEvents);
 		nextInterval();
 	}
@@ -42,8 +42,8 @@ public class RandomEvents {
 			case "farming":
 				farmingEvents.add(r);
 				break;
-			case "fishing":
-				fishingEvents.add(r);
+			case "hunting":
+				huntingEvents.add(r);
 				break;	
 			default:
 				randomEvents.add(r);
@@ -74,36 +74,13 @@ public class RandomEvents {
 	}
 	
 	public static void generateEvent(Player p) {
-		
-		// Find out what type of random event to choose from
-		ArrayList<IRandomEvent> eventList = randomEvents; 
-		String eventType = "random";
-		double r = Math.random();
-		for (Double d : eventOdds.keySet()) {
-			if (r < d) {
-				eventType = eventOdds.get(d);
-				eventList = eventLists.get(eventType);
-				break;
-			}
-		}
-		
-		ArrayList<Double> cumulative = new ArrayList<Double>();
-		double sum = 0.0;
-		for (int i=0; i<eventList.size(); i++) {
-			sum += eventList.get(i).generateChance(p);
-			cumulative.add(sum);	
-		}
-		
-		r = Math.random() * sum;
-		
-		for (int i=0; i<cumulative.size(); i++) {
-			if (r < cumulative.get(i)) {
-				p.setRandomEvent(eventList.get(i));
-				p.setTrigger(eventType);
-				// System.out.println("Trigger: "+p.getTrigger());
-				break;
-			}
-		}
+		System.out.println("Generating event for player " + p.getName());
+		String rType = Util.stringChoice(eventOdds);
+		System.out.println("Random event type: " + rType);
+		ArrayList<IRandomEvent> events = eventLists.get(rType);
+		IRandomEvent e = Util.choice(events);
+		p.setTrigger(rType);
+		p.setRandomEvent(e);
 	}
 	
 	public static void dispatch(int tick) {
@@ -115,6 +92,7 @@ public class RandomEvents {
 		// System.out.println(tick + ": " + schedule);
 		if (schedule.containsKey(mod)) {
 			for (Player p: schedule.get(mod)) {
+				if (p.getDecision() != null);
 				generateEvent(p);
 			}
 		}

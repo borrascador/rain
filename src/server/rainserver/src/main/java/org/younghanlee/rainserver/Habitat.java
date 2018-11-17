@@ -57,6 +57,10 @@ public class Habitat {
 		return animals.get(id);
 	}
 	
+	public int randomAnimal() {
+		return Util.intChoice(animals);
+	}
+	
 	// Return animal ids in a random order
 	public ArrayList<Integer> getAnimals(){
 		ArrayList<Integer> list = new ArrayList<Integer>(animals.keySet());
