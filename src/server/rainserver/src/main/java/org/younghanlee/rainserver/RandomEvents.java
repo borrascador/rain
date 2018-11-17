@@ -74,13 +74,15 @@ public class RandomEvents {
 	}
 	
 	public static void generateEvent(Player p) {
-		System.out.println("Generating event for player " + p.getName());
-		String rType = Util.stringChoice(eventOdds);
-		System.out.println("Random event type: " + rType);
-		ArrayList<IRandomEvent> events = eventLists.get(rType);
-		IRandomEvent e = Util.choice(events);
-		p.setTrigger(rType);
-		p.setRandomEvent(e);
+		if (p.getDecision() == null) {
+			System.out.println("Generating event for player " + p.getName());
+			String rType = Util.stringChoice(eventOdds);
+			System.out.println("Random event type: " + rType);
+			ArrayList<IRandomEvent> events = eventLists.get(rType);
+			IRandomEvent e = Util.choice(events);
+			p.setTrigger(rType);
+			p.setRandomEvent(e);
+		}
 	}
 	
 	public static void dispatch(int tick) {

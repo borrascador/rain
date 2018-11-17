@@ -361,6 +361,10 @@ public class Player {
 	public IRandomEvent getRandomEvent() {
 		return randomEvent;
 	}
+	
+	public boolean hasRandomEvent() {
+		return randomEventFlag;
+	}
 
 	public void setRandomEvent(IRandomEvent r) {
 		this.randomEvent = r;
