@@ -101,11 +101,11 @@ public class AnimalEncounter{
 	public static JSONObject attack(Player p) {
 		Animal animal = (Animal) p.getEventArg("animalEncounter");
 		
-		String[] choiceNames = {"stopHunting", "continueHunting"};
-		Decision d = new Decision(choiceNames, "", p);
-		p.setDecision(d);
+//		String[] choiceNames = {"stopHunting", "continueHunting"};
+//		Decision d = new Decision(choiceNames, "", p);
+//		p.setDecision(d);
 		JSONObject story = new JSONObject();
-		story.put("buttons", d.buttons(p));
+//		story.put("buttons", d.buttons(p));
 		JSONArray drops;
 		JSONArray party;
 		JSONArray tiles = null;
@@ -234,7 +234,7 @@ public class AnimalEncounter{
 			story.put("buttons", d.buttons(p));
 			JSONObject payload = new JSONObject();
 			payload.put("story", story);
-			return Message.EVENT_RESPONSE(payload);
+			return payload;
 		}
 	};
 	

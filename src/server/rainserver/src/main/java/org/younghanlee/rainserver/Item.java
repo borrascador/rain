@@ -79,6 +79,19 @@ public class Item {
 		return maxStack;
 	}
 	
+	public boolean canPutDown(String destType) {
+		switch (destType) {
+			case "BACKPACK":
+				return true;
+			case "PARTY":
+				return hasTag("hunting") || hasTag("fishing");
+			case "EATING":
+				return hasTag("food");
+			default:
+				return false;
+		}
+	}
+	
 	
 	public JSONObject toJSONObject() {
 		JSONObject jo = new JSONObject();

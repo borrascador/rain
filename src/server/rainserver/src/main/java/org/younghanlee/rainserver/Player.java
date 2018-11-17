@@ -120,6 +120,9 @@ public class Player {
 		Tile t = World.getTile(position);
 		t.removeVisitor(this);
 		t.updateNeighbors(this, 1);
+		if (drag != null) {
+			putBackItem();
+		}
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}
@@ -206,19 +209,19 @@ public class Player {
 						JSONObject result = randomEvent.result(this);
 						result.put("pace", 0);
 						stopMoving();
-						connection.sendJSON(result);
+						connection.sendJSON(Message.UPDATE(result));
 					}
 					break;
 					
 				case "hunting":
 					if (hunting) {
 						JSONObject result = randomEvent.result(this);
-						connection.sendJSON(result);
+						connection.sendJSON(Message.UPDATE(result));
 					}
 					break;
 					
 				default:
-					connection.sendJSON(randomEvent.result(this));
+					connection.sendJSON(Message.UPDATE(randomEvent.result(this)));
 					break;
 			}
 			randomEvent = null;
@@ -357,6 +360,10 @@ public class Player {
 	
 	public IRandomEvent getRandomEvent() {
 		return randomEvent;
+	}
+	
+	public boolean hasRandomEvent() {
+		return randomEventFlag;
 	}
 
 	public void setRandomEvent(IRandomEvent r) {
@@ -564,8 +571,10 @@ public class Player {
 				error_message += " at " + srcType + ", " + srcPosition;
 				return Message.ERROR(332, error_message);
 			}
-			
+
 			drag = stack.copy(quantity);
+
+			
 			if (quantity > stack.getQuantity()) {
 				String error_message = "pick_up: Not enough of item " + itemID;
 				error_message += ". (" + stack.getQuantity() + "/" + quantity;
@@ -621,6 +630,12 @@ public class Player {
 			return Message.ERROR(336, error_message);
 		}
 		
+		if (!World.getItem(itemID).canPutDown(destType)) {
+			String error_message = "put_down: tried to put down item: " + World.getItem(itemID).getName();
+			error_message +=	 " in " + destType;
+			return Message.ERROR(337, error_message);
+		}
+		
 		JSONArray updates = new JSONArray();
 		ItemStack targetStack = occupied.get(destType).get(destPosition);
 		// Target slot has something in it
@@ -647,8 +662,6 @@ public class Player {
 				pickUpTarget.put("quantity", targetQuantity);
 				pickUpTarget.put("id", targetStack.getId());
 				inventory.get(targetStack.getId()).remove(targetStack);
-				drag.setPosition(targetStack.getPosition());
-				drag.setType(targetStack.getType());
 				updates.put(addStack(itemID, drag));
 				drag = targetStack;
 				updates.put(pickUpTarget);
@@ -674,6 +687,23 @@ public class Player {
 		JSONObject payload = new JSONObject();
 		payload.put("inventory", updates);
 		return Message.EVENT_RESPONSE(payload);
+	}
+	 
+	public void putBackItem() {
+		System.out.println("TEST");
+		int position = drag.getPosition();
+		String type = drag.getType();
+		int quantity = drag.getQuantity();
+		ItemStack stack = occupied.get(type).get(position);
+		System.out.println("TEST");
+		if (stack != null) {
+			int newQuantity = stack.getQuantity() + quantity;
+			stack.setQuantity(newQuantity);
+		} else {
+			addStack(drag.getId(), drag);
+		}
+		System.out.println("TEST");
+		drag = null;
 	}
 	
 	public JSONArray inventoryToJSONArray() {
