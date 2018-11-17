@@ -1,3 +1,4 @@
+import Pace from './Pace';
 import Food from './Food';
 import Party from './Party';
 import Inventory from './Inventory';
@@ -14,6 +15,7 @@ export default class Overlay {
     this.ctx = ctx;
     this.loader = loader;
 
+    this.pace = new Pace(this.store, this.canvas, this.ctx, this.loader);
     this.food = new Food(this.store, this.canvas, this.ctx, this.loader);
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
     this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader);
@@ -24,6 +26,7 @@ export default class Overlay {
   }
 
   update(left, right) {
+    this.pace.update(left.x, left.y);
     this.food.update(left.x, left.y);
     this.party.update(left.x, left.y);
     this.inventory.update(left.x, left.y);
@@ -34,6 +37,7 @@ export default class Overlay {
   }
 
   render(delta) {
+    this.pace.render(delta);
     const slots = [].concat(
       this.food.render(delta),
       this.party.render(delta),

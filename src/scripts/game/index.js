@@ -17,6 +17,8 @@ import { changeMode } from '../store/actions/actions';
 import { MODE } from './constants.js'
 import { clickedLeft, clickedRight } from '../store/actions/actions';
 
+import walkImage from '../../images/walk.png';
+import walkTileset from '../../data/walk.json';
 
 export default class RainGame {
 	constructor (store, canvas, ctx) {
@@ -38,7 +40,9 @@ export default class RainGame {
 			this.loader.setImage('icons', iconsImage, iconsTileset),
 			this.loader.setImage('icons-xl', iconsXlImage, iconsXlTileset),
 			this.loader.setImage('water', waterImage, waterTileset),
-			this.loader.setImage('items', itemsImage, itemsTileset)
+			this.loader.setImage('items', itemsImage, itemsTileset),
+			// DEBUG
+			this.loader.setImage('walk', walkImage, walkTileset)
 		])
     .then(loaded => {
 			this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
