@@ -1,6 +1,9 @@
 import Connect from '../../store/Connect';
 import Animation from '../utils/Animation';
 import { drawById } from '../utils/draw';
+import { sendEvent } from '../../store/actions/requests';
+import { screenToImageButton } from './utils';
+import { EVENTS } from '../../store/actions/types';
 
 export default class Pace {
   constructor (store, canvas, ctx, loader) {
@@ -20,10 +23,13 @@ export default class Pace {
     this.gutter = 4;
     this.iconSize = this.icons.tileset.tilewidth * this.scale;
     this.walkSize = this.walk.tileset.tilewidth * this.scale;
+
+    this.buttons = [];
   }
 
   update(x, y) {
-    // this.updateClick(x, y);
+    const button = x && y && screenToImageButton(x, y, this.buttons);
+    button && this.store.dispatch(sendEvent(EVENTS.PACE, { id: button.id }));
   }
 
   getXPos(relativeIndex) {
@@ -38,27 +44,38 @@ export default class Pace {
 
   renderIcons() {
     const pace = this.connect.pace;
-    const y = (this.walkSize - this.iconSize) / 2
+    const yPos = (this.walkSize - this.iconSize) / 2;
+    const [ width, height ] = Array(2).fill(this.iconSize);
 
     switch(this.connect.pace) {
       case 0:
-        drawById(this.ctx, this.icons, 21, this.scale, this.getXPos(1), y)
-        drawById(this.ctx, this.icons, 22, this.scale, this.getXPos(2), y)
+        this.buttons = [
+          { id: 1, xPos: this.getXPos(1), yPos, width, height },
+          { id: 2, xPos: this.getXPos(2), yPos, width, height }
+        ];
         break;
 
       case 1:
-        drawById(this.ctx, this.icons, 20, this.scale, this.getXPos(-1), y)
-        drawById(this.ctx, this.icons, 22, this.scale, this.getXPos(1), y)
+        this.buttons = [
+          { id: 0, xPos: this.getXPos(-1), yPos, width, height },
+          { id: 2, xPos: this.getXPos(1), yPos, width, height }
+        ];
         break;
 
       case 2:
-        drawById(this.ctx, this.icons, 20, this.scale, this.getXPos(-2), y)
-        drawById(this.ctx, this.icons, 21, this.scale, this.getXPos(-1), y)
+        this.buttons = [
+          { id: 0, xPos: this.getXPos(-2), yPos, width, height },
+          { id: 1, xPos: this.getXPos(-1), yPos, width, height }
+        ];
         break;
 
       default:
         break;
     }
+
+    this.buttons.forEach(button => drawById(
+      this.ctx, this.icons, 20 + button.id, this.scale, button.xPos, yPos
+    ));
   }
 
   renderWalk(delta) {
