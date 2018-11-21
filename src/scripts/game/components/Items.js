@@ -111,7 +111,7 @@ export default class Items {
     }
 
     // Render hover text
-    if (!draggedItem && stack.name) {
+    if (!draggedItem && stack && stack.name) {
       drawHover(this.ctx, this.fontSize, stack);
     }
   }
