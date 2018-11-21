@@ -1,11 +1,11 @@
 export default class Loader {
-  constructor () {
+  constructor() {
     this.images = {};
   }
 
-  setImage (key, src, tileset) {
-    let img = new Image();
-    let d = new Promise( (resolve, reject) => {
+  setImage(key, src, tileset) {
+    const img = new Image();
+    const d = new Promise((resolve, reject) => {
       img.onload = () => {
         this.images[key] = img;
         resolve(img);
@@ -29,11 +29,10 @@ export default class Loader {
   }
 
   makeNameLookup(tileset) {
-
-    let tileNames = {};
+    const tileNames = {};
     for (let count = 0; count < tileset.tilecount; count++) {
       if (tileset.tileproperties[count] && tileset.tileproperties[count].name) {
-        let name = tileset.tileproperties[count].name;
+        const { name } = tileset.tileproperties[count];
         tileNames[name] = count;
       }
     }
