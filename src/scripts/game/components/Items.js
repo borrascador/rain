@@ -93,13 +93,10 @@ export default class Items {
         this.renderItem(slot, xPos, yPos);
       }
 
-      // Render hover box and hover text
+      // Render hover transparency effect
       if (hover) {
         this.ctx.fillStyle = BRIGHT_OPAQUE;
         this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
-        if (!draggedItem && stack.name) {
-          drawHover(this.ctx, this.fontSize, stack);
-        }
       }
 
       // Render dragging item
@@ -111,6 +108,11 @@ export default class Items {
         );
       }
 
+    }
+
+    // Render hover text
+    if (!draggedItem && stack.name) {
+      drawHover(this.ctx, this.fontSize, stack);
     }
   }
 
