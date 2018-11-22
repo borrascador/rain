@@ -97,11 +97,20 @@ public class Util{
 	}
 	
 	public static JSONArray concat(JSONArray a1, JSONArray a2) {
-		JSONArray ja = a1;
-		for (int i=0; i<a2.length(); i++) {
-			ja.put(a2.get(i));
+		JSONArray ja;
+		if (a1 == null) {
+			if (a2 == null) {
+				return null;
+			} else {
+				return a2;
+			}
+		} else {
+			ja = a1;
+			for (int i=0; i<a2.length(); i++) {
+				ja.put(a2.get(i));
+			}
+			return ja;
 		}
-		return ja;
 	}
 	
 }

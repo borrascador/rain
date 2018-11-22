@@ -60,7 +60,11 @@ public class ItemStack {
 	}
 	
 	public ItemStack copy(int new_quantity) {
-		return new ItemStack(id, new_quantity, position, type);
+		ItemStack stack = new ItemStack(id, new_quantity, position, type);
+		if (durability != null) {
+			stack.setDurability(durability);
+		}
+		return stack;
 	}
 	
 	public JSONObject toJSONObject(Player p) {
@@ -79,6 +83,27 @@ public class ItemStack {
 		return jo;
 	}
 	
+	public JSONObject degrade(int amount, Player p) {
+		JSONObject jo = toJSONObject(p);
+		durability -= amount;
+		if (durability <= 0) {
+			jo = change(0, p);
+			p.deleteStack(this);
+		} else {
+			jo.put("durability", durability);
+		}
+		return jo;
+	}
+	
+	public JSONObject repair(int amount, Player p) {
+		JSONObject jo = toJSONObject(p);
+		durability += amount;
+		if (durability > 0) {
+			durability = 100;
+		}
+		jo.put("durability", durability);
+		return jo;
+	}
 	
 	public JSONObject change(Integer quantity, Player p) {
 		JSONObject jo = new JSONObject();

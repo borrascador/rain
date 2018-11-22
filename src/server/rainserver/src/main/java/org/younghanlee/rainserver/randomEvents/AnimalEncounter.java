@@ -167,7 +167,11 @@ public class AnimalEncounter{
 
 		story.put("text", storyText);
 		p.getDecision().setStoryText(storyText);
-		payload.put("inventory", drops);
+		// Item degradation
+		JSONArray inventory = Util.concat(drops, p.degrade());
+		if (inventory != null) {
+			payload.put("inventory", inventory);
+		}
 		payload.put("story", story);
 		payload.put("party", party);
 		payload.put("tiles", tiles);
@@ -211,7 +215,7 @@ public class AnimalEncounter{
 			story.put("buttons", d.buttons(p));
 			JSONObject payload = new JSONObject();
 			payload.put("story", story);
-			return Message.EVENT_RESPONSE(payload);
+			return payload;
 		}
 	};
 	
