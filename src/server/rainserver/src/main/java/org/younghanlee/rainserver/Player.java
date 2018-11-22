@@ -559,6 +559,11 @@ public class Player {
 		return jo;
 	}
 	
+	public void deleteStack(ItemStack stack) {
+		occupied.get(stack.getType()).set(stack.getPosition(), null);
+		inventory.get(stack.getId()).remove(stack);
+	}
+	
 	public JSONObject pickUp(int itemID, int quantity, int srcPosition, String srcType) {
 		JSONObject payload = new JSONObject();
 		if (drag != null) {
@@ -581,8 +586,7 @@ public class Player {
 				return Message.ERROR(331, error_message);
 			} else {
 				if (quantity == stack.getQuantity()) {
-					occupied.get(srcType).set(srcPosition, null);
-					inventory.get(itemID).remove(stack);
+					deleteStack(stack);
 					if (srcType == "party") {
 						Member m = World.getMember(party.get(srcPosition));
 						m.unequip(stack);
@@ -704,6 +708,20 @@ public class Player {
 		}
 		System.out.println("TEST");
 		drag = null;
+	}
+	
+	public JSONArray degrade() {
+		JSONArray ja = new JSONArray();
+		for (ItemStack i: occupied.get("PARTY")) {
+			if (i != null) {
+				ja.put(i.degrade(5, this));
+			}
+		} 
+		if (ja.length() > 0){
+			return ja;
+		} else {
+			return null;
+		}
 	}
 	
 	public JSONArray inventoryToJSONArray() {
