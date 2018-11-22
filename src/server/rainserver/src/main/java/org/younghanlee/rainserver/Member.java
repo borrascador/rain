@@ -44,6 +44,10 @@ public class Member {
 		equipment.remove(i);
 	}
 	
+	public ArrayList<ItemStack> getEquipment(){
+		return equipment;
+	}
+	
 	public int getIcon() {
 		return this.icon;
 	}
