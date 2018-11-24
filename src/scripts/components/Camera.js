@@ -148,6 +148,6 @@ export default class Camera {
       (this.canvas.height - iconSize) / 2
     );
 
-    fillInverseCircle(this.ctx, this.canvas, 300);
+    fillInverseCircle(this.ctx, this.canvas, tileSize * sight);
   }
 }

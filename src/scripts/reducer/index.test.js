@@ -18,11 +18,11 @@ describe('reducer', () => {
     ).toEqual(
       Object.assign(
         initialState,
-        { zoom: 4 }
+        { zoom: 8 }
       )
     );
 
-    initialState = newInitialState({ zoom: 5 });
+    initialState = newInitialState({ zoom: 10 });
     expect(
       reducer(initialState, {
         type: ACTIONS.ZOOM_IN
@@ -39,11 +39,11 @@ describe('reducer', () => {
     ).toEqual(
       Object.assign(
         initialState,
-        { zoom: 2 }
+        { zoom: 6 }
       )
     );
 
-    initialState = newInitialState({ zoom: 1 });
+    initialState = newInitialState({ zoom: 5 });
     expect(
       reducer(initialState, {
         type: ACTIONS.ZOOM_OUT

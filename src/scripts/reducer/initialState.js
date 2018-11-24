@@ -10,7 +10,7 @@ const uiState = {
   mode: MODE.TITLE,
   partyTab: 0,
   actions: { main: [] },
-  zoom: 3,
+  zoom: 7,
   slots: []
 };
 

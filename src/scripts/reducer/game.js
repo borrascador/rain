@@ -70,10 +70,7 @@ export function loginResponse(state, action) {
     sight: action.payload.sight,
     pace: action.payload.pace,
     rations: action.payload.rations,
-    hunting: action.payload.hunting,
-    zoom: 3,
-    error: null,
-    errorMessage: null
+    hunting: action.payload.hunting
   });
 }
 

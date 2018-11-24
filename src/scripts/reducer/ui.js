@@ -127,7 +127,7 @@ export function zoomIn(state) {
 }
 
 export function zoomOut(state) {
-  if (state.zoom > 1) {
+  if (state.zoom > 5) {
     return updateObject(state, {
       zoom: state.zoom - 1
     });

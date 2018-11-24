@@ -127,7 +127,6 @@ export default class Food {
         xPos = xPos + this.size + this.gutter
       ) {
         this.ctx.fillRect(xPos, yPos, this.size, this.size);
-        counter += 1;
         slots.push({
           type: SLOTS.EATING,
           position: counter,
@@ -136,6 +135,7 @@ export default class Food {
           width: this.size,
           height: this.size
         });
+        counter += 1;
       }
     }
     return slots;
