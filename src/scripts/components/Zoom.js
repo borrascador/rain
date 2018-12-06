@@ -1,5 +1,5 @@
 import Connect from '../Connect';
-import { zoomIn, zoomOut } from '../actions/actions';
+import { clickedLeft, zoomIn, zoomOut } from '../actions/actions';
 import { logout } from '../actions/requests';
 import { screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
@@ -23,9 +23,13 @@ export default class Zoom {
     ];
   }
 
-  update(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button) this.store.dispatch(button.onClick());
+    if (button) {
+      this.store.dispatch(clickedLeft());
+      this.store.dispatch(button.onClick());
+    }
   }
 
   render() {

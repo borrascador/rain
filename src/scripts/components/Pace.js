@@ -1,6 +1,7 @@
 import Connect from '../Connect';
 import Animation from '../utils/Animation';
 import { drawById } from '../utils/draw';
+import { clickedLeft } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { screenToImageButton } from './utils';
 import { EVENTS } from '../actions/types';
@@ -27,9 +28,13 @@ export default class Pace {
     this.buttons = [];
   }
 
-  update(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button) this.store.dispatch(sendEvent(EVENTS.PACE, { id: button.id }));
+    if (button) {
+      this.store.dispatch(clickedLeft());
+      this.store.dispatch(sendEvent(EVENTS.PACE, { id: button.id }));
+    }
   }
 
   getXPos(relativeIndex) {

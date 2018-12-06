@@ -1,5 +1,6 @@
 import Connect from '../Connect';
 import Animation from '../utils/Animation';
+import { clickedLeft } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { EVENTS } from '../actions/types';
 import { LAYER } from '../utils/constants';
@@ -35,20 +36,18 @@ export default class Camera {
     // this.y = Math.max(0, Math.min(this.y, this.maxY));
   }
 
-  updateClick(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     const tile = x && y && screenToImageButton(x, y, this.clickTiles);
     if (tile) {
       const { zoom } = this.connect.map;
       const xCoord = Math.floor((x - tile.xPos) / zoom);
       const yCoord = Math.floor((y - tile.yPos) / zoom);
+      this.store.dispatch(clickedLeft());
       this.store.dispatch(
         sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
       );
     }
-  }
-
-  update(x, y) {
-    this.updateClick(x, y);
   }
 
   render(delta) {

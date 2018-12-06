@@ -75,18 +75,21 @@ export default class RainGame {
       this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
     }
 
-    const { keys, clickLeft, clickRight } = this.connect;
-    if (clickLeft.x && clickLeft.y) this.store.dispatch(clickedLeft());
-    if (clickRight.x && clickRight.y) this.store.dispatch(clickedRight());
     switch (this.connect.mode) {
       case MODE.TITLE:
-        this.titleView.update(keys, clickLeft, clickRight);
+        this.titleView.update();
         this.titleView.render(delta);
         break;
       default:
-        this.gameView.update(keys, clickLeft, clickRight);
+        this.gameView.update();
         this.gameView.render(delta);
         break;
+    }
+    if (this.connect.clickLeft.x && this.connect.clickLeft.y) {
+      this.store.dispatch(clickedLeft());
+    }
+    if (this.connect.clickRight.x && this.connect.clickRight.y) {
+      this.store.dispatch(clickedRight());
     }
   }
 }

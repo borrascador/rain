@@ -1,6 +1,7 @@
 import Connect from '../Connect';
 import { drawById, drawHover } from '../utils/draw';
 import { screenToImageButton } from './utils';
+import { clickedLeft } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { EVENTS } from '../actions/types';
 import {
@@ -28,9 +29,11 @@ export default class ActionBar {
     this.ctx.font = `${this.fontSize}px MECC`;
   }
 
-  update(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
+      this.store.dispatch(clickedLeft());
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
         this.current = button.target;
       } else if (button.tag) {

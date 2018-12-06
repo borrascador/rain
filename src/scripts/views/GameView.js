@@ -26,15 +26,15 @@ export default class GameView {
     this.dim = dim;
   }
 
-  update(keys, left, right) {
+  update() {
     if (!this.dim) {
       if (this.connect.stories.length > 0) {
-        this.story.update(keys, left.x, left.y);
+        this.story.update();
       } else if (this.connect.mode === MODE.PARTY) {
-        this.partyWindow.update(left.x, left.y);
+        this.partyWindow.update();
       } else {
-        if (this.connect.currentTile) this.camera.update(left.x, left.y);
-        this.overlay.update(left, right);
+        this.overlay.update();
+        if (this.connect.currentTile) this.camera.update();
       }
     }
   }
@@ -46,13 +46,7 @@ export default class GameView {
     if (this.connect.currentTile) this.camera.render(delta);
     this.overlay.render(delta);
     this.story.render(delta);
-    switch (this.connect.mode) {
-      case MODE.PARTY:
-        this.partyWindow.render(delta);
-        break;
-      default:
-        break;
-    }
+    if (this.connect.mode === MODE.PARTY) this.partyWindow.render(delta);
 
     if (this.dim) {
       this.ctx.fillStyle = MEDIUM_OPAQUE;

@@ -1,4 +1,6 @@
 import Connect from '../Connect';
+import { clickedLeft } from '../actions/actions';
+import { checkImageCollision } from './utils';
 import { SLOTS } from '../utils/constants';
 import { DARK_RED, MEDIUM_RED } from '../utils/colors';
 
@@ -22,15 +24,30 @@ export default class Inventory {
     this.unitHeight = 5;
     this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
     this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
+    this.box = {
+      xPos: this.canvas.width - this.width - this.gutter,
+      yPos: this.size * 2,
+      width: this.width,
+      height: this.height
+    };
   }
 
-  // update(x, y) {}
+  update() {
+    const { x, y } = this.connect.clickLeft;
+    if (checkImageCollision(x, y, this.box)) this.store.dispatch(clickedLeft());
+  }
 
   renderWindow() {
     this.xStart = this.canvas.width - this.width - this.gutter;
     this.yStart = this.size * 2;
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
+    this.box = {
+      xPos: this.xStart,
+      yPos: this.yStart,
+      width: this.width,
+      height: this.height
+    };
   }
 
   renderSlots() {

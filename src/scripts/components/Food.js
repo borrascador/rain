@@ -1,4 +1,5 @@
 import Connect from '../Connect';
+import { clickedLeft } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { EVENTS } from '../actions/types';
 import { screenToImageButton } from './utils';
@@ -60,9 +61,13 @@ export default class Food {
     }
   }
 
-  update(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button) button.onClick(this.connect.rations);
+    if (button) {
+      this.store.dispatch(clickedLeft());
+      button.onClick(this.connect.rations);
+    }
   }
 
   renderWindow() {

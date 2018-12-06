@@ -1,4 +1,4 @@
-import { closeStory } from '../actions/actions';
+import { clickedLeft, closeStory } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { EVENTS } from '../actions/types';
 import Connect from '../Connect';
@@ -55,7 +55,8 @@ export default class Story {
     this.selected = null;
   }
 
-  updateKeys(keys, story) {
+  updateKeys(story) {
+    const { keys } = this.connect;
     keys.forEach((key) => {
       if (key >= '1' && key <= story.buttons.length.toString()) {
         this.selected = story.buttons[parseInt(key, 10) - 1];
@@ -67,8 +68,10 @@ export default class Story {
     });
   }
 
-  updateClick(x, y, story) {
+  updateClick(story) {
+    const { x, y } = this.connect.clickLeft;
     if (x && y) {
+      this.store.dispatch(clickedLeft());
       const button = screenToTextButton(x, y, story.buttons);
       if (button) {
         if (this.selected && this.selected.id === button.id) {
@@ -84,13 +87,13 @@ export default class Story {
     }
   }
 
-  update(keys, x, y) {
+  update() {
     this.width = this.canvas.width / 3;
     this.height = this.canvas.height / 2;
     if (this.stories.length > 0) {
       const story = this.stories[this.stories.length - 1];
-      this.updateKeys(keys, story);
-      this.updateClick(x, y, story);
+      this.updateKeys(story);
+      this.updateClick(story);
     }
   }
 

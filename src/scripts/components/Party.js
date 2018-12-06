@@ -2,7 +2,7 @@ import { MODE, SLOTS, UPDATE_TEXT_DURATION } from '../utils/constants';
 import Connect from '../Connect';
 import { screenToImageButton } from './utils';
 import {
-  setPartyTab, changeMode, removePartyMember
+  clickedLeft, setPartyTab, changeMode, removePartyMember
 } from '../actions/actions';
 import { drawById, drawByName, fadeText } from '../utils/draw';
 import { MEDIUM_RED, DARK_RED } from '../utils/colors';
@@ -33,9 +33,11 @@ export default class Party {
     this.buttons = this.connect.party.slice();
   }
 
-  update(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
+      this.store.dispatch(clickedLeft());
       this.store.dispatch(setPartyTab(button.id));
       this.store.dispatch(changeMode(MODE.PARTY));
     }

@@ -1,7 +1,7 @@
 import Connect from '../Connect';
 import { drawById, drawByName, drawHover } from '../utils/draw';
 import { screenToImageButton, getItemById } from './utils';
-import { setPartyTab, changeMode } from '../actions/actions';
+import { clickedLeft, setPartyTab, changeMode } from '../actions/actions';
 import { MODE } from '../utils/constants';
 import { DARK_RED, MEDIUM_RED, PALE_GREEN } from '../utils/colors';
 
@@ -37,8 +37,10 @@ export default class PartyWindow {
     this.height = this.unitHeight * this.lineHeight + this.gutter;
   }
 
-  update(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     if (x && y) {
+      this.store.dispatch(clickedLeft());
       const xMin = (this.canvas.width - this.width) / 2;
       const xMax = xMin + this.width;
       const yMin = (this.canvas.height - this.height) / 2;

@@ -1,3 +1,4 @@
+import { clickedLeft } from '../actions/actions';
 import registerDialog from '../dialogs/register';
 import loginDialog from '../dialogs/login';
 import { screenToTextButton } from '../components/utils';
@@ -42,15 +43,15 @@ export default class TitleView {
     this.dim = dim;
   }
 
-  handleClick(x, y) {
+  update() {
+    const { x, y } = this.connect.clickLeft;
     if (x && y) {
       const button = !this.dim && screenToTextButton(x, y, this.buttons);
-      if (button) button.onClick(this.store, this.setDim);
+      if (button) {
+        this.store.dispatch(clickedLeft());
+        button.onClick(this.store, this.setDim);
+      }
     }
-  }
-
-  update(keys, left) {
-    this.handleClick(left.x, left.y);
   }
 
   renderBackground() {
