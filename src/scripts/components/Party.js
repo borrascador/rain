@@ -35,12 +35,22 @@ export default class Party {
 
   update() {
     const { x, y } = this.connect.clickLeft;
+    if (x && y && this.boxes && screenToImageButton(x, y, this.boxes)) {
+      this.store.dispatch(clickedLeft());
+    }
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
-      this.store.dispatch(clickedLeft());
       this.store.dispatch(setPartyTab(button.id));
       this.store.dispatch(changeMode(MODE.PARTY));
     }
+  }
+
+  renderBox(xPos, yPos, width, height) {
+    this.ctx.fillStyle = MEDIUM_RED;
+    this.ctx.fillRect(xPos, yPos, width, height);
+    this.boxes.push({
+      xPos, yPos, width, height
+    });
   }
 
   renderSlot(id, xPos, yPos) {
@@ -80,8 +90,7 @@ export default class Party {
       this.store.dispatch(removePartyMember(member.id));
     }
 
-    this.ctx.fillStyle = MEDIUM_RED;
-    this.ctx.fillRect(x - this.gutter, y - this.gutter, this.width, this.height);
+    this.renderBox(x - this.gutter, y - this.gutter, this.width, this.height);
 
     drawById(
       this.ctx, this.iconsXl, member.icon, this.scale,
@@ -116,6 +125,7 @@ export default class Party {
   render() {
     this.height = this.size + this.gutter * 2;
     this.slots = [];
+    this.boxes = [];
     this.buttons = this.connect.party.map((member, index) => this.renderPartyMember(member, index));
     return this.slots;
   }

@@ -24,17 +24,13 @@ export default class Inventory {
     this.unitHeight = 5;
     this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
     this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
-    this.box = {
-      xPos: this.canvas.width - this.width - this.gutter,
-      yPos: this.size * 2,
-      width: this.width,
-      height: this.height
-    };
   }
 
   update() {
     const { x, y } = this.connect.clickLeft;
-    if (checkImageCollision(x, y, this.box)) this.store.dispatch(clickedLeft());
+    if (x && y && this.box && checkImageCollision(x, y, this.box)) {
+      this.store.dispatch(clickedLeft());
+    }
   }
 
   renderWindow() {

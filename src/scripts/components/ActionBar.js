@@ -1,6 +1,6 @@
 import Connect from '../Connect';
 import { drawById, drawHover } from '../utils/draw';
-import { screenToImageButton } from './utils';
+import { checkImageCollision, screenToImageButton } from './utils';
 import { clickedLeft } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { EVENTS } from '../actions/types';
@@ -31,9 +31,11 @@ export default class ActionBar {
 
   update() {
     const { x, y } = this.connect.clickLeft;
+    if (x && y && this.box && checkImageCollision(x, y, this.box)) {
+      this.store.dispatch(clickedLeft());
+    }
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
-      this.store.dispatch(clickedLeft());
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
         this.current = button.target;
       } else if (button.tag) {
@@ -91,6 +93,12 @@ export default class ActionBar {
       this.barWidth,
       this.barSize
     );
+    this.box = {
+      xPos: (this.canvas.width - this.barWidth) / 2,
+      yPos: this.canvas.height - this.barSize,
+      width: this.barWidth,
+      height: this.barSize
+    };
 
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(

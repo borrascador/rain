@@ -2,7 +2,7 @@ import Connect from '../Connect';
 import { clickedLeft } from '../actions/actions';
 import { sendEvent } from '../actions/requests';
 import { EVENTS } from '../actions/types';
-import { screenToImageButton } from './utils';
+import { checkImageCollision, screenToImageButton } from './utils';
 import { drawByName } from '../utils/draw';
 import { SLOTS } from '../utils/constants';
 import {
@@ -63,9 +63,11 @@ export default class Food {
 
   update() {
     const { x, y } = this.connect.clickLeft;
+    if (x && y && this.box && checkImageCollision(x, y, this.box)) {
+      this.store.dispatch(clickedLeft());
+    }
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
-      this.store.dispatch(clickedLeft());
       button.onClick(this.connect.rations);
     }
   }
@@ -76,6 +78,12 @@ export default class Food {
 
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
+    this.box = {
+      xPos: this.xStart,
+      yPos: this.yStart,
+      width: this.width,
+      height: this.height
+    };
   }
 
   renderStepper() {
