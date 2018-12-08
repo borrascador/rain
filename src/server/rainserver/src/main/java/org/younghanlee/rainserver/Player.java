@@ -214,9 +214,11 @@ public class Player {
 					break;
 					
 				case "hunting":
-					if (hunting) {
+					if (hunting && move != null) {
 						JSONObject result = randomEvent.result(this);
-						connection.sendJSON(Message.UPDATE(result));
+						if (result != null) {
+							connection.sendJSON(Message.UPDATE(result));
+						}
 					}
 					break;
 					
