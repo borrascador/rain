@@ -105,6 +105,9 @@ public class Util{
 				return a2;
 			}
 		} else {
+			if (a2 == null) {
+				return a1;
+			}
 			ja = a1;
 			for (int i=0; i<a2.length(); i++) {
 				ja.put(a2.get(i));
