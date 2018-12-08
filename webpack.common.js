@@ -1,10 +1,10 @@
 module.exports = {
-  context: __dirname + "/src",
-  entry: "./index",
+  context: `${__dirname}/src`,
+  entry: './index',
   output: {
-    path: __dirname + "/dist",
-    filename: "bundle.js",
-    publicPath: "/"
+    path: `${__dirname}/dist`,
+    filename: 'bundle.js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -17,9 +17,9 @@ module.exports = {
           plugins: ['@babel/plugin-proposal-object-rest-spread']
         }
       },
-      { test: /\.css$/, loader: [ 'style-loader', 'css-loader' ] },
+      { test: /\.css$/, loader: ['style-loader', 'css-loader'] },
       { test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf)$/, loader: 'url-loader' }
     ]
   },
   plugins: []
-}
+};

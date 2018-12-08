@@ -1,7 +1,7 @@
-import { store } from './store/store';
-import RainGame from './game/index';
+import store from './store';
+import RainGame from './RainGame';
 
-window.onload = function() {
+window.onload = () => {
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
 
@@ -14,4 +14,4 @@ window.onload = function() {
   const rainGame = new RainGame(store, canvas, ctx);
 
   rainGame.init();
-}
+};
