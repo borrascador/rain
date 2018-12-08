@@ -57,8 +57,13 @@ public class Habitat {
 		return animals.get(id);
 	}
 	
-	public int randomAnimal() {
-		return Util.intChoice(animals);
+	public Animal randomAnimal(int aggression) {
+		Animal a = World.getAnimal(Util.intChoice(animals));
+		if (a.getAggression() >= aggression) {
+			return a;
+		} else {
+			return null;
+		}
 	}
 	
 	// Return animal ids in a random order

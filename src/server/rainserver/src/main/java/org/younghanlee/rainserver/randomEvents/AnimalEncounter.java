@@ -203,7 +203,10 @@ public class AnimalEncounter{
 		public JSONObject result(Player p) {
 			Tile t = World.getTile(p.getPosition());
 			Habitat h = World.getHabitat(t.getHabitat("hunting"));
-			Animal animal = World.getAnimal(h.randomAnimal());
+			Animal animal = h.randomAnimal(50);
+			if (animal == null) {
+				return null;
+			}
 			p.setEventArg("animalEncounter", animal);
 
 			String[] choiceNames = {"animalEncounter_attack", "animalEncounter_escape"};
@@ -226,7 +229,7 @@ public class AnimalEncounter{
 		public JSONObject result(Player p) {		
 			Tile t = World.getTile(p.getPosition());
 			Habitat h = World.getHabitat(t.getHabitat("hunting"));
-			Animal animal = World.getAnimal(h.randomAnimal());
+			Animal animal = h.randomAnimal(0);
 			p.setEventArg("animalEncounter", animal);
 
 			String[] choiceNames = {"animalEncounter_attack", "animalEncounter_escape"};
