@@ -164,9 +164,7 @@ public class AnimalEncounter{
 				party = null;
 			}
 		}
-
 		story.put("text", storyText);
-		p.getDecision().setStoryText(storyText);
 		// Item degradation
 		JSONArray inventory = Util.concat(drops, p.degrade());
 		if (inventory != null) {
@@ -175,23 +173,20 @@ public class AnimalEncounter{
 		payload.put("story", story);
 		payload.put("party", party);
 		payload.put("tiles", tiles);
+		p.removeDecision();
 		return Message.EVENT_RESPONSE(payload);
 	}
 	
 	public static JSONObject escape(Player p) {
 		Animal animal = (Animal) p.getEventArg("animalEncounter");
-		
-		String[] choiceNames = {"stopHunting", "continueHunting"};
 		String storyText = "You have escaped " + animal.getName();
-		
-		Decision d = new Decision(choiceNames, storyText, p);
-		p.setDecision(d);
+
 		JSONObject story = new JSONObject();
 		story.put("text", storyText);
-		story.put("buttons", d.buttons(p));
 
 		JSONObject payload = new JSONObject();
 		payload.put("story", story);
+		p.removeDecision();
 		return Message.EVENT_RESPONSE(payload);
 		
 	}
