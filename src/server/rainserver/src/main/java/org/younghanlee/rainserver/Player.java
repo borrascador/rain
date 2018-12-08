@@ -396,6 +396,7 @@ public class Player {
 	public JSONArray inSightArray() {
 		JSONArray ja = new JSONArray();
 		for (int ts: World.getTile(position).inSight(sight)) {
+			tilesSeen.add(ts);
 			ja.put(World.getTile(ts).toJSONObject(this));
 		}
 		return ja;
