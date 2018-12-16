@@ -1,7 +1,9 @@
 import { MODE } from '../utils/constants';
 import Connect from '../Connect';
-import Camera from '../components/Camera';
-import Overlay from '../components/Overlay';
+// import Camera from '../components/Camera';
+import BottomLayer from '../components/BottomLayer';
+import TopLayer from '../components/TopLayer';
+// import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import PartyWindow from '../components/PartyWindow';
 import { FOREST_BLACK, MEDIUM_OPAQUE } from '../utils/colors';
@@ -16,8 +18,11 @@ export default class GameView {
     this.setDim = this.setDim.bind(this);
     this.connect = new Connect(this.store);
 
-    this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
-    this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
+    this.bottom = new BottomLayer(this.store, this.canvas, this.ctx, this.loader);
+    this.top = new TopLayer(this.store, this.canvas, this.ctx, this.loader);
+
+    // this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
+    // this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
   }
@@ -33,8 +38,8 @@ export default class GameView {
       } else if (this.connect.mode === MODE.PARTY) {
         this.partyWindow.update();
       } else {
-        this.overlay.update();
-        if (this.connect.currentTile) this.camera.update();
+        // this.overlay.update();
+        // if (this.connect.currentTile) this.camera.update();
       }
     }
   }
@@ -43,8 +48,10 @@ export default class GameView {
     this.ctx.fillStyle = FOREST_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.connect.currentTile) this.camera.render(delta);
-    this.overlay.render(delta);
+    if (this.connect.currentTile) this.bottom.render();
+    if (this.connect.currentTile) this.top.render(delta);
+    // if (this.connect.currentTile) this.camera.render(delta);
+    // this.overlay.render(delta);
     this.story.render(delta);
     if (this.connect.mode === MODE.PARTY) this.partyWindow.render(delta);
 
