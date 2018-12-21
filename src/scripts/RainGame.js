@@ -8,6 +8,7 @@ import waterImage from '../images/water.png';
 import itemsImage from '../images/items.png';
 import walkImage from '../images/walk.png';
 import newImage from '../images/new.png';
+import playerImage from '../images/player.png';
 import atlasTileset from '../data/atlas.json';
 import iconsTileset from '../data/icons.json';
 import iconsXlTileset from '../data/icons-xl.json';
@@ -15,6 +16,7 @@ import waterTileset from '../data/water.json';
 import itemsTileset from '../data/items.json';
 import walkTileset from '../data/walk.json';
 import newTileset from '../data/new.json';
+import playerTileset from '../data/player.json';
 import GameView from './views/GameView';
 import TitleView from './views/TitleView';
 import { MODE } from './utils/constants';
@@ -44,6 +46,7 @@ export default class RainGame {
       this.loader.setImage('walk', walkImage, walkTileset),
       // DEBUG
       this.loader.setImage('new', newImage, newTileset),
+      this.loader.setImage('player', playerImage, playerTileset),
     ])
       .then(() => {
         this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);

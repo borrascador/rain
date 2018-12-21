@@ -21,17 +21,12 @@ export default class TopLayer {
     const treeHeight = 48 * zoom;
 
     if (!this.trees) {
-      // const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
-      const x = (this.canvas.width - treeWidth) / 2;
-      const y = (this.canvas.height - treeHeight) / 2;
-      this.trees = [{ x, y }];
-      // this.trees = new Array(TREE_COUNT)
-      //   .fill({})
-      //   .map(_ => ({
-      //     x: getRandomInt(this.canvas.width + treeWidth * 2) - treeWidth,
-      //     y: getRandomInt(this.canvas.height + treeHeight) - treeHeight
-      //   }))
-      //   .sort((a, b) => a.y > b.y);
+      const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
+      this.trees = Array.from({ length: 25 }, () => ({
+        x: getRandomInt(this.canvas.width + treeWidth * 2) - treeWidth,
+        y: getRandomInt(this.canvas.height + treeHeight) - treeHeight
+      }))
+      .sort((a, b) => a.y > b.y);
     }
 
     if (this.trees) {
