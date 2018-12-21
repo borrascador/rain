@@ -22,11 +22,12 @@ export default class TopLayer {
 
     if (!this.trees) {
       const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
-      this.trees = Array.from({ length: 25 }, () => ({
-        x: getRandomInt(this.canvas.width + treeWidth * 2) - treeWidth,
-        y: getRandomInt(this.canvas.height + treeHeight) - treeHeight
-      }))
-      .sort((a, b) => a.y > b.y);
+      this.trees = Array
+        .from({ length: 25 }, () => ({
+          x: getRandomInt(this.canvas.width + treeWidth * 2) - treeWidth,
+          y: getRandomInt(this.canvas.height + treeHeight) - treeHeight
+        }))
+        .sort((a, b) => a.y > b.y);
     }
 
     if (this.trees) {

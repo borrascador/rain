@@ -3530,8 +3530,8 @@ var _data_items_json__WEBPACK_IMPORTED_MODULE_15___namespace = /*#__PURE__*/__we
 var _data_walk_json__WEBPACK_IMPORTED_MODULE_16___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../data/walk.json */ "./data/walk.json", 1);
 /* harmony import */ var _data_new_json__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../data/new.json */ "./data/new.json");
 var _data_new_json__WEBPACK_IMPORTED_MODULE_17___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../data/new.json */ "./data/new.json", 1);
-/* harmony import */ var _data_player_json__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../data/player.json */ "./data/player.json");
-var _data_player_json__WEBPACK_IMPORTED_MODULE_23___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../data/player.json */ "./data/player.json", 1);
+/* harmony import */ var _data_player_json__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../data/player.json */ "./data/player.json");
+var _data_player_json__WEBPACK_IMPORTED_MODULE_18___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../data/player.json */ "./data/player.json", 1);
 /* harmony import */ var _views_GameView__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./views/GameView */ "./scripts/views/GameView.js");
 /* harmony import */ var _views_TitleView__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./views/TitleView */ "./scripts/views/TitleView.js");
 /* harmony import */ var _utils_constants__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./utils/constants */ "./scripts/utils/constants.js");
@@ -3589,7 +3589,7 @@ function () {
       Object(_utils_addInputListeners__WEBPACK_IMPORTED_MODULE_0__["default"])(this.store.dispatch, this.canvas);
       this.loader = new _utils_Loader__WEBPACK_IMPORTED_MODULE_2__["default"]();
       Promise.all([this.loader.setImage('atlas', _images_atlas_png__WEBPACK_IMPORTED_MODULE_3___default.a, _data_atlas_json__WEBPACK_IMPORTED_MODULE_11__), this.loader.setImage('icons', _images_icons_png__WEBPACK_IMPORTED_MODULE_4___default.a, _data_icons_json__WEBPACK_IMPORTED_MODULE_12__), this.loader.setImage('icons-xl', _images_icons_xl_png__WEBPACK_IMPORTED_MODULE_5___default.a, _data_icons_xl_json__WEBPACK_IMPORTED_MODULE_13__), this.loader.setImage('water', _images_water_png__WEBPACK_IMPORTED_MODULE_6___default.a, _data_water_json__WEBPACK_IMPORTED_MODULE_14__), this.loader.setImage('items', _images_items_png__WEBPACK_IMPORTED_MODULE_7___default.a, _data_items_json__WEBPACK_IMPORTED_MODULE_15__), this.loader.setImage('walk', _images_walk_png__WEBPACK_IMPORTED_MODULE_8___default.a, _data_walk_json__WEBPACK_IMPORTED_MODULE_16__), // DEBUG
-      this.loader.setImage('new', _images_new_png__WEBPACK_IMPORTED_MODULE_9___default.a, _data_new_json__WEBPACK_IMPORTED_MODULE_17__), this.loader.setImage('player', _images_player_png__WEBPACK_IMPORTED_MODULE_10___default.a, _data_player_json__WEBPACK_IMPORTED_MODULE_23__)]).then(function () {
+      this.loader.setImage('new', _images_new_png__WEBPACK_IMPORTED_MODULE_9___default.a, _data_new_json__WEBPACK_IMPORTED_MODULE_17__), this.loader.setImage('player', _images_player_png__WEBPACK_IMPORTED_MODULE_10___default.a, _data_player_json__WEBPACK_IMPORTED_MODULE_18__)]).then(function () {
         _this.gameView = new _views_GameView__WEBPACK_IMPORTED_MODULE_19__["default"](_this.store, _this.canvas, _this.ctx, _this.loader);
         _this.titleView = new _views_TitleView__WEBPACK_IMPORTED_MODULE_20__["default"](_this.store, _this.canvas, _this.ctx, _this.loader);
       }).then(function () {
