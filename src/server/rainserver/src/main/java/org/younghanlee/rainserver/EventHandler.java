@@ -75,9 +75,13 @@ public class EventHandler {
 				connection.sendJSON(response);
 				break;
 			case "decision":
-				id = event.getInt("id");
-				response = p.getDecision().choose(p, id);
-				connection.sendJSON(response);
+				if (p.getDecision() != null) {
+					id = event.getInt("id");
+					response = p.getDecision().choose(p, id);
+					connection.sendJSON(response);
+				} else {
+					connection.sendJSON(Message.ERROR(305, "Player does not have decision"));
+				}
 				break;
 			case "pick_up":
 				id = event.getInt("id");
@@ -99,7 +103,7 @@ public class EventHandler {
 				connection.sendJSON(response);
 				break;
 			default:
-				System.out.println("Error: unrecognized event type");
+				connection.sendJSON(Message.ERROR(304, "Unrecognized event type"));
 				break;
 		}
 	}
