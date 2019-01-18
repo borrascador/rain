@@ -51,12 +51,6 @@ public class MessageHandler {
 					break;
 				}
 				
-				// Check if there is already a login on this connection
-				if (connection.getPlayer() != null) {
-					response = Message.ERROR(118, null);
-					connection.sendJSON(response);
-					break;
-				} 
 				
 				// Check if password is correct 
 				String hash = Password.multiHash(payload.getString("password"), p.getSalt());
@@ -77,7 +71,14 @@ public class MessageHandler {
 				}
 
 				
-				p.login(connection);
+				boolean result = p.login(connection);
+				
+				// Check if there is already a login on this connection
+				if (!result) {
+					response = Message.ERROR(118, null);
+					connection.sendJSON(response);
+					break;
+				} 
 					
 				// Send ordinary response
 				tiles = p.tilesSeenArray();

@@ -215,7 +215,7 @@ public class World {
 		}
 	}
 	
-	public static JSONObject addPlayer(String user, String email, String password) {
+	public static synchronized JSONObject addPlayer(String user, String email, String password) {
 		
 		// Check if username is taken
 		if (players.containsKey(user)) {
