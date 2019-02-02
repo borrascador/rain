@@ -1,61 +1,72 @@
 import Connect from '../Connect';
-import MiddleLayer from './MiddleLayer';
+import Animation from '../utils/Animation';
+import { checkImageCollision } from './utils';
+import { clickedLeft, refreshTiles } from '../actions/actions';
 
-const TREE_COUNT = 200;
-let firstLog = true;
-
-export default class TopLayer {
+export default class BottomLayer {
   constructor(store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.new = loader.getImage('new');
+    this.player = loader.getImage('player');
     this.connect = new Connect(this.store);
-    this.middle = new MiddleLayer(this.store, this.canvas, this.ctx, loader);
+
+    this.animateBlink = new Animation(1, 1, 0.4);
   }
 
-  render(delta) {
-    const { zoom } = this.connect.map;
-    const tileSize = 32 * zoom;
-    const treeWidth = 32 * zoom;
-    const treeHeight = 48 * zoom;
+  update(step) {
+    // loop through tiles for hover events
+    const { mousePos, graphTiles } = this.connect;
+    const { x, y } = this.connect.clickLeft;
 
-    if (!this.trees) {
-      const getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
-      this.trees = Array
-        .from({ length: 25 }, () => ({
-          x: getRandomInt(this.canvas.width + treeWidth * 2) - treeWidth,
-          y: getRandomInt(this.canvas.height + treeHeight) - treeHeight
-        }))
-        .sort((a, b) => a.y > b.y);
-    }
+    let refresh = false;
 
-    if (this.trees) {
-      const walkSize = 64;
-      const middleBoundary = (this.canvas.height - walkSize) / 2 + walkSize;
-      let renderedMiddle = false;
-      this.ctx.globalAlpha = 1;
-      for (let count = 0; count < this.trees.length; count += 1) {
-        // TODO FIX EVERYTHING THIS SUCKS
-        const { x, y } = this.trees[count];
-        if (y - treeHeight > middleBoundary && !renderedMiddle) {
-          const xSrc = 32 + 32 * (count % 4);
-          const ySrc = 0;
-          this.ctx.drawImage(this.new, xSrc, ySrc, 32, 48, x, y, tileSize, tileSize);
-
-          this.middle.render(delta);
-          renderedMiddle = true;
-          firstLog && console.log('guy', middleBoundary);
-        } else {
-          const xSrc = 32 + 32 * (count % 4);
-          const ySrc = 0;
-          this.ctx.drawImage(this.new, xSrc, ySrc, 32, 48, x, y, tileSize, tileSize);
-        }
-        firstLog && console.log(x, y, 'tree');
+    const temp = graphTiles.map((tile) => {
+      if (x && y && checkImageCollision(x, y, tile)) {
+        console.log(tile); // DEBUG
+        this.store.dispatch(clickedLeft());
       }
-      this.ctx.globalAlpha = 1;
+      // BUG: If mouse is right between two tiles both are highlighted!
+      if (mousePos.x && mousePos.y && checkImageCollision(mousePos.x, mousePos.y, tile)) {
+        if (tile.hover !== true) refresh = true;
+        return Object.assign({}, tile, { hover: true });
+      }
+      if (tile.hover !== false) refresh = true;
+      return Object.assign({}, tile, { hover: false });
+    });
+
+    if (refresh) {
+      this.animateBlink.reset();
+      this.store.dispatch(refreshTiles(temp));
     }
 
-    if (firstLog) firstLog = false;
+    this.animateBlink.tick(step);
+
+    // loop through players for hover events
+    // loop through npcs for hover events
+  }
+
+  render() {
+    // render hover effect over active tile
+    const { graphTiles } = this.connect;
+
+    graphTiles.forEach((tile) => {
+      if (tile.hover) {
+        const {
+          xPos, yPos, width, height
+        } = tile;
+        this.ctx.fillStyle = 'rgba(128, 128, 128, 0.2)';
+        this.ctx.fillRect(xPos, yPos, width, height);
+        this.ctx.lineWidth = 4;
+        this.ctx.strokeStyle = 'rgba(256, 256, 256, 0.8)';
+        this.ctx.strokeRect(xPos, yPos, width, height);
+      }
+      if (tile.hover && tile.player && this.animateBlink.getValue() === 1) {
+        const {
+          srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+        } = tile.player;
+        this.ctx.drawImage(this.player, srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height);
+      }
+    });
   }
 }

@@ -10,8 +10,9 @@ const uiState = {
   mode: MODE.TITLE,
   partyTab: 0,
   actions: { main: [] },
-  zoom: 7,
-  slots: []
+  zoom: 10,
+  slots: [],
+  graphTiles: []
 };
 
 const gameState = {

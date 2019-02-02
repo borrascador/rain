@@ -41,3 +41,7 @@ export const getItemById = (array, id) => array.find(x => x.id === id);
 export const findTile = (tiles, x, y) => (
   tiles.find(tile => x === tile.x && y === tile.y)
 );
+
+export const getRandomInt = max => (
+  Math.floor(Math.random() * Math.floor(max))
+);

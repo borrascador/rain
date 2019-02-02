@@ -1,128 +1,71 @@
 import Connect from '../Connect';
-import Animation from '../utils/Animation';
-import { drawById } from '../utils/draw';
-import { clickedLeft } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
-import { screenToImageButton } from './utils';
-import { EVENTS } from '../actions/types';
+import { getRandomInt } from './utils';
+import { refreshTiles } from '../actions/actions';
 
 export default class MiddleLayer {
   constructor(store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.walk = loader.getImage('walk');
-
+    this.new = loader.getImage('new');
+    this.player = loader.getImage('player');
     this.connect = new Connect(this.store);
-
-    this.animateStop = new Animation(1, 1, 0.75);
-    this.animateWalk = new Animation(5, 1, 0.25);
-    this.animateRun = new Animation(5, 1, 0.1);
-
-    this.scale = 2;
-    this.gutter = 4;
-    this.iconSize = this.icons.tileset.tilewidth * this.scale;
-    this.walkSize = this.walk.tileset.tilewidth * this.scale;
-
-    this.buttons = [];
   }
 
-  update() {
-    const { x, y } = this.connect.clickLeft;
-    const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button) {
-      this.store.dispatch(clickedLeft());
-      this.store.dispatch(sendEvent(EVENTS.PACE, { id: button.id }));
-    }
-  }
+  init() {
+    // create trees
+    const { graphTiles, zoom } = this.connect;
 
-  getXPos(relativeIndex) {
-    let xPos = this.canvas.width / 2;
-    if (relativeIndex > 0) {
-      xPos += -this.iconSize / 2 + relativeIndex * (this.iconSize + this.gutter);
-    } else {
-      xPos += this.iconSize / 2 + relativeIndex * this.gutter + (relativeIndex - 1) * this.iconSize;
-    }
-    return xPos;
-  }
-
-  renderIcons() {
-    const { pace } = this.connect;
-    const yPos = (this.canvas.height - this.walkSize + this.iconSize) / 2;
-    // const yPos = (this.walkSize - this.iconSize) / 2;
-    const [width, height] = Array(2).fill(this.iconSize);
-
-    switch (pace) {
-      case 0:
-        this.buttons = [
-          {
-            id: 1, xPos: this.getXPos(1), yPos, width, height
-          },
-          {
-            id: 2, xPos: this.getXPos(2), yPos, width, height
+    const seededTiles = graphTiles.map((tile) => {
+      const seed = getRandomInt(48);
+      if (seed === 1) {
+        const [srcX, srcY] = [0, 0];
+        const [srcWidth, srcHeight] = [16, 16];
+        const { xPos, yPos } = tile;
+        const width = srcWidth * zoom / 2;
+        const height = srcHeight * zoom / 2;
+        return Object.assign({}, tile, {
+          player: {
+            srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
           }
-        ];
-        break;
-
-      case 1:
-        this.buttons = [
-          {
-            id: 0, xPos: this.getXPos(-1), yPos, width, height
-          },
-          {
-            id: 2, xPos: this.getXPos(1), yPos, width, height
+        });
+      }
+      if (seed > 24) {
+        const tall = getRandomInt(2) ? 1 : 0;
+        const [srcX, srcY] = [getRandomInt(6) * 24, tall ? 32 : 32 + 48];
+        const [srcWidth, srcHeight] = [24, tall ? 48 : 16];
+        const width = 24 * zoom;
+        const height = tall ? 48 * zoom : 16 * zoom;
+        const xPos = tile.xPos - (width / 3);
+        const yPos = tile.yPos - height + 8 * zoom;
+        return Object.assign({}, tile, {
+          tree: {
+            srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
           }
-        ];
-        break;
+        });
+      }
+      return tile;
+    });
 
-      case 2:
-        this.buttons = [
-          {
-            id: 0, xPos: this.getXPos(-2), yPos, width, height
-          },
-          {
-            id: 1, xPos: this.getXPos(-1), yPos, width, height
-          }
-        ];
-        break;
-
-      default:
-        break;
-    }
-
-    this.buttons.forEach(button => drawById(
-      this.ctx, this.icons, 20 + button.id, this.scale, button.xPos, yPos
-    ));
+    this.store.dispatch(refreshTiles(seededTiles));
   }
 
-  renderWalk(delta) {
-    let offset;
+  render() {
+    const { graphTiles } = this.connect;
 
-    switch (this.connect.pace) {
-      case 0:
-        this.animateStop.tick(delta);
-        offset = this.animateStop.getValue() + 6;
-        break;
-      case 1:
-        this.animateWalk.tick(delta);
-        offset = this.animateWalk.getValue();
-        break;
-      case 2:
-        this.animateRun.tick(delta);
-        offset = this.animateRun.getValue();
-        break;
-      default:
-        break;
-    }
-
-    const x = (this.canvas.width - this.walkSize) / 2;
-    const y = (this.canvas.height - this.walkSize) / 2;
-    drawById(this.ctx, this.walk, offset, this.scale, x, y);
-  }
-
-  render(delta) {
-    this.renderIcons();
-    this.renderWalk(delta);
+    graphTiles.forEach(({ tree, player }) => {
+      if (tree) {
+        const {
+          srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+        } = tree;
+        this.ctx.drawImage(this.new, srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height);
+      }
+      if (player) {
+        const {
+          srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+        } = player;
+        this.ctx.drawImage(this.player, srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height);
+      }
+    });
   }
 }

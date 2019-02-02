@@ -5,7 +5,8 @@ import {
   mouseDownLeft, mouseDownRight, mouseMove, mouseUpLeft, mouseUpRight,
   clickedLeft, clickedRight, zoomIn, zoomOut,
   setPartyTab, refreshSlots, changeMode, closeStory, removePartyMember,
-  dragItem
+  dragItem,
+  refreshTiles
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
@@ -17,7 +18,7 @@ const {
   KEY_DOWN, KEY_UP,
   MOUSE_DOWN_LEFT, MOUSE_DOWN_RIGHT, MOUSE_MOVE, MOUSE_UP_LEFT, MOUSE_UP_RIGHT,
   CLICKED_LEFT, CLICKED_RIGHT, ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, REFRESH_SLOTS,
-  CHANGE_MODE, CLOSE_STORY, REMOVE_PARTY_MEMBER, DRAG_ITEM, ERROR,
+  REFRESH_TILES, CHANGE_MODE, CLOSE_STORY, REMOVE_PARTY_MEMBER, DRAG_ITEM, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE
 } = ACTIONS;
@@ -53,6 +54,8 @@ export default function reducer(state, action) {
       return setPartyTab(state, action);
     case REFRESH_SLOTS:
       return refreshSlots(state, action);
+    case REFRESH_TILES:
+      return refreshTiles(state, action);
     case CHANGE_MODE:
       return changeMode(state, action);
     case CLOSE_STORY:

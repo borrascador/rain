@@ -63,6 +63,11 @@ export const refreshSlots = slots => ({
   payload: { slots }
 });
 
+export const refreshTiles = graphTiles => ({
+  type: ACTIONS.REFRESH_TILES,
+  payload: { graphTiles }
+});
+
 export const changeMode = mode => ({
   type: ACTIONS.CHANGE_MODE,
   payload: { mode }

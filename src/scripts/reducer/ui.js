@@ -1,5 +1,5 @@
 import { SLOTS } from '../utils/constants';
-import { updateObject, mergeSlots } from './utils';
+import { updateObject, mergeSlots, mergeTiles } from './utils';
 import hasProp from '../utils/hasProp';
 
 export function makeKeys() {
@@ -164,6 +164,13 @@ export function dragItem(state, action) {
 export function refreshSlots(state, action) {
   return updateObject(state, {
     slots: mergeSlots(state.slots, action.payload.slots)
+  });
+}
+
+export function refreshTiles(state, action) {
+  return updateObject(state, {
+    // graphTiles: mergeTiles(state.graphTiles, action.payload.graphTiles)
+    graphTiles: action.payload.graphTiles
   });
 }
 

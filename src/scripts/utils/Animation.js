@@ -18,4 +18,10 @@ export default class Animation {
   getValue() {
     return this.value;
   }
+
+  reset() {
+    // Call this on hover start and/or hover end
+    this.time = 0;
+    this.value = 0;
+  }
 }

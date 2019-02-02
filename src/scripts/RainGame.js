@@ -66,6 +66,8 @@ export default class RainGame {
     this.now = Date.now();
     this.delta = this.delta + Math.min(1, (this.now - this.last) / 1000);
     while (this.delta > this.step) {
+      // Step is constant (tied to framerate)
+      // Delta is variable (tied to actual game speed)
       this.delta = this.delta - this.step;
       this.update(this.step);
     }
@@ -121,14 +123,14 @@ export default class RainGame {
     console.log(this);
   }
 
-  update() { // TODO Add `step` argument
+  update(step) { // TODO Add `step` argument
     // TODO Implement these functions and get rid of the rest of this stuff
     // See https://gamedev.stackexchange.com/questions/40742/javascript-game-loop-and-game-update-design
-    this.acceptPlayerInput();
-    this.acceptAiInput();
-    this.makeMovements();
-    this.checkCollisions();
-    this.flushEntities();
+    // this.acceptPlayerInput();
+    // this.acceptAiInput();
+    // this.makeMovements();
+    // this.checkCollisions();
+    // this.flushEntities();
 
     // Force canvas to be the same size as the window
     if (this.canvas.width !== window.innerWidth || this.canvas.height !== window.innerHeight) {
@@ -147,16 +149,15 @@ export default class RainGame {
       this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
     }
 
-    // Clear canvas for next render
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     // Run update and render loops for either TitleView or GameView
     switch (this.connect.mode) {
       case MODE.TITLE:
         this.titleView.update();
         break;
       default:
-        this.gameView.update();
+        // So far step is only used in TopLayer.js animations
+        // TODO: Transition all other animations to use step
+        this.gameView.update(step);
         break;
     }
 

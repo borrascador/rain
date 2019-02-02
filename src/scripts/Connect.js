@@ -88,6 +88,10 @@ export default class Connect {
     };
   }
 
+  get zoom() {
+    return this.store.getState().zoom;
+  }
+
   get currentTile() {
     const { position, tiles } = this.store.getState();
     return tiles.find(tile => tile.id === position);
@@ -103,6 +107,10 @@ export default class Connect {
 
   get slots() {
     return this.store.getState().slots;
+  }
+
+  get graphTiles() {
+    return this.store.getState().graphTiles;
   }
 
   get draggedItem() {

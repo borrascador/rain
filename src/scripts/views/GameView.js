@@ -2,6 +2,7 @@ import { MODE } from '../utils/constants';
 import Connect from '../Connect';
 // import Camera from '../components/Camera';
 import BottomLayer from '../components/BottomLayer';
+import MiddleLayer from '../components/MiddleLayer';
 import TopLayer from '../components/TopLayer';
 // import Overlay from '../components/Overlay';
 import Story from '../components/Story';
@@ -19,6 +20,7 @@ export default class GameView {
     this.connect = new Connect(this.store);
 
     this.bottom = new BottomLayer(this.store, this.canvas, this.ctx, this.loader);
+    this.middle = new MiddleLayer(this.store, this.canvas, this.ctx, loader);
     this.top = new TopLayer(this.store, this.canvas, this.ctx, this.loader);
 
     // this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
@@ -31,7 +33,7 @@ export default class GameView {
     this.dim = dim;
   }
 
-  update() {
+  update(step) {
     if (!this.dim) {
       if (this.connect.stories.length > 0) {
         this.story.update();
@@ -40,6 +42,12 @@ export default class GameView {
       } else {
         // this.overlay.update();
         // if (this.connect.currentTile) this.camera.update();
+        const { graphTiles } = this.connect;
+        if (graphTiles.length === 0) {
+          this.bottom.init();
+          this.middle.init();
+        }
+        this.top.update(step);
       }
     }
   }
@@ -49,7 +57,8 @@ export default class GameView {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     if (this.connect.currentTile) this.bottom.render();
-    if (this.connect.currentTile) this.top.render(delta);
+    if (this.connect.currentTile) this.middle.render();
+    if (this.connect.currentTile) this.top.render();
     // if (this.connect.currentTile) this.camera.render(delta);
     // this.overlay.render(delta);
     this.story.render(delta);
