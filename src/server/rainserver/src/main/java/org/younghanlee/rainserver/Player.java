@@ -103,15 +103,19 @@ public class Player {
 		return passwordSalt;
 	}
 	
-	public void login(Connection connection) {
-		this.online = true;
-		World.onlineInc();
-		connection.setPlayer(this);
-		if (position != null) { // Check if player has chosen tribe yet
-			Tile t = World.getTile(position);
-			t.addVisitor(this);
-			t.updateNeighbors(this, 1); // Reveal player to everyone in range
+	public synchronized boolean login(Connection connection) {
+		if (!this.online) {
+			this.online = true;
+			World.onlineInc();
+			connection.setPlayer(this);
+			if (position != null) { // Check if player has chosen tribe yet
+				Tile t = World.getTile(position);
+				t.addVisitor(this);
+				t.updateNeighbors(this, 1); // Reveal player to everyone in range
+			}
+			return true;
 		}
+		else return false;
 	}
 	
 	public JSONObject logoff(Connection connection) {
