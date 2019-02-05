@@ -1,14 +1,14 @@
-import Connect from '../Connect';
-import { drawById, drawHover, drawDurability } from '../utils/draw';
-import { screenToImageButton } from './utils';
+import Connect from '../../Connect';
+import { drawById, drawHover, drawDurability } from '../../utils/draw';
+import { screenToImageButton } from '../utils';
 import {
   clickedLeft, clickedRight, dragItem, error
-} from '../actions/actions';
-import { sendEvent } from '../actions/requests';
-import { EVENTS } from '../actions/types';
-import { SLOTS } from '../utils/constants';
-import { BRIGHT_RED, SOLID_WHITE, BRIGHT_OPAQUE } from '../utils/colors';
-import hasProp from '../utils/hasProp';
+} from '../../actions/actions';
+import { sendEvent } from '../../actions/requests';
+import { EVENTS } from '../../actions/types';
+import { SLOTS } from '../../utils/constants';
+import { BRIGHT_RED, SOLID_WHITE, BRIGHT_OPAQUE } from '../../utils/colors';
+import hasProp from '../../utils/hasProp';
 
 export default class Items {
   constructor(store, canvas, ctx, loader) {

@@ -1,13 +1,13 @@
-import Connect from '../Connect';
-import { clickedLeft } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
-import { EVENTS } from '../actions/types';
-import { checkImageCollision, screenToImageButton } from './utils';
-import { drawByName } from '../utils/draw';
-import { SLOTS } from '../utils/constants';
+import Connect from '../../Connect';
+import { clickedLeft } from '../../actions/actions';
+import { sendEvent } from '../../actions/requests';
+import { EVENTS } from '../../actions/types';
+import { checkImageCollision, screenToImageButton } from '../utils';
+import { drawByName } from '../../utils/draw';
+import { SLOTS } from '../../utils/constants';
 import {
   MEDIUM_RED, DARK_RED, alphaGreen, alphaYellow, alphaDarkRed
-} from '../utils/colors';
+} from '../../utils/colors';
 
 export default class Food {
   constructor(store, canvas, ctx, loader) {

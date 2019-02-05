@@ -1,8 +1,8 @@
-import Connect from '../Connect';
-import { clickedLeft } from '../actions/actions';
-import { checkImageCollision } from './utils';
-import { SLOTS } from '../utils/constants';
-import { DARK_RED, MEDIUM_RED } from '../utils/colors';
+import Connect from '../../Connect';
+import { clickedLeft } from '../../actions/actions';
+import { checkImageCollision } from '../utils';
+import { SLOTS } from '../../utils/constants';
+import { DARK_RED, MEDIUM_RED } from '../../utils/colors';
 
 export default class Inventory {
   constructor(store, canvas, ctx, loader) {

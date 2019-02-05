@@ -6,7 +6,7 @@ import ActionBar from './ActionBar';
 import Habitat from './Habitat';
 import Zoom from './Zoom';
 import Items from './Items';
-import { refreshSlots } from '../actions/actions';
+import { refreshSlots } from '../../actions/actions';
 
 export default class Overlay {
   constructor(store, canvas, ctx, loader) {

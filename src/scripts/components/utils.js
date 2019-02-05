@@ -1,7 +1,7 @@
 export const checkImageCollision = (x, y, button) => {
   if (
-    x >= button.xPos && x <= (button.xPos + button.width)
-    && y >= button.yPos && y <= (button.yPos + button.height)
+    x >= button.xPos && x < (button.xPos + button.width)
+    && y >= button.yPos && y < (button.yPos + button.height)
   ) {
     return true;
   }
@@ -10,8 +10,8 @@ export const checkImageCollision = (x, y, button) => {
 
 export const checkTextCollision = (x, y, button) => {
   if (
-    x >= button.xPos && x <= (button.xPos + button.width)
-    && y <= button.yPos && y >= (button.yPos - button.height)
+    x >= button.xPos && x < (button.xPos + button.width)
+    && y <= button.yPos && y > (button.yPos - button.height)
   ) {
     return true;
   }

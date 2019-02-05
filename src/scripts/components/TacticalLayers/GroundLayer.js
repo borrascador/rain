@@ -1,8 +1,8 @@
-import Connect from '../Connect';
-import { getRandomInt } from './utils';
-import { refreshTiles } from '../actions/actions';
+import Connect from '../../Connect';
+import { getRandomInt } from '../utils';
+import { refreshTiles } from '../../actions/actions';
 
-export default class BottomLayer {
+export default class GroundLayer {
   constructor(store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
@@ -14,10 +14,10 @@ export default class BottomLayer {
   init() {
     // create tiles
     const { zoom } = this.connect;
-    const width = 8 * zoom;
-    const height = 8 * zoom;
+    const { tilewidth: srcWidth, tileheight: srcHeight } = this.new.tileset;
+    const [width, height] = [srcWidth * zoom, srcHeight * zoom];
 
-    const origin = { x: width, y: height };
+    const origin = { x: width, y: height }; // COMBAK: This is temporary!!
     const startRow = Math.floor(origin.y / height);
     const endRow = startRow + Math.ceil((this.canvas.height / height));
     const startCol = Math.floor(origin.x / width);
@@ -27,12 +27,20 @@ export default class BottomLayer {
 
     for (let row = startRow; row <= endRow; row += 1) {
       for (let col = startCol; col <= endCol; col += 1) {
-        const [srcX, srcY] = [getRandomInt(2) * 8, getRandomInt(2) * 8];
-        const [srcWidth, srcHeight] = [8, 8];
+        const srcX = getRandomInt(2) * srcWidth;
+        const srcY = getRandomInt(2) * srcHeight;
         const xPos = col * width - origin.x;
         const yPos = row * height - origin.y;
         graphTiles.push({
-          srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+          x: col,
+          y: row,
+          xPos,
+          yPos,
+          width,
+          height,
+          ground: {
+            srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+          }
         });
       }
     }
@@ -48,10 +56,10 @@ export default class BottomLayer {
     // render tiles
     const { graphTiles } = this.connect;
 
-    graphTiles.forEach((tile) => {
+    graphTiles.forEach(({ ground }) => {
       const {
         srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
-      } = tile;
+      } = ground;
       this.ctx.drawImage(this.new, srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height);
     });
   }

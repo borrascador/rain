@@ -1,10 +1,10 @@
-import Connect from '../Connect';
-import Animation from '../utils/Animation';
-import { drawById } from '../utils/draw';
-import { clickedLeft } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
-import { screenToImageButton } from './utils';
-import { EVENTS } from '../actions/types';
+import Connect from '../../Connect';
+import Animation from '../../utils/Animation';
+import { drawById } from '../../utils/draw';
+import { clickedLeft } from '../../actions/actions';
+import { sendEvent } from '../../actions/requests';
+import { screenToImageButton } from '../utils';
+import { EVENTS } from '../../actions/types';
 
 export default class Pace {
   constructor(store, canvas, ctx, loader) {

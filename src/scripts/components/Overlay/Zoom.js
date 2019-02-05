@@ -1,8 +1,8 @@
-import Connect from '../Connect';
-import { clickedLeft, zoomIn, zoomOut } from '../actions/actions';
-import { logout } from '../actions/requests';
-import { screenToImageButton } from './utils';
-import { drawByName } from '../utils/draw';
+import Connect from '../../Connect';
+import { clickedLeft, zoomIn, zoomOut } from '../../actions/actions';
+import { logout } from '../../actions/requests';
+import { screenToImageButton } from '../utils';
+import { drawByName } from '../../utils/draw';
 
 export default class Zoom {
   constructor(store, canvas, ctx, loader) {

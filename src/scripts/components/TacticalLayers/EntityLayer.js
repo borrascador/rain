@@ -1,8 +1,8 @@
-import Connect from '../Connect';
-import { getRandomInt } from './utils';
-import { refreshTiles } from '../actions/actions';
+import Connect from '../../Connect';
+import { getRandomInt } from '../utils';
+import { refreshTiles } from '../../actions/actions';
 
-export default class MiddleLayer {
+export default class EntityLayer {
   constructor(store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;

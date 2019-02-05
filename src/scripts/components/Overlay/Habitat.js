@@ -1,5 +1,5 @@
-import Connect from '../Connect';
-import { SOLID_WHITE } from '../utils/colors';
+import Connect from '../../Connect';
+import { SOLID_WHITE } from '../../utils/colors';
 
 export default class Habitat {
   constructor(store, canvas, ctx) {

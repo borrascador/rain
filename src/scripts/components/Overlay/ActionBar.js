@@ -1,12 +1,12 @@
-import Connect from '../Connect';
-import { drawById, drawHover } from '../utils/draw';
-import { checkImageCollision, screenToImageButton } from './utils';
-import { clickedLeft } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
-import { EVENTS } from '../actions/types';
+import Connect from '../../Connect';
+import { drawById, drawHover } from '../../utils/draw';
+import { checkImageCollision, screenToImageButton } from '../utils';
+import { clickedLeft } from '../../actions/actions';
+import { sendEvent } from '../../actions/requests';
+import { EVENTS } from '../../actions/types';
 import {
   BRIGHT_GREEN, BRIGHT_RED, MEDIUM_RED, SOLID_WHITE
-} from '../utils/colors';
+} from '../../utils/colors';
 
 export default class ActionBar {
   constructor(store, canvas, ctx, loader) {
