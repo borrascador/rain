@@ -83,6 +83,10 @@ function makeSlotKey(type, position) {
   return `${type},${position}`;
 }
 
+function makeTileKey(x, y) {
+  return `x${x}y${y}`;
+}
+
 function getSlotProps({
   type, position, xPos, yPos, width, height
 }) {
@@ -135,6 +139,27 @@ export function mergeSlots(oldArray, newArray) {
     }
     return item;
   });
+}
+
+export function mergeTiles(oldArray, newArray) {
+  if (!newArray) return oldArray;
+  let obj = {};
+  oldArray.forEach((oldItem) => {
+    const key = makeTileKey(oldItem.x, oldItem.y);
+    obj[key] = oldItem;
+  });
+  const newObj = {};
+  newArray.forEach((newItem) => {
+    const key = makeTileKey(newItem.x, newItem.y);
+    if (obj[key]) {
+      obj[key] = Object.assign(obj[key], newItem);
+    } else {
+      obj[key] = newItem;
+    }
+  });
+  obj = Object.assign(obj, newObj);
+  // convert object of items into array of items
+  return Object.values(obj);
 }
 
 export function updateStory(state, action) {

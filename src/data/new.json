@@ -1,0 +1,14 @@
+{ "columns":6,
+ "image":"..\/images\/walk.png",
+ "imageheight":64,
+ "imagewidth":192,
+ "margin":0,
+ "name":"water",
+ "spacing":0,
+ "tilecount":12,
+ "tileheight":8,
+ "tileproperties": {},
+ "tilepropertytypes": {},
+ "tilewidth":8 ,
+ "type":"tileset"
+}

@@ -21,8 +21,16 @@ export default class Connect {
     return this.store.getState().partyTab;
   }
 
+  get view() {
+    return this.store.getState().view;
+  }
+
   get mode() {
     return this.store.getState().mode;
+  }
+
+  get modal() {
+    return this.store.getState().modal;
   }
 
   get inventoryChanges() {
@@ -88,6 +96,10 @@ export default class Connect {
     };
   }
 
+  get zoom() {
+    return this.store.getState().zoom;
+  }
+
   get currentTile() {
     const { position, tiles } = this.store.getState();
     return tiles.find(tile => tile.id === position);
@@ -103,6 +115,10 @@ export default class Connect {
 
   get slots() {
     return this.store.getState().slots;
+  }
+
+  get graphTiles() {
+    return this.store.getState().graphTiles;
   }
 
   get draggedItem() {

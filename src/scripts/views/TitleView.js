@@ -43,7 +43,7 @@ export default class TitleView {
     this.dim = dim;
   }
 
-  update() {
+  update(step) {
     const { x, y } = this.connect.clickLeft;
     if (x && y) {
       const button = !this.dim && screenToTextButton(x, y, this.buttons);
@@ -52,6 +52,9 @@ export default class TitleView {
         button.onClick(this.store, this.setDim);
       }
     }
+
+    this.animateBottom.tick(step);
+    this.animateTop.tick(step);
   }
 
   renderBackground() {
@@ -87,9 +90,7 @@ export default class TitleView {
     this.buttons = this.centerText(this.buttons, 32, 3 / 4);
   }
 
-  render(delta) {
-    this.animateBottom.tick(delta);
-    this.animateTop.tick(delta);
+  render() {
     this.renderBackground();
     this.renderText();
     if (this.dim) {

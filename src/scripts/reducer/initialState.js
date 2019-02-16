@@ -1,4 +1,4 @@
-import { MODE } from '../utils/constants';
+import { VIEW } from '../utils/constants';
 import { makeKeys } from './ui';
 
 // import party from '../../data/party.json';
@@ -7,11 +7,14 @@ import { makeKeys } from './ui';
 // import story from '../../data/story.json';
 
 const uiState = {
-  mode: MODE.TITLE,
+  view: VIEW.TITLE,
+  mode: null,
+  modal: null,
   partyTab: 0,
   actions: { main: [] },
-  zoom: 7,
-  slots: []
+  zoom: 10,
+  slots: [],
+  graphTiles: []
 };
 
 const gameState = {

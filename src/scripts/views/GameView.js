@@ -1,6 +1,7 @@
-import { MODE } from '../utils/constants';
+import { MODE, MODAL } from '../utils/constants';
 import Connect from '../Connect';
 import Camera from '../components/Camera';
+import TacticalLayers from '../components/TacticalLayers';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import PartyWindow from '../components/PartyWindow';
@@ -16,6 +17,8 @@ export default class GameView {
     this.setDim = this.setDim.bind(this);
     this.connect = new Connect(this.store);
 
+    this.tacticalLayers = new TacticalLayers(this.store, this.canvas, this.ctx, this.loader);
+
     this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
@@ -26,15 +29,21 @@ export default class GameView {
     this.dim = dim;
   }
 
-  update() {
-    if (!this.dim) {
-      if (this.connect.stories.length > 0) {
-        this.story.update();
-      } else if (this.connect.mode === MODE.PARTY) {
-        this.partyWindow.update();
+  update(step) {
+    if (this.dim) return;
+
+    const { stories, modal, mode } = this.connect;
+
+    if (stories.length > 0) {
+      this.story.update(step);
+    } else if (modal === MODAL.PARTY) {
+      this.partyWindow.update(step);
+    } else if (this.connect.currentTile) {
+      this.overlay.update(step); // COMBAK
+      if (mode === MODE.TACTICAL) {
+        this.tacticalLayers.update(step);
       } else {
-        this.overlay.update();
-        if (this.connect.currentTile) this.camera.update();
+        this.camera.update(step);
       }
     }
   }
@@ -43,10 +52,18 @@ export default class GameView {
     this.ctx.fillStyle = FOREST_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (this.connect.currentTile) this.camera.render(delta);
+    const { currentTile, mode, modal } = this.connect;
+
+    if (currentTile) {
+      if (mode === MODE.TACTICAL) {
+        this.tacticalLayers.render();
+      } else {
+        this.camera.render(delta);
+      }
+    }
     this.overlay.render(delta);
+    if (modal === MODAL.PARTY) this.partyWindow.render(delta);
     this.story.render(delta);
-    if (this.connect.mode === MODE.PARTY) this.partyWindow.render(delta);
 
     if (this.dim) {
       this.ctx.fillStyle = MEDIUM_OPAQUE;

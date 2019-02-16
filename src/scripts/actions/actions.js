@@ -63,9 +63,24 @@ export const refreshSlots = slots => ({
   payload: { slots }
 });
 
-export const changeMode = mode => ({
-  type: ACTIONS.CHANGE_MODE,
+export const refreshTiles = graphTiles => ({
+  type: ACTIONS.REFRESH_TILES,
+  payload: { graphTiles }
+});
+
+export const setView = view => ({
+  type: ACTIONS.SET_VIEW,
+  payload: { view }
+});
+
+export const setMode = mode => ({
+  type: ACTIONS.SET_MODE,
   payload: { mode }
+});
+
+export const setModal = modal => ({
+  type: ACTIONS.SET_MODAL,
+  payload: { modal }
 });
 
 export const closeStory = () => ({

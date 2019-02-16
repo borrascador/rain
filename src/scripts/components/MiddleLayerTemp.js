@@ -6,7 +6,7 @@ import { sendEvent } from '../actions/requests';
 import { screenToImageButton } from './utils';
 import { EVENTS } from '../actions/types';
 
-export default class Pace {
+export default class MiddleLayer {
   constructor(store, canvas, ctx, loader) {
     this.store = store;
     this.canvas = canvas;
@@ -20,7 +20,7 @@ export default class Pace {
     this.animateWalk = new Animation(5, 1, 0.25);
     this.animateRun = new Animation(5, 1, 0.1);
 
-    this.scale = 4;
+    this.scale = 2;
     this.gutter = 4;
     this.iconSize = this.icons.tileset.tilewidth * this.scale;
     this.walkSize = this.walk.tileset.tilewidth * this.scale;
@@ -49,7 +49,8 @@ export default class Pace {
 
   renderIcons() {
     const { pace } = this.connect;
-    const yPos = (this.walkSize - this.iconSize) / 2;
+    const yPos = (this.canvas.height - this.walkSize + this.iconSize) / 2;
+    // const yPos = (this.walkSize - this.iconSize) / 2;
     const [width, height] = Array(2).fill(this.iconSize);
 
     switch (pace) {
@@ -116,7 +117,7 @@ export default class Pace {
     }
 
     const x = (this.canvas.width - this.walkSize) / 2;
-    const y = 0;
+    const y = (this.canvas.height - this.walkSize) / 2;
     drawById(this.ctx, this.walk, offset, this.scale, x, y);
   }
 
