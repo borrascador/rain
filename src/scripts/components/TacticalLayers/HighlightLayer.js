@@ -18,6 +18,7 @@ export default class HighlightLayer {
 
   update(step) {
     // loop through tiles for hover events
+    const { zoom } = this.connect;
     const { mousePos, graphTiles } = this.connect;
     const { x, y } = this.connect.clickLeft;
 
@@ -38,6 +39,18 @@ export default class HighlightLayer {
           return Object.assign({}, tile, { selected: true });
         }
         this.selected = { x: null, y: null };
+        refresh = true;
+        const {
+          xPos, yPos, width, height,
+        } = tile;
+        const [srcWidth, srcHeight] = [8, 8];
+        this.store.dispatch(clickedLeft());
+        return Object.assign({}, tile, {
+          tree: undefined,
+          water: {
+            srcX: 5 * srcWidth, srcY: 1 * srcHeight, srcWidth, srcHeight, xPos, yPos, width, height
+          }
+        });
       }
       if (mousePos.x && mousePos.y && checkImageCollision(mousePos.x, mousePos.y, tile)) {
         if (tile.hover !== true) [refresh, resetAnimation] = [true, true];

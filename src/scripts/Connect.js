@@ -21,8 +21,16 @@ export default class Connect {
     return this.store.getState().partyTab;
   }
 
+  get view() {
+    return this.store.getState().view;
+  }
+
   get mode() {
     return this.store.getState().mode;
+  }
+
+  get modal() {
+    return this.store.getState().modal;
   }
 
   get inventoryChanges() {

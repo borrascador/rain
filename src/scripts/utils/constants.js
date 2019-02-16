@@ -8,11 +8,19 @@ export const LAYER = {
   TOP: 'TOP'
 };
 
-export const MODE = {
+export const VIEW = {
   GAME: 'GAME',
+  TITLE: 'TITLE',
+};
+
+export const MODE = {
+  GLOBAL: 'GLOBAL',
+  TACTICAL: 'TACTICAL',
+};
+
+export const MODAL = {
   STORY: 'STORY',
   PARTY: 'PARTY',
-  TITLE: 'TITLE'
 };
 
 export const SLOTS = {

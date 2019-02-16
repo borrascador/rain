@@ -174,9 +174,21 @@ export function refreshTiles(state, action) {
   });
 }
 
-export function changeMode(state, action) {
+export function setView(state, action) {
+  return updateObject(state, {
+    view: action.payload.view,
+  });
+}
+
+export function setMode(state, action) {
   return updateObject(state, {
     mode: action.payload.mode,
+  });
+}
+
+export function setModal(state, action) {
+  return updateObject(state, {
+    modal: action.payload.modal,
   });
 }
 

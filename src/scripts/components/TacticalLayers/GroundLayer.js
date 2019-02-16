@@ -1,4 +1,5 @@
 import Connect from '../../Connect';
+import Animation from '../../utils/Animation';
 import { getRandomInt } from '../utils';
 import { refreshTiles } from '../../actions/actions';
 
@@ -9,6 +10,8 @@ export default class GroundLayer {
     this.ctx = ctx;
     this.new = loader.getImage('new');
     this.connect = new Connect(this.store);
+
+    this.animateWaves = new Animation(8, 1, 0.25);
   }
 
   init() {
@@ -40,7 +43,11 @@ export default class GroundLayer {
           height,
           ground: {
             srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
-          }
+            // srcX: 2 * srcWidth, srcY: 0 * srcHeight, srcWidth, srcHeight, xPos, yPos, width, height
+          },
+          // water: {
+          //   srcX: 5 * srcWidth, srcY: 1 * srcHeight, srcWidth, srcHeight, xPos, yPos, width, height
+          // },
         });
       }
     }
@@ -52,15 +59,31 @@ export default class GroundLayer {
     // TODO: create npcs on free tiles, likely in MiddleLayer.js for now
   }
 
+  update(step) {
+    this.animateWaves.tick(step);
+  }
+
   render() {
     // render tiles
     const { graphTiles } = this.connect;
 
     graphTiles.forEach(({ ground }) => {
-      const {
-        srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
-      } = ground;
-      this.ctx.drawImage(this.new, srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height);
+      if (ground) {
+        const {
+          srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+        } = ground;
+        this.ctx.drawImage(this.new, srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height);
+      }
+    });
+    graphTiles.forEach(({ water }) => {
+      if (water) {
+        const {
+          srcX, srcY, srcWidth, srcHeight, xPos, yPos, width, height
+        } = water;
+        this.ctx.globalAlpha = 0.75;
+        this.ctx.drawImage(this.new, srcX + Math.abs(4 - this.animateWaves.getValue()), srcY, srcWidth, srcHeight, xPos, yPos, width, height);
+        this.ctx.globalAlpha = 1;
+      }
     });
   }
 }

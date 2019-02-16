@@ -1,11 +1,11 @@
-import { MODE, SLOTS, UPDATE_TEXT_DURATION } from '../utils/constants';
-import Connect from '../Connect';
-import { screenToImageButton } from './utils';
+import { MODAL, SLOTS, UPDATE_TEXT_DURATION } from '../../utils/constants';
+import Connect from '../../Connect';
+import { screenToImageButton } from '../utils';
 import {
-  clickedLeft, setPartyTab, changeMode, removePartyMember
-} from '../actions/actions';
-import { drawById, drawByName, fadeText } from '../utils/draw';
-import { MEDIUM_RED, DARK_RED } from '../utils/colors';
+  clickedLeft, setPartyTab, setModal, removePartyMember
+} from '../../actions/actions';
+import { drawById, drawByName, fadeText } from '../../utils/draw';
+import { MEDIUM_RED, DARK_RED } from '../../utils/colors';
 
 export default class Party {
   constructor(store, canvas, ctx, loader) {
@@ -41,7 +41,7 @@ export default class Party {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       this.store.dispatch(setPartyTab(button.id));
-      this.store.dispatch(changeMode(MODE.PARTY));
+      this.store.dispatch(setModal(MODAL.PARTY));
     }
   }
 

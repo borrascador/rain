@@ -19,8 +19,8 @@ import newTileset from '../data/new.json';
 import playerTileset from '../data/player.json';
 import GameView from './views/GameView';
 import TitleView from './views/TitleView';
-import { MODE } from './utils/constants';
-import { clickedLeft, clickedRight, changeMode } from './actions/actions';
+import { VIEW } from './utils/constants';
+import { clickedLeft, clickedRight, setView } from './actions/actions';
 
 export default class RainGame {
   constructor(store, canvas, ctx) {
@@ -108,7 +108,7 @@ export default class RainGame {
     /*
       Run through entities, testing each against every other for a possible collision.
       Any entities that get expired (eg. due to a collision) must still not be removed
-      immediately0, but rather added to a "removals" list (because otherwise you will
+      immediately, but rather added to a "removals" list (because otherwise you will
       break the list while it's being processed for physics.
     */
     console.log(this);
@@ -141,18 +141,18 @@ export default class RainGame {
 
     // Force player back to TitleView if connection is lost or if logged out
     if (
-      this.connect.mode !== MODE.TITLE
+      this.connect.view !== VIEW.TITLE
       && (this.connect.connected === false
       || this.connect.loggedIn === false)
     ) {
-      this.store.dispatch(changeMode(MODE.TITLE));
+      this.store.dispatch(setView(VIEW.TITLE));
       this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
     }
 
     // Run update and render loops for either TitleView or GameView
-    switch (this.connect.mode) {
-      case MODE.TITLE:
-        this.titleView.update();
+    switch (this.connect.view) {
+      case VIEW.TITLE:
+        this.titleView.update(step);
         break;
       default:
         // So far step is only used in TopLayer.js animations
@@ -175,9 +175,9 @@ export default class RainGame {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Render either TitleView or GameView
-    switch (this.connect.mode) {
-      case MODE.TITLE:
-        this.titleView.render(delta);
+    switch (this.connect.view) {
+      case VIEW.TITLE:
+        this.titleView.render();
         break;
       default:
         this.gameView.render(delta);

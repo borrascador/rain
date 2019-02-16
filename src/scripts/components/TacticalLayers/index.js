@@ -23,6 +23,7 @@ export default class TacticalLayers {
       this.groundLayer.init();
       this.entityLayer.init();
     }
+    this.groundLayer.update(step);
     this.highlightLayer.update(step);
   }
 

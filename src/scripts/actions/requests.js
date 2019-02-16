@@ -1,8 +1,8 @@
 import {
-  changeMode, error, registerRequest, loginRequest, logoutRequest, eventRequest,
+  setView, error, registerRequest, loginRequest, logoutRequest, eventRequest,
 } from './actions';
 import { subscribe } from '../store';
-import { MODE } from '../utils/constants';
+import { VIEW } from '../utils/constants';
 import loadingDialog from '../dialogs/loading';
 import successDialog from '../dialogs/success';
 import failureDialog from '../dialogs/failure';
@@ -49,7 +49,7 @@ export function login(user, password, dimCallback, exitLogin) {
         exitLoading();
         clearTimeout(timer);
         if (!getState().error) {
-          dispatch(changeMode(MODE.GAME));
+          dispatch(setView(VIEW.GAME));
         } else {
           failureDialog(getState().errorMessage, dimCallback);
         }
@@ -75,7 +75,7 @@ export function logout(callback) {
         unsubscribe();
         if (callback) callback();
         clearTimeout(timer);
-        // NOTE: mode changes to TITLE in tick()
+        // NOTE: view changes to TITLE in tick()
       });
       timer = setTimeout(() => {
         unsubscribe();

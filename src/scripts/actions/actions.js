@@ -68,9 +68,19 @@ export const refreshTiles = graphTiles => ({
   payload: { graphTiles }
 });
 
-export const changeMode = mode => ({
-  type: ACTIONS.CHANGE_MODE,
+export const setView = view => ({
+  type: ACTIONS.SET_VIEW,
+  payload: { view }
+});
+
+export const setMode = mode => ({
+  type: ACTIONS.SET_MODE,
   payload: { mode }
+});
+
+export const setModal = modal => ({
+  type: ACTIONS.SET_MODAL,
+  payload: { modal }
 });
 
 export const closeStory = () => ({
