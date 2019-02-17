@@ -48,7 +48,7 @@ export default class GameView {
     }
   }
 
-  render(delta) {
+  render() {
     this.ctx.fillStyle = FOREST_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -58,12 +58,12 @@ export default class GameView {
       if (mode === MODE.TACTICAL) {
         this.tacticalLayers.render();
       } else {
-        this.camera.render(delta);
+        this.camera.render();
       }
     }
-    this.overlay.render(delta);
-    if (modal === MODAL.PARTY) this.partyWindow.render(delta);
-    this.story.render(delta);
+    this.overlay.render();
+    if (modal === MODAL.PARTY) this.partyWindow.render();
+    this.story.render();
 
     if (this.dim) {
       this.ctx.fillStyle = MEDIUM_OPAQUE;

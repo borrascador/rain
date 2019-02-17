@@ -36,7 +36,7 @@ export default class Camera {
     // this.y = Math.max(0, Math.min(this.y, this.maxY));
   }
 
-  update() {
+  update(step) {
     const { x, y } = this.connect.clickLeft;
     const tile = x && y && screenToImageButton(x, y, this.clickTiles);
     if (tile) {
@@ -48,10 +48,10 @@ export default class Camera {
         sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
       );
     }
+    this.blink.tick(step);
   }
 
-  render(delta) {
-    this.blink.tick(delta);
+  render() {
     const {
       pos, coords, positionTarget, coordsTarget, tiles, sight, zoom
     } = this.connect.map;

@@ -25,28 +25,28 @@ export default class Overlay {
     this.items = new Items(this.store, this.canvas, this.ctx, this.loader);
   }
 
-  update() {
-    this.items.update();
-    this.zoom.update();
-    // this.habitat.update();
-    this.actionBar.update();
-    this.inventory.update();
-    this.party.update();
-    this.food.update();
-    this.pace.update();
+  update(step) {
+    this.items.update(step);
+    this.zoom.update(step);
+    // this.habitat.update(step);
+    this.actionBar.update(step);
+    this.inventory.update(step);
+    this.party.update(step);
+    this.food.update(step);
+    this.pace.update(step);
   }
 
-  render(delta) {
-    this.pace.render(delta);
+  render() {
+    this.pace.render();
     const slots = [].concat(
-      this.food.render(delta),
-      this.party.render(delta),
-      this.inventory.render(delta)
+      this.food.render(),
+      this.party.render(),
+      this.inventory.render()
     );
     this.store.dispatch(refreshSlots(slots));
-    this.actionBar.render(delta);
-    this.habitat.render(delta);
-    this.zoom.render(delta);
-    this.items.render(delta);
+    this.actionBar.render();
+    this.habitat.render();
+    this.zoom.render();
+    this.items.render();
   }
 }

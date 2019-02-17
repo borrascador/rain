@@ -28,12 +28,26 @@ export default class Pace {
     this.buttons = [];
   }
 
-  update() {
+  update(step) {
     const { x, y } = this.connect.clickLeft;
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       this.store.dispatch(clickedLeft());
       this.store.dispatch(sendEvent(EVENTS.PACE, { id: button.id }));
+    }
+
+    switch (this.connect.pace) {
+      case 0:
+        this.animateStop.tick(step);
+        break;
+      case 1:
+        this.animateWalk.tick(step);
+        break;
+      case 2:
+        this.animateRun.tick(step);
+        break;
+      default:
+        break;
     }
   }
 
@@ -95,20 +109,17 @@ export default class Pace {
     ));
   }
 
-  renderWalk(delta) {
+  renderWalk() {
     let offset;
 
     switch (this.connect.pace) {
       case 0:
-        this.animateStop.tick(delta);
         offset = this.animateStop.getValue() + 6;
         break;
       case 1:
-        this.animateWalk.tick(delta);
         offset = this.animateWalk.getValue();
         break;
       case 2:
-        this.animateRun.tick(delta);
         offset = this.animateRun.getValue();
         break;
       default:
@@ -120,8 +131,8 @@ export default class Pace {
     drawById(this.ctx, this.walk, offset, this.scale, x, y);
   }
 
-  render(delta) {
+  render() {
     this.renderIcons();
-    this.renderWalk(delta);
+    this.renderWalk();
   }
 }
