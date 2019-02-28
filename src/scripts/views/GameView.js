@@ -1,5 +1,6 @@
 import { MODE, MODAL } from '../utils/constants';
 import Connect from '../Connect';
+// import GlobalLayer from '../components/GlobalLayer';
 import Camera from '../components/Camera';
 import TacticalLayers from '../components/TacticalLayers';
 import Overlay from '../components/Overlay';
@@ -19,6 +20,7 @@ export default class GameView {
 
     this.tacticalLayers = new TacticalLayers(this.store, this.canvas, this.ctx, this.loader);
 
+    // this.camera = new GlobalLayer(this.store, this.canvas, this.ctx, this.loader);
     this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
