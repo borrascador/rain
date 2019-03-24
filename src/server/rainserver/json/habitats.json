@@ -9,7 +9,22 @@
 			{"id": 2, "rarity": 0.6},
 			{"id": 3, "rarity": 0.1},
 			{"id": 4, "rarity": 0.2}
-		]
+		],
+		"vegetation": 0.5,
+		"plants": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.1},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.1},
+			{"id": 5, "rarity": 0.1},
+			{"id": 6, "rarity": 0.1},
+			{"id": 7, "rarity": 0.1},
+			{"id": 8, "rarity": 0.1},
+			{"id": 9, "rarity": 0.1}
+		], 
+		"plant_density": 0.02,
+		"water": 0.5
 	},
 	{
 		"type": "young forest 2",
@@ -21,7 +36,21 @@
 			{"id": 2, "rarity": 0.6},
 			{"id": 3, "rarity": 0.1},
 			{"id": 4, "rarity": 0.2}
-		]
+		],
+		"plants": [
+			{"id": 0, "rarity": 0.1},
+			{"id": 1, "rarity": 0.1},
+			{"id": 2, "rarity": 0.1},
+			{"id": 3, "rarity": 0.1},
+			{"id": 4, "rarity": 0.1},
+			{"id": 5, "rarity": 0.1},
+			{"id": 6, "rarity": 0.1},
+			{"id": 7, "rarity": 0.1},
+			{"id": 8, "rarity": 0.1},
+			{"id": 9, "rarity": 0.1}
+		], 
+		"plant_density": 0.02,
+		"water": 0.5
 	},
 	{
 		"type": "young forest 3",
@@ -189,7 +218,15 @@
 			{"id": 2, "rarity": 0.6},
 			{"id": 3, "rarity": 0.1},
 			{"id": 4, "rarity": 0.2}
-		]
+		],
+		"plants": [
+			{"id": 8, "rarity": 0.1},
+			{"id": 9, "rarity": 0.1},
+			{"id": 10, "rarity": 0.1},
+			{"id": 11, "rarity": 0.1}
+		], 
+		"plant_density": 0.1,
+		"water": 1.0
 	},
 	{
 		"type": "river 1",
