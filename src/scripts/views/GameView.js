@@ -1,7 +1,6 @@
 import { MODE, MODAL } from '../utils/constants';
 import Connect from '../Connect';
-// import GlobalLayer from '../components/GlobalLayer';
-import Camera from '../components/Camera';
+import Map from '../components/Map';
 import TacticalLayers from '../components/TacticalLayers';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
@@ -20,8 +19,7 @@ export default class GameView {
 
     this.tacticalLayers = new TacticalLayers(this.store, this.canvas, this.ctx, this.loader);
 
-    // this.camera = new GlobalLayer(this.store, this.canvas, this.ctx, this.loader);
-    this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
+    this.map = new Map(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
@@ -41,12 +39,11 @@ export default class GameView {
     } else if (modal === MODAL.PARTY) {
       this.partyWindow.update(step);
     } else if (this.connect.currentTile) {
-      this.overlay.update(step); // COMBAK
-      if (mode === MODE.TACTICAL) {
-        this.tacticalLayers.update(step);
-      } else {
-        this.camera.update(step);
+      if (mode === MODE.GLOBAL) {
+        this.map.update(step);
       }
+      this.overlay.update(step);
+      this.tacticalLayers.update(step);
     }
   }
 
@@ -57,13 +54,12 @@ export default class GameView {
     const { currentTile, mode, modal } = this.connect;
 
     if (currentTile) {
-      if (mode === MODE.TACTICAL) {
-        this.tacticalLayers.render();
-      } else {
-        this.camera.render();
+      this.tacticalLayers.render();
+      this.overlay.render();
+      if (mode === MODE.GLOBAL) {
+        this.map.render();
       }
     }
-    this.overlay.render();
     if (modal === MODAL.PARTY) this.partyWindow.render();
     this.story.render();
 

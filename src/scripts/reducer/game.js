@@ -3,6 +3,7 @@ import {
   updateInventoryChanges, updatePartyChanges
 } from './utils';
 import { revisedInitialState } from './initialState';
+import { MODE } from '../utils/constants';
 
 export function request(state) {
   return Object.assign({}, state, {
@@ -70,7 +71,8 @@ export function loginResponse(state, action) {
     sight: action.payload.sight,
     pace: action.payload.pace,
     rations: action.payload.rations,
-    hunting: action.payload.hunting
+    hunting: action.payload.hunting,
+    mode: MODE.TACTICAL,
   });
 }
 
