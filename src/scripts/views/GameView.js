@@ -1,6 +1,6 @@
 import { MODE, MODAL } from '../utils/constants';
 import Connect from '../Connect';
-import Camera from '../components/Camera';
+import Map from '../components/Map';
 import TacticalLayers from '../components/TacticalLayers';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
@@ -19,7 +19,7 @@ export default class GameView {
 
     this.tacticalLayers = new TacticalLayers(this.store, this.canvas, this.ctx, this.loader);
 
-    this.camera = new Camera(this.store, this.canvas, this.ctx, this.loader);
+    this.map = new Map(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
@@ -39,31 +39,29 @@ export default class GameView {
     } else if (modal === MODAL.PARTY) {
       this.partyWindow.update(step);
     } else if (this.connect.currentTile) {
-      this.overlay.update(step); // COMBAK
-      if (mode === MODE.TACTICAL) {
-        this.tacticalLayers.update(step);
-      } else {
-        this.camera.update(step);
+      if (mode === MODE.GLOBAL) {
+        this.map.update(step);
       }
+      this.overlay.update(step);
+      this.tacticalLayers.update(step);
     }
   }
 
-  render(delta) {
+  render() {
     this.ctx.fillStyle = FOREST_BLACK;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     const { currentTile, mode, modal } = this.connect;
 
     if (currentTile) {
-      if (mode === MODE.TACTICAL) {
-        this.tacticalLayers.render();
-      } else {
-        this.camera.render(delta);
+      this.tacticalLayers.render();
+      this.overlay.render();
+      if (mode === MODE.GLOBAL) {
+        this.map.render();
       }
     }
-    this.overlay.render(delta);
-    if (modal === MODAL.PARTY) this.partyWindow.render(delta);
-    this.story.render(delta);
+    if (modal === MODAL.PARTY) this.partyWindow.render();
+    this.story.render();
 
     if (this.dim) {
       this.ctx.fillStyle = MEDIUM_OPAQUE;

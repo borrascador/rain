@@ -71,7 +71,7 @@ export default class RainGame {
       this.delta = this.delta - this.step;
       this.update(this.step);
     }
-    this.render(this.delta);
+    this.render();
     this.last = this.now;
     window.requestAnimationFrame(this.frame);
   }
@@ -155,8 +155,6 @@ export default class RainGame {
         this.titleView.update(step);
         break;
       default:
-        // So far step is only used in TopLayer.js animations
-        // TODO: Transition all other animations to use step
         this.gameView.update(step);
         break;
     }
@@ -170,7 +168,7 @@ export default class RainGame {
     }
   }
 
-  render(delta) {
+  render() {
     // Clear canvas for next render
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -180,7 +178,7 @@ export default class RainGame {
         this.titleView.render();
         break;
       default:
-        this.gameView.render(delta);
+        this.gameView.render();
         break;
     }
   }

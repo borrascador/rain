@@ -37,6 +37,7 @@ export default class Zoom {
       } else {
         const { mode } = this.connect;
         const target = mode === MODE.TACTICAL ? MODE.GLOBAL : MODE.TACTICAL;
+        console.log(target);
         this.store.dispatch(button.onClick(target));
       }
     }

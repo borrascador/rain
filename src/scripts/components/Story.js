@@ -87,7 +87,7 @@ export default class Story {
     }
   }
 
-  update() {
+  update(step) {
     this.width = this.canvas.width / 3;
     this.height = this.canvas.height / 2;
     if (this.stories.length > 0) {
@@ -95,6 +95,8 @@ export default class Story {
       this.updateKeys(story);
       this.updateClick(story);
     }
+
+    this.blink.tick(step);
   }
 
   renderStoryText(story) {
@@ -154,8 +156,7 @@ export default class Story {
     }
   }
 
-  render(delta) {
-    this.blink.tick(delta);
+  render() {
     this.stories = this.connect.stories;
     if (this.stories.length > 0) {
       this.stories = this.stories.map((story) => {

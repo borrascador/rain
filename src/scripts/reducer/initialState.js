@@ -8,11 +8,11 @@ import { makeKeys } from './ui';
 
 const uiState = {
   view: VIEW.TITLE,
-  mode: null,
-  modal: null,
+  mode: undefined,
+  modal: undefined,
   partyTab: 0,
   actions: { main: [] },
-  zoom: 10,
+  zoom: 7,
   slots: [],
   graphTiles: []
 };
@@ -20,30 +20,30 @@ const uiState = {
 const gameState = {
   tiles: [],
   party: [], // DEBUG with party
-  vehicle: null, // DEBUG with vehicle
+  vehicle: undefined, // DEBUG with vehicle
   stories: [], // DEBUG with story TODO update to stories in example
   inventoryChanges: [],
   partyChanges: [],
-  position: null,
-  xCoord: null,
-  yCoord: null,
-  positionTarget: null,
-  xTarget: null,
-  yTarget: null,
-  sight: null,
-  pace: null,
-  rations: null,
+  position: undefined,
+  xCoord: undefined,
+  yCoord: undefined,
+  positionTarget: undefined,
+  xTarget: undefined,
+  yTarget: undefined,
+  sight: undefined,
+  pace: undefined,
+  rations: undefined,
   hunting: false
 };
 
 const inputState = {
-  mouseDownLeft: { x: null, y: null },
-  mouseDownRight: { x: null, y: null },
-  mouseDrop: { x: null, y: null },
-  mouseOffset: { x: null, y: null },
-  mousePos: { x: null, y: null },
-  clickLeft: { x: null, y: null },
-  clickRight: { x: null, y: null },
+  mouseDownLeft: { x: undefined, y: undefined },
+  mouseDownRight: { x: undefined, y: undefined },
+  mouseDrop: { x: undefined, y: undefined },
+  mouseOffset: { x: undefined, y: undefined },
+  mousePos: { x: undefined, y: undefined },
+  clickLeft: { x: undefined, y: undefined },
+  clickRight: { x: undefined, y: undefined },
   keys: makeKeys()
 };
 
@@ -51,8 +51,8 @@ const connectionState = {
   connected: false,
   loggedIn: false,
   sending: false,
-  error: null,
-  errorMessage: null,
+  error: undefined,
+  errorMessage: undefined,
   errorLog: []
 };
 

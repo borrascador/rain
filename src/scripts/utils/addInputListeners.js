@@ -25,6 +25,12 @@ export default function addInputListeners(dispatch, canvas) {
     if (event.button === 2) dispatch(mouseDownRight(x, y));
   }, false);
 
+  canvas.addEventListener('mouseleave', () => {
+    const x = undefined;
+    const y = undefined;
+    dispatch(mouseMove(x, y));
+  }, false);
+
   canvas.addEventListener('mousemove', (event) => {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
