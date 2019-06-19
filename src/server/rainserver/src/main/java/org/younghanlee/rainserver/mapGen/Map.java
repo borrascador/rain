@@ -88,8 +88,8 @@ public class Map {
 	
 	public static void generateSuperMap(String filename) {
 		JSONArray superMap = new JSONArray();
-		int width = 10;
-		int height = 10;
+		int width = 3;
+		int height = 3;
 		for (int h=0; h<height; h++) {
 			for (int w=0; w<width; w++) {
 				JSONObject tile = new JSONObject();
@@ -98,7 +98,7 @@ public class Map {
 				tile.put("x", w);
 				tile.put("y", h);
 				tile.put("elevation", 500 - Util.randomInt(100));
-				if (position < 69) {
+				if (position < 5) {
 					tile.put("habitat", 1);
 				} else {
 					tile.put("habitat", 15);
