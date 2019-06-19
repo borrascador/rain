@@ -17,6 +17,9 @@ public class MapTile {
 	public MapTile(int habitat, int elevation, int position, int x, int y) {
 		this.habitat = habitat;
 		this.elevation = elevation;
+		this.x = x;
+		this.y = y;
+		this.position = position;
 	}
 	
 	public void generateTrees(double plant_density, HashMap<Integer, Double> plant_frequencies) {
