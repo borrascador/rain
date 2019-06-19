@@ -1,4 +1,8 @@
 package org.younghanlee.rainserver;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,6 +30,7 @@ public class MessageHandler {
 		JSONObject payload;
 		Player p;
 		JSONArray tiles;
+		JSONArray map = null;
 		
 		switch (message_type) {
 			case "REGISTER_REQUEST":
@@ -82,7 +87,14 @@ public class MessageHandler {
 					
 				// Send ordinary response
 				tiles = p.tilesSeenArray();
-				response = Message.LOGIN_RESPONSE(p, tiles);
+				try {
+					map = new JSONArray(new String(Files.readAllBytes(Paths.get("map/map.json"))));
+				} catch (IOException e) {
+					System.out.println("Map file "+ "map.json" + " not found.");
+					System.exit(1);
+				}
+				
+				response = Message.LOGIN_RESPONSE(p, map);
 				connection.sendJSON(response);
 				p.sendDecision(connection);
 				break;

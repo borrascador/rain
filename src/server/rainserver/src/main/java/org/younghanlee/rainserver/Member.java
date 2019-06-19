@@ -15,6 +15,7 @@ public class Member {
 	private int strength;
 	private int speed;
 	private int jeito;
+	private int position;
 	private ArrayList<ItemStack> equipment;
 	private HashMap<Integer, Integer> skills; // id, rank
 	private HashMap<Integer, Integer> modifiers; // id, timer
@@ -92,6 +93,14 @@ public class Member {
 		this.speed = n;
 	}
 	
+	public int getPosition() {
+		return this.position;
+	}
+	
+	public void setPosition(int position) {
+		this.position = position;
+	}
+	
 	public void addSkill(int id, int rank) {
 		skills.put(id, rank);
 	}
@@ -167,6 +176,7 @@ public class Member {
 		jo.put("jeito", jeito);
 		jo.put("name", name);
 		jo.put("icon", icon);
+		jo.put("position", position);
 		JSONArray skillsArray = new JSONArray();
 		for (int skill_id: skills.keySet()) {
 			Skill s = World.getSkill(skill_id);
