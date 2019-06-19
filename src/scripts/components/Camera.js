@@ -1,33 +1,23 @@
 import { CAMERA_SPEED } from '../utils/constants';
 
 export default class Camera {
-  constructor(width, height, xStart, yStart, tileWidth, iconWidth, zoom) {
+  constructor(width, height, xStart, yStart, tileWidth) {
     this.width = width;
     this.height = height;
     this.xStart = xStart;
     this.yStart = yStart;
     this.tileWidth = tileWidth;
-    this.iconWidth = iconWidth;
-    this.setZoom(zoom);
   }
 
-  center(xPos, yPos, xCoords, yCoords) {
-    this.x = Math.round((xPos + xCoords / 32) * this.tileSize - this.width / 2);
-    this.y = Math.round((yPos + yCoords / 32) * this.tileSize - this.height / 2);
+  center(xPos, yPos, xCoords, yCoords, zoom) {
+    this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
+    this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);
   }
 
   move(delta, dirx, diry) {
     // move camera
     this.x += dirx * CAMERA_SPEED * delta;
     this.y += diry * CAMERA_SPEED * delta;
-  }
-
-  setZoom(zoom) {
-    if (zoom !== this.zoom) {
-      this.tileSize = this.tileWidth * zoom;
-      this.iconSize = this.iconWidth * zoom;
-    }
-    this.zoom = zoom;
   }
 
   mapToScreen(x, y) {
@@ -44,7 +34,27 @@ export default class Camera {
     };
   }
 
-  log() {
-    console.log(this.logs);
+  getOffsets(x, y, tileWidth, tileHeight, xTransform, yTransform) {
+    let xOffset = typeof xTransform === 'number' ? xTransform : 0;
+    let yOffset = typeof yTransform === 'number' ? yTransform : 0;
+    let widthOffset = tileWidth;
+    let heightOffset = tileHeight;
+    if (x < 0) {
+      xOffset = x;
+      widthOffset = Math.abs((tileWidth + x) % tileWidth);
+    }
+    if (y < 0) {
+      yOffset = y;
+      heightOffset = Math.abs((tileHeight + y) % tileHeight);
+    }
+    if (x + tileWidth > this.width) {
+      widthOffset = Math.abs((this.width - x) % tileWidth);
+    }
+    if (y + tileHeight > this.height) {
+      heightOffset = Math.abs((this.height - y) % tileHeight);
+    }
+    return {
+      xOffset, yOffset, widthOffset, heightOffset,
+    };
   }
 }

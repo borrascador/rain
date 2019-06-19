@@ -18,7 +18,6 @@ export default class HighlightLayer {
 
   update(step) {
     // loop through tiles for hover events
-    const { zoom } = this.connect;
     const { mousePos, graphTiles } = this.connect;
     const { x, y } = this.connect.clickLeft;
 
