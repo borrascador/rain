@@ -7,16 +7,20 @@ import iconsXlImage from '../images/icons-xl.png';
 import waterImage from '../images/water.png';
 import itemsImage from '../images/items.png';
 import walkImage from '../images/walk.png';
-import newImage from '../images/new.png';
+import tacticalImage from '../images/tactical.png';
 import playerImage from '../images/player.png';
+import treesImage from '../images/trees.png';
+import newImage from '../images/new.png';
 import atlasTileset from '../data/atlas.json';
 import iconsTileset from '../data/icons.json';
 import iconsXlTileset from '../data/icons-xl.json';
 import waterTileset from '../data/water.json';
 import itemsTileset from '../data/items.json';
 import walkTileset from '../data/walk.json';
-import newTileset from '../data/new.json';
+import tacticalTileset from '../data/tactical.json';
 import playerTileset from '../data/player.json';
+import treesTileset from '../data/trees.json';
+import newTileset from '../data/new.json';
 import GameView from './views/GameView';
 import TitleView from './views/TitleView';
 import { VIEW } from './utils/constants';
@@ -49,9 +53,12 @@ export default class RainGame {
         this.loader.setImage('water', waterImage, waterTileset),
         this.loader.setImage('items', itemsImage, itemsTileset),
         this.loader.setImage('walk', walkImage, walkTileset),
+        this.loader.setImage('tactical', tacticalImage, tacticalTileset),
+        this.loader.setImage('player', playerImage, playerTileset),
+        this.loader.setImage('trees', treesImage, treesTileset),
+
         // DEBUG
         this.loader.setImage('new', newImage, newTileset),
-        this.loader.setImage('player', playerImage, playerTileset),
       ])
       .then(() => {
         this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);

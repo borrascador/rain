@@ -1,6 +1,6 @@
 import {
   getActions, mergeArrays, mergeSlots, updateStory,
-  updateInventoryChanges, updatePartyChanges
+  updateInventoryChanges, updatePartyChanges, sortTiles,
 } from './utils';
 import { revisedInitialState } from './initialState';
 import { MODE } from '../utils/constants';
@@ -49,7 +49,7 @@ export function loginResponse(state, action) {
   return Object.assign({}, state, {
     sending: false,
     loggedIn: true,
-    tiles: action.payload.tiles,
+    tiles: sortTiles(state, action),
     party: action.payload.party,
     slots: mergeSlots(state.slots, action.payload.inventory),
     actions: getActions(
@@ -86,7 +86,8 @@ export function logoutResponse(state) {
 
 export function update(state, action) {
   const slots = mergeSlots(state.slots, action.payload.inventory);
-  const tiles = mergeArrays(state.tiles, action.payload.tiles);
+  const tiles = sortTiles(state, action);
+  // const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const position = typeof action.payload.position === 'number'
     ? action.payload.position : state.position;

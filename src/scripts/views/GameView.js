@@ -1,6 +1,7 @@
 import { MODE, MODAL } from '../utils/constants';
 import Connect from '../Connect';
 import Map from '../components/Map';
+import Tactical from '../components/Tactical';
 import TacticalLayers from '../components/TacticalLayers';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
@@ -19,6 +20,7 @@ export default class GameView {
 
     this.tacticalLayers = new TacticalLayers(this.store, this.canvas, this.ctx, this.loader);
 
+    this.tactical = new Tactical(this.store, this.canvas, this.ctx, this.loader);
     this.map = new Map(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
@@ -43,7 +45,8 @@ export default class GameView {
         this.map.update(step);
       }
       this.overlay.update(step);
-      this.tacticalLayers.update(step);
+      this.tactical.update(step);
+      // this.tacticalLayers.update(step);
     }
   }
 
@@ -54,7 +57,8 @@ export default class GameView {
     const { currentTile, mode, modal } = this.connect;
 
     if (currentTile) {
-      this.tacticalLayers.render();
+      this.tactical.render();
+      // this.tacticalLayers.render();
       this.overlay.render();
       if (mode === MODE.GLOBAL) {
         this.map.render();

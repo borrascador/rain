@@ -11,30 +11,6 @@ import { MEDIUM_OPAQUE } from '../utils/colors';
 
 const { BOTTOM, MIDDLE } = LAYER;
 
-const getOffsets = (x, y, width, height, tileSize) => {
-  let xOffset = 0;
-  let yOffset = 0;
-  let widthOffset = tileSize;
-  let heightOffset = tileSize;
-  if (x < 0) {
-    xOffset = x;
-    widthOffset = Math.abs((tileSize + x) % tileSize);
-  }
-  if (y < 0) {
-    yOffset = y;
-    heightOffset = Math.abs((tileSize + y) % tileSize);
-  }
-  if (x + tileSize > width) {
-    widthOffset = Math.abs((width - x) % tileSize);
-  }
-  if (y + tileSize > height) {
-    heightOffset = Math.abs((height - y) % tileSize);
-  }
-  return {
-    xOffset, yOffset, widthOffset, heightOffset,
-  };
-};
-
 export default class Map {
   constructor(store, canvas, ctx, loader) {
     this.store = store;
@@ -48,23 +24,16 @@ export default class Map {
 
     this.connect = new Connect(this.store);
 
-    const { zoom } = this.connect;
     this.camera = new Camera(
       this.canvas.width / 2, // width
       this.canvas.height / 2, // height
       this.canvas.width / 4, // xStart
       this.canvas.height / 4, // yStart
       this.atlas.tileset.tilewidth,
-      this.icons.tileset.tilewidth,
-      zoom
     );
   }
 
   update(step) {
-    // update zoom level
-    const { zoom } = this.connect;
-    this.camera.setZoom(zoom);
-
     // handle camera movement with arrow keys and mouse position over edges
     let dirx = 0;
     let diry = 0;
@@ -78,6 +47,7 @@ export default class Map {
     }
 
     // center camera on player or move player
+    const { zoom } = this.connect;
     const { x, y } = this.connect.clickLeft;
     const clickedPlayer = (
       x && y && this.player
@@ -89,7 +59,7 @@ export default class Map {
     );
     if (clickedPlayer) {
       const { pos, coords } = this.connect.map;
-      this.camera.center(pos.x, pos.y, coords.x, coords.y);
+      this.camera.center(pos.x, pos.y, coords.x, coords.y, zoom);
       this.store.dispatch(clickedLeft());
     } else if (tile) {
       const xCoord = Math.floor((x - tile.xPos) / zoom);
@@ -109,17 +79,21 @@ export default class Map {
       pos, coords, positionTarget, coordsTarget, tiles, sight, zoom
     } = this.connect.map;
     const {
-      xStart, yStart, width, height, tileSize, iconSize,
+      xStart, yStart, width, height,
     } = this.camera;
 
+    const tileWidth = this.atlas.tileset.tilewidth * zoom;
+    const tileHeight = this.atlas.tileset.tileheight * zoom;
+    const iconSize = this.icons.tileset.tilewidth * zoom;
+
     if (!this.camera.x && !this.camera.y) {
-      this.camera.center(pos.x, pos.y, coords.x, coords.y);
+      this.camera.center(pos.x, pos.y, coords.x, coords.y, zoom);
     }
 
-    const startCol = Math.floor(this.camera.x / tileSize);
-    const endCol = startCol + Math.ceil(width / tileSize);
-    const startRow = Math.floor(this.camera.y / tileSize);
-    const endRow = startRow + Math.ceil(height / tileSize);
+    const startCol = Math.floor(this.camera.x / tileWidth);
+    const endCol = startCol + Math.ceil(width / tileWidth);
+    const startRow = Math.floor(this.camera.y / tileHeight);
+    const endRow = startRow + Math.ceil(height / tileHeight);
 
     this.ctx.fillStyle = '#113322';
     this.ctx.fillRect(xStart, yStart, width, height);
@@ -131,9 +105,9 @@ export default class Map {
     let dim = false;
     for (let col = startCol; col <= endCol; col += 1) {
       for (let row = startRow; row <= endRow; row += 1) {
-        const x = col * tileSize - this.camera.x;
-        const y = row * tileSize - this.camera.y;
-        const mapTileOffsets = getOffsets(x, y, width, height, tileSize);
+        const x = col * tileWidth - this.camera.x;
+        const y = row * tileHeight - this.camera.y;
+        const mapTileOffsets = this.camera.getOffsets(x, y, tileWidth, tileHeight);
         const tile = findTile(tiles, col, row);
 
         if (tile) {
@@ -155,8 +129,8 @@ export default class Map {
               if (
                 widthOffset > 0
                 && heightOffset > 0
-                && (x - xOffset > -tileSize && x - xOffset < width)
-                && (y - yOffset > -tileSize && y - yOffset < height)
+                && (x - xOffset > -tileWidth && x - xOffset < width)
+                && (y - yOffset > -tileHeight && y - yOffset < height)
               ) {
                 this.ctx.drawImage(
                   this.atlas, // image
@@ -181,8 +155,8 @@ export default class Map {
             if (
               widthOffset > 0
               && heightOffset > 0
-              && (x - xOffset > -tileSize && x - xOffset < width)
-              && (y - yOffset > -tileSize && y - yOffset < height)
+              && (x - xOffset > -tileWidth && x - xOffset < width)
+              && (y - yOffset > -tileHeight && y - yOffset < height)
             ) {
               this.ctx.fillStyle = MEDIUM_OPAQUE;
               this.ctx.fillRect(
@@ -202,8 +176,8 @@ export default class Map {
             if (
               widthOffset > 0
               && heightOffset > 0
-              && (x - xOffset > -tileSize && x - xOffset < width)
-              && (y - yOffset > -tileSize && y - yOffset < height)
+              && (x - xOffset > -tileWidth && x - xOffset < width)
+              && (y - yOffset > -tileHeight && y - yOffset < height)
             ) {
               this.clickTiles.push(Object.assign({}, tile, {
                 xPos: x - xOffset + xStart,
@@ -220,7 +194,7 @@ export default class Map {
             const yIcon = y + coords.y * zoom - iconSize / 2;
             const {
               xOffset, yOffset, widthOffset, heightOffset,
-            } = getOffsets(xIcon, yIcon, width, height, iconSize);
+            } = this.camera.getOffsets(xIcon, yIcon, iconSize, iconSize);
             if (
               widthOffset > 0
               && heightOffset > 0
@@ -255,7 +229,7 @@ export default class Map {
             const yIcon = y + coordsTarget.y * zoom - iconSize / 2;
             const {
               xOffset, yOffset, widthOffset, heightOffset,
-            } = getOffsets(xIcon, yIcon, width, height, iconSize);
+            } = this.camera.getOffsets(xIcon, yIcon, iconSize, iconSize);
             if (
               widthOffset > 0
               && heightOffset > 0
@@ -292,7 +266,7 @@ export default class Map {
                 const yIcon = y + visitor.yCoord * zoom - iconSize / 2;
                 const {
                   xOffset, yOffset, widthOffset, heightOffset,
-                } = getOffsets(xIcon, yIcon, width, height, iconSize);
+                } = this.camera.getOffsets(xIcon, yIcon, iconSize, iconSize);
                 if (
                   widthOffset > 0
                   && heightOffset > 0

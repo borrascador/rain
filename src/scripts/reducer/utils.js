@@ -188,6 +188,24 @@ function getTimestamp(changes, offset, now) {
   return now;
 }
 
+export function sortTiles(state, action) {
+  const { tiles } = action.payload;
+  if (tiles && tiles[0].trees) { // combak remove tree check
+    return tiles.map(tile => ({
+      ...tile,
+      trees: tile.trees
+        .sort((a, b) => a.position > b.position)
+        .map(tree => ({
+          position: tree.position,
+          x: tree.position % 64,
+          y: Math.floor(tree.position / 64),
+          id: tree.id,
+        }))
+    }));
+  }
+  return state.tiles;
+}
+
 export function updateInventoryChanges(state, action) {
   const { inventory } = action.payload;
   if (inventory && inventory.length > 0) {
