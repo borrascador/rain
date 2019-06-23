@@ -8,19 +8,10 @@ import {
   // checkImageCollision,
   findTile,
 } from './utils';
-import treeData from '../../server/rainserver/map/map.json';
+// import treeData from '../../server/rainserver/map/map.json';
 
 const GROUND_TILES = [0, 1, 4, 5];
 const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
-
-const treeTiles = treeData[0].trees
-  .sort((a, b) => a.position > b.position)
-  .map(tree => ({
-    position: tree.position,
-    x: tree.position % 64,
-    y: Math.floor(tree.position / 64),
-    id: tree.id,
-  }));
 
 const groundTiles = Array.from({ length: 4096 }).map((_, index) => ({
   position: index,
@@ -28,6 +19,15 @@ const groundTiles = Array.from({ length: 4096 }).map((_, index) => ({
   y: index % 64,
   id: getGroundTile(),
 }));
+
+// const treeTiles = treeData[0].trees
+//   .sort((a, b) => a.position > b.position)
+//   .map(tree => ({
+//     position: tree.position,
+//     x: tree.position % 64,
+//     y: Math.floor(tree.position / 64),
+//     id: tree.id,
+//   }));
 
 export default class Tactical {
   constructor(store, canvas, ctx, loader) {
@@ -40,6 +40,7 @@ export default class Tactical {
     this.trees = loader.getImage('trees');
 
     this.connect = new Connect(this.store);
+    // const { pos, coords } = this.connect;
 
     this.camera = new Camera(
       this.canvas.width, // width
@@ -106,8 +107,6 @@ export default class Tactical {
     if (!this.camera.x && !this.camera.y) {
       this.camera.x = Math.round(-this.camera.width / 2);
       this.camera.y = Math.round(-this.camera.height / 2);
-      // this.camera.x = 0;
-      // this.camera.y = 0;
     }
 
     const startCol = Math.floor(this.camera.x / tileWidth);
@@ -152,7 +151,12 @@ export default class Tactical {
   }
 
   renderTreeLayer() {
-    const { zoom } = this.connect.map;
+    const {
+      // pos, coords, positionTarget, coordsTarget, sight,
+      tiles, zoom,
+    } = this.connect.map;
+
+    const treeTiles = tiles[0].trees;
 
     const {
       xStart, yStart, width, height,
@@ -167,8 +171,6 @@ export default class Tactical {
     if (!this.camera.x && !this.camera.y) {
       this.camera.x = Math.round(-this.camera.width / 2);
       this.camera.y = Math.round(-this.camera.height / 2);
-      // this.camera.x = 0;
-      // this.camera.y = 0;
     }
 
     const startCol = Math.floor(this.camera.x / tileWidth);
