@@ -10,8 +10,12 @@ export default class Camera {
   }
 
   center(xPos, yPos, xCoords, yCoords, zoom) {
-    this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
-    this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);
+    // Tactical.js
+    this.x = Math.round(((xPos * 64 + xCoords) * this.tileWidth * zoom) - this.width / 2);
+    this.y = Math.round(((yPos * 64 + yCoords) * this.tileWidth * zoom) - this.height / 2);
+    // Map.js
+    // this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
+    // this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);
   }
 
   move(delta, dirx, diry) {

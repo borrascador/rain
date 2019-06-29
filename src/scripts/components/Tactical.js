@@ -6,28 +6,8 @@ import Connect from '../Connect';
 import {
   // screenToImageButton,
   // checkImageCollision,
-  findTile,
+  findGroundTile, findTreeTile,
 } from './utils';
-// import treeData from '../../server/rainserver/map/map.json';
-
-const GROUND_TILES = [0, 1, 4, 5];
-const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
-
-const groundTiles = Array.from({ length: 4096 }).map((_, index) => ({
-  position: index,
-  x: Math.floor(index / 64),
-  y: index % 64,
-  id: getGroundTile(),
-}));
-
-// const treeTiles = treeData[0].trees
-//   .sort((a, b) => a.position > b.position)
-//   .map(tree => ({
-//     position: tree.position,
-//     x: tree.position % 64,
-//     y: Math.floor(tree.position / 64),
-//     id: tree.id,
-//   }));
 
 export default class Tactical {
   constructor(store, canvas, ctx, loader) {
@@ -95,8 +75,7 @@ export default class Tactical {
   }
 
   renderGroundLayer() {
-    const { zoom } = this.connect.map;
-
+    const { zoom, tiles } = this.connect.map;
     const {
       xStart, yStart, width, height,
     } = this.camera;
@@ -104,21 +83,16 @@ export default class Tactical {
     const tileWidth = this.tactical.tileset.tilewidth * zoom;
     const tileHeight = this.tactical.tileset.tileheight * zoom;
 
-    if (!this.camera.x && !this.camera.y) {
-      this.camera.x = Math.round(-this.camera.width / 2);
-      this.camera.y = Math.round(-this.camera.height / 2);
-    }
-
     const startCol = Math.floor(this.camera.x / tileWidth);
     const endCol = startCol + Math.ceil(width / tileWidth);
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight);
 
-    for (let col = startCol; col <= endCol; col += 1) {
-      for (let row = startRow; row <= endRow; row += 1) {
+    for (let row = startRow; row <= endRow; row += 1) {
+      for (let col = startCol; col <= endCol; col += 1) {
         const x = col * tileWidth - this.camera.x;
         const y = row * tileHeight - this.camera.y;
-        const tile = findTile(groundTiles, col, row);
+        const tile = findGroundTile(tiles, col, row);
 
         if (tile) {
           // draw ground layer
@@ -151,13 +125,7 @@ export default class Tactical {
   }
 
   renderTreeLayer() {
-    const {
-      // pos, coords, positionTarget, coordsTarget, sight,
-      tiles, zoom,
-    } = this.connect.map;
-
-    const treeTiles = tiles[0].trees;
-
+    const { tiles, zoom } = this.connect.map;
     const {
       xStart, yStart, width, height,
     } = this.camera;
@@ -168,22 +136,17 @@ export default class Tactical {
     const treeWidth = this.trees.tileset.tilewidth * zoom;
     const treeHeight = this.trees.tileset.tileheight * zoom;
 
-    if (!this.camera.x && !this.camera.y) {
-      this.camera.x = Math.round(-this.camera.width / 2);
-      this.camera.y = Math.round(-this.camera.height / 2);
-    }
-
-    const startCol = Math.floor(this.camera.x / tileWidth);
+    // todo find better way to handle commented lines
+    const startCol = Math.floor(this.camera.x / tileWidth) - 1; // fixes popping in/out on left
     const endCol = startCol + Math.ceil(width / tileWidth);
     const startRow = Math.floor(this.camera.y / tileHeight);
-    // todo clean this line up
-    const endRow = startRow + Math.ceil(height / tileHeight) + 5; // fixes cutting off bottom
+    const endRow = startRow + Math.ceil(height / tileHeight) + 5; // fixes popping in/out on bottom
 
-    for (let col = startCol; col <= endCol; col += 1) {
-      for (let row = startRow; row <= endRow; row += 1) {
+    for (let row = startRow; row <= endRow; row += 1) {
+      for (let col = startCol; col <= endCol; col += 1) {
         const x = col * tileWidth - this.camera.x - tileWidth;
         const y = row * tileHeight - this.camera.y - treeHeight + tileHeight;
-        const tile = findTile(treeTiles, col, row);
+        const tile = findTreeTile(tiles, col, row);
 
         if (tile) {
           // draw tree layer
@@ -216,6 +179,10 @@ export default class Tactical {
   }
 
   render() {
+    const { pos, coords, zoom } = this.connect.map;
+    if (!this.camera.x && !this.camera.y) {
+      this.camera.center(pos.x, pos.y, coords.x, coords.y, zoom);
+    }
     const {
       xStart, yStart, width, height,
     } = this.camera;

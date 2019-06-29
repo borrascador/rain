@@ -86,7 +86,8 @@ export function logoutResponse(state) {
 
 export function update(state, action) {
   const slots = mergeSlots(state.slots, action.payload.inventory);
-  const tiles = sortTiles(state, action);
+  const { tiles } = state;
+  // const tiles = sortTiles(state, action);
   // const tiles = mergeArrays(state.tiles, action.payload.tiles);
   const party = mergeArrays(state.party, action.payload.party);
   const position = typeof action.payload.position === 'number'
