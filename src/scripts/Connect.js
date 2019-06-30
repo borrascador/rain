@@ -87,7 +87,7 @@ export default class Connect {
     const {
       position, xCoord, yCoord, positionTarget, xTarget, yTarget, tiles, sight, zoom
     } = this.store.getState();
-    const { x, y } = tiles.find(tile => tile.id === position);
+    const { x, y } = tiles.find(tile => tile.position === position);
     const pos = { x, y };
     const coords = { x: xCoord, y: yCoord };
     const coordsTarget = { x: xTarget, y: yTarget };
@@ -102,7 +102,7 @@ export default class Connect {
 
   get currentTile() {
     const { position, tiles } = this.store.getState();
-    return tiles.find(tile => tile.id === position);
+    return tiles.find(tile => tile.position === position);
   }
 
   get position() {

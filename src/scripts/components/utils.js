@@ -38,9 +38,39 @@ export const screenToImageButtonId = (x, y, list) => {
 
 export const getItemById = (array, id) => array.find(x => x.id === id);
 
+// todo get rid of this
 export const findTile = (tiles, x, y) => (
   tiles.find(tile => x === tile.x && y === tile.y)
 );
+
+export const convertTileCoords = (col, row) => ({
+  xPos: Math.floor(col / 64),
+  yPos: Math.floor(row / 64),
+  xCoord: col % 64,
+  yCoord: row % 64,
+});
+
+export const findGroundTile = (tiles, col, row) => {
+  const {
+    xPos, yPos, xCoord, yCoord,
+  } = convertTileCoords(col, row);
+  const superTile = tiles.find(({ x, y }) => x === xPos && y === yPos);
+  if (superTile) {
+    return superTile.ground.find(({ x, y }) => x === xCoord && y === yCoord);
+  }
+  return undefined;
+};
+
+export const findTreeTile = (tiles, col, row) => {
+  const {
+    xPos, yPos, xCoord, yCoord,
+  } = convertTileCoords(col, row);
+  const superTile = tiles.find(({ x, y }) => x === xPos && y === yPos);
+  if (superTile) {
+    return superTile.trees.find(({ x, y }) => x === xCoord && y === yCoord);
+  }
+  return undefined;
+};
 
 export const getRandomInt = max => (
   Math.floor(Math.random() * Math.floor(max))

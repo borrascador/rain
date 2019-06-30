@@ -189,14 +189,22 @@ function getTimestamp(changes, offset, now) {
 }
 
 export function sortTiles(state, action) {
+  // TODO move these lines into helper function
+  const GROUND_TILES = [0, 1, 4, 5];
+  const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
+
   const { tiles } = action.payload;
-  if (tiles && tiles[0].trees) { // combak remove tree check
+  if (tiles && tiles[0].trees) { // combak remove check when server only returns new-style tiles
     return tiles.map(tile => ({
       ...tile,
+      ground: Array.from({ length: 4096 }).map((_, index) => ({
+        x: Math.floor(index / 64),
+        y: index % 64,
+        id: getGroundTile(),
+      })),
       trees: tile.trees
         .sort((a, b) => a.position > b.position)
         .map(tree => ({
-          position: tree.position,
           x: tree.position % 64,
           y: Math.floor(tree.position / 64),
           id: tree.id,
@@ -346,7 +354,7 @@ export function getActions(inventory, tiles, position, hunting) {
       );
   }
 
-  const currentTile = tiles.find(tile => tile.id === position);
+  const currentTile = tiles.find(tile => tile.position === position);
   if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
     actions.main.push({ target: 'harvest', id: 14, tileset: 'icons' });
     actions.harvest = [{
