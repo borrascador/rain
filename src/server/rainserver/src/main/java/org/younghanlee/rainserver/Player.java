@@ -302,9 +302,10 @@ public class Player {
 	public JSONObject respawn() {
 		Tribe t = World.getTribe(tribe);
 		int rp = t.getRespawnPosition();
+		System.out.println("Test10");
 		setPosition(rp);
-		setX(Util.randomInt(31));
-		setY(Util.randomInt(32));
+		setX(Util.randomInt(32)+16);
+		setY(Util.randomInt(32)+16);
 		JSONObject payload = new JSONObject();
 //		tilesSeen = World.getTile(rp).inSight(sight);
 		JSONArray newParty =  t.generateParty(this);
@@ -745,6 +746,9 @@ public class Player {
 	// Then add its id to party
 	public int addMember(String name, int icon) {
 		Member m = new Member(name, icon);
+		m.setPosition(position);
+		m.setX(Util.randomInt(6)+x-3);
+		m.setY(Util.randomInt(6)+y-3);
 		int id = World.addMember(m);
 		party.add(id);
 		return id;

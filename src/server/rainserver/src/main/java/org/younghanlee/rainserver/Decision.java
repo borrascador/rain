@@ -62,11 +62,11 @@ public class Decision {
 					p.setTribe(index);
 					Tribe tribe = World.getTribe(index);
 					JSONArray inventory = tribe.generateInventory(p);
+					p.setPosition(World.getTribe(index).getRespawnPosition());
+					p.setX(Util.randomInt(10)+28);
+					p.setY(Util.randomInt(10)+28);
 					JSONArray party = tribe.generateParty(p);
 					
-					p.setPosition(World.getTribe(index).getRespawnPosition());
-					p.setX(Util.randomInt(31));
-					p.setY(Util.randomInt(31));
 					Tile t = World.getTile(p.getPosition());
 					for (int i : t.inSight(p.getSight())) {
 						p.addTilesSeen(i);
@@ -75,11 +75,9 @@ public class Decision {
 					t.updateNeighbors(p, 1);
 					
 					JSONObject payload = new JSONObject();
-					JSONArray tiles = p.inSightArray();
 					payload.put("position", p.getPosition());
 					payload.put("xCoord", p.getX());
 					payload.put("yCoord", p.getY());
-					payload.put("tiles", tiles);
 					JSONObject story = new JSONObject();
 					story.put("text", "You have chosen " + World.getTribe(index).getName());
 					payload.put("story", story);
