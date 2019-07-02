@@ -76,6 +76,9 @@ public class Tribe {
 			}
 			Member m = World.getMember(member_id);
 			JSONObject memberObject = m.change(member_id, p, 0, 0, newSkills, null, null);
+			memberObject.put("position", m.getPosition());
+			memberObject.put("XCoord", m.getX());
+			memberObject.put("YCoord", m.getY());
 			party.put(memberObject);
 		}
 		return party;
