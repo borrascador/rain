@@ -6,6 +6,7 @@ import Connect from '../Connect';
 import {
   // screenToImageButton,
   // checkImageCollision,
+  convertTileCoords2,
   findGroundTile, findTreeTile,
 } from './utils';
 
@@ -178,6 +179,55 @@ export default class Tactical {
     }
   }
 
+  // TODO probably need to rewrite this function and clean everything up
+  renderPlayerLayer() {
+    const { party } = this.connect;
+    const { zoom, tiles } = this.connect.map;
+    const {
+      xStart, yStart, width, height,
+    } = this.camera;
+
+    const tileWidth = this.tactical.tileset.tilewidth * zoom;
+    const tileHeight = this.tactical.tileset.tileheight * zoom;
+
+    const startCol = Math.floor(this.camera.x / tileWidth);
+    const endCol = startCol + Math.ceil(width / tileWidth);
+    const startRow = Math.floor(this.camera.y / tileHeight);
+    const endRow = startRow + Math.ceil(height / tileHeight);
+
+    party.forEach((player) => {
+      const { XCoord: xCoord, YCoord: yCoord, /* icon */ } = player;
+      const superTile = tiles.find(({ position }) => position === player.position);
+      if (superTile) {
+        const { x: xPos, y: yPos } = superTile;
+        const { x: col, y: row } = convertTileCoords2(xPos, yPos, xCoord, yCoord);
+        if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
+          const x = col * tileWidth - this.camera.x;
+          const y = row * tileHeight - this.camera.y;
+          const {
+            xOffset, yOffset, widthOffset, heightOffset,
+          } = this.camera.getOffsets(x, y, tileWidth * 2, tileHeight * 2);
+
+          const icon = 0;
+          const [tilewidth, tileheight] = [16, 16];
+          const { /* tileheight, tilewidth, */ columns } = this.player.tileset;
+
+          this.ctx.drawImage(
+            this.player, // image
+            (icon % columns) * tilewidth - (xOffset / zoom), // srcX
+            Math.floor(icon / columns) * tileheight - (yOffset / zoom), // srcY
+            widthOffset / zoom, // srcWidth
+            heightOffset / zoom, // srcHeight
+            x - xOffset + xStart, // destX
+            y - yOffset + yStart, // destY
+            widthOffset / 2, // destWidth
+            heightOffset / 2 // destHeight
+          );
+        }
+      }
+    });
+  }
+
   render() {
     const { pos, coords, zoom } = this.connect.map;
     if (!this.camera.x && !this.camera.y) {
@@ -190,5 +240,6 @@ export default class Tactical {
     this.ctx.fillRect(xStart, yStart, width, height);
     this.renderGroundLayer();
     this.renderTreeLayer();
+    this.renderPlayerLayer();
   }
 }

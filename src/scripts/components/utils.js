@@ -50,6 +50,11 @@ export const convertTileCoords = (col, row) => ({
   yCoord: row % 64,
 });
 
+export const convertTileCoords2 = (xPos, yPos, xCoord, yCoord) => ({
+  x: xPos * 64 + xCoord,
+  y: yPos * 64 + yCoord,
+});
+
 export const findGroundTile = (tiles, col, row) => {
   const {
     xPos, yPos, xCoord, yCoord,
