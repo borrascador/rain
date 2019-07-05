@@ -14,11 +14,15 @@ import org.younghanlee.rainserver.Habitat;
 import org.younghanlee.rainserver.Util;
 
 public class Map {
+	private int width;
+	private int height;
 	private static HashMap<Integer, HashMap<Integer, Double>> plant_frequencies;
 	private static HashMap<Integer, Double> plant_densities;
 	private static ArrayList<MapTile> tiles;
 	
-	public Map(String superMapFile) {
+	public Map(String superMapFile, int width, int height) {
+		this.width = width;
+		this.height = height;
 		plant_frequencies = new HashMap<Integer, HashMap<Integer, Double>>();
 		plant_densities = new HashMap<Integer, Double>();
 		tiles = new ArrayList<MapTile>();
@@ -68,9 +72,11 @@ public class Map {
 		}
 	}
 	
-	public static void export(String filename) {
+	public void export(String filename) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("map/" + filename));
+			writer.write("{\nwidth: " + width);
+			writer.write(",\nheight: " + height + ",\ntiles: ");	
 			writer.write("[\n");
 			MapTile mt;
 			int i;
@@ -80,16 +86,15 @@ public class Map {
 			}
 			writer.write(tiles.get(i).toJSONObject().toString() + "\n");
 			writer.write("]");
+			writer.write("}");
 			writer.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 	}
 	
-	public static void generateSuperMap(String filename) {
+	public static void generateSuperMap(String filename, int width, int height) {
 		JSONArray superMap = new JSONArray();
-		int width = 3;
-		int height = 3;
 		for (int h=0; h<height; h++) {
 			for (int w=0; w<width; w++) {
 				JSONObject tile = new JSONObject();
@@ -123,8 +128,8 @@ public class Map {
 	}
 	
 	public static void main(String[] args) {
-		generateSuperMap("superMap.json");
-		new Map("map/superMap.json");
-		Map.export("map.json");
+		generateSuperMap("superMap.json", 3, 3);
+		Map m = new Map("map/superMap.json", 3, 3);
+		m.export("map.json");
 	}
 }

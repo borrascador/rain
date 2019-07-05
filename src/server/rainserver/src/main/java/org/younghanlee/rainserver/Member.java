@@ -195,8 +195,8 @@ public class Member {
 		jo.put("name", name);
 		jo.put("icon", icon);
 		jo.put("position", position);
-		jo.put("XCoord", x);
-		jo.put("YCoord", y);
+		jo.put("xCoord", x);
+		jo.put("xCoord", y);
 		JSONArray skillsArray = new JSONArray();
 		for (int skill_id: skills.keySet()) {
 			Skill s = World.getSkill(skill_id);
