@@ -1,5 +1,6 @@
 import Camera from './Camera';
 import Connect from '../Connect';
+import { FOREST_BLACK } from '../utils/colors';
 // import { clickedLeft } from '../actions/actions';
 // import { sendEvent } from '../actions/requests';
 // import { EVENTS } from '../actions/types';
@@ -21,7 +22,7 @@ export default class Tactical {
     this.trees = loader.getImage('trees');
 
     this.connect = new Connect(this.store);
-    // const { pos, coords } = this.connect;
+    const { zoom } = this.connect;
 
     this.camera = new Camera(
       this.canvas.width, // width
@@ -29,7 +30,22 @@ export default class Tactical {
       0, // xStart
       0, // yStart
       this.tactical.tileset.tilewidth,
+      zoom,
     );
+
+    this.createOffscreenCanvas();
+  }
+
+  createOffscreenCanvas() {
+    this.offScreenCanvas = document.createElement('canvas');
+    this.offScreenCanvas.width = this.canvas.width;
+    this.offScreenCanvas.height = this.canvas.height;
+    this.offScreenContext = this.offScreenCanvas.getContext('2d');
+    this.offScreenContext.imageSmoothingEnabled = false;
+  }
+
+  copyToOnScreen() {
+    this.ctx.drawImage(this.offScreenCanvas, 0, 0);
   }
 
   update(step) {
@@ -108,7 +124,7 @@ export default class Tactical {
             && (x - xOffset > -tileWidth && x - xOffset < width)
             && (y - yOffset > -tileHeight && y - yOffset < height)
           ) {
-            this.ctx.drawImage(
+            this.offScreenContext.drawImage(
               this.tactical, // image
               (id % columns) * tilewidth - (xOffset / zoom), // srcX
               Math.floor(id / columns) * tileheight - (yOffset / zoom), // srcY
@@ -139,7 +155,7 @@ export default class Tactical {
 
     // todo find better way to handle commented lines
     const startCol = Math.floor(this.camera.x / tileWidth) - 1; // fixes popping in/out on left
-    const endCol = startCol + Math.ceil(width / tileWidth);
+    const endCol = startCol + Math.ceil(width / tileWidth) + 2; // fixes popping in/out on right
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight) + 5; // fixes popping in/out on bottom
 
@@ -162,7 +178,7 @@ export default class Tactical {
             && (x - xOffset > -treeWidth && x - xOffset < width)
             && (y - yOffset > -treeWidth && y - yOffset < height)
           ) {
-            this.ctx.drawImage(
+            this.offScreenContext.drawImage(
               this.trees, // image
               (id % columns) * tilewidth - (xOffset / zoom), // srcX
               Math.floor(id / columns) * tileheight - (yOffset / zoom), // srcY
@@ -206,22 +222,23 @@ export default class Tactical {
           const y = row * tileHeight - this.camera.y;
           const {
             xOffset, yOffset, widthOffset, heightOffset,
-          } = this.camera.getOffsets(x, y, tileWidth * 2, tileHeight * 2);
+          } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
 
           const icon = 0;
-          const [tilewidth, tileheight] = [16, 16];
-          const { /* tileheight, tilewidth, */ columns } = this.player.tileset;
+          const { tileheight, tilewidth, columns } = this.player.tileset;
+          const widthRatio = this.player.tileset.tilewidth / this.tactical.tileset.tilewidth;
+          const heightRatio = this.player.tileset.tileheight / this.tactical.tileset.tileheight;
 
-          this.ctx.drawImage(
+          this.offScreenContext.drawImage(
             this.player, // image
-            (icon % columns) * tilewidth - (xOffset / zoom), // srcX
-            Math.floor(icon / columns) * tileheight - (yOffset / zoom), // srcY
-            widthOffset / zoom, // srcWidth
-            heightOffset / zoom, // srcHeight
+            (icon % columns) * tilewidth - (widthRatio * xOffset / zoom), // srcX
+            Math.floor(icon / columns) * tileheight - (heightRatio * yOffset / zoom), // srcY
+            widthRatio * widthOffset / zoom, // srcWidth
+            heightRatio * heightOffset / zoom, // srcHeight
             x - xOffset + xStart, // destX
             y - yOffset + yStart, // destY
-            widthOffset / 2, // destWidth
-            heightOffset / 2 // destHeight
+            widthOffset, // destWidth
+            heightOffset // destHeight
           );
         }
       }
@@ -230,16 +247,15 @@ export default class Tactical {
 
   render() {
     const { pos, coords, zoom } = this.connect.map;
-    if (!this.camera.x && !this.camera.y) {
-      this.camera.center(pos.x, pos.y, coords.x, coords.y, zoom);
+    this.camera.lazyCenter(pos.x, pos.y, coords.x, coords.y, zoom);
+    if (this.camera.needRender) {
+      this.ctx.fillStyle = FOREST_BLACK;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.renderGroundLayer();
+      this.renderTreeLayer();
+      this.renderPlayerLayer();
+      this.camera.needRender = false;
     }
-    const {
-      xStart, yStart, width, height,
-    } = this.camera;
-    this.ctx.fillStyle = '#113322';
-    this.ctx.fillRect(xStart, yStart, width, height);
-    this.renderGroundLayer();
-    this.renderTreeLayer();
-    this.renderPlayerLayer();
+    this.copyToOnScreen();
   }
 }
