@@ -84,7 +84,7 @@ public class Move {
 				if (newX < x) {
 					position = position + 1;
 					p.setPosition(position);
-					tiles = p.inSightArray();
+//					tiles = p.inSightArray();
 				}
 				if (position == target && newX > xTarget){
 					newX = xTarget;
@@ -102,7 +102,7 @@ public class Move {
 				if (newX > x) {
 					position = position - 1;
 					p.setPosition(position);
-					tiles = p.inSightArray();
+// 					tiles = p.inSightArray();
 				}
 				if (position == target && newX < xTarget){
 					newX = xTarget;
@@ -121,7 +121,7 @@ public class Move {
 				if (newY < y) {
 					position = position + World.getWidth();
 					p.setPosition(position);
-					tiles = p.inSightArray();
+//					tiles = p.inSightArray();
 				}
 				if (position == target && newY > yTarget){
 					newY= yTarget;
@@ -139,7 +139,7 @@ public class Move {
 				if (newY > y) {
 					position = position - World.getWidth();
 					p.setPosition(position);
-					tiles = p.inSightArray();
+//					tiles = p.inSightArray();
 				}
 				if (position == target && newY < yTarget){
 					newY= yTarget;
@@ -151,7 +151,7 @@ public class Move {
 				break;	
 		}
 		
-		World.getTile(position).updateNeighbors(p, 1);
+// 		World.getTile(position).updateNeighbors(p, 1);
 		
 		JSONObject payload = new JSONObject();
 

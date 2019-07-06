@@ -26,6 +26,7 @@ public class World {
 	private static int mapWidth;
 	private static int mapHeight;
 	private static int numTiles;
+	private static int tileSize;
 	private static Tile[] map;
 	
 	private static int memberID;
@@ -34,8 +35,9 @@ public class World {
 		
 		// Read map.json
 		JSONObject m = null;
+		JSONArray tilesArray = null;
 		try {
-			m = new JSONObject(new String(Files.readAllBytes(Paths.get("json/map.json"))));
+			m = new JSONObject(new String(Files.readAllBytes(Paths.get("map/map.json"))));
 		} catch (IOException e) {
 			System.out.println("Map file "+ "map.json" + " not found.");
 			System.exit(1);
@@ -43,6 +45,8 @@ public class World {
 		
 		mapWidth = m.getInt("height");
 		mapHeight = m.getInt("width");
+		tileSize = m.getInt("tileSize");
+		tilesArray = m.getJSONArray("tiles");
 		numTiles = mapWidth * mapHeight;
 		
 		// All users, online or offline
@@ -74,35 +78,9 @@ public class World {
 		numPlayers = 0;
 		online = 0;
 		
-		// Initialize tiles without layers
 		map = new Tile[numTiles];
 		for (int i=0; i<numTiles; i++) {
-			map[i] = new Tile(i);
-		}
-		
-		// Add layers
-		JSONArray layers = m.getJSONArray("layers");
-		for (int i=0; i< layers.length(); i++) {
-			JSONObject layer = layers.getJSONObject(i);
-			JSONArray data = layer.getJSONArray("data");
-			String layerName = layer.getString("name");
-			if (layer.getBoolean("visible")) {
-				// Add layer
-				for (int j=0; j<data.length(); j++) {
-					int value = data.getInt(j);
-					if (value != 0) {
-						map[j].addLayer(layerName, value); 
-					}
-				}
-			} else {
-				// Add habitat
-				for (int j=0; j<data.length(); j++) {
-					int value = data.getInt(j);
-					if (value != 0) {
-						map[j].addHabitat(layerName, value - 76); 
-					}
-				}
-			}
+			map[i] = new Tile(tilesArray.getJSONObject(i));
 		}
 	}
 	
@@ -120,6 +98,14 @@ public class World {
 	
 	public static int getWidth() {
 		return mapWidth;
+	}
+	
+	public static int getMapSize() {
+		return numTiles;
+	}
+	
+	public static int getTileSize() {
+		return tileSize;
 	}
 	
 	public static void onlineInc() {
@@ -177,15 +163,6 @@ public class World {
 		// List all players (Including)
 		for (Player p : players.values()) {
 		    System.out.println(p.toString());
-		}
-		
-		// List all tiles containing players
-		System.out.println("OCCUPIED TILES:");
-		for (int i=0; i<numTiles; i++) {
-			Tile t = map[i];
-			if (t.occupied()) {
-				System.out.println("  " + i + " " + t.getVisitors(null).size());
-			}
 		}
 		
 		System.out.println();

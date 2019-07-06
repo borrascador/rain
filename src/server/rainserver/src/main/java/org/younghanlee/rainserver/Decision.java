@@ -67,23 +67,13 @@ public class Decision {
 					p.setY(Util.randomInt(10)+28);
 					JSONArray party = tribe.generateParty(p);
 					
-					Tile t = World.getTile(p.getPosition());
-					for (int i : t.inSight(p.getSight())) {
-						p.addTilesSeen(i);
-					}
-					t.addVisitor(p);
-					t.updateNeighbors(p, 1);
-					
 					JSONObject payload = new JSONObject();
-					payload.put("position", p.getPosition());
-					payload.put("xCoord", p.getX());
-					payload.put("yCoord", p.getY());
 					JSONObject story = new JSONObject();
 					story.put("text", "You have chosen " + World.getTribe(index).getName());
 					payload.put("story", story);
 					payload.put("inventory", inventory);
 					payload.put("party", party);
-					return Message.EVENT_RESPONSE(payload);
+ 					return Message.EVENT_RESPONSE(payload);
 				}
 				public ArrayList<Multiplier> generateMultipliers(Player p){
 					return null;

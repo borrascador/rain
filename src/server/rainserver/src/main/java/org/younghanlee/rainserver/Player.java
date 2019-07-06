@@ -110,8 +110,8 @@ public class Player {
 			connection.setPlayer(this);
 			if (position != null) { // Check if player has chosen tribe yet
 				Tile t = World.getTile(position);
-				t.addVisitor(this);
-				t.updateNeighbors(this, 1); // Reveal player to everyone in range
+		//		t.addVisitor(this);
+			//	t.updateNeighbors(this, 1); // Reveal player to everyone in range
 			}
 			return true;
 		}
@@ -122,8 +122,8 @@ public class Player {
 		this.online = false;
 		World.onlineDec();
 		Tile t = World.getTile(position);
-		t.removeVisitor(this);
-		t.updateNeighbors(this, 1);
+		//t.removeVisitor(this);
+		// t.updateNeighbors(this, 1);
 		if (drag != null) {
 			putBackItem();
 		}
@@ -166,7 +166,7 @@ public class Player {
 			
 			for (Integer i: list) {
 				buffer.remove(i);
-				tiles.put(World.getTile(i).toJSONObject(this));
+				// tiles.put(World.getTile(i).toJSONObject(this));
 			}
 			payload.put("tiles", tiles);
 		}
@@ -245,10 +245,10 @@ public class Player {
 	
 	public void setPosition(int position) { // Also edit tile visitors appropriately
 		if (this.position != null) {
-			World.getTile(this.position).removeVisitor(this);
+			// World.getTile(this.position).removeVisitor(this);
 		}
 		this.position = position;
-		World.getTile(position).addVisitor(this);
+		// World.getTile(position).addVisitor(this);
 		
 	}
 	
@@ -315,7 +315,7 @@ public class Player {
 		payload.put("position", rp);
 		payload.put("party", newParty);
 		payload.put("inventory", newInventory);
-		payload.put("tiles", inSightArray());
+		// payload.put("tiles", inSightArray());
 		return Message.EVENT_RESPONSE(payload);
 	}
 	
@@ -393,20 +393,20 @@ public class Player {
 	public JSONArray tilesSeenArray() {
 		JSONArray ja = new JSONArray();
 		for (int ts: tilesSeen) {
-			ja.put(World.getTile(ts).toJSONObject(this));
+			// ja.put(World.getTile(ts).toJSONObject(this));
 		}
 		return ja;
 	}
-	
-	public JSONArray inSightArray() {
-		JSONArray ja = new JSONArray();
-		for (int ts: World.getTile(position).inSight(sight)) {
-			tilesSeen.add(ts);
-			ja.put(World.getTile(ts).toJSONObject(this));
-		}
-		return ja;
-	}
-	
+//	
+//	public JSONArray inSightArray() {
+//		JSONArray ja = new JSONArray();
+//		for (int ts: World.getTile(position).inSight(sight)) {
+//			tilesSeen.add(ts);
+//			ja.put(World.getTile(ts).toJSONObject(this));
+//		}
+//		return ja;
+//	}
+//	
 	public JSONArray setQuantity(int itemID, int quantity) {
 		JSONArray ja = new JSONArray();
 		// If quantity is 0 remove all stacks 
