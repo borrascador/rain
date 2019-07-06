@@ -5,7 +5,7 @@ import Tactical from '../components/Tactical';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import PartyWindow from '../components/PartyWindow';
-import { FOREST_BLACK, MEDIUM_OPAQUE } from '../utils/colors';
+import { MEDIUM_OPAQUE } from '../utils/colors';
 
 export default class GameView {
   constructor(store, canvas, ctx, loader) {
@@ -47,9 +47,6 @@ export default class GameView {
   }
 
   render() {
-    this.ctx.fillStyle = FOREST_BLACK;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
     const { currentTile, mode, modal } = this.connect;
 
     if (currentTile) {

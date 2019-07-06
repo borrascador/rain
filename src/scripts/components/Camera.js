@@ -1,27 +1,47 @@
 import { CAMERA_SPEED } from '../utils/constants';
 
 export default class Camera {
-  constructor(width, height, xStart, yStart, tileWidth) {
+  constructor(width, height, xStart, yStart, tileWidth, zoom) {
     this.width = width;
     this.height = height;
     this.xStart = xStart;
     this.yStart = yStart;
     this.tileWidth = tileWidth;
+    this.zoom = zoom;
+    this.needRender = true;
   }
 
-  center(xPos, yPos, xCoords, yCoords, zoom) {
+  lazyCenter(xPos, yPos, xCoords, yCoords, zoom) {
+    if (!this.x || !this.y) {
+      this.centerToPoint(xPos, yPos, xCoords, yCoords);
+    } else if (this.zoom !== zoom) {
+      this.centerOnZoom(zoom);
+    }
+  }
+
+  centerToPoint(xPos, yPos, xCoords, yCoords) {
     // Tactical.js
-    this.x = Math.round(((xPos * 64 + xCoords) * this.tileWidth * zoom) - this.width / 2);
-    this.y = Math.round(((yPos * 64 + yCoords) * this.tileWidth * zoom) - this.height / 2);
+    this.x = Math.round(((xPos * 64 + xCoords) * this.tileWidth * this.zoom) - this.width / 2);
+    this.y = Math.round(((yPos * 64 + yCoords) * this.tileWidth * this.zoom) - this.height / 2);
     // Map.js
     // this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
     // this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);
+    this.needRender = true;
+  }
+
+  centerOnZoom(newZoom) {
+    // preserve camera center-point on zoom
+    this.x = newZoom * ((this.x + this.width / 2) / this.zoom) - this.width / 2;
+    this.y = newZoom * ((this.y + this.height / 2) / this.zoom) - this.height / 2;
+    this.zoom = newZoom;
+    this.needRender = true;
   }
 
   move(delta, dirx, diry) {
     // move camera
     this.x += dirx * CAMERA_SPEED * delta;
     this.y += diry * CAMERA_SPEED * delta;
+    this.needRender = true;
   }
 
   mapToScreen(x, y) {
