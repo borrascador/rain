@@ -16,26 +16,30 @@ import org.younghanlee.rainserver.Util;
 public class Map {
 	private int width;
 	private int height;
+	private int tileSize;
 	private static HashMap<Integer, HashMap<Integer, Double>> plant_frequencies;
 	private static HashMap<Integer, Double> plant_densities;
 	private static ArrayList<MapTile> tiles;
 	
-	public Map(String superMapFile, int width, int height) {
-		this.width = width;
-		this.height = height;
+	public Map(String superMapFile) {
 		plant_frequencies = new HashMap<Integer, HashMap<Integer, Double>>();
 		plant_densities = new HashMap<Integer, Double>();
 		tiles = new ArrayList<MapTile>();
 		readHabitats();
-		JSONArray ja = null;
+		JSONArray tilesArray = null;
+		JSONObject superMapObject = null;
 		try {
-			ja = new JSONArray(new String(Files.readAllBytes(Paths.get(superMapFile))));
+			superMapObject = new JSONObject(new String(Files.readAllBytes(Paths.get(superMapFile))));
 		} catch (IOException e) {
 			System.out.println("Super-Map file "+ superMapFile + " not found.");
 			System.exit(1);
 		}
-		for (int i = 0; i < ja.length(); i++) {
-			JSONObject tileObject = ja.getJSONObject(i);
+		this.width = superMapObject.getInt("width");
+		this.height = superMapObject.getInt("height");
+		this.tileSize = superMapObject.getInt("tileSize");
+		tilesArray = superMapObject.getJSONArray("tiles");
+		for (int i = 0; i < tilesArray.length(); i++) {
+			JSONObject tileObject = tilesArray.getJSONObject(i);
 			int habitat = tileObject.getInt("habitat");
 			int elevation = tileObject.getInt("elevation");
 			int position = tileObject.getInt("position");
@@ -75,8 +79,10 @@ public class Map {
 	public void export(String filename) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("map/" + filename));
-			writer.write("{\nwidth: " + width);
-			writer.write(",\nheight: " + height + ",\ntiles: ");	
+			writer.write("{\n\"width\": " + width);
+			writer.write(",\n\"height\": " + height);
+			writer.write(",\n\"tileSize\": " + tileSize);
+			writer.write(",\n\"tiles\": ");	
 			writer.write("[\n");
 			MapTile mt;
 			int i;
@@ -93,7 +99,7 @@ public class Map {
 		}
 	}
 	
-	public static void generateSuperMap(String filename, int width, int height) {
+	public static void generateSuperMap(String filename, int width, int height, int tileSize) {
 		JSONArray superMap = new JSONArray();
 		for (int h=0; h<height; h++) {
 			for (int w=0; w<width; w++) {
@@ -113,14 +119,18 @@ public class Map {
 		}
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("map/" + filename));
-			System.out.println(superMap.length());
+			System.out.println("Generating SuperMap.");
+			writer.write("{\n\"width\":"+ width);
+			writer.write(",\n\"height\":"+ height);
+			writer.write(",\n\"tileSize\":"+ tileSize);
+			writer.write(",\n\"tiles\":");
 			writer.write("[\n");
 			int i;
 			for (i=0; i<superMap.length() - 1; i++) {
 				writer.write(superMap.getJSONObject(i).toString() + ",\n");
 			}
 			writer.write(superMap.getJSONObject(i).toString() + "\n");
-			writer.write("]");
+			writer.write("]\n}");
 			writer.close();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -128,8 +138,8 @@ public class Map {
 	}
 	
 	public static void main(String[] args) {
-		generateSuperMap("superMap.json", 3, 3);
-		Map m = new Map("map/superMap.json", 3, 3);
+		generateSuperMap("superMap.json", 3, 3, 64);
+		Map m = new Map("map/superMap.json");
 		m.export("map.json");
 	}
 }

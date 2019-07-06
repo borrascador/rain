@@ -30,8 +30,6 @@ public class MessageHandler {
 		JSONObject payload;
 		Player p;
 		JSONArray tiles;
-		JSONArray map = null;
-		JSONObject mapObject = null;
 		
 		switch (message_type) {
 			case "REGISTER_REQUEST":
@@ -87,16 +85,12 @@ public class MessageHandler {
 				} 
 					
 				// Send ordinary response
-				tiles = p.tilesSeenArray();
-				try {
-					mapObject = new JSONObject(new String(Files.readAllBytes(Paths.get("map/map.json"))));
-					map = mapObject.getJSONArray("tiles");
-				} catch (IOException e) {
-					System.out.println("Map file "+ "map.json" + " not found.");
-					System.exit(1);
+				tiles = new JSONArray();
+				for (int i=0; i<World.getMapSize(); i++) {
+					tiles.put(World.getTile(i).toJSONObject());
 				}
 				
-				response = Message.LOGIN_RESPONSE(p, map);
+				response = Message.LOGIN_RESPONSE(p, tiles);
 				connection.sendJSON(response);
 				p.sendDecision(connection);
 				break;
