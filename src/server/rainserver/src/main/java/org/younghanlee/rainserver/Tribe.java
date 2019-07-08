@@ -81,7 +81,7 @@ public class Tribe {
 			memberObject.put("xPos", xPos);
 			memberObject.put("yPos", (m.getPosition() - xPos)/w);
 			memberObject.put("xCoord", m.getX());
-			memberObject.put("xCoord", m.getY());
+			memberObject.put("yCoord", m.getY());
 			party.put(memberObject);
 		}
 		return party;

@@ -43,25 +43,25 @@ export const findTile = (tiles, x, y) => (
   tiles.find(tile => x === tile.x && y === tile.y)
 );
 
-export const convertTileCoords = (col, row) => ({
+export const colRowToCoords = (col, row) => ({
   xPos: Math.floor(col / 64),
   yPos: Math.floor(row / 64),
   xCoord: col % 64,
   yCoord: row % 64,
 });
 
-export const convertTileCoords2 = (xPos, yPos, xCoord, yCoord) => ({
-  x: xPos * 64 + xCoord,
-  y: yPos * 64 + yCoord,
+export const coordsToColRow = (xPos, yPos, xCoord, yCoord) => ({
+  col: xPos * 64 + xCoord,
+  row: yPos * 64 + yCoord,
 });
 
 export const findGroundTile = (tiles, col, row) => {
   const {
     xPos, yPos, xCoord, yCoord,
-  } = convertTileCoords(col, row);
-  const superTile = tiles.find(({ x, y }) => x === xPos && y === yPos);
+  } = colRowToCoords(col, row);
+  const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
   if (superTile) {
-    return superTile.ground.find(({ x, y }) => x === xCoord && y === yCoord);
+    return superTile.ground.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
   }
   return undefined;
 };
@@ -69,10 +69,10 @@ export const findGroundTile = (tiles, col, row) => {
 export const findTreeTile = (tiles, col, row) => {
   const {
     xPos, yPos, xCoord, yCoord,
-  } = convertTileCoords(col, row);
-  const superTile = tiles.find(({ x, y }) => x === xPos && y === yPos);
+  } = colRowToCoords(col, row);
+  const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
   if (superTile) {
-    return superTile.trees.find(({ x, y }) => x === xCoord && y === yCoord);
+    return superTile.trees.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
   }
   return undefined;
 };

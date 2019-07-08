@@ -21,8 +21,14 @@ export default class Camera {
 
   centerToPoint(xPos, yPos, xCoords, yCoords) {
     // Tactical.js
-    this.x = Math.round(((xPos * 64 + xCoords) * this.tileWidth * this.zoom) - this.width / 2);
-    this.y = Math.round(((yPos * 64 + yCoords) * this.tileWidth * this.zoom) - this.height / 2);
+    this.x = Math.round(
+      (xPos * 64 + xCoords) * this.tileWidth * this.zoom
+      - (this.width - this.tileWidth * this.zoom) / 2
+    );
+    this.y = Math.round(
+      (yPos * 64 + yCoords) * this.tileWidth * this.zoom
+      - (this.height - this.tileWidth * this.zoom) / 2
+    );
     // Map.js
     // this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
     // this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);

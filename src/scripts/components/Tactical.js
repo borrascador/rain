@@ -1,13 +1,13 @@
 import Camera from './Camera';
 import Connect from '../Connect';
 import { FOREST_BLACK } from '../utils/colors';
-// import { clickedLeft } from '../actions/actions';
+import { clickedLeft } from '../actions/actions';
 // import { sendEvent } from '../actions/requests';
 // import { EVENTS } from '../actions/types';
 import {
-  // screenToImageButton,
+  screenToImageButton,
   // checkImageCollision,
-  convertTileCoords2,
+  coordsToColRow,
   findGroundTile, findTreeTile,
 } from './utils';
 
@@ -20,6 +20,7 @@ export default class Tactical {
     this.tactical = loader.getImage('tactical');
     this.player = loader.getImage('player');
     this.trees = loader.getImage('trees');
+    this.party = [];
 
     this.connect = new Connect(this.store);
     const { zoom } = this.connect;
@@ -62,25 +63,25 @@ export default class Tactical {
     }
 
     // center camera on player or move player
-    // const { zoom } = this.connect;
-    // const { x, y } = this.connect.clickLeft;
-    // const clickedPlayer = (
-    //   x && y && this.player
-    //   && checkImageCollision(x, y, this.player)
-    // );
+    const { zoom } = this.connect;
+    const { x, y } = this.connect.clickLeft;
+    const clickedPlayer = (
+      x && y && this.party.length
+      && screenToImageButton(x, y, this.party)
+    );
     // const tile = (
-    //   x && y && this.clickTiles
+    //   x && y && this.party.length
     //   && screenToImageButton(x, y, this.clickTiles)
     // );
-    // if (clickedPlayer) {
-    //   // todo:
-    //   // if player not selected, select player (then if selecte render move radius)
-    //   // if player already selected and clicked in move radius, move player and unselect
-    //   // if player already selected and clicked out of move radius, unselect
-    //   // if player already selected and clicked other player, select other player
-    //   const { pos, coords } = this.connect.map;
-    //   this.camera.center(pos.x, pos.y, coords.x, coords.y, zoom);
-    //   this.store.dispatch(clickedLeft());
+    if (clickedPlayer) {
+      // todo:
+      // if player not selected, select player (then if selecte render move radius)
+      // if player already selected and clicked in move radius, move player and unselect
+      // if player already selected and clicked out of move radius, unselect
+      // if player already selected and clicked other player, select other player
+      const { pos, coords } = clickedPlayer;
+      this.camera.centerToPoint(pos.x, pos.y, coords.x, coords.y, zoom);
+      this.store.dispatch(clickedLeft());
     // } else if (tile) {
     //   const xCoord = Math.floor((x - tile.xPos) / zoom);
     //   const yCoord = Math.floor((y - tile.yPos) / zoom);
@@ -88,7 +89,7 @@ export default class Tactical {
     //   this.store.dispatch(
     //     sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
     //   );
-    // }
+    }
   }
 
   renderGroundLayer() {
@@ -211,12 +212,14 @@ export default class Tactical {
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight);
 
+    this.party = [];
     party.forEach((player) => {
-      const { XCoord: xCoord, YCoord: yCoord, /* icon */ } = player;
-      const superTile = tiles.find(({ position }) => position === player.position);
+      const {
+        xPos, yPos, xCoord, yCoord /* icon */
+      } = player;
+      const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
       if (superTile) {
-        const { x: xPos, y: yPos } = superTile;
-        const { x: col, y: row } = convertTileCoords2(xPos, yPos, xCoord, yCoord);
+        const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
         if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
           const x = col * tileWidth - this.camera.x;
           const y = row * tileHeight - this.camera.y;
@@ -240,16 +243,31 @@ export default class Tactical {
             widthOffset, // destWidth
             heightOffset // destHeight
           );
+
+          this.party.push({
+            pos: { x: xPos, y: yPos },
+            coords: { x: xCoord, y: yCoord },
+            xPos: x - xOffset + xStart, // destX
+            yPos: y - yOffset + yStart, // destY
+            width: widthOffset, // destWidth
+            height: heightOffset // destHeight
+          });
         }
       }
     });
   }
 
   render() {
-    const { pos, coords, zoom } = this.connect.map;
-    this.camera.lazyCenter(pos.x, pos.y, coords.x, coords.y, zoom);
+    const { zoom } = this.connect.map;
+    const { party } = this.connect;
+    if (party.length) {
+      const {
+        xPos, yPos, xCoord, yCoord,
+      } = party[0];
+      this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
+    }
     if (this.camera.needRender) {
-      this.ctx.fillStyle = FOREST_BLACK;
+      this.ctx.fillStyle = 'white';
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       this.renderGroundLayer();
       this.renderTreeLayer();
