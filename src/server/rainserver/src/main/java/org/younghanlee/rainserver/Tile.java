@@ -25,6 +25,14 @@ public class Tile {
 		this.xPos = position % World.getWidth();
 		this.yPos = (position - xPos)/World.getWidth();
 		this.trees = new HashMap<Integer, Integer>();
+		JSONArray treeSet = tileObject.getJSONArray("trees");
+		for (int i=0; i<treeSet.length(); i++) {
+			JSONObject treeObject = treeSet.getJSONObject(i);
+			int treePosition = treeObject.getInt("position");
+			int treeId = treeObject.getInt("id");
+			trees.put(treePosition, treeId);
+			
+		}
 		this.crops = new HashMap<Integer, Integer>();
 
 	}
@@ -35,6 +43,18 @@ public class Tile {
 		jo.put("yPos", yPos);
 		jo.put("habitat", habitat);
 		jo.put("elevation", elevation);
+		
+		JSONArray trees = new JSONArray();
+		for (HashMap.Entry<Integer, Integer> entry : this.trees.entrySet()) {
+			JSONObject tree = new JSONObject();
+			int position = entry.getKey();
+			int id = entry.getValue();
+			tree.put("position", position);
+			tree.put("id", id);
+			trees.put(tree);
+		}
+		jo.put("trees", trees);
+		
 		
 //		JSONArray crops = new JSONArray();
 //		for (HashMap.Entry<Integer, Integer> entry : this.crops.entrySet()) {
