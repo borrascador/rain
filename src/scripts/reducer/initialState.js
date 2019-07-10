@@ -24,7 +24,8 @@ const gameState = {
   stories: [], // DEBUG with story TODO update to stories in example
   inventoryChanges: [],
   partyChanges: [],
-  position: undefined,
+  xPos: undefined,
+  yPos: undefined,
   xCoord: undefined,
   yCoord: undefined,
   positionTarget: undefined,

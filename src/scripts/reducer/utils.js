@@ -194,24 +194,25 @@ export function sortTiles(state, action) {
   const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
 
   const { tiles } = action.payload;
-  if (tiles && tiles[0].trees) { // combak remove check when server only returns new-style tiles
-    return tiles.map(tile => ({
-      ...tile,
-      ground: Array.from({ length: 4096 }).map((_, index) => ({
-        x: Math.floor(index / 64),
-        y: index % 64,
-        id: getGroundTile(),
-      })),
-      trees: tile.trees
-        .sort((a, b) => a.position > b.position)
-        .map(tree => ({
-          x: tree.position % 64,
-          y: Math.floor(tree.position / 64),
-          id: tree.id,
-        }))
-    }));
-  }
-  return state.tiles;
+  return tiles.map(tile => ({
+    ...tile,
+    ground: Array.from({ length: 4096 }).map((_, index) => ({
+      xPos: tile.xPos,
+      yPos: tile.yPos,
+      xCoord: index % 64,
+      yCoord: Math.floor(index / 64),
+      id: getGroundTile(),
+    })),
+    trees: tile.trees ? tile.trees // todo remove fallback once trees are back in
+      .sort((a, b) => a.yPos * 64 + a.xPos > b.yPos * 64 + b.xPos)
+      .map(tree => ({
+        xPos: tile.xPos,
+        yPos: tile.yPos,
+        xCoord: tree.xCoord,
+        yCoord: tree.yCoord,
+        id: tree.id,
+      })) : []
+  }));
 }
 
 export function updateInventoryChanges(state, action) {

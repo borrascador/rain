@@ -199,7 +199,7 @@ public class Member {
 		jo.put("xPos", xPos);
 		jo.put("yPos", (position - xPos)/w);
 		jo.put("xCoord", x);
-		jo.put("xCoord", y);
+		jo.put("yCoord", y);
 		JSONArray skillsArray = new JSONArray();
 		for (int skill_id: skills.keySet()) {
 			Skill s = World.getSkill(skill_id);
