@@ -203,7 +203,7 @@ export function sortTiles(state, action) {
       yCoord: Math.floor(index / 64),
       id: getGroundTile(),
     })),
-    trees: tile.trees ? tile.trees // todo remove fallback once trees are back in
+    trees: tile.trees
       .sort((a, b) => a.yPos * 64 + a.xPos > b.yPos * 64 + b.xPos)
       .map(tree => ({
         xPos: tile.xPos,
@@ -211,7 +211,7 @@ export function sortTiles(state, action) {
         xCoord: tree.xCoord,
         yCoord: tree.yCoord,
         id: tree.id,
-      })) : []
+      }))
   }));
 }
 

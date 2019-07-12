@@ -1,9 +1,9 @@
 import Camera from './Camera';
 import Connect from '../Connect';
-import { FOREST_BLACK } from '../utils/colors';
-import { clickedLeft } from '../actions/actions';
-// import { sendEvent } from '../actions/requests';
-// import { EVENTS } from '../actions/types';
+// import { FOREST_BLACK } from '../utils/colors';
+import { clickedLeft, clickedRight } from '../actions/actions';
+import { sendEvent } from '../actions/requests';
+import { EVENTS } from '../actions/types';
 import {
   screenToImageButton,
   // checkImageCollision,
@@ -62,33 +62,43 @@ export default class Tactical {
       this.camera.move(step, dirx, diry);
     }
 
-    // center camera on player or move player
-    const { zoom } = this.connect;
-    const { x, y } = this.connect.clickLeft;
+    // select player if left clicked on player
+    // move player to clicked tile if left clicked on visible unoccupied tile
+    // unselect player if right clicked anywhere
+    const { x: lx, y: ly } = this.connect.clickLeft;
     const clickedPlayer = (
-      x && y && this.party.length
-      && screenToImageButton(x, y, this.party)
+      this.party.length && lx && ly
+      && screenToImageButton(lx, ly, this.party)
     );
-    // const tile = (
-    //   x && y && this.party.length
-    //   && screenToImageButton(x, y, this.clickTiles)
-    // );
-    if (clickedPlayer) {
-      // todo:
-      // if player not selected, select player (then if selecte render move radius)
-      // if player already selected and clicked in move radius, move player and unselect
-      // if player already selected and clicked out of move radius, unselect
-      // if player already selected and clicked other player, select other player
-      const { pos, coords } = clickedPlayer;
-      this.camera.centerToPoint(pos.x, pos.y, coords.x, coords.y, zoom);
+    const clickedTile = (
+      lx && ly && screenToImageButton(lx, ly, this.visibleTiles)
+    );
+
+    if (clickedPlayer && (
+      !this.selectedPlayer
+      || (this.selectedPlayer && this.selectedPlayer.id !== clickedPlayer.id)
+    )) {
+      this.selectedPlayer = clickedPlayer;
+      this.camera.needRender = true;
       this.store.dispatch(clickedLeft());
-    // } else if (tile) {
-    //   const xCoord = Math.floor((x - tile.xPos) / zoom);
-    //   const yCoord = Math.floor((y - tile.yPos) / zoom);
-    //   this.store.dispatch(clickedLeft());
-    //   this.store.dispatch(
-    //     sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
-    //   );
+    } else if (clickedTile && this.selectedPlayer) {
+      const {
+        id, pos: { x: xPos, y: yPos }, coords: { x: xCoord, y: yCoord },
+      } = this.selectedPlayer;
+      const pace = 1;
+      this.store.dispatch(sendEvent(EVENTS.MOVE, {
+        id, xPos, yPos, xCoord, yCoord, pace,
+      }));
+      this.selectedPlayer = null;
+      this.camera.needRender = true;
+      this.store.dispatch(clickedLeft());
+    }
+
+    const { x: rx, y: ry } = this.connect.clickRight;
+    if (this.selectedPlayer && rx && ry) {
+      this.selectedPlayer = null;
+      this.camera.needRender = true;
+      this.store.dispatch(clickedRight());
     }
   }
 
@@ -106,6 +116,7 @@ export default class Tactical {
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight);
 
+    this.visibleTiles = [];
     for (let row = startRow; row <= endRow; row += 1) {
       for (let col = startCol; col <= endCol; col += 1) {
         const x = col * tileWidth - this.camera.x;
@@ -137,6 +148,13 @@ export default class Tactical {
               heightOffset // destHeight
             );
           }
+
+          this.visibleTiles.push({
+            xPos: x - xOffset + xStart, // destX
+            yPos: y - yOffset + yStart, // destY
+            width: widthOffset, // destWidth
+            height: heightOffset // destHeight
+          });
         }
       }
     }
@@ -245,6 +263,7 @@ export default class Tactical {
           );
 
           this.party.push({
+            id: player.id,
             pos: { x: xPos, y: yPos },
             coords: { x: xCoord, y: yCoord },
             xPos: x - xOffset + xStart, // destX
@@ -255,6 +274,19 @@ export default class Tactical {
         }
       }
     });
+  }
+
+  renderSelectionBox() {
+    if (this.selectedPlayer) {
+      const {
+        xPos, yPos, width, height
+      } = this.selectedPlayer;
+      this.offScreenContext.fillStyle = 'rgba(128, 128, 128, 0.2)';
+      this.offScreenContext.fillRect(xPos, yPos, width, height);
+      this.offScreenContext.lineWidth = 4;
+      this.offScreenContext.strokeStyle = 'rgba(256, 256, 256, 0.8)';
+      this.offScreenContext.strokeRect(xPos, yPos, width, height);
+    }
   }
 
   render() {
@@ -272,6 +304,7 @@ export default class Tactical {
       this.renderGroundLayer();
       this.renderTreeLayer();
       this.renderPlayerLayer();
+      this.renderSelectionBox();
       this.camera.needRender = false;
     }
     this.copyToOnScreen();
