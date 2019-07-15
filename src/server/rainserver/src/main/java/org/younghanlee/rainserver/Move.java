@@ -6,167 +6,67 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Move {
-	private int target;
 	private int xTarget;
 	private int yTarget;
-	private int pace; // set at 1
+	private int speed; // number of ticks to wait until moving
+	private int wait;
 	private String direction; // north, south, east, west
 	
-	public Move(int target, int x, int y, Player p) {
-		this.target = target;
+	public Move(int x, int y, Member m) {
 		xTarget = x;
 		yTarget = y;
-		pace = 1;
-		final int width = World.getWidth();
-		int difference = target - p.getPosition();
-		switch (difference) {
-			case 0:
-				if (x > p.getX()) {
-					direction = "east";
-				} else {
-					direction = "west";
-				}
-				break;
-			case 1:
-				direction = "east";
-				break;
-			case -1:
-				direction = "west";
-				break;
-			default:
-				if (difference == width) {
-					direction = "south";
-				} else if (difference == -width) {
-					direction = "north";
-				}
-				break;		
-		}
+		speed = 5;
+		wait = speed;
+	}
+	
+	public void setSpeed(int n) {
+		speed = n;
+	}
+	
+	public JSONObject tick(Member m) {
+		if (wait > 1) {
+			wait -= 1;
+			System.out.println("Waiting to move: " + wait);
+			return null;
+		} else if (wait == 1) {
+			wait = speed;
+			int x = m.getX();
+			int y = m.getY();
 		
-	}
-	
-	public void setPace(int n) {
-		pace = n;
-	}
-	
-	public int nStepsTowards(int n, int src, int dst) {
-		int t;
-		if (src == dst) {
-			return src;
-		} else if (src < dst) {
-			t = src + n;
-			if (t > dst) {
-				t = dst;
+			int xDiff = xTarget - x;
+			int yDiff = yTarget - y;
+			
+			int xNew = x;
+			int yNew = y;
+			
+			if (xDiff > 0) {
+				xNew = x+1;
+			} else if (xDiff < 0) {
+				xNew = x-1;
 			}
+			
+			if (yDiff > 0) {
+				yNew = y+1;
+			} else if (yDiff < 0) {
+				yNew = y-1;
+			}
+			
+			m.setPosition(xNew, yNew);
+			
+			System.out.println("Moving to " + xNew + ", " + yNew);
+		
+			JSONObject payload = m.getPosition();
+
+			if (x == xTarget && y == yTarget) {
+				m.stopMoving();
+				payload.put("pace", 0);
+			}
+
+			return payload;
 		} else {
-			t = src - n;
-			if (t < dst) {
-				t = dst;
-			}
+			System.err.println("ERROR: unexpected move wait value");
+			return null;
 		}
-		return t;
-	}
-	
-	public JSONObject tick(Player p) {
-		int position = p.getPosition();
-		boolean withinTile = (position == target);
-		int x = p.getX();
-		int y = p.getY();
-		int speed = pace * p.getSpeed();
-		int newX;
-		int newY;
-		JSONArray tiles = null;
-		switch (direction) {
-			case "east":
-				newX = x + speed;
-				if (!withinTile) {
-					newX = newX % 32;
-				}
-				if (newX < x) {
-					position = position + 1;
-					p.setPosition(position);
-//					tiles = p.inSightArray();
-				}
-				if (position == target && newX > xTarget){
-					newX = xTarget;
-				}
-				x = newX;
-				p.setX(newX);
-				y = nStepsTowards(speed, y, yTarget);
-				p.setY(y);
-				break;
-			case "west":
-				newX = x - speed;
-				if (!withinTile) {
-					newX = Math.floorMod(newX, 32);
-				}
-				if (newX > x) {
-					position = position - 1;
-					p.setPosition(position);
-// 					tiles = p.inSightArray();
-				}
-				if (position == target && newX < xTarget){
-					newX = xTarget;
-				}
-				x = newX;
-				p.setX(newX);
-				y = nStepsTowards(speed, y, yTarget);
-				p.setY(y);
-				break;
-			case "south":
-				newY = (y + speed);
-				if (!withinTile) {
-					newY = newY % 32;
-				}
-				
-				if (newY < y) {
-					position = position + World.getWidth();
-					p.setPosition(position);
-//					tiles = p.inSightArray();
-				}
-				if (position == target && newY > yTarget){
-					newY= yTarget;
-				}
-				y = newY;
-				p.setY(newY);
-				x = nStepsTowards(speed, x, xTarget);
-				p.setX(x);
-				break;
-			case "north":
-				newY = y - speed;
-				if (!withinTile) {
-					newY = Math.floorMod(newY, 32);
-				}
-				if (newY > y) {
-					position = position - World.getWidth();
-					p.setPosition(position);
-//					tiles = p.inSightArray();
-				}
-				if (position == target && newY < yTarget){
-					newY= yTarget;
-				}
-				y = newY;
-				p.setY(newY);
-				x = nStepsTowards(speed, x, xTarget);
-				p.setX(x);
-				break;	
-		}
-		
-// 		World.getTile(position).updateNeighbors(p, 1);
-		
-		JSONObject payload = new JSONObject();
-
-		if (x == xTarget && y == yTarget && position == target) {
-			p.stopMoving();
-			payload.put("pace", 0);
-		}
-		if (tiles != null) {
-			payload.put("tiles", tiles);		
-		}
-		payload.put("position", position);
-		payload.put("xCoord", x);
-		payload.put("yCoord", y);
-
-		return payload;
 	}
 	
 

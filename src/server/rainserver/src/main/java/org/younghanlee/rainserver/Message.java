@@ -52,10 +52,7 @@ public class Message {
 		JSONObject jo = new JSONObject(); 
 		jo.accumulate("type", "LOGIN_RESPONSE");
 		JSONObject payload = new JSONObject();
-		payload.put("position", p.getPosition());
 		payload.put("tiles", tiles);
-		payload.put("xCoord", p.getX());
-		payload.put("yCoord", p.getY());
 		payload.put("sight", p.getSight());
 		payload.put("pace", p.getPace());
 		payload.put("rations", p.getRations());

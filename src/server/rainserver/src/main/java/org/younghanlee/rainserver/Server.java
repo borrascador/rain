@@ -21,6 +21,7 @@ import org.java_websocket.server.WebSocketServer;
 
 public class Server extends WebSocketServer {
 	private static int tick;
+	private static int moveTick;
 
 	public Server(InetSocketAddress address) {
 		super(address);
@@ -34,10 +35,18 @@ public class Server extends WebSocketServer {
 		return tick;
 	}
 	
+	public int getMoveTick() {
+		return moveTick;
+	}
+	
 	public void tickInc() {
 		tick++;
 	}
 
+	public void moveTickInc() {
+		moveTick++;
+	}
+	
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
 		// conn.send("Welcome to the server!"); //This method sends a message to the new client
@@ -100,6 +109,17 @@ public class Server extends WebSocketServer {
 		RandomEvents.dispatch(tick);
 	}
 	
+	public void moveTick(int moveTick) {
+		for (WebSocket w: getConnections()) {
+			// System.out.println(w.toString());
+			Connection c = (Connection) w;
+			Player p = c.getPlayer();
+			if (p != null) {
+				p.playerMoveTick(c, moveTick);
+			}
+		}
+	}
+	
 	public void backup(int index) {
 		File map = new File("backup/" + index + "/map.json");
 		map.getParentFile().mkdirs();
@@ -158,6 +178,15 @@ public class Server extends WebSocketServer {
 				return;
 			}
 		}, 0, 1, TimeUnit.SECONDS);
+		
+		updateExec.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				server.moveTickInc(); // increment move tick number
+				server.moveTick(moveTick); 
+				return;
+			}
+		}, 0, 100, TimeUnit.MILLISECONDS);
 		
 		ScheduledExecutorService backupExec = Executors.newScheduledThreadPool(10);
 		backupExec.scheduleAtFixedRate(new Runnable() {

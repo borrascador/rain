@@ -62,10 +62,7 @@ public class Decision {
 					p.setTribe(index);
 					Tribe tribe = World.getTribe(index);
 					JSONArray inventory = tribe.generateInventory(p);
-					p.setPosition(World.getTribe(index).getRespawnPosition());
-					p.setX(Util.randomInt(10)+28);
-					p.setY(Util.randomInt(10)+28);
-					JSONArray party = tribe.generateParty(p);
+					JSONArray party = tribe.generateParty(p, World.getTribe(index).getRespawnPosition());
 					
 					JSONObject payload = new JSONObject();
 					JSONObject story = new JSONObject();

@@ -65,7 +65,7 @@ public class RandomEvents {
 	public static void nextInterval(){
 		schedule = new HashMap<Integer, ArrayList<Player>>();
 		for (Player p : World.getPlayers().values()) {
-			if (p.isOnline() && p.getPosition() != null) {
+			if (p.isOnline() && p.getTribe() != null) {
 				if (Math.random() < chance) {
 					addToSchedule(p, Util.randomInt(interval-1));
 				}
