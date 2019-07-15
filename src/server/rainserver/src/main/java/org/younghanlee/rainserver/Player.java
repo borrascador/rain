@@ -16,10 +16,7 @@ public class Player {
 	private String passwordSalt;
 	
 	private boolean online;
-	private Integer position; // Which tile
-	private int x; // x coordinate within tile
-	private int y; // within tile
-	private int tribe; 
+	private Integer tribe; 
 	
 	private int pace;
 	private int speed;
@@ -33,8 +30,6 @@ public class Player {
 	private HashMap<Integer, ArrayList<ItemStack>> inventory; // item id, position in inventory 
 	private HashMap<String, ArrayList<ItemStack>> occupied;
 	private ItemStack drag;
-	
-	private Move move; // Initialize with move(), stop with stopMoving()
 	private Boolean hunting;
 	private Decision decision;
 	
@@ -51,10 +46,10 @@ public class Player {
 		this.passwordHash = Password.multiHash(password, passwordSalt);
 		
 		sight = 1;
+		tribe = null;
 		
 		// Player is offline upon registration. Call Login afterwards
 		online = false;
-		position = null;	
 		
 		// Empty data structures
 		tilesSeen = new ArrayList<Integer>();
@@ -77,7 +72,6 @@ public class Player {
 		speed = 4;
 		rations = 1;
 		
-		move = null;
 		hunting = false;
 		randomEvent = null;
 		randomEventFlag = false;
@@ -108,11 +102,6 @@ public class Player {
 			this.online = true;
 			World.onlineInc();
 			connection.setPlayer(this);
-			if (position != null) { // Check if player has chosen tribe yet
-				Tile t = World.getTile(position);
-		//		t.addVisitor(this);
-			//	t.updateNeighbors(this, 1); // Reveal player to everyone in range
-			}
 			return true;
 		}
 		else return false;
@@ -121,7 +110,7 @@ public class Player {
 	public JSONObject logoff(Connection connection) {
 		this.online = false;
 		World.onlineDec();
-		Tile t = World.getTile(position);
+		// Tile t = World.getTile(position);
 		//t.removeVisitor(this);
 		// t.updateNeighbors(this, 1);
 		if (drag != null) {
@@ -152,11 +141,6 @@ public class Player {
 	// Return payload to be used in UPDATE message
 	public void playerTick(Connection connection, int tick) {
 		JSONObject payload = new JSONObject();
-		
-		// If player has a target, move towards it
-		if (move != null) {
-			payload = move.tick(this);
-		}
 		
 		// Check tiles buffer
 		if (!buffer.isEmpty()) {
@@ -235,6 +219,42 @@ public class Player {
 //		return;
 	}
 	
+	// Are any members moving?
+	public boolean hasMove() {
+		for (int id : party) {
+			Member m = World.getMember(id);
+			if (m.getMove() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void playerMoveTick(Connection connection, int moveTick) {	
+		// If player has a target, move towards it
+		if (hasMove()) {
+			JSONArray updates = new JSONArray();
+			for (int id : party) {
+				Member m = World.getMember(id);
+				Move move = m.getMove();
+				if (move != null) {
+					JSONObject moveResult = move.tick(m);
+					if (moveResult != null) {
+						moveResult.put("id", id);
+						updates.put(moveResult);
+					}
+				}
+			}
+			// Check if moves actually happened or waiting on this tick
+			if (updates.length() > 0) {
+				JSONObject payload = new JSONObject();
+				payload.put("party", updates);
+				connection.sendJSON(Message.UPDATE(payload));
+			}
+			System.out.println("moveTick:" + moveTick);
+		}
+	}
+	
 	public void setEventArg(String key, Object value) {
 		eventArgs.put(key, value);
 	}
@@ -243,29 +263,14 @@ public class Player {
 		return eventArgs.get(key);
 	}
 	
-	public void setPosition(int position) { // Also edit tile visitors appropriately
-		if (this.position != null) {
-			// World.getTile(this.position).removeVisitor(this);
-		}
-		this.position = position;
-		// World.getTile(position).addVisitor(this);
-		
-	}
-	
-	public boolean legalMove(int destination, int x, int y) {
-		return true;
-	}
-	
-	public boolean move(int destination, int x, int y) {
-		if (legalMove(destination, x, y)) {
-			move = new Move(destination, x, y, this);
-			return true;
-		} else return false;
-	}
-	
-	public void stopMoving() {
-		move = null;
-	}
+//	public void setPosition(int position) { // Also edit tile visitors appropriately
+//		if (this.position != null) {
+//			// World.getTile(this.position).removeVisitor(this);
+//		}
+//		this.position = position;
+//		// World.getTile(position).addVisitor(this);
+//		
+//	}
 	
 	public boolean isOnline() {
 		return online;
@@ -274,45 +279,16 @@ public class Player {
 	public String getName() {
 		return name;
 	}
-	
-	public Integer getPosition() {
-		return position;
-	}
-	
-	public int getX() {
-		return x;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public void setY(int y) {
-		this.y = y;
-	}
-	
+
 	public int getSpeed() {
 		return speed;
 	}
 	
 	public JSONObject respawn() {
 		Tribe t = World.getTribe(tribe);
-		int rp = t.getRespawnPosition();
-		System.out.println("Test10");
-		setPosition(rp);
-		setX(Util.randomInt(32)+16);
-		setY(Util.randomInt(32)+16);
 		JSONObject payload = new JSONObject();
-//		tilesSeen = World.getTile(rp).inSight(sight);
-		JSONArray newParty =  t.generateParty(this);
+		JSONArray newParty =  t.generateParty(this, World.getTribe(tribe).getRespawnPosition());
 		JSONArray newInventory = t.generateInventory(this);
-		payload.put("xCoord", x);
-		payload.put("yCoord", y);
-		payload.put("position", rp);
 		payload.put("party", newParty);
 		payload.put("inventory", newInventory);
 		// payload.put("tiles", inSightArray());
@@ -331,10 +307,7 @@ public class Player {
 		return pace;
 	}
 	public void setPace(int n) {
-		if (move != null) {
-			pace = n;
-			move.setPace(n);
-		}
+		pace = n;
 	}
 	
 	public int getRations() {
@@ -744,11 +717,8 @@ public class Player {
 	
 	// First add member to global members in World
 	// Then add its id to party
-	public int addMember(String name, int icon) {
-		Member m = new Member(name, icon);
-		m.setPosition(position);
-		m.setX(Util.randomInt(6)+x-3);
-		m.setY(Util.randomInt(6)+y-3);
+	public int addMember(String name, int icon, int x, int y) {
+		Member m = new Member(name, icon, x, y);
 		int id = World.addMember(m);
 		party.add(id);
 		return id;
@@ -820,7 +790,7 @@ public class Player {
 	
 	
 	public String toString() {
-		return "NAME:" + name + "   ONLINE:" + online + "   POSITION:"  + position;
+		return "NAME:" + name + "   ONLINE:" + online;
 	}
 	
 	public static void main(String[] args) {

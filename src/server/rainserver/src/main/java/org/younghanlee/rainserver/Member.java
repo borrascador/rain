@@ -15,16 +15,20 @@ public class Member {
 	private int strength;
 	private int speed;
 	private int jeito;
-	private int position;
+	// Global position
 	private int x;
 	private int y;
+	private Move move; // Initialize with move(), stop with stopMoving()
 	private ArrayList<ItemStack> equipment;
 	private HashMap<Integer, Integer> skills; // id, rank
 	private HashMap<Integer, Integer> modifiers; // id, timer
 	
-	public Member(String name, int icon) {
+	public Member(String name, int icon, int x, int y) {
 		this.name = name;
 		this.icon = icon;
+		this.x = x;
+		this.y = y;
+		this.move = null;
 		this.speed = 50;
 		this.strength = 10;
 		this.health = 5;
@@ -95,28 +99,48 @@ public class Member {
 		this.speed = n;
 	}
 	
-	public int getPosition() {
-		return this.position;
-	}
-	
-	public void setPosition(int position) {
-		this.position = position;
-	}
-	
 	public int getX() {
-		return this.x;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
+		return x;
 	}
 	
 	public int getY() {
-		return this.y;
+		return y;
 	}
 	
-	public void setY(int y) {
+	public Move getMove() {
+		return move;
+	}
+	
+	public JSONObject getPosition() {
+		JSONObject jo = new JSONObject();
+		int ts = World.getTileSize();
+		int xCoord = x % ts;
+		jo.put("xCoord", xCoord);
+		jo.put("xPos", (x - xCoord)/ts);
+		int yCoord = y % ts;
+		jo.put("yCoord", yCoord);
+		jo.put("yPos", (y - yCoord)/ts);
+		return jo;
+	}
+	
+	public void setPosition(int x, int y) {
+		this.x = x;
 		this.y = y;
+	}
+	
+	public boolean legalMove(int x, int y) {
+		return true;
+	}
+	
+	public boolean move(int x, int y) {
+		if (legalMove(x, y)) {
+			move = new Move(x, y, this);
+			return true;
+		} else return false;
+	}
+	
+	public void stopMoving() {
+		move = null;
 	}
 	
 	public void addSkill(int id, int rank) {
@@ -142,7 +166,7 @@ public class Member {
 	
 	public JSONObject change(int id, Player p, int health_change, int jeito_change, 
 			HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
-		JSONObject jo = new JSONObject();
+		JSONObject jo = getPosition();
 		jo.put("id", id);
 		jo.put("icon", icon);
 		jo.put("name", name);
@@ -188,18 +212,12 @@ public class Member {
 	}
 	
 	public JSONObject toJSONObject(int id) {
-		JSONObject jo = new JSONObject();
+		JSONObject jo = getPosition();
 		jo.put("id", id);
 		jo.put("health", health);
 		jo.put("jeito", jeito);
 		jo.put("name", name);
 		jo.put("icon", icon);
-		int w = World.getWidth();
-		int xPos = position % w;
-		jo.put("xPos", xPos);
-		jo.put("yPos", (position - xPos)/w);
-		jo.put("xCoord", x);
-		jo.put("yCoord", y);
 		JSONArray skillsArray = new JSONArray();
 		for (int skill_id: skills.keySet()) {
 			Skill s = World.getSkill(skill_id);

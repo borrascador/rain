@@ -16,24 +16,30 @@ public class EventHandler {
 		switch (event_type) {
 			case "plant":
 				id = event.getInt("id");
-				response = World.getTile(p.getPosition()).plant(id, p);
-				connection.sendJSON(response);
+//				response = World.getTile(p.getPosition()).plant(id, p);
+//				connection.sendJSON(response);
 				break;
 			case "harvest":
 				id = event.getInt("id");
-				response = World.getTile(p.getPosition()).harvest(id, p);
-				connection.sendJSON(response);
+//				response = World.getTile(p.getPosition()).harvest(id, p);
+//				connection.sendJSON(response);
 				break;
 			case "move":
-				int destination = event.getInt("id");
-				int x = event.getInt("x");
-				int y = event.getInt("y");
+				id = event.getInt("id");
+				int xPos = event.getInt("xPos");
+				int yPos = event.getInt("yPos");
+				int xCoord = event.getInt("xCoord");
+				int yCoord = event.getInt("yCoord");
+				int ts = World.getTileSize();
+				int x = ts * xPos + xCoord;
+				int y = ts * yPos + yCoord;
 				
-				if (p.move(destination,x, y)) {
+				if (World.getMember(id).move(x, y)) {
 					payload = new JSONObject();
-					payload.put("positionTarget", destination);
-					payload.put("xTarget", x);
-					payload.put("yTarget", y);
+					payload.put("xCoord", xCoord);
+					payload.put("yCoord", yCoord);
+					payload.put("xPos", xPos);
+					payload.put("yPos", yPos);
 					payload.put("pace", 1);
 					response = Message.EVENT_RESPONSE(payload);
 				} else {
@@ -46,9 +52,6 @@ public class EventHandler {
 				p.setPace(pace);
 				payload = new JSONObject();
 				payload.put("pace", p.getPace());
-				if (pace == 0) {
-					p.stopMoving();
-				}
 				response = Message.EVENT_RESPONSE(payload);
 				connection.sendJSON(response);
 				break;

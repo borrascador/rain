@@ -64,10 +64,16 @@ public class Tribe {
 		return respawnPosition;
 	}
 
-	public JSONArray generateParty(Player p) {
+	public JSONArray generateParty(Player p, int position) {
 		JSONArray party = new JSONArray();
+		int w = World.getWidth();
+		int xPos = position % w;
+		int yPos = (position - xPos)/w;
+		int ts = World.getTileSize();
 		for (int i=0; i<partySize; i++) {
-			int member_id = p.addMember("Party Member " + i, Util.randomInt(2));
+			int x = xPos * ts + ts/2 + Util.randomInt(10) - 10;
+			int y = yPos * ts + ts/2 + Util.randomInt(10) - 10;
+			int member_id = p.addMember("Party Member " + i, Util.randomInt(2), x, y);
 			HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
 			for (int id: skills.keySet()) {
 				if (Util.randomInt(100) < skills.get(id)) {
@@ -76,12 +82,6 @@ public class Tribe {
 			}
 			Member m = World.getMember(member_id);
 			JSONObject memberObject = m.change(member_id, p, 0, 0, newSkills, null, null);
-			int w = World.getWidth();
-			int xPos = m.getPosition() % w;
-			memberObject.put("xPos", xPos);
-			memberObject.put("yPos", (m.getPosition() - xPos)/w);
-			memberObject.put("xCoord", m.getX());
-			memberObject.put("yCoord", m.getY());
 			party.put(memberObject);
 		}
 		return party;
