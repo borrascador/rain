@@ -82,9 +82,10 @@ export default class Tactical {
       this.camera.needRender = true;
       this.store.dispatch(clickedLeft());
     } else if (clickedTile && this.selectedPlayer) {
+      const { id } = this.selectedPlayer;
       const {
-        id, pos: { x: xPos, y: yPos }, coords: { x: xCoord, y: yCoord },
-      } = this.selectedPlayer;
+        pos: { x: xPos, y: yPos }, coords: { x: xCoord, y: yCoord },
+      } = clickedTile;
       const pace = 1;
       this.store.dispatch(sendEvent(EVENTS.MOVE, {
         id, xPos, yPos, xCoord, yCoord, pace,
@@ -100,6 +101,24 @@ export default class Tactical {
       this.camera.needRender = true;
       this.store.dispatch(clickedRight());
     }
+
+    this.didPlayerMove();
+  }
+
+  didPlayerMove() {
+    const { party } = this.connect;
+    party.forEach(({
+      id, xPos, yPos, xCoord, yCoord,
+    }) => {
+      if (this.party.some(player => (
+        player.id === id && (
+          player.pos.x !== xPos || player.pos.y !== yPos
+          || player.coords.x !== xCoord || player.coords.y !== yCoord
+        )
+      ))) {
+        this.camera.needRender = true;
+      }
+    });
   }
 
   renderGroundLayer() {
@@ -128,7 +147,9 @@ export default class Tactical {
           const {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
-          const { id } = tile;
+          const {
+            id, xPos, yPos, xCoord, yCoord,
+          } = tile;
           const { tileheight, tilewidth, columns } = this.tactical.tileset;
           if (
             widthOffset > 0
@@ -150,6 +171,8 @@ export default class Tactical {
           }
 
           this.visibleTiles.push({
+            pos: { x: xPos, y: yPos },
+            coords: { x: xCoord, y: yCoord },
             xPos: x - xOffset + xStart, // destX
             yPos: y - yOffset + yStart, // destY
             width: widthOffset, // destWidth
