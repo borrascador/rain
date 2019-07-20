@@ -1,5 +1,8 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import store from './store';
 import RainGame from './RainGame';
+import { Modal } from './dialogs/Modal';
 
 window.onload = () => {
   const canvas = document.getElementById('game');
@@ -14,4 +17,6 @@ window.onload = () => {
   const rainGame = new RainGame(store, canvas, ctx);
 
   rainGame.init();
+
+  ReactDOM.render(<Modal />, document.getElementById('dialog'));
 };

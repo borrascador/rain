@@ -18,11 +18,11 @@ html, body {
   align-items: center;
 }
 
-#container canvas, .dialog {
+#container canvas, #dialog {
   position: absolute;
 }
 
-.dialog {
+#dialog {
   border: 4px solid white;
   /* width: 600px; */
   color: white;
@@ -30,7 +30,7 @@ html, body {
   text-align: center;
 }
 
-.dialog .content {
+#dialog .content {
   padding: 8px;
 }
 

@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/borrascador/rain#readme",
   "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "reconnecting-websocket": "^4.0.0-rc5",
     "redux": "^3.7.2",
     "redux-subscriber": "^1.1.0",
@@ -34,6 +36,7 @@
     "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "acorn": "^6.0.4",
     "ajv": "^6.5.5",
     "babel-core": "^6.26.3",
