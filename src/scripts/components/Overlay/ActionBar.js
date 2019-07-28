@@ -1,8 +1,8 @@
+import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import { drawById, drawHover } from '../../utils/draw';
 import { checkImageCollision, screenToImageButton } from '../utils';
-import { clickedLeft } from '../../actions/actions';
-import { sendEvent } from '../../actions/requests';
+import { clickedLeft, eventRequest } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
 import {
   BRIGHT_GREEN, BRIGHT_RED, MEDIUM_RED, SOLID_WHITE
@@ -43,7 +43,7 @@ export default class ActionBar {
         let currentCrop;
         switch (button.tag) {
           case 'seed':
-            this.store.dispatch(sendEvent(EVENTS.PLANT, { id: button.id }));
+            this.store.dispatch(send(eventRequest(EVENTS.PLANT, { id: button.id })));
             this.current = 'main';
             break;
           case 'harvest':
@@ -51,30 +51,30 @@ export default class ActionBar {
               currentCrop = currentTile.crops.find(crop => crop.name === button.name);
             }
             if (currentCrop.stage <= 0) {
-              this.store.dispatch(sendEvent(EVENTS.HARVEST, { id: button.id }));
+              this.store.dispatch(send(eventRequest(EVENTS.HARVEST, { id: button.id })));
             }
             this.current = 'main';
             break;
           case 'hunting':
             this.store.dispatch(
-              sendEvent(this.connect.hunting ? EVENTS.STOP_HUNT : EVENTS.START_HUNT)
+              send(eventRequest(this.connect.hunting ? EVENTS.STOP_HUNT : EVENTS.START_HUNT))
             );
             this.current = 'main';
             break;
           case 'fishing':
-            this.store.dispatch(sendEvent(EVENTS.FISH, { id: button.id }));
+            this.store.dispatch(send(eventRequest(EVENTS.FISH, { id: button.id })));
             this.current = 'main';
             break;
           case 'add_food':
-            this.store.dispatch(sendEvent(EVENTS.ADD_FOOD, { id: button.id }));
+            this.store.dispatch(send(eventRequest(EVENTS.ADD_FOOD, { id: button.id })));
             this.current = 'main'; // COMBAK 'eating' instead?
             break;
           case 'remove_food':
-            this.store.dispatch(sendEvent(EVENTS.REMOVE_FOOD, { id: button.id }));
+            this.store.dispatch(send(eventRequest(EVENTS.REMOVE_FOOD, { id: button.id })));
             this.current = 'main'; // COMBAK 'eating' instead?
             break;
           default:
-            this.store.dispatch(sendEvent(button.tag, { id: button.id })); // DEBUG
+            this.store.dispatch(send(eventRequest(button.tag, { id: button.id }))); // DEBUG
             break;
         }
       }

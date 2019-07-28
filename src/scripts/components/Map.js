@@ -1,8 +1,8 @@
+import { send } from '@giantmachines/redux-websocket';
 import Camera from './Camera';
 import Connect from '../Connect';
 import Animation from '../utils/Animation';
-import { clickedLeft } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
+import { clickedLeft, eventRequest } from '../actions/actions';
 import { EVENTS } from '../actions/types';
 import { LAYER } from '../utils/constants';
 import { screenToImageButton, checkImageCollision, findTile } from './utils';
@@ -66,7 +66,7 @@ export default class Map {
       const yCoord = Math.floor((y - tile.yPos) / zoom);
       this.store.dispatch(clickedLeft());
       this.store.dispatch(
-        sendEvent(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })
+        send(eventRequest(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord }))
       );
     }
 

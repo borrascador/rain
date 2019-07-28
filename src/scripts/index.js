@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import store from './store';
 import RainGame from './RainGame';
-import { Modal } from './dialogs/Modal';
+import AppRoot from './dialogs/AppRoot';
 
 window.onload = () => {
   const canvas = document.getElementById('game');
@@ -18,5 +19,10 @@ window.onload = () => {
 
   rainGame.init();
 
-  ReactDOM.render(<Modal />, document.getElementById('dialog'));
+  ReactDOM.render(
+    <Provider store={store}>
+      <AppRoot />
+    </Provider>,
+    document.getElementById('app-root')
+  );
 };
