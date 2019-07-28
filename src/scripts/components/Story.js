@@ -1,5 +1,5 @@
-import { clickedLeft, closeStory } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
+import { clickedLeft, closeStory, eventRequest } from '../actions/actions';
+import { send } from '@giantmachines/redux-websocket';
 import { EVENTS } from '../actions/types';
 import Connect from '../Connect';
 import { screenToTextButton, screenToImageButton } from './utils';
@@ -50,7 +50,7 @@ export default class Story {
   select(button, story) {
     this.store.dispatch(closeStory());
     if (story.canDispatch) {
-      this.store.dispatch(sendEvent(EVENTS.DECISION, { id: button.id }));
+      this.store.dispatch(send(eventRequest(EVENTS.DECISION, { id: button.id })));
     }
     this.selected = null;
   }

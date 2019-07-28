@@ -1,10 +1,10 @@
+import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import { drawById, drawHover, drawDurability } from '../../utils/draw';
 import { screenToImageButton } from '../utils';
 import {
-  clickedLeft, clickedRight, dragItem, error
+  clickedLeft, clickedRight, dragItem, error, eventRequest,
 } from '../../actions/actions';
-import { sendEvent } from '../../actions/requests';
 import { EVENTS } from '../../actions/types';
 import { SLOTS } from '../../utils/constants';
 import { BRIGHT_RED, SOLID_WHITE, BRIGHT_OPAQUE } from '../../utils/colors';
@@ -149,12 +149,12 @@ export default class Items {
       const originQuantity = 0;
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
       this.store.dispatch(
-        sendEvent(EVENTS.PICK_UP, {
+        send(eventRequest(EVENTS.PICK_UP, {
           id: stack.id,
           quantity: dragQuantity,
           type: stack.type,
           position: stack.position,
-        })
+        }))
       );
     }
   }
@@ -165,12 +165,12 @@ export default class Items {
       const originQuantity = stack.quantity - dragQuantity;
       this.store.dispatch(dragItem(stack, dragQuantity, originQuantity));
       this.store.dispatch(
-        sendEvent(EVENTS.PICK_UP, {
+        send(eventRequest(EVENTS.PICK_UP, {
           id: stack.id,
           quantity: dragQuantity,
           type: stack.type,
           position: stack.position,
-        })
+        }))
       );
     }
   }
@@ -197,12 +197,12 @@ export default class Items {
     const toBackpack = stack.type === SLOTS.BACKPACK;
     if (equipOk || eatingOk || toBackpack) {
       this.store.dispatch(
-        sendEvent(EVENTS.PUT_DOWN, {
+        send(eventRequest(EVENTS.PUT_DOWN, {
           id: draggedItem.id,
           quantity,
           type: stack.type,
           position: stack.position
-        })
+        }))
       );
     } else {
       this.store.dispatch(error(801, 'Cannot move item to this slot'));

@@ -5,6 +5,10 @@ export default class Connect {
     this.store = store;
   }
 
+  get serverEndpoint() {
+    return this.store.getState().serverEndpoint;
+  }
+
   get connected() {
     return this.store.getState().connected;
   }

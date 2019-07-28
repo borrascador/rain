@@ -1,8 +1,8 @@
+import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import {
-  clickedLeft, zoomIn, zoomOut, setMode,
+  clickedLeft, zoomIn, zoomOut, setMode, logoutRequest,
 } from '../../actions/actions';
-import { logout } from '../../actions/requests';
 import { screenToImageButton } from '../utils';
 import { drawByName } from '../../utils/draw';
 import { MODE } from '../../utils/constants';
@@ -20,10 +20,10 @@ export default class Zoom {
     this.size = this.iconsXl.tileset.tilewidth * this.scale;
 
     this.buttons = [
-      { name: 'settings', onClick: logout },
-      { name: 'glass', onClick: setMode },
-      { name: 'zoom-out', onClick: zoomOut },
-      { name: 'zoom-in', onClick: zoomIn },
+      { name: 'settings' },
+      { name: 'glass' },
+      { name: 'zoom-out' },
+      { name: 'zoom-in' },
     ];
   }
 
@@ -32,13 +32,24 @@ export default class Zoom {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       this.store.dispatch(clickedLeft());
-      if (button.name !== 'glass') {
-        this.store.dispatch(button.onClick());
-      } else {
-        const { mode } = this.connect;
-        const target = mode === MODE.TACTICAL ? MODE.GLOBAL : MODE.TACTICAL;
-        console.log(target);
-        this.store.dispatch(button.onClick(target));
+      switch(button.name) {
+        case 'settings':
+          this.store.dispatch(send(logoutRequest()));
+          break;
+        case 'zoom-out':
+          this.store.dispatch(zoomOut());
+          break;
+        case 'zoom-in':
+          this.store.dispatch(zoomIn());
+          break;
+        case 'glass':
+          // const { mode } = this.connect;
+          // const target = mode === MODE.TACTICAL ? MODE.GLOBAL : MODE.TACTICAL;
+          // console.log(target);
+          // this.store.dispatch(button.onClick(target));
+          break;
+        default:
+          break;
       }
     }
   }

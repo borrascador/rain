@@ -1,4 +1,3 @@
-import { OPEN, CLOSE } from 'redux-websocket-bridge';
 import { ACTIONS } from '../actions/types';
 import {
   keyDown, keyUp,
@@ -10,7 +9,7 @@ import {
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
-  update, eventResponse, openSocket, closeSocket
+  update, eventResponse, connectSocket, openSocket, closeSocket
 } from './game';
 import { initialState } from './initialState';
 
@@ -85,9 +84,11 @@ export default function reducer(state, action) {
       return update(state, action);
     case EVENT_RESPONSE:
       return eventResponse(state, action);
-    case `@@websocket/${OPEN}`:
+    case 'REDUX_WEBSOCKET::CONNECT':
+      return connectSocket(state, action);
+    case 'REDUX_WEBSOCKET::OPEN':
       return openSocket(state);
-    case `@@websocket/${CLOSE}`:
+    case 'REDUX_WEBSOCKET::CLOSED':
       return closeSocket(state);
     default:
       return state;

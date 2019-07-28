@@ -24,7 +24,8 @@ import newTileset from '../data/new.json';
 import GameView from './views/GameView';
 import TitleView from './views/TitleView';
 import { VIEW } from './utils/constants';
-import { clickedLeft, clickedRight, setView } from './actions/actions';
+import { clickedLeft, clickedRight, setView, loginRequest } from './actions/actions';
+import { connect } from '@giantmachines/redux-websocket';
 
 export default class RainGame {
   constructor(store, canvas, ctx) {
@@ -32,6 +33,9 @@ export default class RainGame {
     this.canvas = canvas;
     this.ctx = ctx;
     this.connect = new Connect(this.store);
+
+    const { serverEndpoint } = this.connect;
+    if (serverEndpoint) this.store.dispatch(connect(serverEndpoint));
 
     // Initialize game loop variables (except this.now, see frame())
     this.delta = 0;

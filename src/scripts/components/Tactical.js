@@ -1,8 +1,8 @@
+import { send } from '@giantmachines/redux-websocket';
 import Camera from './Camera';
 import Connect from '../Connect';
 // import { FOREST_BLACK } from '../utils/colors';
-import { clickedLeft, clickedRight } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
+import { clickedLeft, clickedRight, eventRequest } from '../actions/actions';
 import { EVENTS } from '../actions/types';
 import {
   screenToImageButton,
@@ -87,9 +87,9 @@ export default class Tactical {
         pos: { x: xPos, y: yPos }, coords: { x: xCoord, y: yCoord },
       } = clickedTile;
       const pace = 1;
-      this.store.dispatch(sendEvent(EVENTS.MOVE, {
+      this.store.dispatch(send(eventRequest(EVENTS.MOVE, {
         id, xPos, yPos, xCoord, yCoord, pace,
-      }));
+      })));
       this.selectedPlayer = null;
       this.camera.needRender = true;
       this.store.dispatch(clickedLeft());

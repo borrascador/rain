@@ -1,13 +1,5 @@
-import { clickedLeft } from '../actions/actions';
-import registerDialog from '../dialogs/register';
-import loginDialog from '../dialogs/login';
-import { screenToTextButton } from '../components/utils';
-import Connect from '../Connect';
 import Animation from '../utils/Animation';
-import { drawById, drawByName, centerText } from '../utils/draw';
-import {
-  CONNECT_GREEN, DISCONNECT_RED, SOLID_WHITE, DARK_OPAQUE
-} from '../utils/colors';
+import { drawById, drawByName } from '../utils/draw';
 
 export default class TitleView {
   constructor(store, canvas, ctx, loader) {
@@ -17,47 +9,17 @@ export default class TitleView {
     this.water = loader.getImage('water');
 
     this.zoom = 4;
-    this.gutter = 4;
     this.size = this.water.tileset.tilewidth * this.zoom;
     this.animateBottom = new Animation(this.size, this.zoom * 2, 0.5);
     this.animateTop = new Animation(3, 1, 0.5);
-
-    this.connect = new Connect(this.store);
-    this.setDim(false);
-
-    this.title = [
-      { text: 'RAINFOREST' },
-      { text: 'TRAIL' }
-    ];
-
-    this.buttons = [
-      { text: 'LOGIN', onClick: loginDialog },
-      { text: 'REGISTER', onClick: registerDialog }
-    ];
-
-    this.setDim = this.setDim.bind(this);
-    this.centerText = centerText.bind(null, this.canvas, this.ctx, this.zoom, this.gutter);
-  }
-
-  setDim(dim) {
-    this.dim = dim;
   }
 
   update(step) {
-    const { x, y } = this.connect.clickLeft;
-    if (x && y) {
-      const button = !this.dim && screenToTextButton(x, y, this.buttons);
-      if (button) {
-        this.store.dispatch(clickedLeft());
-        button.onClick(this.store, this.setDim);
-      }
-    }
-
     this.animateBottom.tick(step);
     this.animateTop.tick(step);
   }
 
-  renderBackground() {
+  render() {
     const endCol = Math.floor((this.canvas.width / this.size));
     const endRow = Math.floor((this.canvas.height / this.size));
     const offsetBottom = this.animateBottom.getValue();
@@ -76,26 +38,6 @@ export default class TitleView {
         const y = row * this.size;
         drawById(this.ctx, this.water, offsetTop.toString(), this.zoom, x, y);
       }
-    }
-  }
-
-  renderText() {
-    this.ctx.fillStyle = SOLID_WHITE;
-    this.title = this.centerText(this.title, 64, 1 / 4);
-
-    this.ctx.fillStyle = this.connect.connected ? CONNECT_GREEN : DISCONNECT_RED;
-    this.centerText([{ text: this.connect.connected ? 'CONNECTED' : 'DISCONNECTED' }], 32, 9 / 10);
-
-    this.ctx.fillStyle = SOLID_WHITE;
-    this.buttons = this.centerText(this.buttons, 32, 3 / 4);
-  }
-
-  render() {
-    this.renderBackground();
-    this.renderText();
-    if (this.dim) {
-      this.ctx.fillStyle = DARK_OPAQUE;
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }
 }

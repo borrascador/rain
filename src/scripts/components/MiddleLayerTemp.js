@@ -1,8 +1,8 @@
 import Connect from '../Connect';
 import Animation from '../utils/Animation';
 import { drawById } from '../utils/draw';
-import { clickedLeft } from '../actions/actions';
-import { sendEvent } from '../actions/requests';
+import { clickedLeft, eventRequest } from '../actions/actions';
+import { send } from '@giantmachines/redux-websocket';
 import { screenToImageButton } from './utils';
 import { EVENTS } from '../actions/types';
 
@@ -33,7 +33,7 @@ export default class MiddleLayer {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       this.store.dispatch(clickedLeft());
-      this.store.dispatch(sendEvent(EVENTS.PACE, { id: button.id }));
+      this.store.dispatch(send(eventRequest(EVENTS.PACE, { id: button.id })));
     }
   }
 
