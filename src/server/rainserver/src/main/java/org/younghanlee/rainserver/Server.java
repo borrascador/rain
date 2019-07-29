@@ -2,6 +2,7 @@ package org.younghanlee.rainserver;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.security.KeyStore;
@@ -138,8 +139,15 @@ public class Server extends WebSocketServer {
 		new World();	
 		new Password();
 		
-		String host = "localhost";
+		InetAddress host = null;
+		try {
+			host = InetAddress.getLocalHost();
+		} catch (Exception e) {
+			
+		}
 		int port = 8887;
+		
+		System.out.println(host);
 
 		Server server = new Server(new InetSocketAddress(host, port));
 //		String STORETYPE = "JKS";
