@@ -139,12 +139,11 @@ public class Server extends WebSocketServer {
 		new World();	
 		new Password();
 		
-		String host = "localhost";
 		int port = 8887;
 		
-		System.out.println(host);
+		System.out.println(new InetSocketAddress(port));
 
-		Server server = new Server(new InetSocketAddress(host, port));
+		Server server = new Server(new InetSocketAddress(port));
 //		String STORETYPE = "JKS";
 //		String KEYSTORE = "KeyStore.jks";
 //		String STOREPASSWORD = "keypassword";
