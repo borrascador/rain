@@ -139,12 +139,7 @@ public class Server extends WebSocketServer {
 		new World();	
 		new Password();
 		
-		InetAddress host = null;
-		try {
-			host = InetAddress.getLocalHost();
-		} catch (Exception e) {
-			
-		}
+		String host = "localhost";
 		int port = 8887;
 		
 		System.out.println(host);
