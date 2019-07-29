@@ -196,21 +196,21 @@ public class AnimalEncounter{
 			return 20;
 		}
 		public JSONObject result(Player p) {
-			Tile t = World.getTile(p.getPosition());
-			Habitat h = World.getHabitat(t.getHabitat("hunting"));
-			Animal animal = h.randomAnimal(50);
-			if (animal == null) {
-				return null;
-			}
-			p.setEventArg("animalEncounter", animal);
-
-			String[] choiceNames = {"animalEncounter_attack", "animalEncounter_escape"};
-			String storyText = "You have been attacked by a wild " + animal.getName();
-			Decision d = new Decision(choiceNames, storyText, p);
-			p.setDecision(d);
+//			Tile t = World.getTile(p.getPosition());
+//			Habitat h = World.getHabitat(t.getHabitat("hunting"));
+//			Animal animal = h.randomAnimal(50);
+//			if (animal == null) {
+//				return null;
+//			}
+//			p.setEventArg("animalEncounter", animal);
+//
+//			String[] choiceNames = {"animalEncounter_attack", "animalEncounter_escape"};
+//			String storyText = "You have been attacked by a wild " + animal.getName();
+//			Decision d = new Decision(choiceNames, storyText, p);
+//			p.setDecision(d);
 			JSONObject story = new JSONObject();
-			story.put("text", storyText);
-			story.put("buttons", d.buttons(p));
+//			story.put("text", storyText);
+//			story.put("buttons", d.buttons(p));
 			JSONObject payload = new JSONObject();
 			payload.put("story", story);
 			return payload;
@@ -222,18 +222,18 @@ public class AnimalEncounter{
 			return 100;
 		}
 		public JSONObject result(Player p) {		
-			Tile t = World.getTile(p.getPosition());
-			Habitat h = World.getHabitat(t.getHabitat("hunting"));
-			Animal animal = h.randomAnimal(0);
-			p.setEventArg("animalEncounter", animal);
-
-			String[] choiceNames = {"animalEncounter_attack", "animalEncounter_escape"};
-			String storyText = "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName();
-			Decision d = new Decision(choiceNames, storyText, p);
-			p.setDecision(d);
+//			Tile t = World.getTile(p.getPosition());
+//			Habitat h = World.getHabitat(t.getHabitat("hunting"));
+//			Animal animal = h.randomAnimal(0);
+//			p.setEventArg("animalEncounter", animal);
+//
+//			String[] choiceNames = {"animalEncounter_attack", "animalEncounter_escape"};
+//			String storyText = "Hunting in habitat: " + h.getPublicType() + "\n\nYou encounter a wild " + animal.getName();
+//			Decision d = new Decision(choiceNames, storyText, p);
+//			p.setDecision(d);
 			JSONObject story = new JSONObject();
-			story.put("text", storyText);
-			story.put("buttons", d.buttons(p));
+//			story.put("text", storyText);
+//			story.put("buttons", d.buttons(p));
 			JSONObject payload = new JSONObject();
 			payload.put("story", story);
 			return payload;
