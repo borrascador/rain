@@ -3,7 +3,7 @@ import {
   updateInventoryChanges, updatePartyChanges, sortTiles,
 } from './utils';
 import { revisedInitialState } from './initialState';
-import { MODE } from '../utils/constants';
+import { VIEW, MODE, MODAL } from '../utils/constants';
 
 export function request(state) {
   return Object.assign({}, state, {
@@ -21,7 +21,8 @@ export function error(state, action) {
     errorLog: state.errorLog.concat({
       error: action.payload.code,
       errorMessage: action.payload.message
-    })
+    }),
+    modal: MODAL.FAILURE,
   });
 }
 
@@ -76,6 +77,7 @@ export function loginResponse(state, action) {
     rations: action.payload.rations,
     hunting: action.payload.hunting,
     mode: MODE.TACTICAL,
+    view: VIEW.GAME,
   });
 }
 
@@ -83,7 +85,8 @@ export function logoutResponse(state) {
   return Object.assign({}, state,
     revisedInitialState({
       connected: true,
-      errorLog: state.errorLog
+      errorLog: state.errorLog,
+      serverEndpoint: state.serverEndpoint,
     }));
 }
 
@@ -160,17 +163,25 @@ export function eventResponse(state, action) {
   );
 }
 
+export function connectSocket(state, action) {
+  return Object.assign({}, state, {
+    serverEndpoint: action.payload.url,
+  });
+}
+
 export function openSocket(state) {
   return Object.assign({}, state,
     revisedInitialState({
       connected: true,
-      errorLog: state.errorLog
+      errorLog: state.errorLog,
+      serverEndpoint: state.serverEndpoint,
     }));
 }
 
 export function closeSocket(state) {
   return Object.assign({}, state,
     revisedInitialState({
-      errorLog: state.errorLog
+      errorLog: state.errorLog,
+      serverEndpoint: state.serverEndpoint,
     }));
 }

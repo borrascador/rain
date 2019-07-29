@@ -1,6 +1,6 @@
+import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
-import { clickedLeft } from '../../actions/actions';
-import { sendEvent } from '../../actions/requests';
+import { clickedLeft, eventRequest } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
 import { checkImageCollision, screenToImageButton } from '../utils';
 import { drawByName } from '../../utils/draw';
@@ -51,13 +51,13 @@ export default class Food {
 
   increaseRations(rations) {
     if (rations < 2) {
-      this.store.dispatch(sendEvent(EVENTS.RATIONS, { id: rations + 1 }));
+      this.store.dispatch(send(eventRequest(EVENTS.RATIONS, { id: rations + 1 })));
     }
   }
 
   decreaseRations(rations) {
     if (rations > 0) {
-      this.store.dispatch(sendEvent(EVENTS.RATIONS, { id: rations - 1 }));
+      this.store.dispatch(send(eventRequest(EVENTS.RATIONS, { id: rations - 1 })));
     }
   }
 

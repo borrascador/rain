@@ -1,4 +1,4 @@
-import { VIEW } from '../utils/constants';
+import { VIEW, MODAL } from '../utils/constants';
 import { makeKeys } from './ui';
 
 // import party from '../../data/party.json';
@@ -9,7 +9,7 @@ import { makeKeys } from './ui';
 const uiState = {
   view: VIEW.TITLE,
   mode: undefined,
-  modal: undefined,
+  modal: MODAL.NONE,
   partyTab: 0,
   actions: { main: [] },
   zoom: 7,
@@ -49,6 +49,7 @@ const inputState = {
 };
 
 const connectionState = {
+  serverEndpoint: 'ws://localhost:8887/',
   connected: false,
   loggedIn: false,
   sending: false,
