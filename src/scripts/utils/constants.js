@@ -19,7 +19,6 @@ export const MODE = {
 };
 
 export const MODAL = {
-  NONE: '',
   STORY: 'STORY',
   PARTY: 'PARTY',
   LOGIN: 'LOGIN',

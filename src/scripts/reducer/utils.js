@@ -1,6 +1,9 @@
 import { UPDATE_TEXT_OFFSET, UPDATE_TEXT_DURATION } from '../utils/constants';
 import hasProp from '../utils/hasProp';
 
+export const reduceIntegerState = (state, action) => typeof action === 'number' ? action : state;
+export const reduceBooleanState = (state, action) => typeof action === 'boolean' ? action : state;
+
 export function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 }
@@ -189,6 +192,8 @@ function getTimestamp(changes, offset, now) {
 }
 
 export function sortTiles(state, action) {
+  if (state.tiles && !action.payload.tiles) return state.tiles;
+
   // TODO move these lines into helper function
   const GROUND_TILES = [0, 1, 4, 5];
   const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];

@@ -3,9 +3,8 @@ import {
   keyDown, keyUp,
   mouseDownLeft, mouseDownRight, mouseMove, mouseUpLeft, mouseUpRight,
   clickedLeft, clickedRight, zoomIn, zoomOut,
-  setPartyTab, refreshSlots, setView, setMode, setModal, closeStory, removePartyMember,
-  dragItem,
-  refreshTiles
+  setPartyTab, refreshSlots, setView, setMode, setModal, closeModal, closeStory,
+  removePartyMember, dragItem, refreshTiles
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
@@ -17,7 +16,8 @@ const {
   KEY_DOWN, KEY_UP,
   MOUSE_DOWN_LEFT, MOUSE_DOWN_RIGHT, MOUSE_MOVE, MOUSE_UP_LEFT, MOUSE_UP_RIGHT,
   CLICKED_LEFT, CLICKED_RIGHT, ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, REFRESH_SLOTS,
-  REFRESH_TILES, SET_VIEW, SET_MODE, SET_MODAL, CLOSE_STORY, REMOVE_PARTY_MEMBER, DRAG_ITEM, ERROR,
+  REFRESH_TILES, SET_VIEW, SET_MODE, SET_MODAL, CLOSE_MODAL, CLOSE_STORY,
+  REMOVE_PARTY_MEMBER, DRAG_ITEM, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE
 } = ACTIONS;
@@ -61,6 +61,8 @@ export default function reducer(state, action) {
       return setMode(state, action);
     case SET_MODAL:
       return setModal(state, action);
+    case CLOSE_MODAL:
+      return closeModal(state);
     case CLOSE_STORY:
       return closeStory(state);
     case REMOVE_PARTY_MEMBER:

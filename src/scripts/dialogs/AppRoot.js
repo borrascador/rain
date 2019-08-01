@@ -13,7 +13,7 @@ const AppRoot = ({ view, modal }) => {
   return (
     <>
       { view === VIEW.TITLE && <TitleView />}
-      { modal !== MODAL.NONE && (
+      { ![undefined, MODAL.PARTY, MODAL.STORY].includes(modal) && (
         <Dialog>
           { modal === MODAL.LOGIN && <Login /> }
           { modal === MODAL.REGISTER && <Register /> }

@@ -1,9 +1,25 @@
 import {
-  /* getActions, */ mergeArrays, mergeSlots, updateStory,
-  updateInventoryChanges, updatePartyChanges, sortTiles,
+  mergeSlots, sortTiles, mergeArrays, updateStory,
+  updateInventoryChanges, updatePartyChanges,
+  reduceIntegerState, reduceBooleanState,
 } from './utils';
 import { revisedInitialState } from './initialState';
 import { VIEW, MODE, MODAL } from '../utils/constants';
+
+export function update(state, action) {
+  return Object.assign({}, state, {
+    slots: mergeSlots(state.slots, action.payload.inventory),
+    tiles: sortTiles(state, action), // TODO no merging yet
+    party: mergeArrays(state.party, action.payload.party),
+    stories: updateStory(state, action),
+    inventoryChanges: updateInventoryChanges(state, action),
+    partyChanges: updatePartyChanges(state, action),
+    sight: reduceIntegerState(state.sight, action.payload.sight),
+    pace: reduceIntegerState(state.pace, action.payload.pace),
+    rations: reduceIntegerState(state.rations, action.payload.rations),
+    hunting: reduceBooleanState(state.hunting, action.payload.hunting),
+  });
+}
 
 export function request(state) {
   return Object.assign({}, state, {
@@ -35,121 +51,25 @@ export function registerResponse(state) {
 }
 
 export function loginResponse(state, action) {
-  const xPos = typeof action.payload.xPos === 'number'
-    ? action.payload.xPos : state.xPos;
-  const yPos = typeof action.payload.yPos === 'number'
-    ? action.payload.yPos : state.yPos;
-  const xCoord = typeof action.payload.xCoord === 'number'
-    ? action.payload.xCoord : state.xCoord;
-  const yCoord = typeof action.payload.yCoord === 'number'
-    ? action.payload.yCoord : state.yCoord;
-  // const positionTarget = typeof action.payload.positionTarget === 'number'
-  //   ? action.payload.positionTarget : state.positionTarget;
-  // const xTarget = typeof action.payload.xTarget === 'number'
-  //   ? action.payload.xTarget : state.xTarget;
-  // const yTarget = typeof action.payload.yTarget === 'number'
-  //   ? action.payload.yTarget : state.yTarget;
-  return Object.assign({}, state, {
-    sending: false,
-    loggedIn: true,
-    tiles: sortTiles(state, action),
-    party: action.payload.party,
-    slots: mergeSlots(state.slots, action.payload.inventory),
-    // actions: getActions(
-    //   action.payload.inventory,
-    //   action.payload.tiles,
-    //   action.payload.position,
-    //   action.payload.hunting
-    // ),
-    vehicle: action.payload.vehicle || null,
-    stories: updateStory(state, action),
-    inventoryChanges: updateInventoryChanges(state, action),
-    partyChanges: updatePartyChanges(state, action),
-    xPos,
-    yPos,
-    xCoord,
-    yCoord,
-    // positionTarget,
-    // xTarget,
-    // yTarget,
-    sight: action.payload.sight,
-    pace: action.payload.pace,
-    rations: action.payload.rations,
-    hunting: action.payload.hunting,
-    mode: MODE.TACTICAL,
-    view: VIEW.GAME,
-  });
+  return Object.assign(
+    update(state, action),
+    {
+      sending: false,
+      loggedIn: true,
+      mode: MODE.TACTICAL,
+      view: VIEW.GAME,
+    }
+  );
 }
 
 export function logoutResponse(state) {
   return Object.assign({}, state,
     revisedInitialState({
+      view: VIEW.GAME, // COMBAK necessary for state cleanup see RainGame.js
       connected: true,
       errorLog: state.errorLog,
       serverEndpoint: state.serverEndpoint,
     }));
-}
-
-export function update(state, action) {
-  const slots = mergeSlots(state.slots, action.payload.inventory);
-  const { tiles } = state;
-  // const tiles = sortTiles(state, action);
-  // const tiles = mergeArrays(state.tiles, action.payload.tiles);
-  const party = mergeArrays(state.party, action.payload.party);
-  const xPos = typeof action.payload.xPos === 'number'
-    ? action.payload.xPos : state.xPos;
-  const yPos = typeof action.payload.yPos === 'number'
-    ? action.payload.yPos : state.yPos;
-  const xCoord = typeof action.payload.xCoord === 'number'
-    ? action.payload.xCoord : state.xCoord;
-  const yCoord = typeof action.payload.yCoord === 'number'
-    ? action.payload.yCoord : state.yCoord;
-  // let positionTarget = typeof action.payload.positionTarget === 'number'
-  //   ? action.payload.positionTarget : state.positionTarget;
-  // let xTarget = typeof action.payload.xTarget === 'number'
-  //   ? action.payload.xTarget : state.xTarget;
-  // let yTarget = typeof action.payload.yTarget === 'number'
-  //   ? action.payload.yTarget : state.yTarget;
-  const stories = updateStory(state, action);
-  const inventoryChanges = updateInventoryChanges(state, action);
-  const partyChanges = updatePartyChanges(state, action);
-  const pace = [0, 1, 2].includes(action.payload.pace)
-    ? action.payload.pace
-    : state.pace;
-  const rations = [0, 1, 2].includes(action.payload.rations)
-    ? action.payload.rations
-    : state.rations;
-  const hunting = typeof action.payload.hunting === 'boolean'
-    ? action.payload.hunting
-    : state.hunting;
-  // if (
-  //   (positionTarget !== null && positionTarget === position
-  //   && xTarget === xCoord && yTarget === yCoord) || pace === 0
-  // ) {
-  //   positionTarget = null;
-  //   xTarget = null;
-  //   yTarget = null;
-  // }
-  // const actions = getActions(slots, tiles, position, hunting);
-  return Object.assign({}, state, {
-    slots,
-    tiles,
-    party,
-    xPos,
-    yPos,
-    xCoord,
-    yCoord,
-    // positionTarget,
-    // xTarget,
-    // yTarget,
-    stories,
-    inventoryChanges,
-    partyChanges,
-    pace,
-    rations,
-    // actions,
-    hunting,
-  });
 }
 
 export function eventResponse(state, action) {

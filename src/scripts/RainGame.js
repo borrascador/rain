@@ -157,6 +157,7 @@ export default class RainGame {
       || this.connect.loggedIn === false)
     ) {
       this.store.dispatch(setView(VIEW.TITLE));
+      // COMBAK this reset can get messed up see reducers/game.js
       this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
     }
 

@@ -9,7 +9,7 @@ import { makeKeys } from './ui';
 const uiState = {
   view: VIEW.TITLE,
   mode: undefined,
-  modal: MODAL.NONE,
+  modal: undefined,
   partyTab: 0,
   actions: { main: [] },
   zoom: 7,

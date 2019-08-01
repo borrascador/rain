@@ -83,6 +83,10 @@ export const setModal = modal => ({
   payload: { modal }
 });
 
+export const closeModal = () => ({
+  type: ACTIONS.CLOSE_MODAL,
+})
+
 export const closeStory = () => ({
   type: ACTIONS.CLOSE_STORY
 });

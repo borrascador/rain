@@ -192,6 +192,12 @@ export function setModal(state, action) {
   });
 }
 
+export function closeModal(state) {
+  return updateObject(state, {
+    modal: undefined,
+  });
+}
+
 export function closeStory(state) {
   if (state.stories.length > 0) {
     return updateObject(state, {
