@@ -26,7 +26,8 @@ public class Player {
 	private int sight;
 	private ArrayList<Integer> tilesSeen; // Tiles to send upon login
 	
-	private ArrayList<Integer> party; // id of party members
+	private Integer party; 
+	private int member;
 	private HashMap<Integer, ArrayList<ItemStack>> inventory; // item id, position in inventory 
 	private HashMap<String, ArrayList<ItemStack>> occupied;
 	private ItemStack drag;
@@ -53,7 +54,7 @@ public class Player {
 		
 		// Empty data structures
 		tilesSeen = new ArrayList<Integer>();
-		party = new ArrayList<Integer>();	
+		party = null;
 		inventory = new HashMap<Integer, ArrayList<ItemStack>>();
 		// Which backpack slots are occupied
 		capacity = new HashMap<String, Integer>();
@@ -77,13 +78,13 @@ public class Player {
 		randomEventFlag = false;
 		
 		// First decision is choose tribe. Create and attach this decision to this player.
-		String [] choiceNames = new String[World.numTribes()];
-		for (int i=0; i<World.numTribes(); i++) {
-			choiceNames[i] = "selectTribe"+ i;
-		}
-		String story = "Choose your tribe.";
+		String [] choiceNames = new String[2];
+		choiceNames[0] = "newParty";
+		choiceNames[1] = "joinParty";
+		String story = "Welcome to RainForest Trail";
 		Decision d = new Decision(choiceNames, story, this);
 		this.decision = d;
+
 
 		this.buffer = new HashSet<Integer>();
 		eventArgs = new HashMap<String, Object>();
@@ -219,9 +220,34 @@ public class Player {
 //		return;
 	}
 	
+	public int getMember() {
+		return member;
+	}
+	
+	public void setMember(int m) {
+		this.member = m;
+		World.getMember(m).setName(this.name);
+	}
+	
+	public Party getParty() {
+		return World.getParty(party);
+	}
+	
+	public void setParty(int p) {
+		this.party = p;
+	}
+	
+	public ArrayList<Integer> getPartyMembers() {
+		if (party != null) {
+			return World.getParty(party).getPartyMembers();
+		} else {
+			return new ArrayList<Integer>();
+		}
+	}
+	
 	// Are any members moving?
 	public boolean hasMove() {
-		for (int id : party) {
+		for (int id : getPartyMembers()) {
 			Member m = World.getMember(id);
 			if (m.getMove() != null) {
 				return true;
@@ -234,7 +260,7 @@ public class Player {
 		// If player has a target, move towards it
 		if (hasMove()) {
 			JSONArray updates = new JSONArray();
-			for (int id : party) {
+			for (int id : getPartyMembers()) {
 				Member m = World.getMember(id);
 				Move move = m.getMove();
 				if (move != null) {
@@ -441,7 +467,7 @@ public class Player {
 		int position = stack.getPosition();
 		occupied.get(stack.getType()).set(position, stack);
 		if (stack.getType() == "party") {
-			Member m = World.getMember(party.get(position));
+			Member m = World.getMember(getPartyMembers().get(position));
 			m.equip(stack);
 		}
 		return jo;
@@ -569,7 +595,7 @@ public class Player {
 				if (quantity == stack.getQuantity()) {
 					deleteStack(stack);
 					if (srcType == "party") {
-						Member m = World.getMember(party.get(srcPosition));
+						Member m = World.getMember(getPartyMembers().get(srcPosition));
 						m.unequip(stack);
 					}
 				}
@@ -584,7 +610,7 @@ public class Player {
 				
 				JSONObject source = new JSONObject();
 				if (srcType == "party") {
-					source.put("position", party.get(srcPosition));
+					source.put("position", getPartyMembers().get(srcPosition));
 				} else {
 					source.put("position", srcPosition);
 				}
@@ -720,30 +746,30 @@ public class Player {
 	public int addMember(String name, int icon, int x, int y) {
 		Member m = new Member(name, icon, x, y);
 		int id = World.addMember(m);
-		party.add(id);
+		World.getParty(party).addMember(id);
 		return id;
 	}
 	
-	public void removeMember(Integer id) {
-		party.remove(id);
+	public void removeMember(int id) {
+		World.getParty(party).removeMember(id);
 	}
 	
 	public int partySize(){
-		return party.size();
+		return World.getParty(party).partySize();
 	}
 	
 	public int getPartyMember(int index) {
-		return party.get(index);
+		return getPartyMembers().get(index);
 	}
 	
 	public int indexOfPartyMember(int id) {
-		return party.indexOf(id);
+		return getPartyMembers().indexOf(id);
 	}
 	
 	public JSONArray partyToJSONArray() {
 		JSONArray ja = new JSONArray();
-		for (int id: party) {
-			ja.put(World.getMember(id).toJSONObject(id));
+		for (int id: getPartyMembers()) {
+			ja.put(World.getMember(id).toJSONObject(id, this));
 		}
 		return ja;
 	}
@@ -776,7 +802,7 @@ public class Player {
 	
 	public JSONArray regen(int tick) {
 		JSONArray partyArray = new JSONArray();
-		for (Integer id: party) {
+		for (Integer id: getPartyMembers()) {
 			Member m = World.getMember(id);
 			int health = m.getHealth();
 			if (health < 5) {

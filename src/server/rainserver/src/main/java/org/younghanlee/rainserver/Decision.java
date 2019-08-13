@@ -10,8 +10,9 @@ public class Decision {
 	
 	public String story; // Story text to be shown to player
 	
-	// static map with all possible choices (in the entire game)
+	// static map with all possible choices (except party selection)
 	public static HashMap<String, IChoice> choiceMap; 
+	public static HashMap<String, IChoice> partyMap;
 	
 	// choices for this decision only
 	private IChoice[] choices;
@@ -35,8 +36,21 @@ public class Decision {
 		}
 	}
 	
+	public Decision(IChoice [] choices, String story) {
+		this.story = story;
+		this.choices = choices;
+		this.choiceMultipliers = new ArrayList<ArrayList<Multiplier>>();
+		for (int i=0; i<choices.length; i++) {
+			choiceMultipliers.add(null);
+		}
+	}
+	
 	public static void addChoice(String s, IChoice c) {
 		choiceMap.put(s, c);
+	}
+	
+	public static void addPartyChoice(String s, IChoice c) {
+		partyMap.put(s, c);
 	}
 	
 	public JSONObject choose(Player p, int n) {
@@ -47,7 +61,10 @@ public class Decision {
 	
 	public static void createDecisionHashMap() {
 		choiceMap = new HashMap<String, IChoice>();
+		partyMap = new HashMap<String, IChoice>();
 		choiceMap.put("respawn", respawn);
+		choiceMap.put("newParty", newParty);
+		choiceMap.put("joinParty", joinParty);
 		
 		// Adding a IChoice object for each tribe
 		for (int i=0; i<World.numTribes(); i++) {
@@ -94,6 +111,43 @@ public class Decision {
 		}
 	};
 	
+	public static IChoice newParty = new IChoice() {
+		public String getText(Player p) {
+			return "Create a new party";
+		}
+		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+			String [] choiceNames = new String[World.numTribes()];
+			for (int i=0; i<World.numTribes(); i++) {
+				choiceNames[i] = "selectTribe"+ i;
+			}
+			String story = "Choose your tribe.";
+			Decision d = new Decision(choiceNames, story, p);
+			p.setDecision(d);
+			JSONObject payload = d.payload(p);
+			return Message.EVENT_RESPONSE(payload);
+		}
+		public ArrayList<Multiplier> generateMultipliers(Player p){
+			return null;
+		}
+	};
+	
+	public static IChoice joinParty = new IChoice() {
+		public String getText(Player p) {
+			return "Join an Existing Party";
+		}
+		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+			IChoice [] choices = partyMap.values().toArray(new IChoice[partyMap.size()]);
+			String story = "Choose a party to join";
+			Decision d = new Decision(choices, story);
+			p.setDecision(d);
+			JSONObject payload = d.payload(p);
+			return Message.EVENT_RESPONSE(payload);
+		}
+		public ArrayList<Multiplier> generateMultipliers(Player p){
+			return null;
+		}
+	};
+	
 	public void setStoryText(String story) {
 		this.story = story;
 	}
@@ -118,6 +172,7 @@ public class Decision {
 	// Create a JSONArray of buttons
 	public JSONArray buttons (Player p) {
 		JSONArray buttonArray = new JSONArray();
+		System.out.println(choices.length);
 		for (int i=0; i<choices.length; i++) {
 			JSONObject button = new JSONObject();
 			button.put("text", choices[i].getText(p));

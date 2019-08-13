@@ -65,26 +65,62 @@ public class Tribe {
 	}
 
 	public JSONArray generateParty(Player p, int position) {
-		JSONArray party = new JSONArray();
+		JSONArray partyArray = new JSONArray();
 		int w = World.getWidth();
 		int xPos = position % w;
 		int yPos = (position - xPos)/w;
 		int ts = World.getTileSize();
+		Party party = new Party();
+		int index = World.createParty(party);;
+		p.setParty(index);
+		String partyName = "";
 		for (int i=0; i<partySize; i++) {
 			int x = xPos * ts + ts/2 + Util.randomInt(10) - 10;
 			int y = yPos * ts + ts/2 + Util.randomInt(10) - 10;
-			int member_id = p.addMember("Party Member " + i, Util.randomInt(2), x, y);
+			int member_id = p.addMember("NPC " + i, Util.randomInt(2), x, y);
+			if (i==0) {
+				p.setMember(member_id);
+				World.getMember(member_id).setPlayer(p);
+				partyName = "Party" + index;
+			} else {
+				party.addMember(member_id);
+			}
 			HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
 			for (int id: skills.keySet()) {
 				if (Util.randomInt(100) < skills.get(id)) {
 					newSkills.put(id, 1);
 				} 
 			}
+			
 			Member m = World.getMember(member_id);
 			JSONObject memberObject = m.change(member_id, p, 0, 0, newSkills, null, null);
-			party.put(memberObject);
+			partyArray.put(memberObject);
 		}
-		return party;
+		party.setName(partyName);
+		IChoice partyChoice = new IChoice() {
+			public String getText(Player p) {
+				return party.getName() + "\n  Size:" + party.partySize() + "      Open spots:"  + party.emptySpaces();
+			}
+			public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
+				p.removeDecision();
+				
+				
+				JSONArray partyArray = p.partyToJSONArray();
+				
+				JSONObject payload = new JSONObject();
+				JSONObject story = new JSONObject();
+				story.put("text", "You have joined " + p.getParty().getName());
+				payload.put("story", story);
+// 				payload.put("inventory", inventory);
+				payload.put("party", partyArray);
+					return Message.EVENT_RESPONSE(payload);
+			}
+			public ArrayList<Multiplier> generateMultipliers(Player p){
+				return null;
+			}
+		};
+		Decision.addPartyChoice("partyChoice" + partyName, partyChoice);
+		return partyArray;
 	}
 
 	
