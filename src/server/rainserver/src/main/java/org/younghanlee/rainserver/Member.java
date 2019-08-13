@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 public class Member {
 	private String name;
+	private Player player;
 	private int icon;
 	private int health;
 	private int regen;
@@ -25,6 +26,7 @@ public class Member {
 	
 	public Member(String name, int icon, int x, int y) {
 		this.name = name;
+		this.player = null;
 		this.icon = icon;
 		this.x = x;
 		this.y = y;
@@ -41,6 +43,18 @@ public class Member {
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 	
 	public void equip(ItemStack i) {
@@ -211,12 +225,20 @@ public class Member {
 		return jo;
 	}
 	
-	public JSONObject toJSONObject(int id) {
+	public JSONObject toJSONObject(int id, Player p) {
 		JSONObject jo = getPosition();
 		jo.put("id", id);
 		jo.put("health", health);
 		jo.put("jeito", jeito);
 		jo.put("name", name);
+		if (player == null) {
+			jo.put("NPC", true);
+		} else {
+			jo.put("NPC", false);
+		}
+		if (player == p) {
+			jo.put("self", true);
+		}
 		jo.put("icon", icon);
 		JSONArray skillsArray = new JSONArray();
 		for (int skill_id: skills.keySet()) {

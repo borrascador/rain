@@ -22,6 +22,7 @@ public class World {
 	private static HashMap<Integer, Habitat> habitats;
 	private static HashMap<Integer, Skill> skills;
 	private static HashMap<Integer, Tribe> tribes;
+	private static HashMap<Integer, Party> parties;
 	
 	private static int mapWidth;
 	private static int mapHeight;
@@ -30,6 +31,7 @@ public class World {
 	private static Tile[] map;
 	
 	private static int memberID;
+	private static int partyID;
 	
 	public World() {
 		
@@ -62,6 +64,8 @@ public class World {
 			
 		System.out.println("Finished reading json files");
 		
+		parties = new HashMap<Integer, Party>();
+		
 		Decision.createDecisionHashMap();
 		new RandomEvents();
 		
@@ -74,6 +78,7 @@ public class World {
 		
 		// indexing
 		memberID = 0;
+		partyID = 0;
 		
 		numPlayers = 0;
 		online = 0;
@@ -122,6 +127,12 @@ public class World {
 		return memberID - 1;
 	}
 	
+	public static int createParty(Party p) {
+		parties.put(partyID,  p);
+		partyID++;
+		return partyID - 1;
+	}
+	
 	public static Item getItem(int id) {
 		return items.get(id);
 	}
@@ -154,6 +165,10 @@ public class World {
 	
 	public static Skill getSkill(int id) {
 		return skills.get(id);
+	}
+	
+	public static Party getParty(int id) {
+		return parties.get(id);
 	}
 	
 	public static void dump() {
