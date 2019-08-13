@@ -19,7 +19,8 @@ const {
   REFRESH_TILES, SET_VIEW, SET_MODE, SET_MODAL, CLOSE_MODAL, CLOSE_STORY,
   REMOVE_PARTY_MEMBER, DRAG_ITEM, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
-  LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
+  CHAT_BROADCAST,
 } = ACTIONS;
 
 export default function reducer(state, action) {
@@ -86,6 +87,10 @@ export default function reducer(state, action) {
       return update(state, action);
     case EVENT_RESPONSE:
       return eventResponse(state, action);
+    case CHAT_BROADCAST:
+      // todo replace with real implementation
+      // probably needs timeout logic
+      return state;
     case 'REDUX_WEBSOCKET::CONNECT':
       return connectSocket(state, action);
     case 'REDUX_WEBSOCKET::OPEN':

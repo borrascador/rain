@@ -158,3 +158,8 @@ export const update = payload => ({
   type: ACTIONS.UPDATE,
   payload
 });
+
+export const chatBroadcast = text => ({
+  type: ACTIONS.CHAT_BROADCAST,
+  payload: { text },
+});

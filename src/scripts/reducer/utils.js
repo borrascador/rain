@@ -180,6 +180,13 @@ export function updateStory(state, action) {
   return state.stories;
 }
 
+export function updateMessages(state, action) {
+  if (action.payload.messages) {
+    return [...state.messageLog, ...action.payload.messages];
+  }
+  return state.messageLog;
+}
+
 // Helper function that enforces minimum offset between update text timestamps
 function getTimestamp(changes, offset, now) {
   if (changes.length > 0) {

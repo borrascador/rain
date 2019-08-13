@@ -1,5 +1,5 @@
 import {
-  mergeSlots, sortTiles, mergeArrays, updateStory,
+  mergeSlots, sortTiles, mergeArrays, updateStory, updateMessages,
   updateInventoryChanges, updatePartyChanges,
   reduceIntegerState, reduceBooleanState,
 } from './utils';
@@ -18,6 +18,7 @@ export function update(state, action) {
     pace: reduceIntegerState(state.pace, action.payload.pace),
     rations: reduceIntegerState(state.rations, action.payload.rations),
     hunting: reduceBooleanState(state.hunting, action.payload.hunting),
+    messageLog: updateMessages(state, action),
   });
 }
 

@@ -34,7 +34,8 @@ const gameState = {
   sight: undefined,
   pace: undefined,
   rations: undefined,
-  hunting: false
+  hunting: false,
+  messageLog: [],
 };
 
 const inputState = {
