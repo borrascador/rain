@@ -19,7 +19,11 @@ export const ACTIONS = {
   CLOSE_MODAL: 'CLOSE_MODAL',
   CLOSE_STORY: 'CLOSE_STORY',
   REMOVE_PARTY_MEMBER: 'REMOVE_PARTY_MEMBER',
+  SELECT_PLAYER: 'SELECT_PLAYER',
+  SELECT_ACTION: 'SELECT_ACTION',
   DRAG_ITEM: 'DRAG_ITEM',
+  NEED_RENDER: 'NEED_RENDER',
+  COMPLETED_RENDER: 'COMPLETED_RENDER',
   ERROR: 'ERROR',
   REGISTER_REQUEST: 'REGISTER_REQUEST',
   REGISTER_RESPONSE: 'REGISTER_RESPONSE',
@@ -34,6 +38,7 @@ export const ACTIONS = {
 };
 
 export const EVENTS = {
+  ATTACK: 'attack',
   PLANT: 'plant',
   HARVEST: 'harvest',
   START_HUNT: 'start_hunt',
@@ -44,7 +49,6 @@ export const EVENTS = {
   MOVE: 'move',
   RATIONS: 'rations',
   DECISION: 'decision',
-  PACE: 'pace',
   PICK_UP: 'pick_up',
   PUT_DOWN: 'put_down',
 };

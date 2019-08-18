@@ -1,13 +1,13 @@
 import {
   mergeSlots, sortTiles, mergeArrays, updateStory, updateMessages,
   updateInventoryChanges, updatePartyChanges,
-  reduceIntegerState, reduceBooleanState,
+  reduceIntegerState, reduceBooleanState, getActions,
 } from './utils';
 import { revisedInitialState } from './initialState';
 import { VIEW, MODE, MODAL } from '../utils/constants';
 
 export function update(state, action) {
-  return Object.assign({}, state, {
+  const newState = Object.assign({}, state, {
     slots: mergeSlots(state.slots, action.payload.inventory),
     tiles: sortTiles(state, action), // TODO no merging yet
     party: mergeArrays(state.party, action.payload.party),
@@ -15,10 +15,13 @@ export function update(state, action) {
     inventoryChanges: updateInventoryChanges(state, action),
     partyChanges: updatePartyChanges(state, action),
     sight: reduceIntegerState(state.sight, action.payload.sight),
-    pace: reduceIntegerState(state.pace, action.payload.pace),
     rations: reduceIntegerState(state.rations, action.payload.rations),
     hunting: reduceBooleanState(state.hunting, action.payload.hunting),
     messageLog: updateMessages(state, action),
+    needRender: true,
+  });
+  return Object.assign({}, newState, {
+    actions: getActions(newState),
   });
 }
 

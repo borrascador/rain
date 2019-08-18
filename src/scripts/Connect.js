@@ -83,6 +83,10 @@ export default class Connect {
     return this.store.getState().clickRight;
   }
 
+  get needRender() {
+    return this.store.getState().needRender;
+  }
+
   get stories() {
     return this.store.getState().stories;
   }
@@ -141,12 +145,21 @@ export default class Connect {
     return this.store.getState().party;
   }
 
-  get vehicle() {
-    return this.store.getState().vehicle;
+  get selectedPlayer() {
+    const { selectedPlayer, party } = this.store.getState();
+    if (typeof selectedPlayer === 'number' && party.length > 0) {
+      const player = party.find(player => player.id === selectedPlayer);
+      return player || undefined;
+    }
+    return undefined;
   }
 
-  get pace() {
-    return this.store.getState().pace;
+  get selectedAction() {
+    return this.store.getState().selectedAction;
+  }
+
+  get vehicle() {
+    return this.store.getState().vehicle;
   }
 
   get rations() {

@@ -1,4 +1,4 @@
-import { VIEW, MODAL } from '../utils/constants';
+import { VIEW } from '../utils/constants';
 import { makeKeys } from './ui';
 
 // import party from '../../data/party.json';
@@ -14,7 +14,10 @@ const uiState = {
   actions: { main: [] },
   zoom: 7,
   slots: [],
-  graphTiles: []
+  graphTiles: [],
+  selectedPlayer: undefined,
+  selectedAction: 'main',
+  needRender: true,
 };
 
 const gameState = {
@@ -32,7 +35,6 @@ const gameState = {
   xTarget: undefined,
   yTarget: undefined,
   sight: undefined,
-  pace: undefined,
   rations: undefined,
   hunting: false,
   messageLog: [],

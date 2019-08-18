@@ -8,7 +8,6 @@ export default class Camera {
     this.yStart = yStart;
     this.tileWidth = tileWidth;
     this.zoom = zoom;
-    this.needRender = true;
   }
 
   lazyCenter(xPos, yPos, xCoords, yCoords, zoom) {
@@ -32,7 +31,6 @@ export default class Camera {
     // Map.js
     // this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
     // this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);
-    this.needRender = true;
   }
 
   centerOnZoom(newZoom) {
@@ -40,14 +38,12 @@ export default class Camera {
     this.x = newZoom * ((this.x + this.width / 2) / this.zoom) - this.width / 2;
     this.y = newZoom * ((this.y + this.height / 2) / this.zoom) - this.height / 2;
     this.zoom = newZoom;
-    this.needRender = true;
   }
 
   move(delta, dirx, diry) {
     // move camera
     this.x += dirx * CAMERA_SPEED * delta;
     this.y += diry * CAMERA_SPEED * delta;
-    this.needRender = true;
   }
 
   mapToScreen(x, y) {

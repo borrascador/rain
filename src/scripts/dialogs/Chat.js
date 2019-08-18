@@ -8,8 +8,9 @@ import { TextInput } from './TextInput';
 const styles = {
   chat: {
     backgroundColor: 'rgba(0,0,0,0.4)',
-    position: 'absolute',
+    position: 'fixed',
     bottom: '0px',
+    right: '0px',
   },
   messageLog: {
     color: 'white',

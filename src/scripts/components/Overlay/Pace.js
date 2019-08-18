@@ -29,25 +29,28 @@ export default class Pace {
   }
 
   update(step) {
-    const { x, y } = this.connect.clickLeft;
-    const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button) {
-      this.store.dispatch(clickedLeft());
-      this.store.dispatch(send(eventRequest(EVENTS.PACE, { id: button.id })));
-    }
-
-    switch (this.connect.pace) {
-      case 0:
-        this.animateStop.tick(step);
-        break;
-      case 1:
-        this.animateWalk.tick(step);
-        break;
-      case 2:
-        this.animateRun.tick(step);
-        break;
-      default:
-        break;
+    const { selectedPlayer, clickLeft: { x, y } } = this.connect;
+    if (selectedPlayer) {
+      const button = x && y && screenToImageButton(x, y, this.buttons);
+      if (button) {
+        this.store.dispatch(clickedLeft());
+        this.store.dispatch(send(eventRequest(EVENTS.PACE, { id: button.id })));
+      }
+  
+      const { pace } = selectedPlayer
+      switch (pace) {
+        case 0:
+          this.animateStop.tick(step);
+          break;
+        case 1:
+          this.animateWalk.tick(step);
+          break;
+        case 2:
+          this.animateRun.tick(step);
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -62,73 +65,79 @@ export default class Pace {
   }
 
   renderIcons() {
-    const { pace } = this.connect;
-    const yPos = (this.walkSize - this.iconSize) / 2;
-    const [width, height] = Array(2).fill(this.iconSize);
-
-    switch (pace) {
-      case 0:
-        this.buttons = [
-          {
-            id: 1, xPos: this.getXPos(1), yPos, width, height
-          },
-          {
-            id: 2, xPos: this.getXPos(2), yPos, width, height
-          }
-        ];
-        break;
-
-      case 1:
-        this.buttons = [
-          {
-            id: 0, xPos: this.getXPos(-1), yPos, width, height
-          },
-          {
-            id: 2, xPos: this.getXPos(1), yPos, width, height
-          }
-        ];
-        break;
-
-      case 2:
-        this.buttons = [
-          {
-            id: 0, xPos: this.getXPos(-2), yPos, width, height
-          },
-          {
-            id: 1, xPos: this.getXPos(-1), yPos, width, height
-          }
-        ];
-        break;
-
-      default:
-        break;
+    const { selectedPlayer } = this.connect;
+    if (selectedPlayer) {
+      const { pace } = selectedPlayer;
+      const yPos = (this.walkSize - this.iconSize) / 2;
+      const [width, height] = Array(2).fill(this.iconSize);
+  
+      switch (pace) {
+        case 0:
+          this.buttons = [
+            {
+              id: 1, xPos: this.getXPos(1), yPos, width, height
+            },
+            {
+              id: 2, xPos: this.getXPos(2), yPos, width, height
+            }
+          ];
+          break;
+  
+        case 1:
+          this.buttons = [
+            {
+              id: 0, xPos: this.getXPos(-1), yPos, width, height
+            },
+            {
+              id: 2, xPos: this.getXPos(1), yPos, width, height
+            }
+          ];
+          break;
+  
+        case 2:
+          this.buttons = [
+            {
+              id: 0, xPos: this.getXPos(-2), yPos, width, height
+            },
+            {
+              id: 1, xPos: this.getXPos(-1), yPos, width, height
+            }
+          ];
+          break;
+  
+        default:
+          break;
+      }
+  
+      this.buttons.forEach(button => drawById(
+        this.ctx, this.icons, 20 + button.id, this.scale, button.xPos, yPos
+      ));
     }
-
-    this.buttons.forEach(button => drawById(
-      this.ctx, this.icons, 20 + button.id, this.scale, button.xPos, yPos
-    ));
   }
 
   renderWalk() {
-    let offset;
-
-    switch (this.connect.pace) {
-      case 0:
-        offset = this.animateStop.getValue() + 6;
-        break;
-      case 1:
-        offset = this.animateWalk.getValue();
-        break;
-      case 2:
-        offset = this.animateRun.getValue();
-        break;
-      default:
-        break;
+    const { selectedPlayer } = this.connect;
+    if (selectedPlayer) {
+      let offset;
+      const { pace } = selectedPlayer;
+      switch (pace) {
+        case 0:
+          offset = this.animateStop.getValue() + 6;
+          break;
+        case 1:
+          offset = this.animateWalk.getValue();
+          break;
+        case 2:
+          offset = this.animateRun.getValue();
+          break;
+        default:
+          break;
+      }
+  
+      const x = (this.canvas.width - this.walkSize) / 2;
+      const y = 0;
+      drawById(this.ctx, this.walk, offset, this.scale, x, y);
     }
-
-    const x = (this.canvas.width - this.walkSize) / 2;
-    const y = 0;
-    drawById(this.ctx, this.walk, offset, this.scale, x, y);
   }
 
   render() {

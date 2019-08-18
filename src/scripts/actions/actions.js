@@ -96,6 +96,24 @@ export const removePartyMember = id => ({
   payload: { id }
 });
 
+export const selectPlayer = selectedPlayer => ({
+  type: ACTIONS.SELECT_PLAYER,
+  payload: { selectedPlayer }
+});
+
+export const selectAction = selectedAction => ({
+  type: ACTIONS.SELECT_ACTION,
+  payload: { selectedAction }
+});
+
+export const needRender = () => ({
+  type: ACTIONS.NEED_RENDER
+});
+
+export const completedRender = () => ({
+  type: ACTIONS.COMPLETED_RENDER
+});
+
 export const dragItem = (item, dragQuantity, originQuantity) => ({
   type: ACTIONS.DRAG_ITEM,
   payload: { item, dragQuantity, originQuantity }
