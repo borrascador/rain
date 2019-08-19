@@ -1,6 +1,9 @@
 import { UPDATE_TEXT_OFFSET, UPDATE_TEXT_DURATION } from '../utils/constants';
 import hasProp from '../utils/hasProp';
 
+export const reduceIntegerState = (state, action) => typeof action === 'number' ? action : state;
+export const reduceBooleanState = (state, action) => typeof action === 'boolean' ? action : state;
+
 export function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
 }
@@ -30,30 +33,35 @@ export function updatePositionInArray(array, type, position, updateItemCallback)
 //   return true;
 // }
 
+export function mergeObjects(obj1, obj2) {
+
+}
+
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   const obj = {};
   oldArray.forEach((oldItem) => {
-    obj[oldItem.id] = oldItem;
+    obj[oldItem.id.toString()] = oldItem;
   });
   newArray.forEach((newItem) => {
-    if (hasProp(obj, newItem.id)) {
+    const newItemId = newItem.id.toString();
+    if (isObject(obj[newItemId]) && isObject(newItem)) {
       if (newItem.quantity === 0) {
-        delete obj[newItem.id];
+        delete obj[newItemId];
         return;
       }
-      if (newItem.health === 0 && !hasProp(obj[newItem.id], 'timestamp')) {
-        obj[newItem.id] = Object.assign(obj[newItem.id], newItem, {
+      if (newItem.health === 0 && !hasProp(obj[newItemId], 'timestamp')) {
+        obj[newItemId] = Object.assign(obj[newItemId], newItem, {
           timestamp: Date.now()
         });
       } else {
-        obj[newItem.id] = Object.assign(obj[newItem.id], newItem);
+        obj[newItemId] = Object.assign(obj[newItemId], newItem);
       }
     } else {
-      obj[newItem.id] = newItem;
+      obj[newItemId] = newItem;
     }
     if (hasProp(newItem, 'skill_changes') && newItem.skill_changes.length > 0) {
-      obj[newItem.id] = Object.assign(obj[newItem.id], {
+      obj[newItemId] = Object.assign(obj[newItemId], {
         skills: newItem.skills.map((skill) => {
           const match = newItem.skill_changes.find(change => skill.id === change.id);
           if (match) {
@@ -64,7 +72,7 @@ export function mergeArrays(oldArray, newArray) {
       });
     }
     if (hasProp(newItem, 'modifier_changes') && newItem.modifier_changes.length > 0) {
-      obj[newItem.id] = Object.assign(obj[newItem.id], {
+      obj[newItemId] = Object.assign(obj[newItemId], {
         modifiers: newItem.modifiers.map((modifier) => {
           const match = newItem.modifier_changes.find(change => modifier.id === change.id);
           if (match) {
@@ -177,6 +185,13 @@ export function updateStory(state, action) {
   return state.stories;
 }
 
+export function updateMessages(state, action) {
+  if (action.payload.messages) {
+    return [...state.messageLog, ...action.payload.messages];
+  }
+  return state.messageLog;
+}
+
 // Helper function that enforces minimum offset between update text timestamps
 function getTimestamp(changes, offset, now) {
   if (changes.length > 0) {
@@ -188,7 +203,13 @@ function getTimestamp(changes, offset, now) {
   return now;
 }
 
+function isObject(a) {
+  return (!!a) && (a.constructor === Object);
+};
+
 export function sortTiles(state, action) {
+  if (state.tiles && !action.payload.tiles) return state.tiles;
+
   // TODO move these lines into helper function
   const GROUND_TILES = [0, 1, 4, 5];
   const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
@@ -324,12 +345,16 @@ export function updatePartyChanges(state, action) {
   return state.partyChanges;
 }
 
-export function getActions(inventory, tiles, position, hunting) {
+export function getActions(newState) {
+  const { slots, party, selectedPlayer } = newState;
+  const currentPlayer = party.find(player => player.id === selectedPlayer);
   const actions = { main: [] };
+  if (!currentPlayer) return actions;
+  actions.main.push({ target: 'main', name: 'unselect', id: 39, tileset: 'icons' });
 
   const itemsByTag = {};
-  if (inventory.length > 0) {
-    inventory.forEach((item) => {
+  if (slots.length > 0) {
+    slots.forEach((item) => {
       if (item.tags) {
         item.tags.forEach((tag) => {
           if (itemsByTag[tag]) {
@@ -343,10 +368,8 @@ export function getActions(inventory, tiles, position, hunting) {
   }
 
   if (itemsByTag.seed) {
-    actions.main.push({ target: 'seed', id: 10, tileset: 'icons' });
-    actions.seed = [{
-      target: 'main', name: 'back', id: 18, tileset: 'icons'
-    }]
+    actions.main.push({ target: 'sow', id: 10, tileset: 'icons' });
+    actions.sow = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }]
       .concat(
         itemsByTag.seed
           .map(item => ({
@@ -355,40 +378,38 @@ export function getActions(inventory, tiles, position, hunting) {
       );
   }
 
-  const currentTile = tiles.find(tile => tile.position === position);
-  if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
-    actions.main.push({ target: 'harvest', id: 14, tileset: 'icons' });
-    actions.harvest = [{
-      target: 'main', name: 'back', id: 18, tileset: 'icons'
-    }]
-      .concat(currentTile.crops.map((crop) => {
-        if (crop.stage === 0) {
-          return Object.assign({}, crop, { tag: 'harvest', tileset: 'items' });
-        }
-        return Object.assign({}, crop, { id: 12, tileset: 'icons' });
-      }));
-  }
+  actions.main.push({ target: 'attack', id: 16, tileset: 'icons' });
+  actions.attack = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
 
-  if (currentTile && currentTile.fishing && itemsByTag.fishing) {
-    actions.main.push({ target: 'fishing', id: 17, tileset: 'icons' });
-    actions.fishing = [{
-      target: 'main', name: 'back', id: 18, tileset: 'icons'
-    }]
-      .concat(
-        itemsByTag.fishing
-          .map(item => ({
-            tag: 'fishing', name: item.name, id: item.id, tileset: 'items'
-          }))
-      );
-  }
+  actions.main.push({ target: 'eat', id: 15, tileset: 'icons' });
+  actions.eat = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
 
-  // TODO: Should I use hunting state to set `name` and `tag`?
-  if (currentTile && currentTile.hunting) {
-    const name = hunting ? 'stop hunting' : 'start hunting';
-    actions.main.push({
-      tag: 'hunting', name, id: 16, tileset: 'icons'
-    });
-  }
+  // const currentTile = tiles.find(tile => tile.position === position);
+  // if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
+  //   actions.main.push({ target: 'harvest', id: 14, tileset: 'icons' });
+  //   actions.harvest = [{
+  //     target: 'main', name: 'back', id: 18, tileset: 'icons'
+  //   }]
+  //     .concat(currentTile.crops.map((crop) => {
+  //       if (crop.stage === 0) {
+  //         return Object.assign({}, crop, { tag: 'harvest', tileset: 'items' });
+  //       }
+  //       return Object.assign({}, crop, { id: 12, tileset: 'icons' });
+  //     }));
+  // }
+
+  // if (currentTile && currentTile.fishing && itemsByTag.fishing) {
+  //   actions.main.push({ target: 'fishing', id: 17, tileset: 'icons' });
+  //   actions.fishing = [{
+  //     target: 'main', name: 'back', id: 18, tileset: 'icons'
+  //   }]
+  //     .concat(
+  //       itemsByTag.fishing
+  //         .map(item => ({
+  //           tag: 'fishing', name: item.name, id: item.id, tileset: 'items'
+  //         }))
+  //     );
+  // }
 
   return actions;
 }

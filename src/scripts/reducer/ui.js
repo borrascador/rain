@@ -1,5 +1,5 @@
 import { SLOTS } from '../utils/constants';
-import { updateObject, mergeSlots, mergeTiles } from './utils';
+import { updateObject, mergeSlots, mergeTiles, getActions } from './utils';
 import hasProp from '../utils/hasProp';
 
 export function makeKeys() {
@@ -192,6 +192,12 @@ export function setModal(state, action) {
   });
 }
 
+export function closeModal(state) {
+  return updateObject(state, {
+    modal: undefined,
+  });
+}
+
 export function closeStory(state) {
   if (state.stories.length > 0) {
     return updateObject(state, {
@@ -204,5 +210,38 @@ export function closeStory(state) {
 export function removePartyMember(state, action) {
   return updateObject(state, {
     party: state.party.filter(member => member.id !== action.payload.id)
+  });
+}
+
+export function selectPlayer(state, action) {
+  const newState = updateObject(state, {
+    selectedPlayer: action.payload.selectedPlayer,
+    selectedAction: 'main',
+    needRender: true,
+  });
+  return updateObject(newState, {
+    actions: getActions(newState),
+  });
+}
+
+export function selectAction(state, action) {
+  const newState = updateObject(state, {
+    selectedAction: action.payload.selectedAction,
+    needRender: true,
+  });
+  return updateObject(newState, {
+    actions: getActions(newState),
+  });
+}
+
+export function needRender(state) {
+  return updateObject(state, {
+    needRender: true,
+  });
+}
+
+export function completedRender(state) {
+  return updateObject(state, {
+    needRender: false,
   });
 }

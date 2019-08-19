@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { connect as reduxConnect } from 'react-redux'
 import { connect as wsConnect } from '@giantmachines/redux-websocket';
-import { setModal } from '../actions/actions';
-import { MODAL } from '../utils/constants';
+import { closeModal } from '../actions/actions';
 import { Button } from './Button';
 import { TextInput } from './TextInput';
 
@@ -44,7 +43,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   connectToEndpoint: (endpoint) => dispatch(wsConnect(endpoint)),
-  dismiss: () => dispatch(setModal(MODAL.NONE)),
+  dismiss: () => dispatch(closeModal()),
 });
 
 export default reduxConnect(

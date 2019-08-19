@@ -1,11 +1,10 @@
 import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import {
-  clickedLeft, zoomIn, zoomOut, setMode, logoutRequest,
+  clickedLeft, zoomIn, zoomOut, logoutRequest, needRender,
 } from '../../actions/actions';
 import { screenToImageButton } from '../utils';
 import { drawByName } from '../../utils/draw';
-import { MODE } from '../../utils/constants';
 
 export default class Zoom {
   constructor(store, canvas, ctx, loader) {
@@ -38,9 +37,11 @@ export default class Zoom {
           break;
         case 'zoom-out':
           this.store.dispatch(zoomOut());
+          this.store.dispatch(needRender());
           break;
         case 'zoom-in':
           this.store.dispatch(zoomIn());
+          this.store.dispatch(needRender());
           break;
         case 'glass':
           // const { mode } = this.connect;

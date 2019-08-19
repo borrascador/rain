@@ -83,6 +83,10 @@ export const setModal = modal => ({
   payload: { modal }
 });
 
+export const closeModal = () => ({
+  type: ACTIONS.CLOSE_MODAL,
+})
+
 export const closeStory = () => ({
   type: ACTIONS.CLOSE_STORY
 });
@@ -90,6 +94,24 @@ export const closeStory = () => ({
 export const removePartyMember = id => ({
   type: ACTIONS.REMOVE_PARTY_MEMBER,
   payload: { id }
+});
+
+export const selectPlayer = selectedPlayer => ({
+  type: ACTIONS.SELECT_PLAYER,
+  payload: { selectedPlayer }
+});
+
+export const selectAction = selectedAction => ({
+  type: ACTIONS.SELECT_ACTION,
+  payload: { selectedAction }
+});
+
+export const needRender = () => ({
+  type: ACTIONS.NEED_RENDER
+});
+
+export const completedRender = () => ({
+  type: ACTIONS.COMPLETED_RENDER
 });
 
 export const dragItem = (item, dragQuantity, originQuantity) => ({
@@ -153,4 +175,9 @@ export const eventResponse = payload => ({
 export const update = payload => ({
   type: ACTIONS.UPDATE,
   payload
+});
+
+export const chatBroadcast = text => ({
+  type: ACTIONS.CHAT_BROADCAST,
+  payload: { text },
 });

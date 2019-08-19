@@ -2,10 +2,9 @@ import { ACTIONS } from '../actions/types';
 import {
   keyDown, keyUp,
   mouseDownLeft, mouseDownRight, mouseMove, mouseUpLeft, mouseUpRight,
-  clickedLeft, clickedRight, zoomIn, zoomOut,
-  setPartyTab, refreshSlots, setView, setMode, setModal, closeStory, removePartyMember,
-  dragItem,
-  refreshTiles
+  clickedLeft, clickedRight, zoomIn, zoomOut, needRender, completedRender,
+  setPartyTab, refreshSlots, setView, setMode, setModal, closeModal, closeStory,
+  removePartyMember, selectPlayer, selectAction, dragItem, refreshTiles
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
@@ -17,9 +16,11 @@ const {
   KEY_DOWN, KEY_UP,
   MOUSE_DOWN_LEFT, MOUSE_DOWN_RIGHT, MOUSE_MOVE, MOUSE_UP_LEFT, MOUSE_UP_RIGHT,
   CLICKED_LEFT, CLICKED_RIGHT, ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, REFRESH_SLOTS,
-  REFRESH_TILES, SET_VIEW, SET_MODE, SET_MODAL, CLOSE_STORY, REMOVE_PARTY_MEMBER, DRAG_ITEM, ERROR,
+  REFRESH_TILES, SET_VIEW, SET_MODE, SET_MODAL, CLOSE_MODAL, CLOSE_STORY,
+  REMOVE_PARTY_MEMBER, SELECT_PLAYER, SELECT_ACTION, DRAG_ITEM, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
-  LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE
+  LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
+  CHAT_BROADCAST, NEED_RENDER, COMPLETED_RENDER,
 } = ACTIONS;
 
 export default function reducer(state, action) {
@@ -61,10 +62,20 @@ export default function reducer(state, action) {
       return setMode(state, action);
     case SET_MODAL:
       return setModal(state, action);
+    case CLOSE_MODAL:
+      return closeModal(state);
     case CLOSE_STORY:
       return closeStory(state);
     case REMOVE_PARTY_MEMBER:
       return removePartyMember(state, action);
+    case SELECT_PLAYER:
+      return selectPlayer(state, action);
+    case SELECT_ACTION:
+      return selectAction(state, action);
+    case NEED_RENDER:
+      return needRender(state);
+    case COMPLETED_RENDER:
+      return completedRender(state);
     case DRAG_ITEM:
       return dragItem(state, action);
     case REGISTER_REQUEST:
@@ -84,6 +95,10 @@ export default function reducer(state, action) {
       return update(state, action);
     case EVENT_RESPONSE:
       return eventResponse(state, action);
+    case CHAT_BROADCAST:
+      // todo replace with real implementation
+      // probably needs timeout logic
+      return state;
     case 'REDUX_WEBSOCKET::CONNECT':
       return connectSocket(state, action);
     case 'REDUX_WEBSOCKET::OPEN':

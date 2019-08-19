@@ -2,7 +2,7 @@ import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import { drawById, drawHover } from '../../utils/draw';
 import { checkImageCollision, screenToImageButton } from '../utils';
-import { clickedLeft, eventRequest } from '../../actions/actions';
+import { clickedLeft, eventRequest, selectAction, selectPlayer } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
 import {
   BRIGHT_GREEN, BRIGHT_RED, MEDIUM_RED, SOLID_WHITE
@@ -17,8 +17,9 @@ export default class ActionBar {
     this.items = loader.getImage('items');
     this.connect = new Connect(this.store);
 
-    this.current = 'main';
-    this.buttons = this.connect.actions[this.current];
+    this.store.dispatch(selectAction('main'));
+    const { actions, selectedAction } = this.connect;
+    this.buttons = actions[selectedAction];
 
     this.scale = 4;
     this.buttonSize = this.icons.tileset.tilewidth * this.scale;
@@ -37,14 +38,18 @@ export default class ActionBar {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
-        this.current = button.target;
+        if (button.name === 'unselect') {
+          this.store.dispatch(selectPlayer());
+        } else {
+          this.store.dispatch(selectAction(button.target));
+        }
       } else if (button.tag) {
         const { currentTile } = this.connect;
         let currentCrop;
         switch (button.tag) {
           case 'seed':
             this.store.dispatch(send(eventRequest(EVENTS.PLANT, { id: button.id })));
-            this.current = 'main';
+            this.store.dispatch(selectAction('main'));
             break;
           case 'harvest':
             if (currentTile) {
@@ -53,25 +58,25 @@ export default class ActionBar {
             if (currentCrop.stage <= 0) {
               this.store.dispatch(send(eventRequest(EVENTS.HARVEST, { id: button.id })));
             }
-            this.current = 'main';
+            this.store.dispatch(selectAction('main'));
             break;
           case 'hunting':
             this.store.dispatch(
               send(eventRequest(this.connect.hunting ? EVENTS.STOP_HUNT : EVENTS.START_HUNT))
             );
-            this.current = 'main';
+            this.store.dispatch(selectAction('main'));
             break;
           case 'fishing':
             this.store.dispatch(send(eventRequest(EVENTS.FISH, { id: button.id })));
-            this.current = 'main';
+            this.store.dispatch(selectAction('main'));
             break;
           case 'add_food':
             this.store.dispatch(send(eventRequest(EVENTS.ADD_FOOD, { id: button.id })));
-            this.current = 'main'; // COMBAK 'eating' instead?
+            this.store.dispatch(selectAction('main')); // COMBAK 'eating' instead?
             break;
           case 'remove_food':
             this.store.dispatch(send(eventRequest(EVENTS.REMOVE_FOOD, { id: button.id })));
-            this.current = 'main'; // COMBAK 'eating' instead?
+            this.store.dispatch(selectAction('main')); // COMBAK 'eating' instead?
             break;
           default:
             this.store.dispatch(send(eventRequest(button.tag, { id: button.id }))); // DEBUG
@@ -82,9 +87,10 @@ export default class ActionBar {
   }
 
   renderBar() {
+    const { selectedAction } = this.connect;
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = `${this.fontSize}px MECC`;
-    const titleWidth = this.ctx.measureText(this.current).width;
+    const titleWidth = this.ctx.measureText(selectedAction).width;
 
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(
@@ -110,7 +116,7 @@ export default class ActionBar {
 
     this.ctx.fillStyle = SOLID_WHITE;
     this.ctx.fillText(
-      this.current,
+      selectedAction,
       (this.canvas.width - titleWidth) / 2,
       this.canvas.height - this.barSize
     );
@@ -155,10 +161,11 @@ export default class ActionBar {
   }
 
   render() {
-    if (!this.connect.actions[this.current]) {
-      this.current = 'main';
+    const { actions, selectedAction } = this.connect;
+    if (!actions[selectedAction]) {
+      this.store.dispatch(selectAction('main'));
     }
-    this.buttons = this.connect.actions[this.current];
+    this.buttons = actions[selectedAction];
     this.barWidth = this.barSize * this.buttons.length;
     if (this.buttons.length > 0) this.renderBar();
     this.renderButtons();

@@ -1,7 +1,7 @@
 import Connect from '../Connect';
 import { drawById, drawByName, drawHover } from '../utils/draw';
 import { screenToImageButton, getItemById } from './utils';
-import { clickedLeft, setPartyTab, setModal } from '../actions/actions';
+import { clickedLeft, setPartyTab, closeModal } from '../actions/actions';
 import { DARK_RED, MEDIUM_RED, PALE_GREEN } from '../utils/colors';
 
 const NAME = 'NAME';
@@ -50,7 +50,7 @@ export default class PartyWindow {
       } else if (button) {
         this.store.dispatch(setPartyTab(button.id));
       } else {
-        this.store.dispatch(setModal(null));
+        this.store.dispatch(closeModal());
       }
     }
   }

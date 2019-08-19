@@ -8,12 +8,13 @@ import Register from './Register';
 import Success from './Success';
 import Failure from './Failure';
 import ServerSelect from './ServerSelect';
+import Chat from './Chat';
 
 const AppRoot = ({ view, modal }) => {
   return (
     <>
       { view === VIEW.TITLE && <TitleView />}
-      { modal !== MODAL.NONE && (
+      { ![undefined, MODAL.PARTY, MODAL.STORY].includes(modal) && (
         <Dialog>
           { modal === MODAL.LOGIN && <Login /> }
           { modal === MODAL.REGISTER && <Register /> }
@@ -22,6 +23,7 @@ const AppRoot = ({ view, modal }) => {
           { modal === MODAL.SERVER_SELECT && <ServerSelect /> }
         </Dialog>
       )}
+      { view === VIEW.GAME && <Chat /> }
     </>
   );
 };

@@ -19,8 +19,8 @@ const styles = {
 };
 
 const Dialog = ({ children }) => (
-  <div className="dialog" style={ styles.dialog }>
-    <div className="content" style={ styles.content }>
+  <div style={ styles.dialog }>
+    <div style={ styles.content }>
       { children }
     </div>
   </div>

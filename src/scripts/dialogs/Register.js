@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux'
 import { send } from '@giantmachines/redux-websocket';
-import { setModal, registerRequest, error } from '../actions/actions';
-import { MODAL } from '../utils/constants';
+import { closeModal, registerRequest, error } from '../actions/actions';
 import { Button } from './Button';
 import { TextInput } from './TextInput';
 
@@ -54,11 +53,13 @@ const Register = ({ sendRegister, setError, dismiss }) => {
         onChange={handlePassword1Input}
         value={password1}
         placeholder="PASSWORD"
+        password
       />
       <TextInput
         onChange={handlePassword2Input}
         value={password2}
         placeholder="REPEAT PASSWORD"
+        password
       />
       <div>
         <Button onClick={onSubmit}>
@@ -75,7 +76,7 @@ const Register = ({ sendRegister, setError, dismiss }) => {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => ({
-  dismiss: () => dispatch(setModal(MODAL.NONE)),
+  dismiss: () => dispatch(closeModal()),
   sendRegister: (user, email, pass) => dispatch(send(registerRequest(user, email, pass))),
   setError: (code, message) => dispatch(error(code, message)),
 });

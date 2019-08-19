@@ -13,7 +13,7 @@ const styles = {
 };
 
 export const Button = ({ onClick, children }) => (
-  <button onClick={onClick}  style={styles.button}>
+  <button onClick={onClick} style={styles.button}>
     {children}
   </button>
 );

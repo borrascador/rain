@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux'
 import { send } from '@giantmachines/redux-websocket';
-import { setModal, loginRequest } from '../actions/actions';
-import { MODAL } from '../utils/constants';
+import { closeModal, loginRequest } from '../actions/actions';
 import { Button } from './Button';
 import { TextInput } from './TextInput';
 
@@ -35,6 +34,7 @@ const Login = ({ sendLogin, dismiss }) => {
         onChange={handlePasswordInput}
         value={password}
         placeholder="PASSWORD"
+        password
       />
       <div>
         <Button onClick={onSubmit}>
@@ -51,7 +51,7 @@ const Login = ({ sendLogin, dismiss }) => {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => ({
-  dismiss: () => dispatch(setModal(MODAL.NONE)),
+  dismiss: () => dispatch(closeModal()),
   sendLogin: (user, pass) => dispatch(send(loginRequest(user, pass))),
 });
 

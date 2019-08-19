@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { setModal } from '../actions/actions';
-import { MODAL } from '../utils/constants';
+import { closeModal } from '../actions/actions';
 import { Button } from './Button';
 
 const Failure = ({ message, dismiss }) => (
@@ -19,7 +18,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  dismiss: () => dispatch(setModal(MODAL.NONE)),
+  dismiss: () => dispatch(closeModal()),
 });
 
 export default connect(
