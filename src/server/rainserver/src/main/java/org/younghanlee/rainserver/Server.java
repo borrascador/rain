@@ -68,7 +68,7 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		Connection connection = (Connection) conn;
-		MessageHandler.handle(message, connection);
+		MessageHandler.handle(message, connection, this);
 		dump();
 		// System.out.println("received message from "	+ conn.getRemoteSocketAddress() + ": " + message);
 	}
@@ -89,6 +89,13 @@ public class Server extends WebSocketServer {
 		World.addPlayer("a", "test1@test.com", "a");
 		World.addPlayer("b", "test2@test.com", "b");
 		dump();
+	}
+	
+	public void broadcast(String s) {
+		for (WebSocket w: getConnections()) {
+			Connection c = (Connection) w;
+			c.send(s);
+		}
 	}
 	
 	public void flush(int tick) {

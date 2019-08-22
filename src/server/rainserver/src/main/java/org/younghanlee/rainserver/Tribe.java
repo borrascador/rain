@@ -81,29 +81,26 @@ public class Tribe {
 			if (i==0) {
 				p.setMember(member_id);
 				World.getMember(member_id).setPlayer(p);
-				partyName = "Party" + index;
-			} else {
-				party.addMember(member_id);
-			}
+				partyName = "Party " + index;
+			} 
 			HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
 			for (int id: skills.keySet()) {
 				if (Util.randomInt(100) < skills.get(id)) {
 					newSkills.put(id, 1);
 				} 
 			}
-			
-			Member m = World.getMember(member_id);
-			JSONObject memberObject = m.change(member_id, p, 0, 0, newSkills, null, null);
-			partyArray.put(memberObject);
+			partyArray = p.partyToJSONArray();
 		}
 		party.setName(partyName);
 		IChoice partyChoice = new IChoice() {
 			public String getText(Player p) {
-				return party.getName() + "\n  Size:" + party.partySize() + "      Open spots:"  + party.emptySpaces();
+				return party.getName() + "\n  Size:" + party.partySize() + "    Open spots:"  + party.emptySpaces();
 			}
 			public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
 				p.removeDecision();
 				
+				p.setParty(index);
+				p.setMember(party.addPlayer(p.getName()));
 				
 				JSONArray partyArray = p.partyToJSONArray();
 				
