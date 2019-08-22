@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 public class MessageHandler {
 
-	public static void handle (String message, Connection connection){
+	public static void handle (String message, Connection connection, Server server){
 		String from = "";
 		String username = "";
 		if (connection.getPlayer() != null) {
@@ -109,6 +109,19 @@ public class MessageHandler {
 				payload = jo.getJSONObject("payload");
 				// Go to EventHandler.java
 				EventHandler.handleRequest(payload, connection);
+				break;
+			
+			case "CHAT_BROADCAST":
+				payload = jo.getJSONObject("payload");
+				String text = payload.getString("text");
+				JSONObject response_payload = new JSONObject();
+				JSONArray messages = new JSONArray();
+				JSONObject m = new JSONObject();
+				m.put("user", username);
+				m.put("text", text);
+				messages.put(m);
+				response_payload.put("messages", messages);
+				server.broadcast(Message.UPDATE(response_payload).toString());
 				break;
 				
 			default:

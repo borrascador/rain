@@ -19,13 +19,15 @@ public class Party {
 		members.removeAll(Arrays.asList(id));
 	}
 	
-	public void addPlayer(String name) {
+	public int addPlayer(String name) {
 		for (int m: members) {
 			Member member = World.getMember(m);
 			if (member.getPlayer() == null) {
 				member.setPlayer(World.getPlayer(name));
+				return m;
 			}
 		}
+		return -1;
 	}
 	
 	public int partySize() {

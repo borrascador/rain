@@ -236,7 +236,7 @@ public class Member {
 		} else {
 			jo.put("NPC", false);
 		}
-		if (player == p) {
+		if (p.equals(player)) {
 			jo.put("self", true);
 		}
 		jo.put("icon", icon);
