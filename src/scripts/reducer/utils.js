@@ -367,6 +367,14 @@ export function getActions(newState) {
     });
   }
 
+  actions.main.push({ target: 'attack', id: 16, tileset: 'icons' });
+  actions.attack = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
+
+  actions.main.push({ target: 'eat', id: 15, tileset: 'icons' });
+  actions.eat = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
+
+  actions.main.push({ tag: 'forage', name: 'forage', id: 14, tileset: 'icons' });
+
   if (itemsByTag.seed) {
     actions.main.push({ target: 'sow', id: 10, tileset: 'icons' });
     actions.sow = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }]
@@ -377,39 +385,6 @@ export function getActions(newState) {
           }))
       );
   }
-
-  actions.main.push({ target: 'attack', id: 16, tileset: 'icons' });
-  actions.attack = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
-
-  actions.main.push({ target: 'eat', id: 15, tileset: 'icons' });
-  actions.eat = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
-
-  // const currentTile = tiles.find(tile => tile.position === position);
-  // if (currentTile && currentTile.crops && currentTile.crops.length > 0) {
-  //   actions.main.push({ target: 'harvest', id: 14, tileset: 'icons' });
-  //   actions.harvest = [{
-  //     target: 'main', name: 'back', id: 18, tileset: 'icons'
-  //   }]
-  //     .concat(currentTile.crops.map((crop) => {
-  //       if (crop.stage === 0) {
-  //         return Object.assign({}, crop, { tag: 'harvest', tileset: 'items' });
-  //       }
-  //       return Object.assign({}, crop, { id: 12, tileset: 'icons' });
-  //     }));
-  // }
-
-  // if (currentTile && currentTile.fishing && itemsByTag.fishing) {
-  //   actions.main.push({ target: 'fishing', id: 17, tileset: 'icons' });
-  //   actions.fishing = [{
-  //     target: 'main', name: 'back', id: 18, tileset: 'icons'
-  //   }]
-  //     .concat(
-  //       itemsByTag.fishing
-  //         .map(item => ({
-  //           tag: 'fishing', name: item.name, id: item.id, tileset: 'items'
-  //         }))
-  //     );
-  // }
 
   return actions;
 }

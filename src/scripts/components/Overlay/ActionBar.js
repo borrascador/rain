@@ -31,11 +31,18 @@ export default class ActionBar {
   }
 
   update() {
-    const { x, y } = this.connect.clickLeft;
+    const { selectedAction, selectedPlayer, keys, clickLeft: { x, y } } = this.connect;
+    if (selectedPlayer && selectedAction === 'main') {
+      if (keys.includes('a')) this.store.dispatch(selectAction('attack'));
+      if (keys.includes('e')) this.store.dispatch(selectAction('eat'));
+    } else if (selectedPlayer) {
+      if (keys.includes('q')) this.store.dispatch(selectAction('main'));      
+    }
     if (x && y && this.box && checkImageCollision(x, y, this.box)) {
       this.store.dispatch(clickedLeft());
     }
     const button = x && y && screenToImageButton(x, y, this.buttons);
+
     if (button) {
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
         if (button.name === 'unselect') {
@@ -44,39 +51,14 @@ export default class ActionBar {
           this.store.dispatch(selectAction(button.target));
         }
       } else if (button.tag) {
-        const { currentTile } = this.connect;
-        let currentCrop;
         switch (button.tag) {
+          case 'forage':
+            this.store.dispatch(send(eventRequest(EVENTS.FORAGE)));
+            this.store.dispatch(selectAction('main'));
+            break;
           case 'seed':
             this.store.dispatch(send(eventRequest(EVENTS.PLANT, { id: button.id })));
             this.store.dispatch(selectAction('main'));
-            break;
-          case 'harvest':
-            if (currentTile) {
-              currentCrop = currentTile.crops.find(crop => crop.name === button.name);
-            }
-            if (currentCrop.stage <= 0) {
-              this.store.dispatch(send(eventRequest(EVENTS.HARVEST, { id: button.id })));
-            }
-            this.store.dispatch(selectAction('main'));
-            break;
-          case 'hunting':
-            this.store.dispatch(
-              send(eventRequest(this.connect.hunting ? EVENTS.STOP_HUNT : EVENTS.START_HUNT))
-            );
-            this.store.dispatch(selectAction('main'));
-            break;
-          case 'fishing':
-            this.store.dispatch(send(eventRequest(EVENTS.FISH, { id: button.id })));
-            this.store.dispatch(selectAction('main'));
-            break;
-          case 'add_food':
-            this.store.dispatch(send(eventRequest(EVENTS.ADD_FOOD, { id: button.id })));
-            this.store.dispatch(selectAction('main')); // COMBAK 'eating' instead?
-            break;
-          case 'remove_food':
-            this.store.dispatch(send(eventRequest(EVENTS.REMOVE_FOOD, { id: button.id })));
-            this.store.dispatch(selectAction('main')); // COMBAK 'eating' instead?
             break;
           default:
             this.store.dispatch(send(eventRequest(button.tag, { id: button.id }))); // DEBUG
