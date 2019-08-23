@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 public class Player {
 	
+	private Connection connection;
+	
 	private String name;
 	private String email;
 	private String passwordHash;
@@ -101,6 +103,7 @@ public class Player {
 	public synchronized boolean login(Connection connection) {
 		if (!this.online) {
 			this.online = true;
+			this.connection = connection;
 			World.onlineInc();
 			connection.setPlayer(this);
 			return true;
@@ -110,6 +113,7 @@ public class Player {
 	
 	public JSONObject logoff(Connection connection) {
 		this.online = false;
+		this.connection = null;
 		World.onlineDec();
 		// Tile t = World.getTile(position);
 		//t.removeVisitor(this);
@@ -119,6 +123,10 @@ public class Player {
 		}
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
+	}
+	
+	public void send(String s) {
+		connection.send(s);
 	}
 	
 	// When a player logs back in after logging out in the middle of a decision

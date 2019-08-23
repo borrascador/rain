@@ -110,7 +110,8 @@ public class Tribe {
 				payload.put("story", story);
 // 				payload.put("inventory", inventory);
 				payload.put("party", partyArray);
-					return Message.EVENT_RESPONSE(payload);
+				
+				return Message.EVENT_RESPONSE(payload);
 			}
 			public ArrayList<Multiplier> generateMultipliers(Player p){
 				return null;

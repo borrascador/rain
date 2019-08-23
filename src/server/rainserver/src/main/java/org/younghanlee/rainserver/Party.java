@@ -3,12 +3,25 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class Party {
 	private String name;
 	private ArrayList<Integer> members;
 	
 	public Party() {
 		this.members = new ArrayList<Integer>();
+	}
+	
+	public void partyBroadcast(String s) {
+		for (int m: members) {
+			Member member = World.getMember(m);
+			Player p = member.getPlayer();
+			if (p != null) {
+				p.send(s);
+			}
+		}
 	}
 	
 	public void addMember(int id) {
@@ -24,6 +37,13 @@ public class Party {
 			Member member = World.getMember(m);
 			if (member.getPlayer() == null) {
 				member.setPlayer(World.getPlayer(name));
+				JSONObject payload = new JSONObject();
+				JSONArray messages = new JSONArray();
+				JSONObject message = new JSONObject();
+				message.put("text", name + " has joined the party.");
+				messages.put(message);
+				payload.put("messages", messages);
+				partyBroadcast(Message.UPDATE(payload).toString());
 				return m;
 			}
 		}
