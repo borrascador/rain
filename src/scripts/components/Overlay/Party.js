@@ -2,7 +2,7 @@ import { MODAL, SLOTS, UPDATE_TEXT_DURATION } from '../../utils/constants';
 import Connect from '../../Connect';
 import { screenToImageButton } from '../utils';
 import {
-  clickedLeft, setPartyTab, setModal, removePartyMember
+  clickedLeft, clickedRight, setPartyTab, setModal, selectPlayer, removePartyMember
 } from '../../actions/actions';
 import { drawById, drawByName, fadeText } from '../../utils/draw';
 import { MEDIUM_RED, DARK_RED } from '../../utils/colors';
@@ -18,39 +18,63 @@ export default class Party {
 
     this.connect = new Connect(this.store);
 
-    this.scale = 4;
-    this.iconSize = this.icons.tileset.tilewidth * 2;
+    this.scale = 3;
     this.size = this.items.tileset.tilewidth * this.scale;
-    this.gutter = this.size / this.scale;
+    this.iconScale = 2;
+    this.iconSize = this.icons.tileset.tilewidth * this.iconScale;
+    this.gutter = this.items.tileset.tilewidth;
 
     this.fontSize = 32;
+    this.hoverFontSize = 16;
 
     this.unitWidth = 5;
-    this.unitHeight = 1;
-    this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
-    this.height = this.unitHeight * this.size + this.gutter * 2;
+    this.width = this.unitWidth * this.size + 4;
+    this.height = this.size + this.gutter * 2;
 
     this.buttons = this.connect.party.slice();
   }
 
   update() {
-    const { x, y } = this.connect.clickLeft;
-    if (x && y && this.boxes && screenToImageButton(x, y, this.boxes)) {
-      this.store.dispatch(clickedLeft());
+    const { clickLeft, clickRight } = this.connect;
+    if (clickLeft.x && clickLeft.y) {
+      const { x, y } = clickLeft;
+      if (this.boxes && screenToImageButton(x, y, this.boxes)) {
+        this.store.dispatch(clickedLeft());
+      }
+      const button = screenToImageButton(x, y, this.buttons);
+      if (button) {
+        this.store.dispatch(selectPlayer(button.id));
+      }
     }
-    const button = x && y && screenToImageButton(x, y, this.buttons);
-    if (button) {
-      this.store.dispatch(setPartyTab(button.id));
-      this.store.dispatch(setModal(MODAL.PARTY));
+    if (clickRight.x && clickRight.y) {
+      const { x, y } = clickRight;
+      if (this.boxes && screenToImageButton(x, y, this.boxes)) {
+        this.store.dispatch(clickedRight());
+      }
+      const button = screenToImageButton(x, y, this.buttons);
+      if (button) {
+        this.store.dispatch(setPartyTab(button.id));
+        this.store.dispatch(setModal(MODAL.PARTY));
+      }
     }
   }
 
-  renderBox(xPos, yPos, width, height) {
-    this.ctx.fillStyle = MEDIUM_RED;
-    this.ctx.fillRect(xPos, yPos, width, height);
-    this.boxes.push({
-      xPos, yPos, width, height
-    });
+  renderBox(member, xPos, yPos, width, height) {
+    const { selectedPlayer } = this.connect;
+    if (member.self === true) {
+      this.ctx.fillStyle = MEDIUM_RED;
+      this.ctx.fillRect(xPos, yPos, width, height);
+    }
+    if (selectedPlayer && selectedPlayer.id === member.id) {
+      const lineWidth = 4;
+      this.ctx.lineWidth = lineWidth;
+      this.ctx.strokeStyle = 'rgba(256, 256, 256, 0.8)';
+      this.ctx.strokeRect(
+        xPos - lineWidth / 2, yPos - lineWidth / 2,
+        width + lineWidth, height + lineWidth
+      );
+    }
+    this.boxes.push({ xPos, yPos, width, height });
   }
 
   renderSlot(id, xPos, yPos) {
@@ -65,10 +89,11 @@ export default class Party {
   }
 
   renderPartyMember(member, index) {
-    let x = this.gutter * 2;
-    const y = this.gutter * 2 + index * this.height;
+    const { partyChanges } = this.connect;
+    let x = 0;
+    const y = index * this.height;
     const currentTime = Date.now();
-    const memberChanges = this.connect.partyChanges.filter((item) => {
+    const memberChanges = partyChanges.filter((item) => {
       const elapsed = currentTime - item.timestamp;
       return item.id === member.id && elapsed > 0 && elapsed < UPDATE_TEXT_DURATION;
     });
@@ -90,43 +115,36 @@ export default class Party {
       this.store.dispatch(removePartyMember(member.id));
     }
 
-    this.renderBox(x - this.gutter, y - this.gutter, this.width, this.height);
+    const [xPos, yPos] = [x + this.size / 4, y + this.size / 4];
+    const [width, height] = [this.width, this.size * 3 / 2];
 
-    drawById(
-      this.ctx, this.iconsXl, member.icon, this.scale,
-      x - this.gutter * 2, y - this.gutter * 2
-    );
-
-    this.renderSlot(member.id, x + this.height, y);
+    this.renderBox(member, xPos, yPos, width, height);
+    drawById(this.ctx, this.iconsXl, member.icon, this.scale, x, y);
+    // this.renderSlot(member.id, x + this.height, y);
 
     [...Array(member.health)].forEach((_, i) => {
       drawByName(
-        this.ctx, this.icons, 'heart', 2,
-        x + this.size * 2 + this.gutter * 3 + i * (this.iconSize + 3),
-        y - this.iconSize / 8
+        this.ctx, this.icons, 'heart', this.iconScale,
+        x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
+        y + this.gutter
       );
     });
     [...Array(member.jeito)].forEach((_, i) => {
       drawByName(
-        this.ctx, this.icons, 'bolt', 2,
-        x + this.size * 2 + this.gutter * 3 + i * (this.iconSize + 3),
-        y + this.size - this.iconSize * 7 / 8
+        this.ctx, this.icons, 'bolt', this.iconScale,
+        x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
+        y + this.iconSize + this.gutter
       );
     });
 
-    return Object.assign({}, member, {
-      xPos: x - this.gutter,
-      yPos: y - this.gutter,
-      width: this.height,
-      height: this.height
-    });
+    return Object.assign({}, member, { xPos, yPos, width: height, height });
   }
 
   render() {
-    this.height = this.size + this.gutter * 2;
+    const { party } = this.connect;
     this.slots = [];
     this.boxes = [];
-    this.buttons = this.connect.party.map((member, index) => this.renderPartyMember(member, index));
+    this.buttons = party.map((member, index) => this.renderPartyMember(member, index));
     return this.slots;
   }
 }
