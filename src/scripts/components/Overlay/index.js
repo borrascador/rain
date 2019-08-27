@@ -15,7 +15,7 @@ export default class Overlay {
     this.ctx = ctx;
     this.loader = loader;
 
-    this.pace = new Pace(this.store, this.canvas, this.ctx, this.loader);
+    // this.pace = new Pace(this.store, this.canvas, this.ctx, this.loader);
     this.food = new Food(this.store, this.canvas, this.ctx, this.loader);
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
     this.inventory = new Inventory(this.store, this.canvas, this.ctx, this.loader);
@@ -33,11 +33,11 @@ export default class Overlay {
     this.inventory.update(step);
     this.party.update(step);
     this.food.update(step);
-    this.pace.update(step);
+    // this.pace.update(step);
   }
 
   render() {
-    this.pace.render();
+    // this.pace.render();
     const slots = [].concat(
       this.food.render(),
       this.party.render(),
