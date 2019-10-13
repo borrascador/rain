@@ -121,6 +121,7 @@ public class Player {
 		if (drag != null) {
 			putBackItem();
 		}
+		World.getParty(party).logout(member);
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
 	}

@@ -18,7 +18,7 @@ public class Party {
 		for (int m: members) {
 			Member member = World.getMember(m);
 			Player p = member.getPlayer();
-			if (p != null) {
+			if (p != null && member.isOnline()) {
 				p.send(s);
 			}
 		}
@@ -75,5 +75,23 @@ public class Party {
 			}
 		}
 		return spaces;
+	}
+	
+	public void logout(int id) {
+		Member m = World.getMember(id);
+		m.setOnline(false);
+		JSONArray party = new JSONArray();
+		JSONObject member = new JSONObject();
+		member.put("id", id);
+		member.put("online", false);
+		party.put(member);
+		JSONObject payload = new JSONObject();
+		payload.put("party", party);
+		JSONArray messages = new JSONArray();
+		JSONObject message = new JSONObject();
+		message.put("text", m.getName() + " has logged out.");
+		messages.put(message);
+		payload.put("messages", messages);
+		partyBroadcast(Message.UPDATE(payload).toString());
 	}
 }
