@@ -4,7 +4,7 @@ import {
   mouseDownLeft, mouseDownRight, mouseMove, mouseUpLeft, mouseUpRight,
   clickedLeft, clickedRight, zoomIn, zoomOut, needRender, completedRender,
   setPartyTab, refreshSlots, setView, setMode, setModal, closeModal, closeStory,
-  removePartyMember, selectPlayer, selectAction, dragItem, refreshTiles
+  removePartyMember, selectPlayer, selectAction, selectTile, dragItem, refreshTiles
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
@@ -17,7 +17,7 @@ const {
   MOUSE_DOWN_LEFT, MOUSE_DOWN_RIGHT, MOUSE_MOVE, MOUSE_UP_LEFT, MOUSE_UP_RIGHT,
   CLICKED_LEFT, CLICKED_RIGHT, ZOOM_IN, ZOOM_OUT, SET_PARTY_TAB, REFRESH_SLOTS,
   REFRESH_TILES, SET_VIEW, SET_MODE, SET_MODAL, CLOSE_MODAL, CLOSE_STORY,
-  REMOVE_PARTY_MEMBER, SELECT_PLAYER, SELECT_ACTION, DRAG_ITEM, ERROR,
+  REMOVE_PARTY_MEMBER, SELECT_PLAYER, SELECT_ACTION, SELECT_TILE, DRAG_ITEM, ERROR,
   REGISTER_REQUEST, REGISTER_RESPONSE, LOGIN_REQUEST, LOGIN_RESPONSE,
   LOGOUT_REQUEST, LOGOUT_RESPONSE, UPDATE, EVENT_REQUEST, EVENT_RESPONSE,
   CHAT_BROADCAST, NEED_RENDER, COMPLETED_RENDER,
@@ -72,6 +72,8 @@ export default function reducer(state, action) {
       return selectPlayer(state, action);
     case SELECT_ACTION:
       return selectAction(state, action);
+    case SELECT_TILE:
+      return selectTile(state, action);
     case NEED_RENDER:
       return needRender(state);
     case COMPLETED_RENDER:

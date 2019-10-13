@@ -1,5 +1,6 @@
 import { UPDATE_TEXT_OFFSET, UPDATE_TEXT_DURATION } from '../utils/constants';
 import hasProp from '../utils/hasProp';
+import { findTile } from '../components/utils';
 
 export const reduceIntegerState = (state, action) => typeof action === 'number' ? action : state;
 export const reduceBooleanState = (state, action) => typeof action === 'boolean' ? action : state;
@@ -346,8 +347,20 @@ export function updatePartyChanges(state, action) {
 }
 
 export function getActions(newState) {
-  const { slots, party, selectedPlayer } = newState;
+  const {
+    slots,
+    party,
+    players,
+    npcs,
+    tiles,
+    selectedPlayer,
+    selectedTile = {},
+  } = newState;
   const currentPlayer = party.find(player => player.id === selectedPlayer);
+  const { xPos, yPos, xCoord, yCoord } = selectedTile;
+  const currentTile = findTile(tiles, xPos, yPos, xCoord, yCoord);
+  console.log(currentTile);
+
   const actions = { main: [] };
   if (!currentPlayer) return actions;
   actions.main.push({ target: 'main', name: 'unselect', id: 39, tileset: 'icons' });

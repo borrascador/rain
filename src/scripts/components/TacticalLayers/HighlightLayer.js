@@ -1,6 +1,6 @@
 import Connect from '../../Connect';
 import Animation from '../../utils/Animation';
-import { checkImageCollision, findTile } from '../utils';
+import { checkImageCollision, findTile_DEPRECATED } from '../utils';
 import { clickedLeft, refreshTiles } from '../../actions/actions';
 
 export default class HighlightLayer {
@@ -87,10 +87,10 @@ export default class HighlightLayer {
     graphTiles.forEach((tile) => {
       if (tile.selected) {
         this.renderHover(tile);
-        this.renderHover(findTile(graphTiles, tile.x - 1, tile.y));
-        this.renderHover(findTile(graphTiles, tile.x + 1, tile.y));
-        this.renderHover(findTile(graphTiles, tile.x, tile.y - 1));
-        this.renderHover(findTile(graphTiles, tile.x, tile.y + 1));
+        this.renderHover(findTile_DEPRECATED(graphTiles, tile.x - 1, tile.y));
+        this.renderHover(findTile_DEPRECATED(graphTiles, tile.x + 1, tile.y));
+        this.renderHover(findTile_DEPRECATED(graphTiles, tile.x, tile.y - 1));
+        this.renderHover(findTile_DEPRECATED(graphTiles, tile.x, tile.y + 1));
       }
       if (tile.hover) {
         this.renderHover(tile);
