@@ -145,6 +145,14 @@ export default class Connect {
     return this.store.getState().party;
   }
 
+  get players() {
+    return this.store.getState().players;
+  }
+
+  get npcs() {
+    return this.store.getState().npcs;
+  }
+
   get selectedPlayer() {
     const { selectedPlayer, party } = this.store.getState();
     if (typeof selectedPlayer === 'number' && party.length > 0) {
@@ -156,6 +164,10 @@ export default class Connect {
 
   get selectedAction() {
     return this.store.getState().selectedAction;
+  }
+
+  get selectedTile() {
+    return this.store.getState().selectedTile;
   }
 
   get vehicle() {

@@ -8,14 +8,15 @@ import {
   needRender,
   completedRender,
   selectPlayer,
+  selectTile,
   eventRequest,
 } from '../actions/actions';
 import { EVENTS } from '../actions/types';
 import {
   screenToImageButton,
   // checkImageCollision,
-  coordsToColRow,
-  findGroundTile, findTreeTile,
+  coordsToColRow, colRowToCoords,
+  findGroundTile, findTreeTile, 
 } from './utils';
 import { throws } from 'assert';
 
@@ -28,7 +29,7 @@ export default class Tactical {
     this.tactical = loader.getImage('tactical');
     this.player = loader.getImage('player');
     this.trees = loader.getImage('trees');
-    this.party = [];
+    this.entities = [];
 
     this.connect = new Connect(this.store);
     const { zoom } = this.connect;
@@ -79,16 +80,29 @@ export default class Tactical {
       this.store.dispatch(needRender());
     }
 
+    // new behavior blueprints
+    // player is always selected because no npc players
+    // clicking on any tile reveals actions available there
+    // right clicking moves somewhere
+    // need hotkeys for certain actions, i.e. attacking
+
+    // current behavior
     // select player if left clicked on player
     // move player to clicked tile if left clicked on visible unoccupied tile
     // unselect player if right clicked anywhere
     const clickedPlayer = (
-      this.party.length && lx && ly
-      && screenToImageButton(lx, ly, this.party)
+      this.entities.length && lx && ly
+      && screenToImageButton(lx, ly, this.entities)
     );
     const clickedTile = (
       lx && ly && screenToImageButton(lx, ly, this.visibleTiles)
     );
+    if (clickedTile) {
+      const {
+        pos: { x: xPos, y: yPos }, coords: { x: xCoord, y: yCoord },
+      } = clickedTile;
+      this.store.dispatch(selectTile({ xPos, yPos, xCoord, yCoord }));
+    }
 
     if (clickedPlayer && (
       !selectedPlayer
@@ -144,9 +158,7 @@ export default class Tactical {
 
   renderGroundLayer() {
     const { selectedPlayer, map: { zoom, tiles } } = this.connect;
-    const {
-      xStart, yStart, width, height,
-    } = this.camera;
+    const { xStart, yStart, width, height } = this.camera;
 
     const tileWidth = this.tactical.tileset.tilewidth * zoom;
     const tileHeight = this.tactical.tileset.tileheight * zoom;
@@ -161,16 +173,17 @@ export default class Tactical {
       for (let col = startCol; col <= endCol; col += 1) {
         const x = col * tileWidth - this.camera.x;
         const y = row * tileHeight - this.camera.y;
-        const tile = findGroundTile(tiles, col, row);
+        const {
+          xPos, yPos, xCoord, yCoord,
+        } = colRowToCoords(col, row);
+        const tile = findGroundTile(tiles, xPos, yPos, xCoord, yCoord);
 
         if (tile) {
           // draw ground layer
           const {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
-          const {
-            id, xPos, yPos, xCoord, yCoord,
-          } = tile;
+          const { id } = tile;
           const { tileheight, tilewidth, columns } = this.tactical.tileset;
           if (
             widthOffset > 0
@@ -221,9 +234,7 @@ export default class Tactical {
 
   renderTreeLayer() {
     const { tiles, zoom } = this.connect.map;
-    const {
-      xStart, yStart, width, height,
-    } = this.camera;
+    const { xStart, yStart, width, height } = this.camera;
 
     const tileWidth = this.tactical.tileset.tilewidth * zoom;
     const tileHeight = this.tactical.tileset.tileheight * zoom;
@@ -241,7 +252,10 @@ export default class Tactical {
       for (let col = startCol; col <= endCol; col += 1) {
         const x = col * tileWidth - this.camera.x - tileWidth;
         const y = row * tileHeight - this.camera.y - treeHeight + tileHeight;
-        const tile = findTreeTile(tiles, col, row);
+        const {
+          xPos, yPos, xCoord, yCoord,
+        } = colRowToCoords(col, row);
+        const tile = findTreeTile(tiles, xPos, yPos, xCoord, yCoord);
 
         if (tile) {
           // draw tree layer
@@ -275,10 +289,8 @@ export default class Tactical {
 
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
-    const { party, map: { zoom, tiles } } = this.connect;
-    const {
-      xStart, yStart, width, height,
-    } = this.camera;
+    const { party, players, npcs, map: { zoom, tiles } } = this.connect;
+    const { xStart, yStart, width, height } = this.camera;
 
     const tileWidth = this.tactical.tileset.tilewidth * zoom;
     const tileHeight = this.tactical.tileset.tileheight * zoom;
@@ -288,11 +300,11 @@ export default class Tactical {
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight);
 
-    this.party = [];
-    party.forEach((player) => {
-      const {
-        xPos, yPos, xCoord, yCoord /* icon */
-      } = player;
+    const entities = [...party, ...players, ...npcs];
+
+    this.entities = [];
+    entities.forEach((player) => {
+      const { xPos, yPos, xCoord, yCoord, health /* icon */ } = player;
       const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
       if (superTile) {
         const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
@@ -303,7 +315,7 @@ export default class Tactical {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
 
-          const icon = 0;
+          const icon = health > 0 ? 0 : 3;
           const { tileheight, tilewidth, columns } = this.player.tileset;
           const widthRatio = this.player.tileset.tilewidth / this.tactical.tileset.tilewidth;
           const heightRatio = this.player.tileset.tileheight / this.tactical.tileset.tileheight;
@@ -320,7 +332,7 @@ export default class Tactical {
             heightOffset // destHeight
           );
 
-          this.party.push({
+          this.entities.push({
             id: player.id,
             pos: { x: xPos, y: yPos },
             coords: { x: xCoord, y: yCoord },
@@ -351,8 +363,8 @@ export default class Tactical {
       selectedPlayer,
       mousePos: { x: mx, y: my },
     } = this.connect;
-    if (selectedPlayer && this.party.length > 0) {
-      const player = this.party.find(player => player.id === selectedPlayer.id);
+    if (selectedPlayer && this.entities.length > 0) {
+      const player = this.entities.find(player => player.id === selectedPlayer.id);
       if (player) {
         const { xPos, yPos, width, height } = player;
         this.offScreenContext.fillStyle = 'rgba(128, 128, 128, 0.2)';

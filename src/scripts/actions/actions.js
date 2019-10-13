@@ -106,6 +106,11 @@ export const selectAction = selectedAction => ({
   payload: { selectedAction }
 });
 
+export const selectTile = selectedTile => ({
+  type: ACTIONS.SELECT_TILE,
+  payload: { selectedTile }
+});
+
 export const needRender = () => ({
   type: ACTIONS.NEED_RENDER
 });

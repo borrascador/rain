@@ -23,6 +23,8 @@ const uiState = {
 const gameState = {
   tiles: [],
   party: [], // DEBUG with party
+  players: [],
+  npcs: [],
   vehicle: undefined, // DEBUG with vehicle
   stories: [], // DEBUG with story TODO update to stories in example
   inventoryChanges: [],

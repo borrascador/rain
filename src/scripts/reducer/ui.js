@@ -234,6 +234,16 @@ export function selectAction(state, action) {
   });
 }
 
+export function selectTile(state, action) {
+  const newState = updateObject(state, {
+    selectedTile: action.payload.selectedTile,
+    needRender: true,
+  });
+  return updateObject(newState, {
+    actions: getActions(newState),
+  });
+}
+
 export function needRender(state) {
   return updateObject(state, {
     needRender: true,

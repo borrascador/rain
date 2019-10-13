@@ -5,7 +5,7 @@ import Animation from '../utils/Animation';
 import { clickedLeft, eventRequest } from '../actions/actions';
 import { EVENTS } from '../actions/types';
 import { LAYER } from '../utils/constants';
-import { screenToImageButton, checkImageCollision, findTile } from './utils';
+import { screenToImageButton, checkImageCollision, findTile_DEPRECATED } from './utils';
 import { drawHover } from '../utils/draw';
 import { MEDIUM_OPAQUE } from '../utils/colors';
 
@@ -108,7 +108,7 @@ export default class Map {
         const x = col * tileWidth - this.camera.x;
         const y = row * tileHeight - this.camera.y;
         const mapTileOffsets = this.camera.getOffsets(x, y, tileWidth, tileHeight);
-        const tile = findTile(tiles, col, row);
+        const tile = findTile_DEPRECATED(tiles, col, row);
 
         if (tile) {
           // determine if tile is visible or in fog of war

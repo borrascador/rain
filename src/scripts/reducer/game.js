@@ -11,6 +11,8 @@ export function update(state, action) {
     slots: mergeSlots(state.slots, action.payload.inventory),
     tiles: sortTiles(state, action), // TODO no merging yet
     party: mergeArrays(state.party, action.payload.party),
+    players: mergeArrays(state.players, action.payload.players),
+    npcs: mergeArrays(state.npcs, action.payload.npcs),
     stories: updateStory(state, action),
     inventoryChanges: updateInventoryChanges(state, action),
     partyChanges: updatePartyChanges(state, action),

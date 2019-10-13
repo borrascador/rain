@@ -122,20 +122,26 @@ export default class Party {
     drawById(this.ctx, this.iconsXl, member.icon, this.scale, x, y);
     // this.renderSlot(member.id, x + this.height, y);
 
-    [...Array(member.health)].forEach((_, i) => {
-      drawByName(
-        this.ctx, this.icons, 'heart', this.iconScale,
-        x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
-        y + this.gutter
-      );
-    });
-    [...Array(member.jeito)].forEach((_, i) => {
-      drawByName(
-        this.ctx, this.icons, 'bolt', this.iconScale,
-        x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
-        y + this.iconSize + this.gutter
-      );
-    });
+    if (member.online === false) { // todo !member.online
+      drawById(this.ctx, this.iconsXl, 4, this.scale, x, y); // logged out
+    } else if (member.health <= 0) {
+      drawById(this.ctx, this.iconsXl, 3, this.scale, x, y); // dead
+    } else {
+      [...Array(member.health)].forEach((_, i) => {
+        drawByName(
+          this.ctx, this.icons, 'heart', this.iconScale,
+          x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
+          y + this.gutter
+        );
+      });
+      [...Array(member.jeito)].forEach((_, i) => {
+        drawByName(
+          this.ctx, this.icons, 'bolt', this.iconScale,
+          x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
+          y + this.iconSize + this.gutter
+        );
+      });
+    }
 
     return Object.assign({}, member, { xPos, yPos, width: height, height });
   }
