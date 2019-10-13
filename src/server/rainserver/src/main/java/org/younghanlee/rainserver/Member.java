@@ -10,6 +10,7 @@ import org.json.JSONObject;
 public class Member {
 	private String name;
 	private Player player;
+	private boolean online;
 	private int icon;
 	private int health;
 	private int regen;
@@ -27,6 +28,7 @@ public class Member {
 	public Member(String name, int icon, int x, int y) {
 		this.name = name;
 		this.player = null;
+		this.online = true;
 		this.icon = icon;
 		this.x = x;
 		this.y = y;
@@ -123,6 +125,14 @@ public class Member {
 	
 	public Move getMove() {
 		return move;
+	}
+	
+	public void setOnline(boolean b) {
+		this.online = b;
+	}
+	
+	public boolean isOnline() {
+		return online;
 	}
 	
 	public JSONObject getPosition() {
@@ -231,10 +241,10 @@ public class Member {
 		jo.put("health", health);
 		jo.put("jeito", jeito);
 		jo.put("name", name);
-		if (player == null) {
-			jo.put("NPC", true);
+		if (online) {
+			jo.put("online", true);
 		} else {
-			jo.put("NPC", false);
+			jo.put("online", false);
 		}
 		if (p.equals(player)) {
 			jo.put("self", true);
