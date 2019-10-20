@@ -1,6 +1,5 @@
 import { UPDATE_TEXT_OFFSET, UPDATE_TEXT_DURATION } from '../utils/constants';
 import hasProp from '../utils/hasProp';
-import { findTile } from '../components/utils';
 
 export const reduceIntegerState = (state, action) => typeof action === 'number' ? action : state;
 export const reduceBooleanState = (state, action) => typeof action === 'boolean' ? action : state;
@@ -208,8 +207,43 @@ function isObject(a) {
   return (!!a) && (a.constructor === Object);
 };
 
+export function mergeTiles2(state, action) {
+  if (!action.payload.tiles) return state.tiles;
+  
+  // TODO move these lines into helper function
+  const GROUND_TILES = [1, 4, 5];
+  const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
+
+  const { tiles: newTiles } = action.payload;
+  const tiles = [...state.tiles];
+
+  newTiles.forEach(({ xPos, yPos, trees }) => {
+    tiles[xPos] = tiles[xPos] || [];
+    tiles[xPos][yPos] = tiles[xPos][yPos]
+      ? tiles[xPos][yPos]
+      : Array.from({ length: 64 })
+        .map((_, xCoord) => Array.from({ length: 64 })
+          .map((__, yCoord) => ({
+            xPos,
+            yPos,
+            xCoord,
+            yCoord,
+            groundLayer: getGroundTile(),
+          }))
+        );
+    trees.forEach(({ xCoord, yCoord, id }) => {
+      tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
+      tiles[xPos][yPos][xCoord][yCoord] = {
+        ...tiles[xPos][yPos][xCoord][yCoord],
+        treeLayer: id,
+      }
+    });
+  });
+  return tiles;
+}
+
 export function sortTiles(state, action) {
-  if (state.tiles && !action.payload.tiles) return state.tiles;
+  if (!action.payload.tiles) return state.tiles;
 
   // TODO move these lines into helper function
   const GROUND_TILES = [0, 1, 4, 5];
@@ -358,8 +392,6 @@ export function getActions(newState) {
   } = newState;
   const currentPlayer = party.find(player => player.id === selectedPlayer);
   const { xPos, yPos, xCoord, yCoord } = selectedTile;
-  const currentTile = findTile(tiles, xPos, yPos, xCoord, yCoord);
-  console.log(currentTile);
 
   const actions = { main: [] };
   if (!currentPlayer) return actions;

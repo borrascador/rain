@@ -83,4 +83,28 @@ export default class Camera {
       xOffset, yOffset, widthOffset, heightOffset,
     };
   }
+
+  getOffsets2(x, y, tileWidth, tileHeight, xTransform, yTransform) {
+    let xOffset = typeof xTransform === 'number' ? xTransform : 0;
+    let yOffset = typeof yTransform === 'number' ? yTransform : 0;
+    let widthOffset = tileWidth;
+    let heightOffset = tileHeight;
+    if (x < 0) {
+      xOffset = x;
+      widthOffset = Math.abs((tileWidth + x) % tileWidth);
+    }
+    if (y < 0) {
+      yOffset = y;
+      heightOffset = Math.abs((tileHeight + y) % tileHeight);
+    }
+    if (x + tileWidth > this.width) {
+      widthOffset = Math.abs((this.width - x) % tileWidth);
+    }
+    if (y + tileHeight > this.height) {
+      heightOffset = Math.abs((this.height - y) % tileHeight);
+    }
+    return {
+      xOffset, yOffset, widthOffset, heightOffset,
+    };
+  }
 }

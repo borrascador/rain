@@ -15,10 +15,8 @@ import { EVENTS } from '../actions/types';
 import {
   screenToImageButton,
   // checkImageCollision,
-  coordsToColRow, colRowToCoords,
-  findGroundTile, findTreeTile, 
+  coordsToColRow, colRowToCoords, findTile, 
 } from './utils';
-import { throws } from 'assert';
 
 export default class Tactical {
   constructor(store, canvas, ctx, loader) {
@@ -26,9 +24,10 @@ export default class Tactical {
     this.canvas = canvas;
     this.ctx = ctx;
     this.loader = loader;
-    this.tactical = loader.getImage('tactical');
-    this.player = loader.getImage('player');
-    this.trees = loader.getImage('trees');
+
+    this.tactical = loader.getImage('tactical', 1);
+    this.player = loader.getImage('player', 1);
+    this.trees = loader.getImage('trees', 1);
     this.entities = [];
 
     this.connect = new Connect(this.store);
@@ -170,20 +169,20 @@ export default class Tactical {
 
     this.visibleTiles = [];
     for (let row = startRow; row <= endRow; row += 1) {
-      for (let col = startCol; col <= endCol; col += 1) {
+      for (let col = startCol; col <= endCol; col += 1) { 
         const x = col * tileWidth - this.camera.x;
         const y = row * tileHeight - this.camera.y;
         const {
           xPos, yPos, xCoord, yCoord,
         } = colRowToCoords(col, row);
-        const tile = findGroundTile(tiles, xPos, yPos, xCoord, yCoord);
+        const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
 
-        if (tile) {
+        if (tile && tile.groundLayer) {
           // draw ground layer
           const {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
-          const { id } = tile;
+          const { groundLayer } = tile;
           const { tileheight, tilewidth, columns } = this.tactical.tileset;
           if (
             widthOffset > 0
@@ -193,8 +192,8 @@ export default class Tactical {
           ) {
             this.offScreenContext.drawImage(
               this.tactical, // image
-              (id % columns) * tilewidth - (xOffset / zoom), // srcX
-              Math.floor(id / columns) * tileheight - (yOffset / zoom), // srcY
+              (groundLayer % columns) * tilewidth - (xOffset / zoom), // srcX
+              Math.floor(groundLayer / columns) * tileheight - (yOffset / zoom), // srcY
               widthOffset / zoom, // srcWidth
               heightOffset / zoom, // srcHeight
               x - xOffset + xStart, // destX
@@ -255,14 +254,14 @@ export default class Tactical {
         const {
           xPos, yPos, xCoord, yCoord,
         } = colRowToCoords(col, row);
-        const tile = findTreeTile(tiles, xPos, yPos, xCoord, yCoord);
+        const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
 
-        if (tile) {
+        if (tile && tile.treeLayer) {
           // draw tree layer
           const {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, treeWidth, treeHeight);
-          const { id } = tile;
+          const { treeLayer } = tile;
           const { tileheight, tilewidth, columns } = this.trees.tileset;
           if (
             widthOffset > 0
@@ -272,8 +271,8 @@ export default class Tactical {
           ) {
             this.offScreenContext.drawImage(
               this.trees, // image
-              (id % columns) * tilewidth - (xOffset / zoom), // srcX
-              Math.floor(id / columns) * tileheight - (yOffset / zoom), // srcY
+              (treeLayer % columns) * tilewidth - (xOffset / zoom), // srcX
+              Math.floor(treeLayer / columns) * tileheight - (yOffset / zoom), // srcY
               widthOffset / zoom, // srcWidth
               heightOffset / zoom, // srcHeight
               x - xOffset + xStart, // destX
