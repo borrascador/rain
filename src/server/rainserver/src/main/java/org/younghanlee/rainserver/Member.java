@@ -249,7 +249,7 @@ public class Member {
 		} else {
 			jo.put("online", false);
 		}
-		if (p.equals(player)) {
+		if (p != null && p.equals(player)) {
 			jo.put("self", true);
 		}
 		jo.put("icon", icon);
