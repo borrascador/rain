@@ -44,7 +44,7 @@ public class Party {
 		JSONArray party = new JSONArray();
 		int id = p.getMember();
 		Member m = World.getMember(id);
-		JSONObject memberObject = m.toJSONObject(id,  p);
+		JSONObject memberObject = m.toJSONObject(id, null);
 		party.put(memberObject);
 		payload.put("party", party);
 		partyBroadcast(Message.UPDATE(payload), null);
@@ -96,7 +96,7 @@ public class Party {
 		Member m = World.getMember(id);
 		m.setOnline(true);
 		JSONArray party = new JSONArray();
-		JSONObject member = m.toJSONObject(id, m.getPlayer());
+		JSONObject member = m.toJSONObject(id, null);
 		party.put(member);
 		JSONObject payload = new JSONObject();
 		payload.put("party", party);
