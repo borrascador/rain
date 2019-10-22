@@ -128,7 +128,7 @@ public class AnimalEncounter{
 					if (Util.randomInt(20) > 5) {
 						members_injured++;
 						int health_loss = -1 * (Util.randomInt(2) + 1);
-						JSONObject jo = m.change(id, p, health_loss, 0, null, null, null);
+						JSONObject jo = m.change(id, p, health_loss, 0);
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
 								death += "Your last member " + m.getName() + " has perished.";
