@@ -174,8 +174,8 @@ export default class Tactical {
     this.visibleTiles = [];
     for (let row = startRow; row <= endRow; row += 1) {
       for (let col = startCol; col <= endCol; col += 1) { 
-        const x = col * tileWidth - this.camera.x;
-        const y = row * tileHeight - this.camera.y;
+        const x = Math.round(col * tileWidth - this.camera.x);
+        const y = Math.round(row * tileHeight - this.camera.y);
         const {
           xPos, yPos, xCoord, yCoord,
         } = colRowToCoords(col, row);
@@ -257,8 +257,8 @@ export default class Tactical {
 
     for (let row = startRow; row <= endRow; row += 1) {
       for (let col = startCol; col <= endCol; col += 1) {
-        const x = col * tileWidth - this.camera.x - tileWidth;
-        const y = row * tileHeight - this.camera.y - treeHeight + tileHeight;
+        const x = Math.round(col * tileWidth - this.camera.x - tileWidth);
+        const y = Math.round(row * tileHeight - this.camera.y - treeHeight + tileHeight);
         const {
           xPos, yPos, xCoord, yCoord,
         } = colRowToCoords(col, row);
@@ -316,47 +316,47 @@ export default class Tactical {
 
     const entities = [...party, ...players, ...npcs];
 
+
     this.entities = [];
     entities.forEach((player) => {
       const { xPos, yPos, xCoord, yCoord, health /* icon */ } = player;
-      const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
-      if (superTile) {
-        const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
-        if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
-          const x = col * tileWidth - this.camera.x;
-          const y = row * tileHeight - this.camera.y;
-          const {
-            xOffset, yOffset, widthOffset, heightOffset,
-          } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
+      const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
+      if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
+        const x = Math.round(col * tileWidth - this.camera.x);
+        const y = Math.round(row * tileHeight - this.camera.y);
+        const {
+          xOffset, yOffset, widthOffset, heightOffset,
+        } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
 
-          const icon = health > 0 ? 0 : 3;
-          const widthRatio = playerWidth / tileWidth;
-          const heightRatio = playerHeight / tileHeight;
+        const icon = health > 0 ? 0 : 3;
+        const widthRatio = playerWidth / tileWidth;
+        const heightRatio = playerHeight / tileHeight;
 
-          this.offScreenContext.drawImage(
-            this.player, // image
-            (icon % columns) * playerWidth - (widthRatio * xOffset), // srcX
-            Math.floor(icon / columns) * playerHeight - (heightRatio * yOffset), // srcY
-            widthRatio * widthOffset, // srcWidth
-            heightRatio * heightOffset, // srcHeight
-            x - xOffset + xStart, // destX
-            y - yOffset + yStart, // destY
-            widthOffset, // destWidth
-            heightOffset // destHeight
-          );
+        this.offScreenContext.drawImage(
+          this.player, // image
+          (icon % columns) * playerWidth - Math.round(widthRatio * xOffset), // srcX
+          Math.floor(icon / columns) * playerHeight - Math.round(heightRatio * yOffset), // srcY
+          widthRatio * widthOffset, // srcWidth
+          heightRatio * heightOffset, // srcHeight
+          x - xOffset + xStart, // destX
+          y - yOffset + yStart, // destY
+          widthOffset, // destWidth
+          heightOffset // destHeight
+        );
 
-          this.entities.push({
-            id: player.id,
-            pos: { x: xPos, y: yPos },
-            coords: { x: xCoord, y: yCoord },
-            xPos: x - xOffset + xStart, // destX
-            yPos: y - yOffset + yStart, // destY
-            width: widthOffset, // destWidth
-            height: heightOffset // destHeight
-          });
-        }
+        this.entities.push({
+          id: player.id,
+          pos: { x: xPos, y: yPos },
+          coords: { x: xCoord, y: yCoord },
+          xPos: x - xOffset + xStart, // destX
+          yPos: y - yOffset + yStart, // destY
+          width: widthOffset, // destWidth
+          height: heightOffset // destHeight
+        });
       }
     });
+
+    console.log(entities, this.entities);
   }
 
   renderAttackBox() {
