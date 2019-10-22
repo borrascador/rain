@@ -1,12 +1,12 @@
 import { CAMERA_SPEED } from '../utils/constants';
 
 export default class Camera {
-  constructor(width, height, xStart, yStart, tileWidth, zoom) {
+  constructor(width, height, xStart, yStart, gridSize, zoom) {
     this.width = width;
     this.height = height;
     this.xStart = xStart;
     this.yStart = yStart;
-    this.tileWidth = tileWidth;
+    this.gridSize = gridSize;
     this.zoom = zoom;
   }
 
@@ -21,16 +21,16 @@ export default class Camera {
   centerToPoint(xPos, yPos, xCoords, yCoords) {
     // Tactical.js
     this.x = Math.round(
-      (xPos * 64 + xCoords) * this.tileWidth * this.zoom
-      - (this.width - this.tileWidth * this.zoom) / 2
+      (xPos * 64 + xCoords) * this.gridSize * this.zoom
+      - (this.width - this.gridSize * this.zoom) / 2
     );
     this.y = Math.round(
-      (yPos * 64 + yCoords) * this.tileWidth * this.zoom
-      - (this.height - this.tileWidth * this.zoom) / 2
+      (yPos * 64 + yCoords) * this.gridSize * this.zoom
+      - (this.height - this.gridSize * this.zoom) / 2
     );
     // Map.js
-    // this.x = Math.round(((xPos + xCoords / 32) * this.tileWidth * zoom) - this.width / 2);
-    // this.y = Math.round(((yPos + yCoords / 32) * this.tileWidth * zoom) - this.height / 2);
+    // this.x = Math.round(((xPos + xCoords / 32) * this.gridSize * zoom) - this.width / 2);
+    // this.y = Math.round(((yPos + yCoords / 32) * this.gridSize * zoom) - this.height / 2);
   }
 
   centerOnZoom(newZoom) {
@@ -61,30 +61,6 @@ export default class Camera {
   }
 
   getOffsets(x, y, tileWidth, tileHeight, xTransform, yTransform) {
-    let xOffset = typeof xTransform === 'number' ? xTransform : 0;
-    let yOffset = typeof yTransform === 'number' ? yTransform : 0;
-    let widthOffset = tileWidth;
-    let heightOffset = tileHeight;
-    if (x < 0) {
-      xOffset = x;
-      widthOffset = Math.abs((tileWidth + x) % tileWidth);
-    }
-    if (y < 0) {
-      yOffset = y;
-      heightOffset = Math.abs((tileHeight + y) % tileHeight);
-    }
-    if (x + tileWidth > this.width) {
-      widthOffset = Math.abs((this.width - x) % tileWidth);
-    }
-    if (y + tileHeight > this.height) {
-      heightOffset = Math.abs((this.height - y) % tileHeight);
-    }
-    return {
-      xOffset, yOffset, widthOffset, heightOffset,
-    };
-  }
-
-  getOffsets2(x, y, tileWidth, tileHeight, xTransform, yTransform) {
     let xOffset = typeof xTransform === 'number' ? xTransform : 0;
     let yOffset = typeof yTransform === 'number' ? yTransform : 0;
     let widthOffset = tileWidth;

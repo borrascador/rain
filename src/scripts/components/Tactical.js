@@ -25,20 +25,21 @@ export default class Tactical {
     this.ctx = ctx;
     this.loader = loader;
 
-    this.tactical = loader.getImage('tactical', 1);
-    this.player = loader.getImage('player', 1);
-    this.trees = loader.getImage('trees', 1);
     this.entities = [];
 
     this.connect = new Connect(this.store);
     const { zoom } = this.connect;
+
+    this.tactical = this.loader.getImage('tactical', zoom);
+    this.player = this.loader.getImage('player', zoom);
+    this.trees = this.loader.getImage('trees', zoom);
 
     this.camera = new Camera(
       this.canvas.width, // width
       this.canvas.height, // height
       0, // xStart
       0, // yStart
-      this.tactical.tileset.tilewidth,
+      this.tactical.tileset.tilewidth / zoom, // grid size
       zoom,
     );
 
@@ -159,8 +160,11 @@ export default class Tactical {
     const { selectedPlayer, map: { zoom, tiles } } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
-    const tileWidth = this.tactical.tileset.tilewidth * zoom;
-    const tileHeight = this.tactical.tileset.tileheight * zoom;
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+      columns
+    } = this.tactical.tileset;
 
     const startCol = Math.floor(this.camera.x / tileWidth);
     const endCol = startCol + Math.ceil(width / tileWidth);
@@ -183,7 +187,6 @@ export default class Tactical {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
           const { groundLayer } = tile;
-          const { tileheight, tilewidth, columns } = this.tactical.tileset;
           if (
             widthOffset > 0
             && heightOffset > 0
@@ -192,10 +195,10 @@ export default class Tactical {
           ) {
             this.offScreenContext.drawImage(
               this.tactical, // image
-              (groundLayer % columns) * tilewidth - (xOffset / zoom), // srcX
-              Math.floor(groundLayer / columns) * tileheight - (yOffset / zoom), // srcY
-              widthOffset / zoom, // srcWidth
-              heightOffset / zoom, // srcHeight
+              (groundLayer % columns) * tileWidth - xOffset, // srcX
+              Math.floor(groundLayer / columns) * tileHeight - yOffset, // srcY
+              widthOffset, // srcWidth
+              heightOffset, // srcHeight
               x - xOffset + xStart, // destX
               y - yOffset + yStart, // destY
               widthOffset, // destWidth
@@ -232,14 +235,19 @@ export default class Tactical {
   }
 
   renderTreeLayer() {
-    const { tiles, zoom } = this.connect.map;
+    const { tiles } = this.connect.map;
     const { xStart, yStart, width, height } = this.camera;
 
-    const tileWidth = this.tactical.tileset.tilewidth * zoom;
-    const tileHeight = this.tactical.tileset.tileheight * zoom;
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+    } = this.tactical.tileset;
 
-    const treeWidth = this.trees.tileset.tilewidth * zoom;
-    const treeHeight = this.trees.tileset.tileheight * zoom;
+    const {
+      tileheight: treeHeight,
+      tilewidth: treeWidth,
+      columns
+    } = this.trees.tileset;
 
     // todo find better way to handle commented lines
     const startCol = Math.floor(this.camera.x / tileWidth) - 1; // fixes popping in/out on left
@@ -262,7 +270,6 @@ export default class Tactical {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, treeWidth, treeHeight);
           const { treeLayer } = tile;
-          const { tileheight, tilewidth, columns } = this.trees.tileset;
           if (
             widthOffset > 0
             && heightOffset > 0
@@ -271,12 +278,12 @@ export default class Tactical {
           ) {
             this.offScreenContext.drawImage(
               this.trees, // image
-              (treeLayer % columns) * tilewidth - (xOffset / zoom), // srcX
-              Math.floor(treeLayer / columns) * tileheight - (yOffset / zoom), // srcY
-              widthOffset / zoom, // srcWidth
-              heightOffset / zoom, // srcHeight
-              x - xOffset + xStart, // destX
-              y - yOffset + yStart, // destY
+              (treeLayer % columns) * treeWidth - xOffset, // srcX
+              Math.floor(treeLayer / columns) * treeHeight - yOffset, // srcY
+              widthOffset, // srcWidth
+              heightOffset, // srcHeight
+              x + xStart - xOffset, // destX
+              y + yStart - yOffset, // destY
               widthOffset, // destWidth
               heightOffset // destHeight
             );
@@ -288,11 +295,19 @@ export default class Tactical {
 
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
-    const { party, players, npcs, map: { zoom, tiles } } = this.connect;
+    const { party, players, npcs, map: { tiles } } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
-    const tileWidth = this.tactical.tileset.tilewidth * zoom;
-    const tileHeight = this.tactical.tileset.tileheight * zoom;
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+    } = this.tactical.tileset;
+
+    const {
+      tileheight: playerHeight,
+      tilewidth: playerWidth,
+      columns,
+    } = this.player.tileset;
 
     const startCol = Math.floor(this.camera.x / tileWidth);
     const endCol = startCol + Math.ceil(width / tileWidth);
@@ -315,16 +330,15 @@ export default class Tactical {
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
 
           const icon = health > 0 ? 0 : 3;
-          const { tileheight, tilewidth, columns } = this.player.tileset;
-          const widthRatio = this.player.tileset.tilewidth / this.tactical.tileset.tilewidth;
-          const heightRatio = this.player.tileset.tileheight / this.tactical.tileset.tileheight;
+          const widthRatio = playerWidth / tileWidth;
+          const heightRatio = playerHeight / tileHeight;
 
           this.offScreenContext.drawImage(
             this.player, // image
-            (icon % columns) * tilewidth - (widthRatio * xOffset / zoom), // srcX
-            Math.floor(icon / columns) * tileheight - (heightRatio * yOffset / zoom), // srcY
-            widthRatio * widthOffset / zoom, // srcWidth
-            heightRatio * heightOffset / zoom, // srcHeight
+            (icon % columns) * playerWidth - (widthRatio * xOffset), // srcX
+            Math.floor(icon / columns) * playerHeight - (heightRatio * yOffset), // srcY
+            widthRatio * widthOffset, // srcWidth
+            heightRatio * heightOffset, // srcHeight
             x - xOffset + xStart, // destX
             y - yOffset + yStart, // destY
             widthOffset, // destWidth
@@ -396,6 +410,9 @@ export default class Tactical {
       this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
     }
     if (needRender) {
+      this.tactical = this.loader.getImage('tactical', zoom);
+      this.player = this.loader.getImage('player', zoom);
+      this.trees = this.loader.getImage('trees', zoom);
       this.renderGroundLayer();
       this.renderTreeLayer();
       this.renderAttackBox();

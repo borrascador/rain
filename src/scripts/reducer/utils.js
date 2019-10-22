@@ -149,27 +149,6 @@ export function mergeSlots(oldArray, newArray) {
   });
 }
 
-export function mergeTiles(oldArray, newArray) {
-  if (!newArray) return oldArray;
-  let obj = {};
-  oldArray.forEach((oldItem) => {
-    const key = makeTileKey(oldItem.x, oldItem.y);
-    obj[key] = oldItem;
-  });
-  const newObj = {};
-  newArray.forEach((newItem) => {
-    const key = makeTileKey(newItem.x, newItem.y);
-    if (obj[key]) {
-      obj[key] = Object.assign(obj[key], newItem);
-    } else {
-      obj[key] = newItem;
-    }
-  });
-  obj = Object.assign(obj, newObj);
-  // convert object of items into array of items
-  return Object.values(obj);
-}
-
 export function updateStory(state, action) {
   if (action.payload.story) {
     return state.stories.concat([
@@ -207,7 +186,7 @@ function isObject(a) {
   return (!!a) && (a.constructor === Object);
 };
 
-export function mergeTiles2(state, action) {
+export function mergeTiles(state, action) {
   if (!action.payload.tiles) return state.tiles;
   
   // TODO move these lines into helper function
@@ -240,35 +219,6 @@ export function mergeTiles2(state, action) {
     });
   });
   return tiles;
-}
-
-export function sortTiles(state, action) {
-  if (!action.payload.tiles) return state.tiles;
-
-  // TODO move these lines into helper function
-  const GROUND_TILES = [0, 1, 4, 5];
-  const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
-
-  const { tiles } = action.payload;
-  return tiles.map(tile => ({
-    ...tile,
-    ground: Array.from({ length: 4096 }).map((_, index) => ({
-      xPos: tile.xPos,
-      yPos: tile.yPos,
-      xCoord: index % 64,
-      yCoord: Math.floor(index / 64),
-      id: getGroundTile(),
-    })),
-    trees: tile.trees
-      .sort((a, b) => a.yPos * 64 + a.xPos > b.yPos * 64 + b.xPos)
-      .map(tree => ({
-        xPos: tile.xPos,
-        yPos: tile.yPos,
-        xCoord: tree.xCoord,
-        yCoord: tree.yCoord,
-        id: tree.id,
-      }))
-  }));
 }
 
 export function updateInventoryChanges(state, action) {

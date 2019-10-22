@@ -20,6 +20,23 @@ export function drawByName(ctx, img, name, zoom, x, y) {
   drawById(ctx, img, id, zoom, x, y);
 }
 
+export function drawById2(ctx, img, id, x, y) {
+  const { tileheight, tilewidth, columns } = img.tileset;
+  ctx.drawImage(
+    img,
+    (id % columns) * tilewidth,
+    Math.floor(id / columns) * tileheight,
+    tilewidth, tileheight,
+    x, y,
+    tilewidth, tileheight
+  );
+}
+
+export function drawByName2(ctx, img, name, x, y) {
+  const id = img.tilenames[name];
+  drawById2(ctx, img, id, x, y);
+}
+
 export function trace(ctx, size, x, y) {
   ctx.beginPath();
   ctx.moveTo(x, y);
