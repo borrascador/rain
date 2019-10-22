@@ -1,6 +1,6 @@
 import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
-import { drawById2, drawHover } from '../../utils/draw';
+import { drawById, drawHover } from '../../utils/draw';
 import { checkImageCollision, screenToImageButton } from '../utils';
 import { clickedLeft, eventRequest, selectAction, selectPlayer } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
@@ -111,9 +111,9 @@ export default class ActionBar {
     this.buttons = this.buttons.map((button, index) => {
       const x = buttonX + this.barSize * index;
       if (button.tileset === 'icons') {
-        drawById2(this.ctx, this.icons, button.id, x, buttonY);
+        drawById(this.ctx, this.icons, button.id, x, buttonY);
       } else if (button.tileset === 'items') {
-        drawById2(this.ctx, this.items, button.id, x, buttonY);
+        drawById(this.ctx, this.items, button.id, x, buttonY);
       }
       if (button.tag === 'hunting') {
         this.ctx.font = `${this.fontSize}px MECC`;

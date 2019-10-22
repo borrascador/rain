@@ -1,5 +1,5 @@
 import Animation from '../utils/Animation';
-import { drawById2, drawByName2 } from '../utils/draw';
+import { drawById, drawByName } from '../utils/draw';
 
 export default class TitleView {
   constructor(store, canvas, ctx, loader) {
@@ -31,14 +31,14 @@ export default class TitleView {
       for (let row = 0; row <= endRow; row += 1) {
         const x = col * tilewidth;
         const y = row * tileheight;
-        drawByName2(this.ctx, this.water, 'bottom', x + offsetBottom, y);
+        drawByName(this.ctx, this.water, 'bottom', x + offsetBottom, y);
       }
     }
     for (let col = 0; col <= endCol; col += 1) {
       for (let row = 0; row <= endRow; row += 1) {
         const x = col * tilewidth;
         const y = row * tileheight;
-        drawById2(this.ctx, this.water, offsetTop.toString(), x, y);
+        drawById(this.ctx, this.water, offsetTop.toString(), x, y);
       }
     }
   }

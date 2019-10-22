@@ -12,17 +12,17 @@ export default class Party {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.items = loader.getImage('items');
-    this.icons = loader.getImage('icons');
-    this.iconsXl = loader.getImage('icons-xl');
-
     this.connect = new Connect(this.store);
 
-    this.scale = 3;
-    this.size = this.items.tileset.tilewidth * this.scale;
     this.iconScale = 2;
-    this.iconSize = this.icons.tileset.tilewidth * this.iconScale;
-    this.gutter = this.items.tileset.tilewidth;
+    this.icons = loader.getImage('icons', this.iconScale);
+    this.iconSize = this.icons.tileset.tilewidth;
+
+    this.scale = 3;
+    this.iconsXl = loader.getImage('icons-xl', this.scale);
+    this.items = loader.getImage('items', this.scale);
+    this.size = this.items.tileset.tilewidth;
+    this.gutter = this.items.tileset.tilewidth / this.scale;
 
     this.fontSize = 32;
     this.hoverFontSize = 16;
@@ -119,24 +119,24 @@ export default class Party {
     const [width, height] = [this.width, this.size * 3 / 2];
 
     this.renderBox(member, xPos, yPos, width, height);
-    drawById(this.ctx, this.iconsXl, member.icon, this.scale, x, y);
+    drawById(this.ctx, this.iconsXl, member.icon, x, y);
     // this.renderSlot(member.id, x + this.height, y);
 
     if (member.online === false) { // todo !member.online
-      drawById(this.ctx, this.iconsXl, 4, this.scale, x, y); // logged out
+      drawById(this.ctx, this.iconsXl, 4, x, y); // logged out
     } else if (member.health <= 0) {
-      drawById(this.ctx, this.iconsXl, 3, this.scale, x, y); // dead
+      drawById(this.ctx, this.iconsXl, 3, x, y); // dead
     } else {
       [...Array(member.health)].forEach((_, i) => {
         drawByName(
-          this.ctx, this.icons, 'heart', this.iconScale,
+          this.ctx, this.icons, 'heart',
           x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
           y + this.gutter
         );
       });
       [...Array(member.jeito)].forEach((_, i) => {
         drawByName(
-          this.ctx, this.icons, 'bolt', this.iconScale,
+          this.ctx, this.icons, 'bolt',
           x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
           y + this.iconSize + this.gutter
         );
