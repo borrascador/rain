@@ -63,35 +63,36 @@ public class Tribe {
 	public int getRespawnPosition() {
 		return respawnPosition;
 	}
-
-	public JSONArray generateParty(Player p, int position) {
-		JSONArray partyArray = new JSONArray();
+	
+	public void generatePartyMember(Player p, int position) {
 		int w = World.getWidth();
 		int xPos = position % w;
 		int yPos = (position - xPos)/w;
 		int ts = World.getTileSize();
-		Party party = new Party();
+		int x = xPos * ts + ts/2 + Util.randomInt(10) - 10;
+		int y = yPos * ts + ts/2 + Util.randomInt(10) - 10;
+		int member_id = p.addMember(p.getName(), Util.randomInt(2), x, y);
+		p.setMember(member_id);
+		World.getMember(member_id).setPlayer(p);
+		HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
+		for (int id: skills.keySet()) {
+			if (Util.randomInt(100) < skills.get(id)) {
+				newSkills.put(id, 1);
+			} 
+		}
+	}
+
+	public JSONArray generateParty(Player p, int position) {
+		JSONArray partyArray = new JSONArray();
+		Party party = new Party(partySize);
 		int index = World.createParty(party);;
 		p.setParty(index);
 		String partyName = "";
-		for (int i=0; i<partySize; i++) {
-			int x = xPos * ts + ts/2 + Util.randomInt(10) - 10;
-			int y = yPos * ts + ts/2 + Util.randomInt(10) - 10;
-			int member_id = p.addMember("NPC " + i, Util.randomInt(2), x, y);
-			if (i==0) {
-				p.setMember(member_id);
-				World.getMember(member_id).setPlayer(p);
-				partyName = "Party " + index;
-			} 
-			HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
-			for (int id: skills.keySet()) {
-				if (Util.randomInt(100) < skills.get(id)) {
-					newSkills.put(id, 1);
-				} 
-			}
-			partyArray = p.partyToJSONArray();
-		}
+		partyName = "Party " + index;
 		party.setName(partyName);
+		generatePartyMember(p, position);
+		party.addPlayerBroadcast(p);
+		partyArray = p.partyToJSONArray();
 		IChoice partyChoice = new IChoice() {
 			public String getText(Player p) {
 				return party.getName() + "\n  Size:" + party.partySize() + "    Open spots:"  + party.emptySpaces();
@@ -100,13 +101,14 @@ public class Tribe {
 				p.removeDecision();
 				
 				p.setParty(index);
-				p.setMember(party.addPlayer(p.getName()));
+				generatePartyMember(p, position);
 				
 				JSONArray partyArray = p.partyToJSONArray();
 				
 				JSONObject payload = new JSONObject();
 				JSONObject story = new JSONObject();
 				story.put("text", "You have joined " + p.getParty().getName());
+				party.addPlayerBroadcast(p);
 				payload.put("story", story);
 // 				payload.put("inventory", inventory);
 				payload.put("party", partyArray);

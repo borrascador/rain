@@ -188,8 +188,7 @@ public class Member {
 		return skills.get(id);
 	}
 	
-	public JSONObject change(int id, Player p, int health_change, int jeito_change, 
-			HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
+	public JSONObject change(int id, Player p, int health_change, int jeito_change) {
 		JSONObject jo = getPosition();
 		jo.put("id", id);
 		jo.put("icon", icon);
@@ -206,6 +205,13 @@ public class Member {
 			p.removeMember(id);
 
 		}
+		jo.put("health", health);
+		jo.put("jeito", jeito);
+		return jo;
+	}
+	
+	public JSONObject changeSkills(HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
+		JSONObject jo = getPosition();
 		
 		if (skills_add != null) {
 			JSONArray skillsArray = new JSONArray();
@@ -229,9 +235,6 @@ public class Member {
 			jo.put("skills", skillsArray);
 			jo.put("skill_changes", skillsChangeArray);
 		}
-		
-		jo.put("health", health);
-		jo.put("jeito", jeito);
 		return jo;
 	}
 	

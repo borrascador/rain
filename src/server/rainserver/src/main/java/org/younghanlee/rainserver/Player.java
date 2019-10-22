@@ -106,6 +106,9 @@ public class Player {
 			this.connection = connection;
 			World.onlineInc();
 			connection.setPlayer(this);
+			if (party != null) {
+				World.getParty(party).login(member);
+			}
 			return true;
 		}
 		else return false;
@@ -126,8 +129,8 @@ public class Player {
 		return Message.LOGOUT_RESPONSE();
 	}
 	
-	public void send(String s) {
-		connection.send(s);
+	public void send(JSONObject jo) {
+		connection.sendJSON(jo);
 	}
 	
 	// When a player logs back in after logging out in the middle of a decision
@@ -816,7 +819,7 @@ public class Player {
 			int health = m.getHealth();
 			if (health < 5) {
 				if (tick % m.getRegen() == 0) {
-					partyArray.put(m.change(id, this, 1, 0, null, null, null));
+					partyArray.put(m.change(id, this, 1, 0));
 				}
 			}
 		}
