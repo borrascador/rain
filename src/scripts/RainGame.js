@@ -33,6 +33,7 @@ export default class RainGame {
     this.canvas = canvas;
     this.ctx = ctx;
     this.connect = new Connect(this.store);
+    this.createOffscreenCanvas();
 
     const { serverEndpoint } = this.connect;
     if (serverEndpoint) this.store.dispatch(connect(serverEndpoint));
@@ -44,6 +45,18 @@ export default class RainGame {
 
     // Class methods are not automatically bound to instance
     this.frame = this.frame.bind(this);
+  }
+
+  createOffscreenCanvas() {
+    this.offScreenCanvas = document.createElement('canvas');
+    this.offScreenCanvas.width = this.canvas.width;
+    this.offScreenCanvas.height = this.canvas.height;
+    this.offScreenContext = this.offScreenCanvas.getContext('2d')
+    this.offScreenContext.imageSmoothingEnabled = false;
+  }
+
+  copyToOnScreen() {
+    this.ctx.drawImage(this.offScreenCanvas, 0, 0);
   }
 
   init() {
@@ -65,8 +78,12 @@ export default class RainGame {
         this.loader.setImage('new', newImage, newTileset),
       ])
       .then(() => {
-        this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
-        this.titleView = new TitleView(this.store, this.canvas, this.ctx, this.loader);
+        this.gameView = new GameView(
+          this.store, this.offScreenCanvas, this.offScreenContext, this.loader,
+        );
+        this.titleView = new TitleView(
+          this.store, this.offScreenCanvas, this.offScreenContext, this.loader
+        );
       })
       .then(() => {
         window.requestAnimationFrame(this.frame);
@@ -148,6 +165,9 @@ export default class RainGame {
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
       this.ctx.imageSmoothingEnabled = false;
+      this.offScreenCanvas.width = window.innerWidth;
+      this.offScreenCanvas.height = window.innerHeight;
+      this.offScreenContext.imageSmoothingEnabled = false;
     }
 
     // Force player back to TitleView if connection is lost or if logged out
@@ -158,7 +178,9 @@ export default class RainGame {
     ) {
       this.store.dispatch(setView(VIEW.TITLE));
       // COMBAK this reset can get messed up see reducers/game.js
-      this.gameView = new GameView(this.store, this.canvas, this.ctx, this.loader);
+      this.gameView = new GameView(
+        this.store, this.offScreenCanvas, this.offScreenContext, this.loader,
+      );
     }
 
     // Run update and render loops for either TitleView or GameView
@@ -183,6 +205,7 @@ export default class RainGame {
   render() {
     // Clear canvas for next render
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.offScreenContext.clearRect(0, 0, this.offScreenCanvas.width, this.offScreenCanvas.height);
 
     // Render either TitleView or GameView
     switch (this.connect.view) {
@@ -193,5 +216,6 @@ export default class RainGame {
         this.gameView.render();
         break;
     }
+    this.copyToOnScreen();
   }
 }

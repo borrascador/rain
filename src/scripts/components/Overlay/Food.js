@@ -14,13 +14,13 @@ export default class Food {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
+    this.scale = 4;
+    this.icons = loader.getImage('icons', this.scale);
+    this.items = loader.getImage('items', this.scale);
 
     this.connect = new Connect(this.store);
 
-    this.scale = 4;
-    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.size = this.icons.tileset.tilewidth;
     this.gutter = this.size / this.scale;
 
     this.unitWidth = 4;
@@ -90,7 +90,7 @@ export default class Food {
     const { rations } = this.connect;
     const x = this.xStart + this.gutter;
     const y = this.yStart + this.gutter;
-    drawByName(this.ctx, this.icons, 'food', this.scale, x, y);
+    drawByName(this.ctx, this.icons, 'food', x, y);
     let text; let
       color;
     if (rations === 0) {
@@ -113,7 +113,7 @@ export default class Food {
     );
     this.buttons = this.buttons.map((button) => {
       const yPos = y + button.pos;
-      drawByName(this.ctx, this.icons, button.name, this.scale, x, yPos);
+      drawByName(this.ctx, this.icons, button.name, x, yPos);
       return Object.assign({}, button, {
         xPos: x,
         yPos,

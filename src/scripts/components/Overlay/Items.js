@@ -17,13 +17,12 @@ export default class Items {
     this.ctx = ctx;
     this.connect = new Connect(this.store);
 
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
-
     this.fontSize = 16;
 
     this.scale = 4;
-    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.icons = loader.getImage('icons', this.scale);
+    this.items = loader.getImage('items', this.scale);
+    this.size = this.icons.tileset.tilewidth;
     this.gutter = this.size / this.scale;
 
     this.unitWidth = 4;
@@ -78,7 +77,7 @@ export default class Items {
   }
 
   renderItem(stack, x, y) {
-    drawById(this.ctx, this.items, stack.id, this.scale, x, y);
+    drawById(this.ctx, this.items, stack.id, x, y);
     if (stack.durability) {
       drawDurability(
         this.ctx, this.size, this.scale, stack.durability, x, y

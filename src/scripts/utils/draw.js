@@ -3,21 +3,21 @@ import {
   SOLID_WHITE, FOREST_BLACK, alphaForestBlack, alphaGreen, alphaRed
 } from './colors';
 
-export function drawById(ctx, img, id, zoom, x, y) {
+export function drawById(ctx, img, id, x, y) {
   const { tileheight, tilewidth, columns } = img.tileset;
   ctx.drawImage(
     img,
     (id % columns) * tilewidth,
     Math.floor(id / columns) * tileheight,
     tilewidth, tileheight,
-    x, y,
-    tilewidth * zoom, tileheight * zoom
+    Math.round(x), Math.round(y),
+    tilewidth, tileheight
   );
 }
 
-export function drawByName(ctx, img, name, zoom, x, y) {
+export function drawByName(ctx, img, name, x, y) {
   const id = img.tilenames[name];
-  drawById(ctx, img, id, zoom, x, y);
+  drawById(ctx, img, id, x, y);
 }
 
 export function trace(ctx, size, x, y) {

@@ -11,9 +11,6 @@ export default class Pace {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.walk = loader.getImage('walk');
-
     this.connect = new Connect(this.store);
 
     this.animateStop = new Animation(1, 1, 0.75);
@@ -22,8 +19,10 @@ export default class Pace {
 
     this.scale = 4;
     this.gutter = 4;
-    this.iconSize = this.icons.tileset.tilewidth * this.scale;
-    this.walkSize = this.walk.tileset.tilewidth * this.scale;
+    this.icons = loader.getImage('icons', this.scale);
+    this.walk = loader.getImage('walk', this.scale);
+    this.iconSize = this.icons.tileset.tilewidth;
+    this.walkSize = this.walk.tileset.tilewidth;
 
     this.buttons = [];
   }
@@ -110,7 +109,7 @@ export default class Pace {
       }
   
       this.buttons.forEach(button => drawById(
-        this.ctx, this.icons, 20 + button.id, this.scale, button.xPos, yPos
+        this.ctx, this.icons, 20 + button.id, button.xPos, yPos
       ));
     }
   }
@@ -136,7 +135,7 @@ export default class Pace {
   
       const x = (this.canvas.width - this.walkSize) / 2;
       const y = 0;
-      drawById(this.ctx, this.walk, offset, this.scale, x, y);
+      drawById(this.ctx, this.walk, offset, x, y);
     }
   }
 

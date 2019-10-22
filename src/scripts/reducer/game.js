@@ -1,5 +1,5 @@
 import {
-  mergeSlots, sortTiles, mergeArrays, updateStory, updateMessages,
+  mergeSlots, mergeTiles, mergeArrays, updateStory, updateMessages,
   updateInventoryChanges, updatePartyChanges,
   reduceIntegerState, reduceBooleanState, getActions,
 } from './utils';
@@ -9,7 +9,7 @@ import { VIEW, MODE, MODAL } from '../utils/constants';
 export function update(state, action) {
   const newState = Object.assign({}, state, {
     slots: mergeSlots(state.slots, action.payload.inventory),
-    tiles: sortTiles(state, action), // TODO no merging yet
+    tiles: mergeTiles(state, action),
     party: mergeArrays(state.party, action.payload.party),
     players: mergeArrays(state.players, action.payload.players),
     npcs: mergeArrays(state.npcs, action.payload.npcs),

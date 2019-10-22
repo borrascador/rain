@@ -55,30 +55,28 @@ export const coordsToColRow = (xPos, yPos, xCoord, yCoord) => ({
   row: yPos * 64 + yCoord,
 });
 
-export const findGroundTile = (tiles, xPos, yPos, xCoord, yCoord) => {
-  const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
-  if (superTile) {
-    return superTile.ground.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
-  }
-  return undefined;
-};
+// export const findGroundTile = (tiles, xPos, yPos, xCoord, yCoord) => {
+//   const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
+//   if (superTile) {
+//     return superTile.ground.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
+//   }
+//   return undefined;
+// };
 
-export const findTreeTile = (tiles, xPos, yPos, xCoord, yCoord) => {
-  const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
-  if (superTile) {
-    return superTile.trees.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
-  }
-  return undefined;
-};
+// export const findTreeTile = (tiles, xPos, yPos, xCoord, yCoord) => {
+//   const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
+//   if (superTile) {
+//     return superTile.trees.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
+//   }
+//   return undefined;
+// };
 
 export const findTile = (tiles, xPos, yPos, xCoord, yCoord) => {
-  const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
-  if (superTile) {
-    const ground = superTile.ground.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
-    const trees = superTile.trees.find(tile => tile.xCoord === xCoord && tile.yCoord === yCoord);
-    return { ...superTile, ground, trees };
-  }
-  return undefined;
+  if (!tiles[xPos]) return;
+  if (!tiles[xPos][yPos]) return;
+  if (!tiles[xPos][yPos][xCoord]) return;
+  if (!tiles[xPos][yPos][xCoord][yCoord]) return;
+  return tiles[xPos][yPos][xCoord][yCoord];
 };
 
 export const getRandomInt = max => (

@@ -93,14 +93,14 @@ export default class Connect {
 
   get map() {
     const {
-      position, xCoord, yCoord, /* positionTarget, xTarget, yTarget, */ tiles, sight, zoom
+      /* position, xCoord, yCoord, positionTarget, xTarget, yTarget, */ tiles, sight, zoom
     } = this.store.getState();
-    const { x, y } = tiles.find(tile => tile.position === position);
-    const pos = { x, y };
-    const coords = { x: xCoord, y: yCoord };
+    // const { x, y } = tiles.find(tile => tile.position === position);
+    // const pos = { x, y };
+    // const coords = { x: xCoord, y: yCoord };
     // const coordsTarget = { x: xTarget, y: yTarget };
     return {
-      pos, coords, /* positionTarget, coordsTarget, */ tiles, sight, zoom,
+      /* pos, coords, positionTarget, coordsTarget, */ tiles, sight, zoom,
     };
   }
 
@@ -115,10 +115,6 @@ export default class Connect {
 
   get position() {
     return this.store.getState().position;
-  }
-
-  get inventory() {
-    return this.store.getState().inventory;
   }
 
   get slots() {

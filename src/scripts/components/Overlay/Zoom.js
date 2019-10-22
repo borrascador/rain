@@ -11,12 +11,11 @@ export default class Zoom {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.iconsXl = loader.getImage('icons-xl');
-
     this.connect = new Connect(this.store);
 
     this.scale = 2;
-    this.size = this.iconsXl.tileset.tilewidth * this.scale;
+    this.iconsXl = loader.getImage('icons-xl', this.scale);
+    this.size = this.iconsXl.tileset.tilewidth;
 
     this.buttons = [
       { name: 'settings' },
@@ -60,7 +59,7 @@ export default class Zoom {
       const xPos = this.size * index;
       const yPos = this.canvas.height - this.size;
       const [width, height] = Array(2).fill(this.size);
-      drawByName(this.ctx, this.iconsXl, button.name, this.scale, xPos, yPos);
+      drawByName(this.ctx, this.iconsXl, button.name, xPos, yPos);
       return Object.assign({}, button, {
         xPos, yPos, width, height
       });

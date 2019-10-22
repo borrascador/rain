@@ -17,18 +17,16 @@ export default class PartyWindow {
     this.ctx = ctx;
     this.connect = new Connect(this.store);
 
-    this.iconsXl = loader.getImage('icons-xl');
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
+    this.scale = 2;
+    this.iconsXl = loader.getImage('icons-xl', this.scale);
+    this.icons = loader.getImage('icons', this.scale);
+    this.sizeXl = this.iconsXl.tileset.tilewidth;
+    this.size = this.icons.tileset.tilewidth;
+    this.gutter = this.sizeXl / 4;
 
     this.fontSize = 16;
     this.lineHeight = this.fontSize * 2.5;
     this.iconOffset = this.fontSize * 1.5;
-
-    this.scale = 2;
-    this.sizeXl = this.iconsXl.tileset.tilewidth * this.scale;
-    this.size = this.icons.tileset.tilewidth * this.scale;
-    this.gutter = this.sizeXl / 4;
 
     this.unitWidth = 5;
     this.unitHeight = 7;
@@ -63,7 +61,7 @@ export default class PartyWindow {
     this.ctx.lineTo(x + this.sizeXl + this.gutter * 2, y);
     this.ctx.fillStyle = color;
     this.ctx.fill();
-    drawById(this.ctx, this.iconsXl, button.icon, this.scale, xPos, yPos);
+    drawById(this.ctx, this.iconsXl, button.icon, xPos, yPos);
   }
 
   renderTabs() {
@@ -113,7 +111,7 @@ export default class PartyWindow {
     this.ctx.fillText(HEALTH, xPos, yPos);
     [...Array(member.health)].forEach((_, index) => {
       drawByName(
-        this.ctx, this.icons, 'heart', this.scale,
+        this.ctx, this.icons, 'heart',
         xPos + lineWidth + 8 + index * (this.size + 8),
         yPos - this.iconOffset
       );
@@ -123,7 +121,7 @@ export default class PartyWindow {
     this.ctx.fillText(JEITO, xPos, yPos);
     [...Array(member.jeito)].forEach((_, index) => {
       drawByName(
-        this.ctx, this.icons, 'bolt', this.scale,
+        this.ctx, this.icons, 'bolt',
         xPos + lineWidth + 8 + index * (this.size + 8),
         yPos - this.iconOffset
       );
@@ -136,7 +134,7 @@ export default class PartyWindow {
     if (Array.isArray(member.skills)) {
       this.skills = member.skills.map((skill, index) => {
         drawByName(
-          this.ctx, this.icons, 'question', this.scale,
+          this.ctx, this.icons, 'question',
           xPos + index * (this.size + 8),
           yPos - this.iconOffset
         );
@@ -158,7 +156,7 @@ export default class PartyWindow {
     if (Array.isArray(member.modifiers)) {
       this.modifiers = member.modifiers.map((modifier, index) => {
         drawByName(
-          this.ctx, this.icons, 'question', this.scale,
+          this.ctx, this.icons, 'question',
           xPos + index * (this.size + 8),
           yPos - this.iconOffset
         );

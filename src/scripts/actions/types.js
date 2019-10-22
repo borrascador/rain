@@ -42,6 +42,7 @@ export const EVENTS = {
   ATTACK: 'attack',
   PLANT: 'plant',
   HARVEST: 'harvest',
+  FORAGE: 'forage',
   START_HUNT: 'start_hunt',
   STOP_HUNT: 'stop_hunt',
   FISH: 'fish',

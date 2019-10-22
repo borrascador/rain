@@ -13,16 +13,17 @@ export default class ActionBar {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
+
+    const scale = 4;
+    this.icons = loader.getImage('icons', scale);
+    this.items = loader.getImage('items', scale);
     this.connect = new Connect(this.store);
 
     this.store.dispatch(selectAction('main'));
     const { actions, selectedAction } = this.connect;
     this.buttons = actions[selectedAction];
 
-    this.scale = 4;
-    this.buttonSize = this.icons.tileset.tilewidth * this.scale;
+    this.buttonSize = this.icons.tileset.tilewidth;
     this.barSize = this.buttonSize * 1.5;
     this.gutter = (this.barSize - this.buttonSize) / 2;
 
@@ -110,9 +111,9 @@ export default class ActionBar {
     this.buttons = this.buttons.map((button, index) => {
       const x = buttonX + this.barSize * index;
       if (button.tileset === 'icons') {
-        drawById(this.ctx, this.icons, button.id, this.scale, x, buttonY);
+        drawById(this.ctx, this.icons, button.id, x, buttonY);
       } else if (button.tileset === 'items') {
-        drawById(this.ctx, this.items, button.id, this.scale, x, buttonY);
+        drawById(this.ctx, this.items, button.id, x, buttonY);
       }
       if (button.tag === 'hunting') {
         this.ctx.font = `${this.fontSize}px MECC`;
