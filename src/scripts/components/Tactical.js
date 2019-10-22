@@ -355,8 +355,6 @@ export default class Tactical {
         });
       }
     });
-
-    console.log(entities, this.entities);
   }
 
   renderAttackBox() {
