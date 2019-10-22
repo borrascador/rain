@@ -15,10 +15,8 @@ import { EVENTS } from '../actions/types';
 import {
   screenToImageButton,
   // checkImageCollision,
-  coordsToColRow, colRowToCoords,
-  findGroundTile, findTreeTile, 
+  coordsToColRow, colRowToCoords, findTile, 
 } from './utils';
-import { throws } from 'assert';
 
 export default class Tactical {
   constructor(store, canvas, ctx, loader) {
@@ -26,20 +24,22 @@ export default class Tactical {
     this.canvas = canvas;
     this.ctx = ctx;
     this.loader = loader;
-    this.tactical = loader.getImage('tactical');
-    this.player = loader.getImage('player');
-    this.trees = loader.getImage('trees');
+
     this.entities = [];
 
     this.connect = new Connect(this.store);
     const { zoom } = this.connect;
+
+    this.tactical = this.loader.getImage('tactical', zoom);
+    this.player = this.loader.getImage('player', zoom);
+    this.trees = this.loader.getImage('trees', zoom);
 
     this.camera = new Camera(
       this.canvas.width, // width
       this.canvas.height, // height
       0, // xStart
       0, // yStart
-      this.tactical.tileset.tilewidth,
+      this.tactical.tileset.tilewidth / zoom, // grid size
       zoom,
     );
 
@@ -160,8 +160,11 @@ export default class Tactical {
     const { selectedPlayer, map: { zoom, tiles } } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
-    const tileWidth = this.tactical.tileset.tilewidth * zoom;
-    const tileHeight = this.tactical.tileset.tileheight * zoom;
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+      columns
+    } = this.tactical.tileset;
 
     const startCol = Math.floor(this.camera.x / tileWidth);
     const endCol = startCol + Math.ceil(width / tileWidth);
@@ -170,21 +173,20 @@ export default class Tactical {
 
     this.visibleTiles = [];
     for (let row = startRow; row <= endRow; row += 1) {
-      for (let col = startCol; col <= endCol; col += 1) {
-        const x = col * tileWidth - this.camera.x;
-        const y = row * tileHeight - this.camera.y;
+      for (let col = startCol; col <= endCol; col += 1) { 
+        const x = Math.round(col * tileWidth - this.camera.x);
+        const y = Math.round(row * tileHeight - this.camera.y);
         const {
           xPos, yPos, xCoord, yCoord,
         } = colRowToCoords(col, row);
-        const tile = findGroundTile(tiles, xPos, yPos, xCoord, yCoord);
+        const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
 
-        if (tile) {
+        if (tile && tile.groundLayer) {
           // draw ground layer
           const {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
-          const { id } = tile;
-          const { tileheight, tilewidth, columns } = this.tactical.tileset;
+          const { groundLayer } = tile;
           if (
             widthOffset > 0
             && heightOffset > 0
@@ -193,10 +195,10 @@ export default class Tactical {
           ) {
             this.offScreenContext.drawImage(
               this.tactical, // image
-              (id % columns) * tilewidth - (xOffset / zoom), // srcX
-              Math.floor(id / columns) * tileheight - (yOffset / zoom), // srcY
-              widthOffset / zoom, // srcWidth
-              heightOffset / zoom, // srcHeight
+              (groundLayer % columns) * tileWidth - xOffset, // srcX
+              Math.floor(groundLayer / columns) * tileHeight - yOffset, // srcY
+              widthOffset, // srcWidth
+              heightOffset, // srcHeight
               x - xOffset + xStart, // destX
               y - yOffset + yStart, // destY
               widthOffset, // destWidth
@@ -233,14 +235,19 @@ export default class Tactical {
   }
 
   renderTreeLayer() {
-    const { tiles, zoom } = this.connect.map;
+    const { tiles } = this.connect.map;
     const { xStart, yStart, width, height } = this.camera;
 
-    const tileWidth = this.tactical.tileset.tilewidth * zoom;
-    const tileHeight = this.tactical.tileset.tileheight * zoom;
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+    } = this.tactical.tileset;
 
-    const treeWidth = this.trees.tileset.tilewidth * zoom;
-    const treeHeight = this.trees.tileset.tileheight * zoom;
+    const {
+      tileheight: treeHeight,
+      tilewidth: treeWidth,
+      columns
+    } = this.trees.tileset;
 
     // todo find better way to handle commented lines
     const startCol = Math.floor(this.camera.x / tileWidth) - 1; // fixes popping in/out on left
@@ -250,20 +257,19 @@ export default class Tactical {
 
     for (let row = startRow; row <= endRow; row += 1) {
       for (let col = startCol; col <= endCol; col += 1) {
-        const x = col * tileWidth - this.camera.x - tileWidth;
-        const y = row * tileHeight - this.camera.y - treeHeight + tileHeight;
+        const x = Math.round(col * tileWidth - this.camera.x - tileWidth);
+        const y = Math.round(row * tileHeight - this.camera.y - treeHeight + tileHeight);
         const {
           xPos, yPos, xCoord, yCoord,
         } = colRowToCoords(col, row);
-        const tile = findTreeTile(tiles, xPos, yPos, xCoord, yCoord);
+        const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
 
-        if (tile) {
+        if (tile && tile.treeLayer) {
           // draw tree layer
           const {
             xOffset, yOffset, widthOffset, heightOffset,
           } = this.camera.getOffsets(x, y, treeWidth, treeHeight);
-          const { id } = tile;
-          const { tileheight, tilewidth, columns } = this.trees.tileset;
+          const { treeLayer } = tile;
           if (
             widthOffset > 0
             && heightOffset > 0
@@ -272,12 +278,12 @@ export default class Tactical {
           ) {
             this.offScreenContext.drawImage(
               this.trees, // image
-              (id % columns) * tilewidth - (xOffset / zoom), // srcX
-              Math.floor(id / columns) * tileheight - (yOffset / zoom), // srcY
-              widthOffset / zoom, // srcWidth
-              heightOffset / zoom, // srcHeight
-              x - xOffset + xStart, // destX
-              y - yOffset + yStart, // destY
+              (treeLayer % columns) * treeWidth - xOffset, // srcX
+              Math.floor(treeLayer / columns) * treeHeight - yOffset, // srcY
+              widthOffset, // srcWidth
+              heightOffset, // srcHeight
+              x + xStart - xOffset, // destX
+              y + yStart - yOffset, // destY
               widthOffset, // destWidth
               heightOffset // destHeight
             );
@@ -289,11 +295,19 @@ export default class Tactical {
 
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
-    const { party, players, npcs, map: { zoom, tiles } } = this.connect;
+    const { party, players, npcs, map: { tiles } } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
-    const tileWidth = this.tactical.tileset.tilewidth * zoom;
-    const tileHeight = this.tactical.tileset.tileheight * zoom;
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+    } = this.tactical.tileset;
+
+    const {
+      tileheight: playerHeight,
+      tilewidth: playerWidth,
+      columns,
+    } = this.player.tileset;
 
     const startCol = Math.floor(this.camera.x / tileWidth);
     const endCol = startCol + Math.ceil(width / tileWidth);
@@ -302,46 +316,43 @@ export default class Tactical {
 
     const entities = [...party, ...players, ...npcs];
 
+
     this.entities = [];
     entities.forEach((player) => {
       const { xPos, yPos, xCoord, yCoord, health /* icon */ } = player;
-      const superTile = tiles.find(tile => tile.xPos === xPos && tile.yPos === yPos);
-      if (superTile) {
-        const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
-        if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
-          const x = col * tileWidth - this.camera.x;
-          const y = row * tileHeight - this.camera.y;
-          const {
-            xOffset, yOffset, widthOffset, heightOffset,
-          } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
+      const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
+      if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
+        const x = Math.round(col * tileWidth - this.camera.x);
+        const y = Math.round(row * tileHeight - this.camera.y);
+        const {
+          xOffset, yOffset, widthOffset, heightOffset,
+        } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
 
-          const icon = health > 0 ? 0 : 3;
-          const { tileheight, tilewidth, columns } = this.player.tileset;
-          const widthRatio = this.player.tileset.tilewidth / this.tactical.tileset.tilewidth;
-          const heightRatio = this.player.tileset.tileheight / this.tactical.tileset.tileheight;
+        const icon = health > 0 ? 0 : 3;
+        const widthRatio = playerWidth / tileWidth;
+        const heightRatio = playerHeight / tileHeight;
 
-          this.offScreenContext.drawImage(
-            this.player, // image
-            (icon % columns) * tilewidth - (widthRatio * xOffset / zoom), // srcX
-            Math.floor(icon / columns) * tileheight - (heightRatio * yOffset / zoom), // srcY
-            widthRatio * widthOffset / zoom, // srcWidth
-            heightRatio * heightOffset / zoom, // srcHeight
-            x - xOffset + xStart, // destX
-            y - yOffset + yStart, // destY
-            widthOffset, // destWidth
-            heightOffset // destHeight
-          );
+        this.offScreenContext.drawImage(
+          this.player, // image
+          (icon % columns) * playerWidth - Math.round(widthRatio * xOffset), // srcX
+          Math.floor(icon / columns) * playerHeight - Math.round(heightRatio * yOffset), // srcY
+          widthRatio * widthOffset, // srcWidth
+          heightRatio * heightOffset, // srcHeight
+          x - xOffset + xStart, // destX
+          y - yOffset + yStart, // destY
+          widthOffset, // destWidth
+          heightOffset // destHeight
+        );
 
-          this.entities.push({
-            id: player.id,
-            pos: { x: xPos, y: yPos },
-            coords: { x: xCoord, y: yCoord },
-            xPos: x - xOffset + xStart, // destX
-            yPos: y - yOffset + yStart, // destY
-            width: widthOffset, // destWidth
-            height: heightOffset // destHeight
-          });
-        }
+        this.entities.push({
+          id: player.id,
+          pos: { x: xPos, y: yPos },
+          coords: { x: xCoord, y: yCoord },
+          xPos: x - xOffset + xStart, // destX
+          yPos: y - yOffset + yStart, // destY
+          width: widthOffset, // destWidth
+          height: heightOffset // destHeight
+        });
       }
     });
   }
@@ -397,6 +408,9 @@ export default class Tactical {
       this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
     }
     if (needRender) {
+      this.tactical = this.loader.getImage('tactical', zoom);
+      this.player = this.loader.getImage('player', zoom);
+      this.trees = this.loader.getImage('trees', zoom);
       this.renderGroundLayer();
       this.renderTreeLayer();
       this.renderAttackBox();

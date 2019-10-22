@@ -2,7 +2,6 @@ import { VIEW } from '../utils/constants';
 import { makeKeys } from './ui';
 
 // import party from '../../data/party.json';
-// import inventory from '../../data/inventory.json';
 // import vehicle from '../../data/vehicle.json';
 // import story from '../../data/story.json';
 
@@ -22,6 +21,7 @@ const uiState = {
 
 const gameState = {
   tiles: [],
+  tilez: [],
   party: [], // DEBUG with party
   players: [],
   npcs: [],

@@ -11,13 +11,11 @@ export default class Inventory {
     this.ctx = ctx;
     this.connect = new Connect(this.store);
 
-    this.icons = loader.getImage('icons');
-    this.items = loader.getImage('items');
-
     this.fontSize = 16;
 
     this.scale = 4;
-    this.size = this.icons.tileset.tilewidth * this.scale;
+    const icons = loader.getImage('icons', this.scale);
+    this.size = icons.tileset.tilewidth;
     this.gutter = this.size / this.scale;
 
     this.unitWidth = 4;

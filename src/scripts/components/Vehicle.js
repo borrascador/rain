@@ -7,17 +7,17 @@ export default class Vehicle {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
-    this.icons = loader.getImage('icons');
-    this.iconsXl = loader.getImage('icons-xl');
-
     this.connect = new Connect(this.store);
 
+    this.iconScale = 1;
+    this.icons = loader.getImage('icons', this.iconScale);
+    this.vehicleSize = this.iconsXl.tileset.tilewidth;
+
     this.scale = 2;
-    this.vehicleSize = this.iconsXl.tileset.tilewidth * this.scale;
+    this.iconsXl = loader.getImage('icons-xl', this.scale);
     this.wrenchSize = this.icons.tileset.tilewidth;
 
     const { vehicle } = this.connect;
-
     if (vehicle) {
       this.buttons = [
         { id: vehicle.icon, onClick: () => console.log(vehicle.type) }
@@ -36,10 +36,10 @@ export default class Vehicle {
     this.buttons = this.buttons.map((button) => {
       const x = 0;
       const y = this.canvas.height - this.vehicleSize;
-      drawById(this.ctx, this.iconsXl, vehicle.icon, this.scale, x, y);
+      drawById(this.ctx, this.iconsXl, vehicle.icon, x, y);
       [...Array(vehicle.repair)].forEach((_, index) => {
         drawByName(
-          this.ctx, this.icons, 'wrench', 1,
+          this.ctx, this.icons, 'wrench',
           this.vehicleSize + index * (this.wrenchSize + 8),
           this.canvas.height - (this.wrenchSize + this.vehicleSize) / 2
         );
