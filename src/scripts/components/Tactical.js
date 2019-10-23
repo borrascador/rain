@@ -295,7 +295,7 @@ export default class Tactical {
 
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
-    const { party, players, npcs, map: { tiles } } = this.connect;
+    const { party, players, npcs } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
     const {
@@ -314,8 +314,11 @@ export default class Tactical {
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight);
 
-    const entities = [...party, ...players, ...npcs];
-
+    const entities = [
+      ...party.filter(({ online }) => online),
+      ...players.filter(({ online }) => online),
+      ...npcs,
+    ];
 
     this.entities = [];
     entities.forEach((player) => {
