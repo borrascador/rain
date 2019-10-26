@@ -414,8 +414,10 @@ export default class Tactical {
 
   render() {
     const { currentPlayer, needRender, zoom } = this.connect;
-    const { xPos, yPos, xCoord, yCoord } = currentPlayer;
-    this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
+    if (currentPlayer) {
+      const { xPos, yPos, xCoord, yCoord } = currentPlayer;
+      this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
+    }
     if (needRender) {
       this.tactical = this.loader.getImage('tactical', zoom);
       this.player = this.loader.getImage('player', zoom);
