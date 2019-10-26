@@ -167,13 +167,6 @@ export function refreshSlots(state, action) {
   });
 }
 
-export function refreshTiles(state, action) {
-  return updateObject(state, {
-    // graphTiles: mergeTiles(state.graphTiles, action.payload.graphTiles)
-    graphTiles: action.payload.graphTiles
-  });
-}
-
 export function setView(state, action) {
   return updateObject(state, {
     view: action.payload.view,
