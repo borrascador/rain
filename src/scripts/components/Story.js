@@ -17,7 +17,6 @@ export default class Story {
 
     this.blink = new Animation(1, 1, 1);
     this.connect = new Connect(this.store);
-    this.icons = loader.getImage('icons');
 
     this.fontSize = 16;
     this.lineHeight = this.fontSize * 11 / 8;
@@ -25,7 +24,8 @@ export default class Story {
     this.selected = null;
 
     this.scale = 2;
-    this.size = this.icons.tileset.tilewidth * this.scale;
+    this.icons = loader.getImage('icons', this.scale);
+    this.size = this.icons.tileset.tilewidth;
     this.iconOffset = this.fontSize * 4 / 5;
 
     this.width = this.canvas.width / 3;

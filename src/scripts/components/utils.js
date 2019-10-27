@@ -79,6 +79,14 @@ export const findTile = (tiles, xPos, yPos, xCoord, yCoord) => {
   return tiles[xPos][yPos][xCoord][yCoord];
 };
 
+export const matchTile = (tile, entity) => (
+  tile && entity
+  && tile.xPos === entity.xPos
+  && tile.yPos === entity.yPos
+  && tile.xCoord === entity.xCoord
+  && tile.yCoord === entity.yCoord
+);
+
 export const getRandomInt = max => (
   Math.floor(Math.random() * Math.floor(max))
 );

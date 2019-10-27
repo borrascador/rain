@@ -10,7 +10,7 @@ export function drawById(ctx, img, id, x, y) {
     (id % columns) * tilewidth,
     Math.floor(id / columns) * tileheight,
     tilewidth, tileheight,
-    Math.round(x), Math.round(y),
+    Math.floor(x), Math.floor(y),
     tilewidth, tileheight
   );
 }
