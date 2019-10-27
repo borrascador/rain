@@ -107,6 +107,12 @@ public class Tile {
 		}
 	}
 	
+	public ArrayList<Member> subTileMembers(int subTile){
+		if (members.containsKey(subTile)) {
+			return members.get(subTile);
+		} else return null;
+	}
+	
 	public JSONObject plant (int seed_id, Player p) {
 		int n = p.getQuantity(seed_id);
 		if (n >= 1) {
