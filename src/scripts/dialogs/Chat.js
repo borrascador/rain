@@ -50,7 +50,7 @@ const Chat = ({ messageLog, broadcastMessage }) => {
     <div style={styles.chat}>
       <div style={styles.messageLog}>
         <div>Welcome to Rainforest Trail</div>
-        { messageLog.map((({ user, text }, index) => (
+        { messageLog.map((({ user='SERVER', text }, index) => (
           <div key={index}>
             { user }: { text }
           </div>

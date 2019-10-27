@@ -1,7 +1,6 @@
 import { send } from '@giantmachines/redux-websocket';
 import Camera from './Camera';
 import Connect from '../Connect';
-// import { FOREST_BLACK } from '../utils/colors';
 import {
   clickedLeft,
   clickedRight,
@@ -14,8 +13,10 @@ import {
 import { EVENTS } from '../actions/types';
 import {
   screenToImageButton,
-  // checkImageCollision,
-  coordsToColRow, colRowToCoords, findTile, 
+  coordsToColRow,
+  colRowToCoords,
+  findTile,
+  matchTile,
 } from './utils';
 
 export default class Tactical {
@@ -145,6 +146,7 @@ export default class Tactical {
       mx && my && screenToImageButton(mx, my, this.visibleTiles)
     );
     if(!this.hoveredTile) this.hoveredTile = hoveredTile;
+
     if (selectedPlayer && hoveredTile && (
       hoveredTile.pos.x !== this.hoveredTile.pos.x
       || hoveredTile.pos.y !== this.hoveredTile.pos.y
@@ -157,7 +159,7 @@ export default class Tactical {
   }
 
   renderGroundLayer() {
-    const { selectedPlayer, map: { zoom, tiles } } = this.connect;
+    const { tiles, selectedPlayer, currentPlayer } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
     const {
@@ -215,14 +217,17 @@ export default class Tactical {
             height: heightOffset // destHeight
           });
 
-          if (
-            selectedPlayer
-            && selectedPlayer.xPos === xPos
-            && selectedPlayer.yPos === yPos
-            && selectedPlayer.xCoord === xCoord
-            && selectedPlayer.yCoord === yCoord
-          ) {
-            this.attackBox = {
+          if (matchTile(currentPlayer, tile)) {
+            this.currentPlayerTile = {
+              xPos: x - xOffset + xStart,
+              yPos: y - yOffset + yStart,
+              width: widthOffset,
+              height: heightOffset,
+            };
+          }
+
+          if (matchTile(selectedPlayer, tile)) {
+            this.selectedPlayerTile = {
               xPos: x - xOffset + xStart,
               yPos: y - yOffset + yStart,
               width: widthOffset,
@@ -235,7 +240,7 @@ export default class Tactical {
   }
 
   renderTreeLayer() {
-    const { tiles } = this.connect.map;
+    const { tiles } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
     const {
@@ -295,7 +300,7 @@ export default class Tactical {
 
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
-    const { party, players, npcs, map: { tiles } } = this.connect;
+    const { party, players, npcs } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
     const {
@@ -314,8 +319,11 @@ export default class Tactical {
     const startRow = Math.floor(this.camera.y / tileHeight);
     const endRow = startRow + Math.ceil(height / tileHeight);
 
-    const entities = [...party, ...players, ...npcs];
-
+    const entities = [
+      ...party.filter(({ online }) => online),
+      ...players.filter(({ online }) => online),
+      ...npcs,
+    ];
 
     this.entities = [];
     entities.forEach((player) => {
@@ -357,19 +365,24 @@ export default class Tactical {
     });
   }
 
-  renderAttackBox() {
+  renderTileEffects() {
     const { selectedAction } = this.connect;
-    if (selectedAction === 'attack' && this.attackBox) {
-      const { xPos, yPos, width, height } = this.attackBox;
+    if (selectedAction === 'attack' && this.selectedPlayerTile) {
+      const { xPos, yPos, width, height } = this.selectedPlayerTile;
       this.offScreenContext.fillStyle = 'rgba(128, 0, 0, 0.6)';
       this.offScreenContext.fillRect(xPos - width, yPos, width, height);
       this.offScreenContext.fillRect(xPos + width, yPos, width, height);
       this.offScreenContext.fillRect(xPos, yPos - height, width, height);
       this.offScreenContext.fillRect(xPos, yPos + height, width, height);
     }
+    if (this.currentPlayerTile) {
+      const { xPos, yPos, width, height } = this.currentPlayerTile;
+      this.offScreenContext.fillStyle = 'rgba(128, 128, 0, 0.4)';
+      this.offScreenContext.fillRect(xPos, yPos, width, height);
+    }
   }
 
-  renderSelectionBox() {
+  renderSelectionTile() {
     const {
       selectedPlayer,
       mousePos: { x: mx, y: my },
@@ -400,11 +413,9 @@ export default class Tactical {
   }
 
   render() {
-    const { party, needRender, map: { zoom } } = this.connect;
-    if (party.length) {
-      const {
-        xPos, yPos, xCoord, yCoord,
-      } = party[0];
+    const { currentPlayer, needRender, zoom } = this.connect;
+    if (currentPlayer) {
+      const { xPos, yPos, xCoord, yCoord } = currentPlayer;
       this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
     }
     if (needRender) {
@@ -413,9 +424,9 @@ export default class Tactical {
       this.trees = this.loader.getImage('trees', zoom);
       this.renderGroundLayer();
       this.renderTreeLayer();
-      this.renderAttackBox();
+      this.renderTileEffects();
       this.renderPlayerLayer();
-      this.renderSelectionBox();
+      this.renderSelectionTile();
       this.store.dispatch(completedRender());
     }
     this.copyToOnScreen();

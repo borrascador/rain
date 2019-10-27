@@ -13,7 +13,6 @@ const uiState = {
   actions: { main: [] },
   zoom: 7,
   slots: [],
-  graphTiles: [],
   selectedPlayer: undefined,
   selectedAction: 'main',
   needRender: true,

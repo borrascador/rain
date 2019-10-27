@@ -1,10 +1,9 @@
-import { MODE, MODAL } from '../utils/constants';
 import Connect from '../Connect';
-import Map from '../components/Map';
 import Tactical from '../components/Tactical';
 import Overlay from '../components/Overlay';
 import Story from '../components/Story';
 import PartyWindow from '../components/PartyWindow';
+import { MODAL } from '../utils/constants';
 import { MEDIUM_OPAQUE } from '../utils/colors';
 
 export default class GameView {
@@ -18,44 +17,35 @@ export default class GameView {
     this.connect = new Connect(this.store);
 
     this.tactical = new Tactical(this.store, this.canvas, this.ctx, this.loader);
-    this.map = new Map(this.store, this.canvas, this.ctx, this.loader);
     this.overlay = new Overlay(this.store, this.canvas, this.ctx, this.loader);
     this.story = new Story(this.store, this.canvas, this.ctx, this.loader);
     this.partyWindow = new PartyWindow(this.store, this.canvas, this.ctx, this.loader);
   }
 
   setDim(dim) {
-    this.dim = dim;
+    this.dim = dim; // todo replace with redux state?
   }
 
   update(step) {
     if (this.dim) return;
 
-    const { stories, modal, mode } = this.connect;
+    const { stories, modal } = this.connect;
 
     if (stories.length > 0) {
       this.story.update(step);
     } else if (modal === MODAL.PARTY) {
       this.partyWindow.update(step);
-    } else if (this.connect.currentTile) {
-      if (mode === MODE.GLOBAL) {
-        this.map.update(step);
-      }
+    } else {
       this.overlay.update(step);
       this.tactical.update(step);
     }
   }
 
   render() {
-    const { currentTile, mode, modal } = this.connect;
+    const { modal } = this.connect;
 
-    if (currentTile) {
-      this.tactical.render();
-      this.overlay.render();
-      if (mode === MODE.GLOBAL) {
-        this.map.render();
-      }
-    }
+    this.tactical.render();
+    this.overlay.render();
     if (modal === MODAL.PARTY) this.partyWindow.render();
     this.story.render();
 
