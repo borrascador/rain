@@ -135,6 +135,20 @@ public class Member {
 		return online;
 	}
 	
+	public int getTile() {
+		int ts = World.getTileSize();
+		int xPos = x/ts;
+		int yPos = y/ts;
+		return yPos*World.getWidth() + xPos;
+	}
+	
+	public int getSubTile() {
+		int ts = World.getTileSize();
+		int xCoord = x % ts;
+		int yCoord = y % ts;
+		return yCoord*World.getTileSize() + xCoord;
+	}
+	
 	public JSONObject getPosition() {
 		JSONObject jo = new JSONObject();
 		int ts = World.getTileSize();

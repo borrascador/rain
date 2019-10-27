@@ -38,7 +38,8 @@ public class Party {
 		JSONObject payload = new JSONObject();
 		JSONArray messages = new JSONArray();
 		JSONObject message = new JSONObject();
-		message.put("text", p.getName() + " has joined the party.\nYour party now has " + members.size() + "/" + capacity + " members");
+		message.put("text", p.getName() + " has joined the party.");
+		// \nYour party now has " + members.size() + "/" + capacity + " members");
 		messages.put(message);
 		payload.put("messages", messages);
 		JSONArray party = new JSONArray();

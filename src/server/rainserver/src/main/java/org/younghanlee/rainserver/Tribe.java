@@ -73,13 +73,17 @@ public class Tribe {
 		int y = yPos * ts + ts/2 + Util.randomInt(10) - 10;
 		int member_id = p.addMember(p.getName(), Util.randomInt(2), x, y);
 		p.setMember(member_id);
-		World.getMember(member_id).setPlayer(p);
+		Member m = World.getMember(member_id);
+		m.setPlayer(p);
 		HashMap<Integer, Integer> newSkills = new HashMap<Integer, Integer>();
 		for (int id: skills.keySet()) {
 			if (Util.randomInt(100) < skills.get(id)) {
 				newSkills.put(id, 1);
 			} 
 		}
+		Tile t = World.getTile(Tile.getID(xPos, yPos));
+		System.out.println(Tile.getSubtile(x, y));
+		t.changeMemberPosition(null, Tile.getSubtile(x, y), m);
 	}
 
 	public JSONArray generateParty(Player p, int position) {

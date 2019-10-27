@@ -15,6 +15,7 @@ public class Tile {
 	
 	private HashMap<Integer, Integer> trees;
 	private HashMap<Integer, Integer> crops;
+	private HashMap<Integer, ArrayList<Member>> members;
 	private int habitat;
 	private int elevation;
 	
@@ -25,6 +26,7 @@ public class Tile {
 		this.xPos = position % World.getWidth();
 		this.yPos = (position - xPos)/World.getWidth();
 		this.trees = new HashMap<Integer, Integer>();
+		this.members = new HashMap<Integer, ArrayList<Member>>();
 		JSONArray treeSet = tileObject.getJSONArray("trees");
 		for (int i=0; i<treeSet.length(); i++) {
 			JSONObject treeObject = treeSet.getJSONObject(i);
@@ -79,11 +81,37 @@ public class Tile {
 		return jo;
 	}
 	
-	public int getID(int x, int y) {
+	public static int getID(int x, int y) {
 		return x * World.getWidth() + y;
 	}
 	
-
+	public static int getSubtile(int x, int y) {
+		int ts = World.getTileSize();
+		return y%ts * ts + x%ts;
+	}
+	
+	public void changeMemberPosition(Integer prevPosition, Integer newPosition, Member m) {
+		if (prevPosition != null) {
+			ArrayList<Member> prevList = members.get(prevPosition);
+			prevList.remove(m);
+		}
+		if (newPosition != null) {
+			ArrayList<Member> newList = members.get(newPosition);
+			if (newList == null) {
+				newList = new ArrayList<Member>();
+				newList.add(m);
+				members.put(newPosition, newList);
+			} else {
+				newList.add(m);
+			}
+		}
+	}
+	
+	public ArrayList<Member> subTileMembers(int subTile){
+		if (members.containsKey(subTile)) {
+			return members.get(subTile);
+		} else return null;
+	}
 	
 	public JSONObject plant (int seed_id, Player p) {
 		int n = p.getQuantity(seed_id);

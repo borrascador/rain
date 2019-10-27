@@ -47,6 +47,10 @@ public class EventHandler {
 				}
 				connection.sendJSON(response);
 				break;
+			case "attack":
+				id = event.getInt("id");
+				Attack.attack(id, 1);
+				break;
 			case "pace":
 				int pace = event.getInt("id");
 				p.setPace(pace);
