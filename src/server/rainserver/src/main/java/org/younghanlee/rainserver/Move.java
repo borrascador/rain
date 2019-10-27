@@ -29,6 +29,8 @@ public class Move {
 			System.out.println("Waiting to move: " + wait);
 			return null;
 		} else if (wait == 1) {
+			int oldTile = m.getTile();
+			int oldSubTile = m.getSubTile();
 			wait = speed;
 			int x = m.getX();
 			int y = m.getY();
@@ -52,6 +54,19 @@ public class Move {
 			}
 			
 			m.setPosition(xNew, yNew);
+			
+			int newTile = m.getTile();
+			int newSubTile = m.getSubTile();
+			// System.out.println(oldSubTile + " " + newSubTile);
+			if (oldTile == newTile) {
+				if (oldSubTile != newSubTile) {
+					World.getTile(newTile).changeMemberPosition(oldSubTile, newSubTile, m);
+				}
+			} else {
+				World.getTile(oldTile).changeMemberPosition(oldSubTile, null, m);
+				World.getTile(newTile).changeMemberPosition(null, newSubTile, m);
+			}
+			
 			
 			System.out.println("Moving to " + xNew + ", " + yNew);
 		
