@@ -333,19 +333,9 @@ export function updatePartyChanges(state, action) {
 export function getActions(newState) {
   const {
     slots,
-    party,
-    players,
-    npcs,
-    tiles,
-    selectedPlayer,
-    selectedTile = {},
   } = newState;
-  const currentPlayer = party.find(player => player.id === selectedPlayer);
-  const { xPos, yPos, xCoord, yCoord } = selectedTile;
 
   const actions = { main: [] };
-  if (!currentPlayer) return actions;
-  actions.main.push({ target: 'main', name: 'unselect', id: 39, tileset: 'icons' });
 
   const itemsByTag = {};
   if (slots.length > 0) {

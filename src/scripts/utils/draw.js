@@ -222,6 +222,7 @@ export function drawHover(ctx, fontSize, button) {
   ctx.closePath();
   ctx.fill();
 
+  ctx.font = `${fontSize}px MECC`;
   ctx.fillStyle = SOLID_WHITE;
   ctx.fillText(
     text,

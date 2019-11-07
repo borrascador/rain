@@ -2,7 +2,7 @@ import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import { drawById, drawHover } from '../../utils/draw';
 import { checkImageCollision, screenToImageButton } from '../utils';
-import { clickedLeft, eventRequest, selectAction, selectPlayer } from '../../actions/actions';
+import { clickedLeft, eventRequest, selectAction } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
 import {
   BRIGHT_GREEN, BRIGHT_RED, MEDIUM_RED, SOLID_WHITE
@@ -32,11 +32,11 @@ export default class ActionBar {
   }
 
   update() {
-    const { selectedAction, selectedPlayer, keys, clickLeft: { x, y } } = this.connect;
-    if (selectedPlayer && selectedAction === 'main') {
+    const { selectedAction, keys, clickLeft: { x, y } } = this.connect;
+    if (selectedAction === 'main') {
       if (keys.includes('a')) this.store.dispatch(selectAction('attack'));
       if (keys.includes('e')) this.store.dispatch(selectAction('eat'));
-    } else if (selectedPlayer) {
+    } else {
       if (keys.includes('q')) this.store.dispatch(selectAction('main'));      
     }
     if (x && y && this.box && checkImageCollision(x, y, this.box)) {
@@ -46,11 +46,7 @@ export default class ActionBar {
 
     if (button) {
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
-        if (button.name === 'unselect') {
-          this.store.dispatch(selectPlayer());
-        } else {
-          this.store.dispatch(selectAction(button.target));
-        }
+        this.store.dispatch(selectAction(button.target));
       } else if (button.tag) {
         switch (button.tag) {
           case 'forage':

@@ -131,9 +131,12 @@ export default class Story {
 
     this.yPos = coords.yPos + this.lineHeight * 2;
     buttons = this.buttonText(buttons, this.xPos, this.yPos, this.selected, this.icons, this.scale);
-    this.yPos = buttons[buttons.length - 1].yPos;
-    if (buttons[buttons.length - 1].hoverText) {
-      this.yPos += this.lineHeight;
+
+    if (buttons.length > 0) {
+      this.yPos = buttons[buttons.length - 1].yPos;
+      if (buttons[buttons.length - 1].hoverText) {
+        this.yPos += this.lineHeight;
+      }
     }
 
     if (buttons.length > 1) {

@@ -66,11 +66,11 @@ export default class Camera {
     let widthOffset = tileWidth;
     let heightOffset = tileHeight;
     if (x < 0) {
-      xOffset = x;
+      xOffset = -x;
       widthOffset = Math.abs((tileWidth + x) % tileWidth);
     }
     if (y < 0) {
-      yOffset = y;
+      yOffset = -y;
       heightOffset = Math.abs((tileHeight + y) % tileHeight);
     }
     if (x + tileWidth > this.width) {

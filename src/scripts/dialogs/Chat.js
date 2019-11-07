@@ -11,6 +11,7 @@ const styles = {
     position: 'fixed',
     bottom: '0px',
     right: '0px',
+    maxWidth: '600px',
   },
   messageLog: {
     color: 'white',
