@@ -758,6 +758,7 @@ public class Player {
 	public int addMember(String name, int icon, int x, int y) {
 		Member m = new Member(name, icon, x, y);
 		int id = World.addMember(m);
+		m.setId(id);
 		World.getParty(party).addMember(id);
 		return id;
 	}
@@ -819,7 +820,7 @@ public class Player {
 			int health = m.getHealth();
 			if (health < 5) {
 				if (tick % m.getRegen() == 0) {
-					partyArray.put(m.change(id, this, 1, 0));
+					partyArray.put(m.change(this, 1, 0));
 				}
 			}
 		}

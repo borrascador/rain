@@ -135,11 +135,19 @@ public class Decision {
 		public String getText(Player p) {
 			return "Join an Existing Party";
 		}
+		Decision d;
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
-			IChoice [] choices = partyMap.values().toArray(new IChoice[partyMap.size()]);
-			String story = "Choose a party to join";
-			Decision d = new Decision(choices, story);
-			p.setDecision(d);
+			if (partyMap.isEmpty()) {
+				String[] choiceNames = new String[]{"newParty"};
+				String story = "No parties exist. Create your own party.";
+				d = new Decision(choiceNames, story, p);
+				p.setDecision(d);
+			} else {
+				IChoice[] choices = partyMap.values().toArray(new IChoice[partyMap.size()]);
+				String story = "Choose a party to join";
+				d = new Decision(choices, story);
+				p.setDecision(d);
+			}
 			JSONObject payload = d.payload(p);
 			return Message.EVENT_RESPONSE(payload);
 		}
