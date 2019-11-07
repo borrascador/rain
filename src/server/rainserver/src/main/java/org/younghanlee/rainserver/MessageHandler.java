@@ -108,7 +108,7 @@ public class MessageHandler {
 			case "EVENT_REQUEST":
 				payload = jo.getJSONObject("payload");
 				// Go to EventHandler.java
-				EventHandler.handleRequest(payload, connection);
+				EventHandler.handleRequest(payload, connection, server);
 				break;
 			
 			case "CHAT_BROADCAST":

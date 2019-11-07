@@ -5,7 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class EventHandler {
-	public static void handleRequest (JSONObject event, Connection connection){
+	public static void handleRequest (JSONObject event, Connection connection, Server server){
 		String event_type = event.getString("eventType");
 		Player p = connection.getPlayer();
 		Tile t;
@@ -49,7 +49,8 @@ public class EventHandler {
 				break;
 			case "attack":
 				id = event.getInt("id");
-				Attack.attack(id, 1);
+				response = Attack.attack(id, 1);
+				server.broadcast(response.toString());
 				break;
 			case "pace":
 				int pace = event.getInt("id");

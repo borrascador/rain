@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Member {
+	private int id;
 	private String name;
 	private Player player;
 	private boolean online;
@@ -41,6 +42,10 @@ public class Member {
 		this.equipment = new ArrayList<ItemStack>();
 		this.skills = new HashMap<Integer, Integer>();
 		this.modifiers = new HashMap<Integer, Integer>();
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	public String getName() {
@@ -202,7 +207,7 @@ public class Member {
 		return skills.get(id);
 	}
 	
-	public JSONObject change(int id, Player p, int health_change, int jeito_change) {
+	public JSONObject change(Player p, int health_change, int jeito_change) {
 		JSONObject jo = getPosition();
 		jo.put("id", id);
 		jo.put("icon", icon);

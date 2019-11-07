@@ -2,6 +2,7 @@ package org.younghanlee.rainserver;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Attack {
@@ -53,10 +54,15 @@ public class Attack {
 		Member m = World.getMember(member_id);
 		JSONObject payload = new JSONObject();
 		payload.put("attacker_id", member_id);
+		JSONArray partyArray = new JSONArray();
 		System.out.println("Attacker: " + member_id);
-		for (Member target: targets(m, range)) {
+		ArrayList<Member> targets = targets(m, range);
+		for (Member target: targets) {
 			System.out.println(target.getName() + " takes damage.");
+			JSONObject memberObject = target.change(target.getPlayer(), -1, 0);
+			partyArray.put(memberObject);
 		}
+		payload.put("party", partyArray);
 		return Message.UPDATE(payload);
 	}
 }
