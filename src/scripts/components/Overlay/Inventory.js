@@ -5,21 +5,19 @@ import { SLOTS } from '../../utils/constants';
 import { DARK_RED, MEDIUM_RED } from '../../utils/colors';
 
 export default class Inventory {
-  constructor(store, canvas, ctx, loader) {
+  constructor(store, canvas, ctx, loader, slotType, unitWidth, unitHeight) {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
     this.connect = new Connect(this.store);
-
-    this.fontSize = 16;
+    this.slotType = slotType;
+    this.unitWidth = unitWidth;
+    this.unitHeight = unitHeight;
 
     this.scale = 4;
-    const icons = loader.getImage('icons', this.scale);
-    this.size = icons.tileset.tilewidth;
+    const items = loader.getImage('items', this.scale);
+    this.size = items.tileset.tilewidth;
     this.gutter = this.size / this.scale;
-
-    this.unitWidth = 4;
-    this.unitHeight = 5;
     this.width = this.unitWidth * (this.size + this.gutter) + this.gutter;
     this.height = this.unitHeight * (this.size + this.gutter) + this.gutter;
   }
@@ -32,8 +30,6 @@ export default class Inventory {
   }
 
   renderWindow() {
-    this.xStart = this.canvas.width - this.width - this.gutter;
-    this.yStart = this.size * 2;
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
     this.box = {
@@ -46,16 +42,22 @@ export default class Inventory {
 
   renderSlots() {
     // const [xMax, yMax] = [this.xStart + this.width, this.yStart + this.height]
-    const x = this.xStart;
-    const y = this.yStart;
     const slots = [];
     let counter = 0;
     this.ctx.fillStyle = DARK_RED;
-    for (let yPos = y + this.gutter; yPos < y + this.height; yPos += this.size + this.gutter) {
-      for (let xPos = x + this.gutter; xPos < x + this.width; xPos += this.size + this.gutter) {
+    for (
+      let yPos = this.yStart + this.gutter;
+      yPos < this.yStart + this.height;
+      yPos += this.size + this.gutter
+    ) {
+      for (
+        let xPos = this.xStart + this.gutter;
+        xPos < this.xStart + this.width;
+        xPos += this.size + this.gutter
+      ) {
         this.ctx.fillRect(xPos, yPos, this.size, this.size);
         slots.push({
-          type: SLOTS.BACKPACK,
+          type: this.slotType,
           position: counter,
           xPos,
           yPos,
@@ -69,6 +71,7 @@ export default class Inventory {
   }
 
   render() {
+    // need to set this.xStart and this.yStart here from outside
     this.renderWindow();
     return this.renderSlots();
   }

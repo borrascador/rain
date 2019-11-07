@@ -18,24 +18,23 @@ export default class Party {
     this.icons = loader.getImage('icons', this.iconScale);
     this.iconSize = this.icons.tileset.tilewidth;
 
-    this.scale = 3;
-    this.iconsXl = loader.getImage('icons-xl', this.scale);
-    this.items = loader.getImage('items', this.scale);
+    this.portraitScale = 3;
+    this.portrait = loader.getImage('icons-xl', this.portraitScale);
+    this.portraitSize = this.portrait.tileset.tilewidth;
+
+    this.itemScale = 4;
+    this.items = loader.getImage('items', this.itemScale);
     this.size = this.items.tileset.tilewidth;
-    this.gutter = this.items.tileset.tilewidth / this.scale;
+    this.gutter = this.items.tileset.tilewidth / this.itemScale;
 
-    this.fontSize = 32;
-    this.hoverFontSize = 16;
-
-    this.unitWidth = 5;
-    this.width = this.unitWidth * this.size + 4;
-    this.height = this.size + this.gutter * 2;
+    this.width = this.portraitSize + this.size + this.iconSize * 5 + this.gutter;
+    this.height = this.portraitSize;
 
     this.buttons = this.connect.party.slice();
   }
 
   update() {
-    const { clickLeft, clickRight } = this.connect;
+    const { clickLeft, clickRight, selectedPlayer } = this.connect;
     if (clickLeft.x && clickLeft.y) {
       const { x, y } = clickLeft;
       if (this.boxes && screenToImageButton(x, y, this.boxes)) {
@@ -44,6 +43,10 @@ export default class Party {
       const button = screenToImageButton(x, y, this.buttons);
       if (button) {
         this.store.dispatch(selectPlayer(button.id));
+        if (selectedPlayer === button.id) {
+          this.store.dispatch(setPartyTab(button.id));
+          this.store.dispatch(setModal(MODAL.PARTY));
+        }
       }
     }
     if (clickRight.x && clickRight.y) {
@@ -89,55 +92,35 @@ export default class Party {
   }
 
   renderPartyMember(member, index) {
-    const { partyChanges } = this.connect;
-    let x = 0;
-    const y = index * this.height;
-    const currentTime = Date.now();
-    const memberChanges = partyChanges.filter((item) => {
-      const elapsed = currentTime - item.timestamp;
-      return item.id === member.id && elapsed > 0 && elapsed < UPDATE_TEXT_DURATION;
-    });
-    if (memberChanges.length > 0) {
-      const xPos = x + this.width;
-      memberChanges.forEach((item) => {
-        const elapsed = currentTime - item.timestamp;
-        if (item.name === member.name && item.change === 1) {
-          x = 0.2 * (elapsed - UPDATE_TEXT_DURATION);
-        } else if (item.name === member.name && member.timestamp) {
-          x = -0.2 * elapsed;
-        }
-        const text = `${item.change > 0 ? '+' : ''}${item.change} ${item.name}`;
-        const yPos = y + (this.fontSize + this.size) / 2;
-        fadeText(this.ctx, elapsed, UPDATE_TEXT_DURATION, this.fontSize, text, xPos, yPos);
-      });
-    } else if (member.health === 0) {
-      x = -1000;
+    const [x, y] = [0, index * this.height];
+    
+    if (member.health === 0) {
       this.store.dispatch(removePartyMember(member.id));
     }
 
-    const [xPos, yPos] = [x + this.size / 4, y + this.size / 4];
-    const [width, height] = [this.width, this.size * 3 / 2];
+    const [xPos, yPos] = [this.gutter / 2, y + this.gutter / 2];
+    const [width, height] = [this.width, this.height - this.gutter];
 
     this.renderBox(member, xPos, yPos, width, height);
-    drawById(this.ctx, this.iconsXl, member.icon, x, y);
-    // this.renderSlot(member.id, x + this.height, y);
+    drawById(this.ctx, this.portrait, member.icon, x, y);
+    this.renderSlot(member.id, this.portraitSize, y + this.gutter);
 
     if (member.online === false) { // todo !member.online
-      drawById(this.ctx, this.iconsXl, 4, x, y); // logged out
+      drawById(this.ctx, this.portrait, 4, x, y); // logged out
     } else if (member.health <= 0) {
-      drawById(this.ctx, this.iconsXl, 3, x, y); // dead
+      drawById(this.ctx, this.portrait, 3, x, y); // dead
     } else {
       [...Array(member.health)].forEach((_, i) => {
         drawByName(
           this.ctx, this.icons, 'heart',
-          x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
+          this.portraitSize + this.size + this.gutter / 2 + i * (this.iconSize + 2),
           y + this.gutter
         );
       });
       [...Array(member.jeito)].forEach((_, i) => {
         drawByName(
           this.ctx, this.icons, 'bolt',
-          x + this.size * 2 - this.gutter * 5 / 8 + i * (this.iconSize + 2),
+          this.portraitSize + this.size + this.gutter / 2 + i * (this.iconSize + 2),
           y + this.iconSize + this.gutter
         );
       });

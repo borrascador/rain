@@ -32,6 +32,7 @@ export const SLOTS = {
   BACKPACK: 'BACKPACK',
   EATING: 'EATING',
   PARTY: 'PARTY',
+  LOOT: 'LOOT',
   DRAG: 'DRAG'
 };
 
