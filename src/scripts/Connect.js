@@ -50,6 +50,7 @@ export default class Connect {
 
   get currentTile() {
     const { party, tiles } = this.store.getState();
+    if (!party.length || !tiles.length) return {};
     const {
       xPos, yPos, xCoord, yCoord,
     } = party.find(({ self }) => self);

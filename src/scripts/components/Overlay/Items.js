@@ -188,13 +188,14 @@ export default class Items {
     const { draggedItem } = this.connect;
     const equipOk = (
       stack.type === SLOTS.PARTY
-      && draggedItem.tags.some(tag => ['farming', 'hunting', 'fishing'].includes(tag))
+      && draggedItem.tags.some(tag => ['hunting', 'fishing'].includes(tag))
     );
     const eatingOk = (
       stack.type === SLOTS.EATING && draggedItem.tags.includes('food')
     );
     const toBackpack = stack.type === SLOTS.BACKPACK;
-    if (equipOk || eatingOk || toBackpack) {
+    const toLoot = stack.type === SLOTS.LOOT;
+    if (equipOk || eatingOk || toBackpack || toLoot) {
       this.store.dispatch(
         send(eventRequest(EVENTS.PUT_DOWN, {
           id: draggedItem.id,
