@@ -51,10 +51,13 @@ export default class Connect {
   get currentTile() {
     const { party, tiles } = this.store.getState();
     if (!party.length || !tiles.length) return {};
-    const {
-      xPos, yPos, xCoord, yCoord,
-    } = party.find(({ self }) => self);
-    return findTile(tiles, xPos, yPos, xCoord, yCoord);
+    if (this.currentPlayer) {
+      const {
+        xPos, yPos, xCoord, yCoord,
+      } = this.currentPlayer;
+      return findTile(tiles, xPos, yPos, xCoord, yCoord);
+    }
+    return null;
   }
 
   get selectedTile() {
