@@ -74,12 +74,14 @@ public class ItemStack {
 		}
 		jo.put("quantity", quantity);
 		jo.put("id", id);
-		if (this.type == "party") {
-			jo.put("position", p.getPartyMember(this.position));
-		} else {
-			jo.put("position", this.position);
+		if (p != null) {
+			if (this.type == "party") {
+				jo.put("position", p.getPartyMember(this.position));
+			} else {
+				jo.put("position", this.position);
+			}
+			jo.put("type", type);
 		}
-		jo.put("type", type);
 		return jo;
 	}
 	
@@ -88,7 +90,7 @@ public class ItemStack {
 		durability -= amount;
 		if (durability <= 0) {
 			jo = change(0, p);
-			p.deleteStack(this);
+			p.getInventory().deleteStack(this);
 		} else {
 			jo.put("durability", durability);
 		}

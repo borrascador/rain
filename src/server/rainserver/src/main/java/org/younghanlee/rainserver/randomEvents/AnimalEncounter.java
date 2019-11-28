@@ -132,7 +132,7 @@ public class AnimalEncounter{
 						if (jo.getInt("health") == 0) {
 							if (p.partySize() == 0) {
 								death += "Your last member " + m.getName() + " has perished.";
-								drops = p.emptyInventory();
+								drops = p.getInventory().emptyInventory();
 								p.setDecision(new Decision(new String[]{"respawn"}, null, p));
 								story.put("buttons", p.getDecision().buttons(p));
 							} else {
@@ -166,7 +166,7 @@ public class AnimalEncounter{
 		}
 		story.put("text", storyText);
 		// Item degradation
-		JSONArray inventory = Util.concat(drops, p.degrade());
+		JSONArray inventory = Util.concat(drops, p.getInventory().degrade());
 		if (inventory != null) {
 			payload.put("inventory", inventory);
 		}

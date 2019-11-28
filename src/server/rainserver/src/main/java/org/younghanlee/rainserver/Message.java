@@ -56,7 +56,7 @@ public class Message {
 		payload.put("sight", p.getSight());
 		payload.put("pace", p.getPace());
 		payload.put("rations", p.getRations());
-		payload.put("inventory", p.inventoryToJSONArray());
+		payload.put("inventory", p.getInventory().ToJSONArray());
 		payload.put("party", p.partyToJSONArray());
 		jo.accumulate("payload", payload);
 		return jo;

@@ -99,7 +99,7 @@ public class EventHandler {
 				if (srcType == "party") {
 					srcPosition = p.indexOfPartyMember(srcPosition);
 				}
-				response = p.pickUp(id, quantity, srcPosition, srcType);
+				response = p.getInventory().pickUp(id, quantity, srcPosition, srcType);
 				connection.sendJSON(response);
 				break;
 			case "put_down":
@@ -107,7 +107,7 @@ public class EventHandler {
 				quantity = event.getInt("quantity");
 				int destPosition = event.getInt("position");
 				String destType = event.getString("type");
-				response = p.putDown(id, quantity, destPosition, destType);
+				response = p.getInventory().putDown(id, quantity, destPosition, destType);
 				connection.sendJSON(response);
 				break;
 			default:

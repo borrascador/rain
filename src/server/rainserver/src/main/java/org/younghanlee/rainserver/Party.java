@@ -42,12 +42,12 @@ public class Party {
 		// \nYour party now has " + members.size() + "/" + capacity + " members");
 		messages.put(message);
 		payload.put("messages", messages);
-		JSONArray party = new JSONArray();
+		JSONArray partyArray = new JSONArray();
 		int id = p.getMember();
 		Member m = World.getMember(id);
 		JSONObject memberObject = m.toJSONObject(id, null);
-		party.put(memberObject);
-		payload.put("party", party);
+		partyArray.put(memberObject);
+		payload.put("party", partyArray);
 		partyBroadcast(Message.UPDATE(payload), null);
 	}
 	

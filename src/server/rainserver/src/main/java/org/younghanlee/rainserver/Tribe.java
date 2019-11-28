@@ -112,10 +112,13 @@ public class Tribe {
 				JSONObject payload = new JSONObject();
 				JSONObject story = new JSONObject();
 				story.put("text", "You have joined " + p.getParty().getName());
+				JSONArray inventory = generateInventory(p);
 				party.addPlayerBroadcast(p);
 				payload.put("story", story);
-// 				payload.put("inventory", inventory);
+ 				payload.put("inventory", inventory);
 				payload.put("party", partyArray);
+				Member member = World.getMember(p.getMember());
+				payload.put("tiles", member.inSightTiles());
 				
 				return Message.EVENT_RESPONSE(payload);
 			}
@@ -129,10 +132,9 @@ public class Tribe {
 
 	
 	public JSONArray generateInventory(Player p) {
-		System.out.println("Generating inventory");
 		JSONArray inventory = new JSONArray();
 		for (int id: items.keySet()) {
-			Util.concat(inventory, p.add(id, items.get(id)));
+			Util.concat(inventory, p.getInventory().add(id, items.get(id)));
 		}
 		return inventory;
 	}

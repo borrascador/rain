@@ -24,7 +24,7 @@ public class FindItem{
 		public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
 			JSONObject payload = new JSONObject();
 			int item_id = (int) p.getEventArg("findItem");
-			payload.put("inventory", p.add(item_id, 1));
+			payload.put("inventory", p.getInventory().add(item_id, 1));
 			JSONObject story = new JSONObject();
 			story.put("text", "You pick up the item.");
 			payload.put("story", story);
