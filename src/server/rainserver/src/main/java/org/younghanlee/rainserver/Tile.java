@@ -16,6 +16,7 @@ public class Tile {
 	private HashMap<Integer, Integer> trees;
 	private HashMap<Integer, Integer> crops;
 	private HashMap<Integer, ArrayList<Member>> members;
+	private HashMap<Integer, LootPile> loot;
 	private int habitat;
 	private int elevation;
 	
@@ -27,6 +28,7 @@ public class Tile {
 		this.yPos = (position - xPos)/World.getWidth();
 		this.trees = new HashMap<Integer, Integer>();
 		this.members = new HashMap<Integer, ArrayList<Member>>();
+		this.loot = new HashMap<Integer, LootPile>();
 		JSONArray treeSet = tileObject.getJSONArray("trees");
 		for (int i=0; i<treeSet.length(); i++) {
 			JSONObject treeObject = treeSet.getJSONObject(i);
@@ -39,28 +41,37 @@ public class Tile {
 
 	}
 	
-	public JSONObject toJSONObject() {
+	public JSONObject toJSONObject(ArrayList<Integer> inSight) {
 		JSONObject jo = new JSONObject();
 		jo.put("xPos", xPos);
 		jo.put("yPos", yPos);
 		jo.put("habitat", habitat);
 		jo.put("elevation", elevation);
 		int xCoord, yCoord;
-		int s = World.getTileSize();
+		int ts = World.getTileSize();
 		
-		JSONArray trees = new JSONArray();
-		for (HashMap.Entry<Integer, Integer> entry : this.trees.entrySet()) {
-			JSONObject tree = new JSONObject();
-			int position = entry.getKey();
-			int id = entry.getValue();
-			xCoord = position % s;
-			tree.put("xCoord", xCoord);
-			yCoord = (position - xCoord)/s;
-			tree.put("yCoord", yCoord);
-			tree.put("id", id);
-			trees.put(tree);
+		JSONArray treesArray = new JSONArray();
+		for (int subTile: inSight) {
+			if (trees.containsKey(subTile)) {
+				JSONObject tree = new JSONObject();
+				int position = subTile;
+				int id = trees.get(subTile);
+				xCoord = position % ts;
+				tree.put("xCoord", xCoord);
+				yCoord = (position - xCoord)/ts;
+				tree.put("yCoord", yCoord);
+				tree.put("id", id);
+				treesArray.put(tree);
+			}
 		}
-		jo.put("trees", trees);
+		jo.put("trees", treesArray);
+		JSONArray lootArray = new JSONArray();
+		for (int subTile: inSight) {
+			if (loot.containsKey(subTile)) {
+				lootArray.put(subTile);
+			}
+		}
+		jo.put("loot", lootArray);
 		
 		
 //		JSONArray crops = new JSONArray();
@@ -113,12 +124,17 @@ public class Tile {
 		} else return null;
 	}
 	
+	public void addLoot(int position, LootPile lp) {
+		loot.put(position, lp);
+	}
+	
 	public JSONObject plant (int seed_id, Player p) {
-		int n = p.getQuantity(seed_id);
+		Inventory inventory = p.getInventory();
+		int n = inventory.getQuantity(seed_id);
 		if (n >= 1) {
 			int yield_id = World.getItem(seed_id).getYield();
 			
-			JSONArray inventory_changes = p.subtract(seed_id, 1, true);
+			JSONArray inventory_changes = inventory.subtract(seed_id, 1, true);
 
 			this.crops.put(yield_id, 10);
 			JSONObject payload = new JSONObject();
@@ -138,7 +154,7 @@ public class Tile {
 		}
 		int yield = 2 + Util.randomInt(10);
 		
-		JSONArray inventory_changes = p.add(crop_id, yield);
+		JSONArray inventory_changes = p.getInventory().add(crop_id, yield);
 			
 		this.crops.remove(crop_id);
 		

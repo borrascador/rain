@@ -87,6 +87,8 @@ public class Decision {
 					payload.put("story", story);
 					payload.put("inventory", inventory);
 					payload.put("party", party);
+					Member member = World.getMember(p.getMember());
+					payload.put("tiles", member.inSightTiles());
  					return Message.EVENT_RESPONSE(payload);
 				}
 				public ArrayList<Multiplier> generateMultipliers(Player p){

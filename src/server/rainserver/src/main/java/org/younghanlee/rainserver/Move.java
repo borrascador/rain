@@ -71,6 +71,7 @@ public class Move {
 			System.out.println("Moving to " + xNew + ", " + yNew);
 		
 			JSONObject payload = m.getPosition();
+			payload.put("tiles", m.inSightTiles());
 
 			if (x == xTarget && y == yTarget) {
 				m.stopMoving();

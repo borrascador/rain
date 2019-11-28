@@ -2,6 +2,9 @@ package org.younghanlee.rainserver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -86,8 +89,9 @@ public class MessageHandler {
 					
 				// Send ordinary response
 				tiles = new JSONArray();
-				for (int i=0; i<World.getMapSize(); i++) {
-					tiles.put(World.getTile(i).toJSONObject());
+				Integer memberID = p.getMember();
+				if (memberID != null) {
+					tiles = World.getMember(memberID).inSightTiles();
 				}
 				
 				response = Message.LOGIN_RESPONSE(p, tiles);

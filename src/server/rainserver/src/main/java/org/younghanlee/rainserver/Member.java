@@ -3,6 +3,7 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ public class Member {
 	// Global position
 	private int x;
 	private int y;
+	private int sight;
 	private Move move; // Initialize with move(), stop with stopMoving()
 	private ArrayList<ItemStack> equipment;
 	private HashMap<Integer, Integer> skills; // id, rank
@@ -33,6 +35,7 @@ public class Member {
 		this.icon = icon;
 		this.x = x;
 		this.y = y;
+		this.sight = 8;
 		this.move = null;
 		this.speed = 50;
 		this.strength = 10;
@@ -147,10 +150,24 @@ public class Member {
 		return yPos*World.getWidth() + xPos;
 	}
 	
+	public int getTile(int i, int j) {
+		int ts = World.getTileSize();
+		int xPos = i/ts;
+		int yPos = j/ts;
+		return yPos*World.getWidth() + xPos;
+	}
+	
 	public int getSubTile() {
 		int ts = World.getTileSize();
 		int xCoord = x % ts;
 		int yCoord = y % ts;
+		return yCoord*World.getTileSize() + xCoord;
+	}
+	
+	public int getSubTile(int i, int j) {
+		int ts = World.getTileSize();
+		int xCoord = i % ts;
+		int yCoord = j % ts;
 		return yCoord*World.getTileSize() + xCoord;
 	}
 	
@@ -169,6 +186,42 @@ public class Member {
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	public HashMap<Integer, ArrayList<Integer>> inSight(){
+		HashMap<Integer, ArrayList<Integer>> hm = new HashMap<Integer, ArrayList<Integer>>();
+		int minX = x - sight;
+		minX = minX<0 ? 0 : minX;
+		int minY = y - sight;
+		minY = minY<0 ? 0 : minY;
+		int maxX = x + sight;
+		int ts = World.getTileSize();
+		int UBX = World.getWidth()*ts;
+		maxX = maxX>UBX ? UBX : maxX;
+		int UBY = World.getHeight()*ts;
+		int maxY = y + sight;
+		maxY = maxY>UBY ? UBY : maxY;
+		int tile, subTile;
+		for (int i=minX; i<maxX; i++) {
+			for (int j=minY; j<maxY; j++) {
+				tile = getTile(i, j);
+				subTile = getSubTile(i,j);
+				if (hm.containsKey(tile)) {
+					hm.get(tile).add(subTile);
+				} else {
+					hm.put(tile, new ArrayList<Integer>(subTile));
+				}
+			}
+		}
+		return hm;
+	}
+	
+	public JSONArray inSightTiles() {
+		JSONArray ja = new JSONArray();
+		for (Map.Entry<Integer, ArrayList<Integer>> entry: inSight().entrySet()) {
+			ja.put(World.getTile(entry.getKey()).toJSONObject(entry.getValue()));
+		}
+		return ja;
 	}
 	
 	public boolean legalMove(int x, int y) {
@@ -221,12 +274,17 @@ public class Member {
 		}
 		if (health <= 0) {
 			health = 0;
-			p.removeMember(id);
-
+			die();
 		}
 		jo.put("health", health);
 		jo.put("jeito", jeito);
 		return jo;
+	}
+	
+	public void die() {
+		LootPile lp = new LootPile(player.getInventory());
+		Tile t = World.getTile(getTile());
+		t.addLoot(getSubTile(), lp);
 	}
 	
 	public JSONObject changeSkills(HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {

@@ -133,7 +133,7 @@ public class Animal {
 				}		
 			}
 			if (value > 0) {
-				JSONArray drop = p.add(item, value);
+				JSONArray drop = p.getInventory().add(item, value);
 				Util.concat(items, drop);
 			}
 		}
