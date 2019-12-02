@@ -235,12 +235,6 @@ export function mergeAllTiles(state, action) {
     ? mergeTiles(oldTiles, action.payload.tiles)
     : oldTiles;
   if (state.party) {
-    const partyTiles = state.party
-      .filter(member => member.tiles)
-      .map(member => member.tiles);
-    if (partyTiles.length) {
-      newTiles = partyTiles.reduce(mergeTiles, newTiles);
-    }
     state.party.forEach((member) => {
       newTiles = generateGroundTiles(member, newTiles);
     });
@@ -249,7 +243,7 @@ export function mergeAllTiles(state, action) {
 }
 
 export function mergeTiles(oldTiles, newTiles) {
-  newTiles.forEach(({ xPos, yPos, trees }) => {
+  newTiles.forEach(({ xPos, yPos, trees, loot }) => {
     oldTiles[xPos] = oldTiles[xPos] || [];
     oldTiles[xPos][yPos] = oldTiles[xPos][yPos]
       ? oldTiles[xPos][yPos]
@@ -262,6 +256,13 @@ export function mergeTiles(oldTiles, newTiles) {
             yCoord,
           }))
         );
+    loot.forEach(({ xCoord, yCoord }) => {
+      oldTiles[xPos][yPos][xCoord] = oldTiles[xPos][yPos][xCoord] || [];
+      oldTiles[xPos][yPos][xCoord][yCoord] = {
+        ...oldTiles[xPos][yPos][xCoord][yCoord],
+        loot: true,
+      }
+    });
     trees.forEach(({ xCoord, yCoord, id }) => {
       oldTiles[xPos][yPos][xCoord] = oldTiles[xPos][yPos][xCoord] || [];
       oldTiles[xPos][yPos][xCoord][yCoord] = {
