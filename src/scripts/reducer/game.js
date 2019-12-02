@@ -33,7 +33,7 @@ export function request(state) {
   return Object.assign({}, state, {
     sending: true,
     error: null,
-    errorMessage: null
+    errorMessage: null,
   });
 }
 
@@ -44,7 +44,7 @@ export function error(state, action) {
     errorMessage: action.payload.message,
     errorLog: state.errorLog.concat({
       error: action.payload.code,
-      errorMessage: action.payload.message
+      errorMessage: action.payload.message,
     }),
     modal: MODAL.FAILURE,
   });
@@ -54,7 +54,7 @@ export function registerResponse(state) {
   return Object.assign({}, state, {
     sending: false,
     error: null,
-    errorMessage: null
+    errorMessage: null,
   });
 }
 
@@ -66,7 +66,7 @@ export function loginResponse(state, action) {
       loggedIn: true,
       mode: MODE.TACTICAL,
       view: VIEW.GAME,
-    }
+    },
   );
 }
 
@@ -87,7 +87,7 @@ export function eventResponse(state, action) {
       sending: false,
       error: null,
       errorMessage: null,
-    }
+    },
   );
 }
 

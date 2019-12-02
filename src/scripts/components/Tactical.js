@@ -161,7 +161,7 @@ export default class Tactical {
     const {
       tileheight: tileHeight,
       tilewidth: tileWidth,
-      columns
+      columns,
     } = this.tactical.tileset;
 
     const startCol = Math.floor(this.camera.x / tileWidth);
@@ -190,7 +190,7 @@ export default class Tactical {
           xPos: x + xOffset + xStart, // destX
           yPos: y + yOffset + yStart, // destY
           width: widthOffset, // destWidth
-          height: heightOffset // destHeight
+          height: heightOffset, // destHeight
         });
 
         if (tile && tile.groundLayer) {
@@ -211,7 +211,7 @@ export default class Tactical {
               x + xOffset + xStart, // destX
               y + yOffset + yStart, // destY
               widthOffset, // destWidth
-              heightOffset // destHeight
+              heightOffset, // destHeight
             );
           }
 
@@ -313,7 +313,7 @@ export default class Tactical {
               x + xOffset + xStart, // destX
               y + yOffset + yStart, // destY
               widthOffset, // destWidth
-              heightOffset // destHeight
+              heightOffset, // destHeight
             );
           }
         }
@@ -338,7 +338,7 @@ export default class Tactical {
     const {
       tileheight: treeHeight,
       tilewidth: treeWidth,
-      columns
+      columns,
     } = this.trees.tileset;
 
     // todo find better way to handle commented lines
@@ -377,7 +377,7 @@ export default class Tactical {
               x + xStart + xOffset, // destX
               y + yStart + yOffset, // destY
               widthOffset, // destWidth
-              heightOffset // destHeight
+              heightOffset, // destHeight
             );
           }
         }
@@ -442,7 +442,7 @@ export default class Tactical {
           x + xOffset + xStart, // destX
           y + yOffset + yStart, // destY
           widthOffset, // destWidth
-          heightOffset // destHeight
+          heightOffset, // destHeight
         );
 
         this.entities.push({
@@ -452,7 +452,7 @@ export default class Tactical {
           xPos: x + xOffset + xStart, // destX
           yPos: y + yOffset + yStart, // destY
           width: widthOffset, // destWidth
-          height: heightOffset // destHeight
+          height: heightOffset, // destHeight
         });
       }
     });
