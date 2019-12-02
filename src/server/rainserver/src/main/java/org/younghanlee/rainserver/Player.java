@@ -276,6 +276,7 @@ public class Player {
 			if (updates.length() > 0) {
 				JSONObject payload = new JSONObject();
 				payload.put("party", updates);
+				payload.put("tiles", World.getMember(member).inSightTiles());
 				connection.sendJSON(Message.UPDATE(payload));
 			}
 			System.out.println("moveTick:" + moveTick);

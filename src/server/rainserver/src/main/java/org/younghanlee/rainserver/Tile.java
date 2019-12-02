@@ -13,6 +13,8 @@ public class Tile {
 	private int xPos;
 	private int yPos;
 	
+	private static int lootPileRarity = 20;
+	
 	private HashMap<Integer, Integer> trees;
 	private HashMap<Integer, Integer> crops;
 	private HashMap<Integer, ArrayList<Member>> members;
@@ -29,6 +31,20 @@ public class Tile {
 		this.trees = new HashMap<Integer, Integer>();
 		this.members = new HashMap<Integer, ArrayList<Member>>();
 		this.loot = new HashMap<Integer, LootPile>();
+		
+		int ts = World.getTileSize();
+		for (int t=0; t<ts*ts; t++) {
+			if (Util.randomInt(lootPileRarity+1) > lootPileRarity) {
+				ItemStack itemstack = new ItemStack(Util.randomInt(40), 1, 0, "LOOT");
+				ItemStack itemstack2 = new ItemStack(Util.randomInt(40), 1, 0, "LOOT");
+				ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+				list.add(itemstack);
+				list.add(itemstack2);
+				LootPile lootpile = new LootPile(list);
+				loot.put(t, lootpile);
+			}
+		}
+		
 		JSONArray treeSet = tileObject.getJSONArray("trees");
 		for (int i=0; i<treeSet.length(); i++) {
 			JSONObject treeObject = treeSet.getJSONObject(i);
@@ -68,7 +84,13 @@ public class Tile {
 		JSONArray lootArray = new JSONArray();
 		for (int subTile: inSight) {
 			if (loot.containsKey(subTile)) {
-				lootArray.put(subTile);
+				JSONObject lootObject = new JSONObject();
+				int position = subTile;
+				xCoord = position % ts;
+				lootObject.put("xCoord", xCoord);
+				yCoord = (position - xCoord)/ts;
+				lootObject.put("yCoord", yCoord);
+				lootArray.put(lootObject);
 			}
 		}
 		jo.put("loot", lootArray);
