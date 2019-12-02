@@ -1,7 +1,7 @@
 import {
   mergeSlots, mergeAllTiles, mergeArrays, updateStory, updateMessages,
   updateInventoryChanges, updatePartyChanges,
-  reduceIntegerState, reduceBooleanState, getActions,
+  reduceIntegerState, reduceBooleanState, getSightTiles, getActions,
 } from './utils';
 import { revisedInitialState } from './initialState';
 import { VIEW, MODE, MODAL } from '../utils/constants';
@@ -22,10 +22,11 @@ export function update(state, action) {
     needRender: true,
   });
   const newerState = Object.assign({}, newState, {
-    tiles: mergeAllTiles(newState, action),
+    tiles: mergeAllTiles(newState, action), // uses player data
   });
   return Object.assign({}, newerState, {
-    actions: getActions(newerState),
+    actions: getActions(newerState), // uses slot data now, will use tile data later
+    sightTiles: getSightTiles(newerState), // uses player and tile data
   });
 }
 

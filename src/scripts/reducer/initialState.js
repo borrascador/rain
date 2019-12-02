@@ -28,6 +28,7 @@ const uiState = {
 
 const gameState = {
   tiles: [],
+  sightTiles: [],
   party: [], // DEBUG with party
   players: [],
   npcs: [],

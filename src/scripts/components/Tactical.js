@@ -18,7 +18,7 @@ import {
   matchTile,
 } from './utils';
 import { drawHover } from '../utils/draw';
-import { FOREST_BLACK } from '../utils/colors';
+import { FOREST_BLACK, alphaForestBlack } from '../utils/colors';
 
 export default class Tactical {
   constructor(store, canvas, ctx, loader) {
@@ -386,6 +386,55 @@ export default class Tactical {
     this.offScreenContext.globalAlpha = 1;
   }
 
+  renderFogOfWar() {
+    const { sightTiles } = this.connect;
+    const {
+      xStart, yStart, width, height,
+    } = this.camera;
+
+    const {
+      tileheight: tileHeight,
+      tilewidth: tileWidth,
+    } = this.tactical.tileset;
+
+    const startCol = Math.floor(this.camera.x / tileWidth);
+    const endCol = startCol + Math.ceil(width / tileWidth);
+    const startRow = Math.floor(this.camera.y / tileHeight);
+    const endRow = startRow + Math.ceil(height / tileHeight);
+
+    for (let row = startRow; row <= endRow; row += 1) {
+      for (let col = startCol; col <= endCol; col += 1) {
+        const x = Math.round(col * tileWidth - this.camera.x);
+        const y = Math.round(row * tileHeight - this.camera.y);
+        const {
+          xPos, yPos, xCoord, yCoord,
+        } = colRowToCoords(col, row);
+        const tile = findTile(sightTiles, xPos, yPos, xCoord, yCoord);
+
+        const {
+          xOffset, yOffset, widthOffset, heightOffset,
+        } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
+
+        if (!tile) {
+          if (
+            widthOffset > 0
+            && heightOffset > 0
+            && (x + xOffset > -tileWidth && x + xOffset < width)
+            && (y + yOffset > -tileHeight && y + yOffset < height)
+          ) {
+            this.offScreenContext.fillStyle = alphaForestBlack(0.7);
+            this.offScreenContext.fillRect(
+              x + xOffset + xStart, // destX
+              y + yOffset + yStart, // destY
+              widthOffset, // destWidth
+              heightOffset, // destHeight
+            );
+          }
+        }
+      }
+    }
+  }
+
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
     const { party, players, npcs } = this.connect;
@@ -540,6 +589,7 @@ export default class Tactical {
       this.renderLootLayer();
       this.renderPlayerLayer();
       this.renderTreeLayer();
+      this.renderFogOfWar();
       this.renderTileEffects();
       this.renderSelectionTile();
       this.store.dispatch(completedRender());

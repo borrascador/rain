@@ -64,6 +64,10 @@ export default class Connect {
     return this.store.getState().selectedTile;
   }
 
+  get sightTiles() {
+    return this.store.getState().sightTiles;
+  }
+
   get actions() {
     return this.store.getState().actions;
   }

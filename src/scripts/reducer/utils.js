@@ -195,34 +195,63 @@ const getGroundTile = () => (
   GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)]
 );
 
-function generateGroundTiles(player, oldTiles) {
-  const tiles = [...oldTiles];
-  const { col, row } = coordsToColRow(
-    player.xPos, player.yPos, player.xCoord, player.yCoord,
-  );
-
-  for (let y = row - player.sight; y <= row + player.sight; y += 1) {
-    for (let x = col - player.sight; x <= col + player.sight; x += 1) {
-      const {
-        xPos, yPos, xCoord, yCoord,
-      } = colRowToCoords(x, y);
-      const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
-
-      if (tile && !hasProp(tile, 'groundLayer')) {
-        tiles[xPos][yPos][xCoord][yCoord].groundLayer = getGroundTile();
-      } else if (!tile) {
-        tiles[xPos] = tiles[xPos] || [];
-        tiles[xPos][yPos] = tiles[xPos][yPos] || [];
-        tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
-        tiles[xPos][yPos][xCoord][yCoord] = {
-          xPos,
-          yPos,
-          xCoord,
-          yCoord,
-          groundLayer: getGroundTile(),
-        };
+export function getSightTiles(newState) {
+  const { party, tiles } = newState;
+  const newTiles = [];
+  if (party.length) {
+    party.forEach((player) => {
+      const { col, row } = coordsToColRow(
+        player.xPos, player.yPos, player.xCoord, player.yCoord,
+      );
+      for (let y = row - player.sight; y <= row + player.sight; y += 1) {
+        for (let x = col - player.sight; x <= col + player.sight; x += 1) {
+          const {
+            xPos, yPos, xCoord, yCoord,
+          } = colRowToCoords(x, y);
+          const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
+          newTiles[xPos] = newTiles[xPos] || [];
+          newTiles[xPos][yPos] = newTiles[xPos][yPos] || [];
+          newTiles[xPos][yPos][xCoord] = newTiles[xPos][yPos][xCoord] || [];
+          newTiles[xPos][yPos][xCoord][yCoord] = tile;
+        }
       }
-    }
+    });
+  }
+  return newTiles;
+}
+
+function getGroundTiles(party, oldTiles) {
+  const tiles = [...oldTiles];
+  if (party.length) {
+    party.forEach((player) => {
+      const { col, row } = coordsToColRow(
+        player.xPos, player.yPos, player.xCoord, player.yCoord,
+      );
+
+      for (let y = row - player.sight; y <= row + player.sight; y += 1) {
+        for (let x = col - player.sight; x <= col + player.sight; x += 1) {
+          const {
+            xPos, yPos, xCoord, yCoord,
+          } = colRowToCoords(x, y);
+          const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
+
+          if (tile && !hasProp(tile, 'groundLayer')) {
+            tiles[xPos][yPos][xCoord][yCoord].groundLayer = getGroundTile();
+          } else if (!tile) {
+            tiles[xPos] = tiles[xPos] || [];
+            tiles[xPos][yPos] = tiles[xPos][yPos] || [];
+            tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
+            tiles[xPos][yPos][xCoord][yCoord] = {
+              xPos,
+              yPos,
+              xCoord,
+              yCoord,
+              groundLayer: getGroundTile(),
+            };
+          }
+        }
+      }
+    });
   }
   return tiles;
 }
@@ -265,12 +294,7 @@ export function mergeAllTiles(state, action) {
   let newTiles = action.payload.tiles
     ? mergeTiles(oldTiles, action.payload.tiles)
     : oldTiles;
-  if (state.party) {
-    state.party.forEach((member) => {
-      newTiles = generateGroundTiles(member, newTiles);
-    });
-  }
-  return newTiles;
+  return getGroundTiles(state.party, newTiles);
 }
 
 export function updateInventoryChanges(state, action) {
