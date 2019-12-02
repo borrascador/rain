@@ -6,7 +6,6 @@ import {
   clickedRight,
   needRender,
   completedRender,
-  selectPlayer,
   selectTile,
   eventRequest,
 } from '../actions/actions';
@@ -93,12 +92,12 @@ export default class Tactical {
         pos: { x: xPos, y: yPos }, coords: { x: xCoord, y: yCoord },
       } = leftClickedTile;
       if (selectedAction === 'attack') {
-        if (1 === (
+        if ((
           Math.abs(currentPlayer.xPos - xPos)
           + Math.abs(currentPlayer.yPos - yPos)
           + Math.abs(currentPlayer.xCoord - xCoord)
           + Math.abs(currentPlayer.yCoord - yCoord)
-        )) {
+        ) === 1) {
           const { id } = currentPlayer;
           this.store.dispatch(send(eventRequest(EVENTS.ATTACK, {
             id, xPos, yPos, xCoord, yCoord,
@@ -106,7 +105,9 @@ export default class Tactical {
         }
         this.store.dispatch(selectTile());
       } else {
-        this.store.dispatch(selectTile({ xPos, yPos, xCoord, yCoord }));
+        this.store.dispatch(selectTile({
+          xPos, yPos, xCoord, yCoord,
+        }));
       }
     }
 
@@ -129,7 +130,7 @@ export default class Tactical {
     const hoveredTile = (
       mx && my && screenToImageButton(mx, my, this.visibleTiles)
     );
-    if(!this.hoveredTile) this.hoveredTile = hoveredTile;
+    if (!this.hoveredTile) this.hoveredTile = hoveredTile;
 
     if (hoveredTile && (
       hoveredTile.pos.x !== this.hoveredTile.pos.x
@@ -138,7 +139,7 @@ export default class Tactical {
       || hoveredTile.coords.y !== this.hoveredTile.coords.y
     )) {
       this.hoveredTile = hoveredTile;
-      this.store.dispatch(needRender());      
+      this.store.dispatch(needRender());
     }
   }
 
@@ -150,7 +151,9 @@ export default class Tactical {
       selectedPlayer,
       currentPlayer,
     } = this.connect;
-    const { xStart, yStart, width, height } = this.camera;
+    const {
+      xStart, yStart, width, height,
+    } = this.camera;
 
     this.offScreenContext.fillStyle = FOREST_BLACK;
     this.offScreenContext.fillRect(xStart, yStart, width, height);
@@ -169,7 +172,7 @@ export default class Tactical {
     this.visibleTiles = [];
     this.visiblePartyMembers = [];
     for (let row = startRow; row <= endRow; row += 1) {
-      for (let col = startCol; col <= endCol; col += 1) { 
+      for (let col = startCol; col <= endCol; col += 1) {
         const x = Math.round(col * tileWidth - this.camera.x);
         const y = Math.round(row * tileHeight - this.camera.y);
         const {
@@ -221,7 +224,7 @@ export default class Tactical {
             };
           }
 
-          party.forEach(member => {
+          party.forEach((member) => {
             if (matchTile(member, tile)) {
               this.visiblePartyMembers.push({
                 xPos: x + xOffset + xStart,
@@ -231,7 +234,7 @@ export default class Tactical {
                 name: member.name,
               });
             }
-          })
+          });
 
           if (matchTile(selectedPlayer, tile)) {
             this.selectedPlayerTile = {
@@ -257,7 +260,9 @@ export default class Tactical {
 
   renderLootLayer() {
     const { tiles } = this.connect;
-    const { xStart, yStart, width, height } = this.camera;
+    const {
+      xStart, yStart, width, height,
+    } = this.camera;
 
     const {
       tileheight: tileHeight,
@@ -276,7 +281,7 @@ export default class Tactical {
     const endRow = startRow + Math.ceil(height / tileHeight);
 
     for (let row = startRow; row <= endRow; row += 1) {
-      for (let col = startCol; col <= endCol; col += 1) { 
+      for (let col = startCol; col <= endCol; col += 1) {
         const x = Math.round(col * tileWidth - this.camera.x);
         const y = Math.round(row * tileHeight - this.camera.y);
         const {
@@ -298,7 +303,7 @@ export default class Tactical {
             const icon = 3;
             const widthRatio = playerWidth / tileWidth;
             const heightRatio = playerHeight / tileHeight;
-    
+
             this.offScreenContext.drawImage(
               this.player, // image
               (icon % columns) * playerWidth - Math.round(widthRatio * xOffset), // srcX
@@ -318,7 +323,9 @@ export default class Tactical {
 
   renderTreeLayer() {
     const { tiles, zoom } = this.connect;
-    const { xStart, yStart, width, height } = this.camera;
+    const {
+      xStart, yStart, width, height,
+    } = this.camera;
 
     // set tree opacity based on zoom level
     this.offScreenContext.globalAlpha = 5 / zoom;
@@ -382,7 +389,9 @@ export default class Tactical {
   // TODO probably need to rewrite this function and clean everything up
   renderPlayerLayer() {
     const { party, players, npcs } = this.connect;
-    const { xStart, yStart, width, height } = this.camera;
+    const {
+      xStart, yStart, width, height,
+    } = this.camera;
 
     const {
       tileheight: tileHeight,
@@ -408,7 +417,10 @@ export default class Tactical {
 
     this.entities = [];
     entities.forEach((player) => {
-      const { xPos, yPos, xCoord, yCoord, /* health, icon */ } = player;
+      const {
+        xPos, yPos, xCoord, yCoord,
+        /* health, icon */
+      } = player;
       const { col, row } = coordsToColRow(xPos, yPos, xCoord, yCoord);
       if (col >= startCol && col <= endCol && row >= startRow && row <= endRow) {
         const x = Math.round(col * tileWidth - this.camera.x);
@@ -449,20 +461,26 @@ export default class Tactical {
   renderTileEffects() {
     const { selectedAction } = this.connect;
     if (selectedAction === 'attack') {
-      const { xPos, yPos, width, height } = this.currentTile;
+      const {
+        xPos, yPos, width, height,
+      } = this.currentTile;
       this.offScreenContext.fillStyle = 'rgba(128, 0, 0, 0.6)';
       this.offScreenContext.fillRect(xPos - width, yPos, width, height);
       this.offScreenContext.fillRect(xPos + width, yPos, width, height);
       this.offScreenContext.fillRect(xPos, yPos - height, width, height);
       this.offScreenContext.fillRect(xPos, yPos + height, width, height);
     }
-    this.visiblePartyMembers.forEach(member => {
-      const { xPos, yPos, width, height } = member;
+    this.visiblePartyMembers.forEach((member) => {
+      const {
+        xPos, yPos, width, height,
+      } = member;
       this.offScreenContext.fillStyle = 'rgba(0, 0, 128, 0.4)';
       this.offScreenContext.fillRect(xPos, yPos, width, height);
-    })
+    });
     if (this.currentTile) {
-      const { xPos, yPos, width, height } = this.currentTile;
+      const {
+        xPos, yPos, width, height,
+      } = this.currentTile;
       this.offScreenContext.fillStyle = 'rgba(16, 16, 160, 0.4)';
       this.offScreenContext.fillRect(xPos, yPos, width, height);
     }
@@ -474,7 +492,9 @@ export default class Tactical {
       mousePos: { x: mx, y: my },
     } = this.connect;
     if (selectedTile) {
-      const { xPos, yPos, width, height } = this.selectedTile;
+      const {
+        xPos, yPos, width, height,
+      } = this.selectedTile;
       this.offScreenContext.fillStyle = 'rgba(128, 128, 128, 0.2)';
       this.offScreenContext.fillRect(xPos, yPos, width, height);
       this.offScreenContext.lineWidth = 4;
@@ -486,7 +506,9 @@ export default class Tactical {
       mx && my && screenToImageButton(mx, my, this.visibleTiles)
     );
     if (hoveredTile) {
-      const { xPos, yPos, width, height } = hoveredTile;
+      const {
+        xPos, yPos, width, height,
+      } = hoveredTile;
       this.offScreenContext.fillStyle = 'rgba(128, 128, 128, 0.2)';
       this.offScreenContext.fillRect(xPos, yPos, width, height);
       this.offScreenContext.lineWidth = 4;
@@ -498,17 +520,19 @@ export default class Tactical {
       mx && my && screenToImageButton(mx, my, this.visiblePartyMembers)
     );
     if (hoveredPartyMember) {
-      drawHover(this.offScreenContext, this.fontSize, hoveredPartyMember)
+      drawHover(this.offScreenContext, this.fontSize, hoveredPartyMember);
     }
   }
 
   render() {
-    const { currentPlayer, needRender, zoom } = this.connect;
+    const { currentPlayer, zoom } = this.connect;
     if (currentPlayer) {
-      const { xPos, yPos, xCoord, yCoord } = currentPlayer;
+      const {
+        xPos, yPos, xCoord, yCoord,
+      } = currentPlayer;
       this.camera.lazyCenter(xPos, yPos, xCoord, yCoord, zoom);
     }
-    if (needRender) {
+    if (this.connect.needRender) {
       this.tactical = this.loader.getImage('tactical', zoom);
       this.player = this.loader.getImage('player', zoom);
       this.trees = this.loader.getImage('trees', zoom);

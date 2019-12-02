@@ -6,8 +6,17 @@ import {
   findTile,
 } from '../components/utils';
 
-export const reduceIntegerState = (state, action) => typeof action === 'number' ? action : state;
-export const reduceBooleanState = (state, action) => typeof action === 'boolean' ? action : state;
+export const reduceIntegerState = (state, action) => (
+  typeof action === 'number' ? action : state
+);
+
+export const reduceBooleanState = (state, action) => (
+  typeof action === 'boolean' ? action : state
+);
+
+function isObject(a) {
+  return (!!a) && (a.constructor === Object);
+}
 
 export function updateObject(oldObject, newValues) {
   return Object.assign({}, oldObject, newValues);
@@ -38,10 +47,6 @@ export function updatePositionInArray(array, type, position, updateItemCallback)
 //   return true;
 // }
 
-export function mergeObjects(obj1, obj2) {
-
-}
-
 export function mergeArrays(oldArray, newArray) {
   if (!newArray) return oldArray;
   const obj = {};
@@ -57,7 +62,7 @@ export function mergeArrays(oldArray, newArray) {
       }
       if (newItem.health === 0 && !hasProp(obj[newItemId], 'timestamp')) {
         obj[newItemId] = Object.assign(obj[newItemId], newItem, {
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       } else {
         obj[newItemId] = Object.assign(obj[newItemId], newItem);
@@ -73,7 +78,7 @@ export function mergeArrays(oldArray, newArray) {
             return Object.assign(skill, match);
           }
           return skill;
-        })
+        }),
       });
     }
     if (hasProp(newItem, 'modifier_changes') && newItem.modifier_changes.length > 0) {
@@ -84,7 +89,7 @@ export function mergeArrays(oldArray, newArray) {
             return Object.assign(modifier, match);
           }
           return modifier;
-        })
+        }),
       });
     }
   });
@@ -96,16 +101,12 @@ function makeSlotKey(type, position) {
   return `${type},${position}`;
 }
 
-function makeTileKey(x, y) {
-  return `x${x}y${y}`;
-}
-
 function getSlotProps({
-  type, position, xPos, yPos, width, height
+  type, position, xPos, yPos, width, height,
 }) {
   if ([xPos, yPos, width, height].every(prop => prop !== undefined)) {
     return {
-      type, position, xPos, yPos, width, height
+      type, position, xPos, yPos, width, height,
     };
   }
   return { type, position };
@@ -162,8 +163,8 @@ export function updateStory(state, action) {
         partyChanges: action.payload.party || [],
         buttons: action.payload.story.buttons || [{ text: 'OK', id: 1 }],
         canDispatch: !!action.payload.story.buttons,
-        timestamp: Date.now()
-      })
+        timestamp: Date.now(),
+      }),
     ]);
   }
   return state.stories;
@@ -187,10 +188,6 @@ function getTimestamp(changes, offset, now) {
   return now;
 }
 
-function isObject(a) {
-  return (!!a) && (a.constructor === Object);
-};
-
 // TODO move these lines into helper function
 const GROUND_TILES = [1, 4, 5];
 const getGroundTile = () => (
@@ -203,8 +200,8 @@ function generateGroundTiles(player, oldTiles) {
     player.xPos, player.yPos, player.xCoord, player.yCoord,
   );
 
-  for (let y = row - player.sight; y <= row + player.sight; y++) {
-    for (let x = col - player.sight; x <= col + player.sight; x++) { 
+  for (let y = row - player.sight; y <= row + player.sight; y += 1) {
+    for (let x = col - player.sight; x <= col + player.sight; x += 1) {
       const {
         xPos, yPos, xCoord, yCoord,
       } = colRowToCoords(x, y);
@@ -229,6 +226,39 @@ function generateGroundTiles(player, oldTiles) {
   return tiles;
 }
 
+export function mergeTiles(oldTiles, newTiles) {
+  const tiles = [...oldTiles];
+  newTiles.forEach(({
+    xPos, yPos, trees, loot,
+  }) => {
+    tiles[xPos] = tiles[xPos] || [];
+    tiles[xPos][yPos] = tiles[xPos][yPos]
+      ? tiles[xPos][yPos]
+      : Array.from({ length: 64 }).map((_t1, xCoord) => (
+        Array.from({ length: 64 }).map((_t2, yCoord) => ({
+          xPos,
+          yPos,
+          xCoord,
+          yCoord,
+        }))));
+    loot.forEach(({ xCoord, yCoord }) => {
+      tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
+      tiles[xPos][yPos][xCoord][yCoord] = {
+        ...tiles[xPos][yPos][xCoord][yCoord],
+        loot: true,
+      };
+    });
+    trees.forEach(({ xCoord, yCoord, id }) => {
+      tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
+      tiles[xPos][yPos][xCoord][yCoord] = {
+        ...tiles[xPos][yPos][xCoord][yCoord],
+        treeLayer: id,
+      };
+    });
+  });
+  return tiles;
+}
+
 export function mergeAllTiles(state, action) {
   const oldTiles = [...state.tiles];
   let newTiles = action.payload.tiles
@@ -239,39 +269,7 @@ export function mergeAllTiles(state, action) {
       newTiles = generateGroundTiles(member, newTiles);
     });
   }
-  return newTiles
-}
-
-export function mergeTiles(oldTiles, newTiles) {
-  newTiles.forEach(({ xPos, yPos, trees, loot }) => {
-    oldTiles[xPos] = oldTiles[xPos] || [];
-    oldTiles[xPos][yPos] = oldTiles[xPos][yPos]
-      ? oldTiles[xPos][yPos]
-      : Array.from({ length: 64 })
-        .map((_, xCoord) => Array.from({ length: 64 })
-          .map((__, yCoord) => ({
-            xPos,
-            yPos,
-            xCoord,
-            yCoord,
-          }))
-        );
-    loot.forEach(({ xCoord, yCoord }) => {
-      oldTiles[xPos][yPos][xCoord] = oldTiles[xPos][yPos][xCoord] || [];
-      oldTiles[xPos][yPos][xCoord][yCoord] = {
-        ...oldTiles[xPos][yPos][xCoord][yCoord],
-        loot: true,
-      }
-    });
-    trees.forEach(({ xCoord, yCoord, id }) => {
-      oldTiles[xPos][yPos][xCoord] = oldTiles[xPos][yPos][xCoord] || [];
-      oldTiles[xPos][yPos][xCoord][yCoord] = {
-        ...oldTiles[xPos][yPos][xCoord][yCoord],
-        treeLayer: id,
-      }
-    });
-  });
-  return oldTiles;
+  return newTiles;
 }
 
 export function updateInventoryChanges(state, action) {
@@ -283,8 +281,8 @@ export function updateInventoryChanges(state, action) {
       inventory
         .filter(item => hasProp(item, 'change'))
         .map((item, index) => Object.assign({}, item, {
-          timestamp: timestamp + index * UPDATE_TEXT_OFFSET
-        }))
+          timestamp: timestamp + index * UPDATE_TEXT_OFFSET,
+        })),
     );
   }
   return state.inventoryChanges;
@@ -305,7 +303,7 @@ export function updatePartyChanges(state, action) {
           id: item.id,
           change: item.health_change,
           name: 'health',
-          timestamp
+          timestamp,
         }));
         timestamp += UPDATE_TEXT_DURATION;
       }
@@ -319,7 +317,7 @@ export function updatePartyChanges(state, action) {
             id: item.id,
             change: 1,
             name: item.name,
-            timestamp
+            timestamp,
           }));
           timestamp += UPDATE_TEXT_DURATION;
         } else if (item.health === 0) {
@@ -327,7 +325,7 @@ export function updatePartyChanges(state, action) {
             id: item.id,
             change: -1,
             name: item.name,
-            timestamp
+            timestamp,
           }));
           timestamp += UPDATE_TEXT_DURATION;
           return;
@@ -340,7 +338,7 @@ export function updatePartyChanges(state, action) {
           id: item.id,
           change: item.jeito_change,
           name: 'jeito',
-          timestamp
+          timestamp,
         }));
         timestamp += UPDATE_TEXT_DURATION;
       }
@@ -353,11 +351,11 @@ export function updatePartyChanges(state, action) {
               id: item.id,
               change: 1,
               name: change.name,
-              timestamp
+              timestamp,
             });
             timestamp += UPDATE_TEXT_DURATION;
             return result;
-          })
+          }),
         );
       }
 
@@ -370,11 +368,11 @@ export function updatePartyChanges(state, action) {
               id: item.id,
               change: match ? 1 : -1,
               name: change.name,
-              timestamp
+              timestamp,
             });
             timestamp += UPDATE_TEXT_DURATION;
             return result;
-          })
+          }),
         );
       }
     });
@@ -405,22 +403,36 @@ export function getActions(newState) {
     });
   }
 
-  actions.main.push({ target: 'attack', id: 16, tileset: 'icons' });
-  actions.attack = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
+  actions.main.push({
+    target: 'attack', id: 16, tileset: 'icons',
+  });
+  actions.attack = [{
+    target: 'main', name: 'cancel', id: 39, tileset: 'icons',
+  }];
 
-  actions.main.push({ target: 'eat', id: 15, tileset: 'icons' });
-  actions.eat = [{ target: 'main', name: 'cancel', id: 39, tileset: 'icons' }];
+  actions.main.push({
+    target: 'eat', id: 15, tileset: 'icons',
+  });
+  actions.eat = [{
+    target: 'main', name: 'cancel', id: 39, tileset: 'icons',
+  }];
 
-  actions.main.push({ tag: 'forage', name: 'forage', id: 14, tileset: 'icons' });
+  actions.main.push({
+    tag: 'forage', name: 'forage', id: 14, tileset: 'icons',
+  });
 
   if (itemsByTag.seed) {
-    actions.main.push({ target: 'sow', id: 10, tileset: 'icons' });
-    actions.sow = [{ target: 'main', name: 'back', id: 18, tileset: 'icons' }]
+    actions.main.push({
+      target: 'sow', id: 10, tileset: 'icons',
+    });
+    actions.sow = [{
+      target: 'main', name: 'back', id: 18, tileset: 'icons',
+    }]
       .concat(
         itemsByTag.seed
           .map(item => ({
-            tag: 'seed', name: `plant ${item.name}`, id: item.id, tileset: 'items'
-          }))
+            tag: 'seed', name: `plant ${item.name}`, id: item.id, tileset: 'items',
+          })),
       );
   }
 
