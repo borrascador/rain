@@ -35,7 +35,7 @@ const styles = {
 };
 
 const TitleView = ({
-  showLogin, showRegister, showServerSelect, connected,
+  showLogin, showRegister, showJukebox, showServerSelect, connected,
 }) => {
   return (
     <div style={styles.titleView}>
@@ -45,6 +45,7 @@ const TitleView = ({
       <div style={styles.bottom}>
         <div><a onClick={showLogin}>LOGIN</a></div>
         <div><a onClick={showRegister}>REGISTER</a></div>
+        <div><a onClick={showJukebox}>JUKEBOX</a></div>
         <div>
           <a
             onClick={showServerSelect}
@@ -66,6 +67,7 @@ const mapDispatchToProps = dispatch => ({
   showLogin: () => dispatch(setModal(MODAL.LOGIN)),
   showRegister: () => dispatch(setModal(MODAL.REGISTER)),
   showServerSelect: () => dispatch(setModal(MODAL.SERVER_SELECT)),
+  showJukebox: () => dispatch(setModal(MODAL.JUKEBOX)),
 });
 
 export default connect(

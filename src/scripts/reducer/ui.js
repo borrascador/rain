@@ -1,5 +1,5 @@
 import { SLOTS } from '../utils/constants';
-import { updateObject, mergeSlots, mergeTiles, getActions } from './utils';
+import { updateObject, mergeSlots, getActions } from './utils';
 import hasProp from '../utils/hasProp';
 
 export function makeKeys() {

@@ -38,7 +38,7 @@ const Register = ({ sendRegister, setError, dismiss }) => {
 
   return (
     <>
-      <h1>LOGIN</h1>
+      <h1>REGISTER</h1>
       <TextInput
         onChange={handleUsernameInput}
         value={username}

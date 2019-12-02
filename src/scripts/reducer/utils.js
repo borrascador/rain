@@ -1,5 +1,10 @@
 import { UPDATE_TEXT_OFFSET, UPDATE_TEXT_DURATION } from '../utils/constants';
 import hasProp from '../utils/hasProp';
+import {
+  coordsToColRow,
+  colRowToCoords,
+  findTile,
+} from '../components/utils';
 
 export const reduceIntegerState = (state, action) => typeof action === 'number' ? action : state;
 export const reduceBooleanState = (state, action) => typeof action === 'boolean' ? action : state;
@@ -186,20 +191,68 @@ function isObject(a) {
   return (!!a) && (a.constructor === Object);
 };
 
-export function mergeTiles(state, action) {
-  if (!action.payload.tiles) return state.tiles;
-  
-  // TODO move these lines into helper function
-  const GROUND_TILES = [1, 4, 5];
-  const getGroundTile = () => GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)];
+// TODO move these lines into helper function
+const GROUND_TILES = [1, 4, 5];
+const getGroundTile = () => (
+  GROUND_TILES[Math.floor(Math.random() * GROUND_TILES.length)]
+);
 
-  const { tiles: newTiles } = action.payload;
-  const tiles = [...state.tiles];
+function generateGroundTiles(player, oldTiles) {
+  const tiles = [...oldTiles];
+  const { col, row } = coordsToColRow(
+    player.xPos, player.yPos, player.xCoord, player.yCoord,
+  );
 
+  for (let y = row - player.sight; y <= row + player.sight; y++) {
+    for (let x = col - player.sight; x <= col + player.sight; x++) { 
+      const {
+        xPos, yPos, xCoord, yCoord,
+      } = colRowToCoords(x, y);
+      const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
+
+      if (tile && !hasProp(tile, 'groundLayer')) {
+        tiles[xPos][yPos][xCoord][yCoord].groundLayer = getGroundTile();
+      } else if (!tile) {
+        tiles[xPos] = tiles[xPos] || [];
+        tiles[xPos][yPos] = tiles[xPos][yPos] || [];
+        tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
+        tiles[xPos][yPos][xCoord][yCoord] = {
+          xPos,
+          yPos,
+          xCoord,
+          yCoord,
+          groundLayer: getGroundTile(),
+        };
+      }
+    }
+  }
+  return tiles;
+}
+
+export function mergeAllTiles(state, action) {
+  const oldTiles = [...state.tiles];
+  let newTiles = action.payload.tiles
+    ? mergeTiles(oldTiles, action.payload.tiles)
+    : oldTiles;
+  if (state.party) {
+    const partyTiles = state.party
+      .filter(member => member.tiles)
+      .map(member => member.tiles);
+    if (partyTiles.length) {
+      newTiles = partyTiles.reduce(mergeTiles, newTiles);
+    }
+    state.party.forEach((member) => {
+      newTiles = generateGroundTiles(member, newTiles);
+    });
+  }
+  return newTiles
+}
+
+export function mergeTiles(oldTiles, newTiles) {
   newTiles.forEach(({ xPos, yPos, trees }) => {
-    tiles[xPos] = tiles[xPos] || [];
-    tiles[xPos][yPos] = tiles[xPos][yPos]
-      ? tiles[xPos][yPos]
+    oldTiles[xPos] = oldTiles[xPos] || [];
+    oldTiles[xPos][yPos] = oldTiles[xPos][yPos]
+      ? oldTiles[xPos][yPos]
       : Array.from({ length: 64 })
         .map((_, xCoord) => Array.from({ length: 64 })
           .map((__, yCoord) => ({
@@ -207,18 +260,17 @@ export function mergeTiles(state, action) {
             yPos,
             xCoord,
             yCoord,
-            groundLayer: getGroundTile(),
           }))
         );
     trees.forEach(({ xCoord, yCoord, id }) => {
-      tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
-      tiles[xPos][yPos][xCoord][yCoord] = {
-        ...tiles[xPos][yPos][xCoord][yCoord],
+      oldTiles[xPos][yPos][xCoord] = oldTiles[xPos][yPos][xCoord] || [];
+      oldTiles[xPos][yPos][xCoord][yCoord] = {
+        ...oldTiles[xPos][yPos][xCoord][yCoord],
         treeLayer: id,
       }
     });
   });
-  return tiles;
+  return oldTiles;
 }
 
 export function updateInventoryChanges(state, action) {

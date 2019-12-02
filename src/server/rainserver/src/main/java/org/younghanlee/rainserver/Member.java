@@ -35,7 +35,7 @@ public class Member {
 		this.icon = icon;
 		this.x = x;
 		this.y = y;
-		this.sight = 8;
+		this.sight = 4;
 		this.move = null;
 		this.speed = 50;
 		this.strength = 10;
@@ -202,8 +202,8 @@ public class Member {
 		int maxY = y + sight;
 		maxY = maxY>UBY ? UBY : maxY;
 		int tile, subTile;
-		for (int i=minX; i<maxX; i++) {
-			for (int j=minY; j<maxY; j++) {
+		for (int i=minX; i<=maxX; i++) {
+			for (int j=minY; j<=maxY; j++) {
 				tile = getTile(i, j);
 				subTile = getSubTile(i,j);
 				if (hm.containsKey(tile)) {
@@ -320,6 +320,7 @@ public class Member {
 		jo.put("id", id);
 		jo.put("health", health);
 		jo.put("jeito", jeito);
+		jo.put("sight", sight);
 		jo.put("name", name);
 		if (online) {
 			jo.put("online", true);

@@ -9,8 +9,8 @@ export default class TitleView {
 
     const zoom = 4;
     this.water = loader.getImage('water', zoom);
-    const size = this.water.tileset.tilewidth * zoom;
-    this.animateBottom = new Animation(size, zoom * 2, 0.5);
+    const { tilewidth } = this.water.tileset;
+    this.animateBottom = new Animation(tilewidth, zoom * 2, 0.5);
     this.animateTop = new Animation(3, 1, 0.5);
   }
 

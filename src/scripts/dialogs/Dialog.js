@@ -7,6 +7,7 @@ const styles = {
     border: '4px solid white',
     backgroundColor: 'black',
     textAlign: 'center',
+    width: 440,
   },
   content: {
     display: 'flex',

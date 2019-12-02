@@ -16,11 +16,18 @@ const uiState = {
   selectedPlayer: undefined,
   selectedAction: 'main',
   needRender: true,
+
+  // sound
+  songs: [
+    {
+      title: 'bbq 2',
+      src: 'https://dev-maranon-26023.s3-us-west-2.amazonaws.com/songs-test/bbq++2.mp3',
+    },
+  ],
 };
 
 const gameState = {
   tiles: [],
-  tilez: [],
   party: [], // DEBUG with party
   players: [],
   npcs: [],

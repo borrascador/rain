@@ -1,5 +1,5 @@
 import {
-  mergeSlots, mergeTiles, mergeArrays, updateStory, updateMessages,
+  mergeSlots, mergeAllTiles, mergeArrays, updateStory, updateMessages,
   updateInventoryChanges, updatePartyChanges,
   reduceIntegerState, reduceBooleanState, getActions,
 } from './utils';
@@ -9,7 +9,6 @@ import { VIEW, MODE, MODAL } from '../utils/constants';
 export function update(state, action) {
   const newState = Object.assign({}, state, {
     slots: mergeSlots(state.slots, action.payload.inventory),
-    tiles: mergeTiles(state, action),
     party: mergeArrays(state.party, action.payload.party),
     players: mergeArrays(state.players, action.payload.players),
     npcs: mergeArrays(state.npcs, action.payload.npcs),
@@ -22,8 +21,11 @@ export function update(state, action) {
     messageLog: updateMessages(state, action),
     needRender: true,
   });
-  return Object.assign({}, newState, {
-    actions: getActions(newState),
+  const newerState = Object.assign({}, newState, {
+    tiles: mergeAllTiles(newState, action),
+  });
+  return Object.assign({}, newerState, {
+    actions: getActions(newerState),
   });
 }
 
