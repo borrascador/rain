@@ -26,6 +26,8 @@ export const MODAL = {
   SUCCESS: 'SUCCESS',
   FAILURE: 'FAILURE',
   SERVER_SELECT: 'SERVER_SELECT',
+  JUKEBOX: 'JUKEBOX',
+  IN_GAME_MENU: 'IN_GAME_MENU',
 };
 
 export const SLOTS = {

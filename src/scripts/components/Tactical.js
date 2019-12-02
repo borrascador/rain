@@ -19,6 +19,7 @@ import {
   matchTile,
 } from './utils';
 import { drawHover } from '../utils/draw';
+import { FOREST_BLACK } from '../utils/colors';
 
 export default class Tactical {
   constructor(store, canvas, ctx, loader) {
@@ -151,6 +152,9 @@ export default class Tactical {
     } = this.connect;
     const { xStart, yStart, width, height } = this.camera;
 
+    this.offScreenContext.fillStyle = FOREST_BLACK;
+    this.offScreenContext.fillRect(xStart, yStart, width, height);
+
     const {
       tileheight: tileHeight,
       tilewidth: tileWidth,
@@ -173,11 +177,21 @@ export default class Tactical {
         } = colRowToCoords(col, row);
         const tile = findTile(tiles, xPos, yPos, xCoord, yCoord);
 
+        const {
+          xOffset, yOffset, widthOffset, heightOffset,
+        } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
+
+        this.visibleTiles.push({
+          pos: { x: xPos, y: yPos },
+          coords: { x: xCoord, y: yCoord },
+          xPos: x + xOffset + xStart, // destX
+          yPos: y + yOffset + yStart, // destY
+          width: widthOffset, // destWidth
+          height: heightOffset // destHeight
+        });
+
         if (tile && tile.groundLayer) {
           // draw ground layer
-          const {
-            xOffset, yOffset, widthOffset, heightOffset,
-          } = this.camera.getOffsets(x, y, tileWidth, tileHeight);
           const { groundLayer } = tile;
           if (
             widthOffset > 0
@@ -197,15 +211,6 @@ export default class Tactical {
               heightOffset // destHeight
             );
           }
-
-          this.visibleTiles.push({
-            pos: { x: xPos, y: yPos },
-            coords: { x: xCoord, y: yCoord },
-            xPos: x + xOffset + xStart, // destX
-            yPos: y + yOffset + yStart, // destY
-            width: widthOffset, // destWidth
-            height: heightOffset // destHeight
-          });
 
           if (matchTile(currentPlayer, tile)) {
             this.currentTile = {

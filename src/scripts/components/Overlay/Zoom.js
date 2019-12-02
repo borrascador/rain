@@ -1,10 +1,10 @@
-import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import {
-  clickedLeft, zoomIn, zoomOut, logoutRequest, needRender,
+  clickedLeft, zoomIn, zoomOut, setModal, needRender,
 } from '../../actions/actions';
 import { screenToImageButton } from '../utils';
 import { drawByName } from '../../utils/draw';
+import { MODAL } from '../../utils/constants';
 
 export default class Zoom {
   constructor(store, canvas, ctx, loader) {
@@ -19,9 +19,8 @@ export default class Zoom {
 
     this.buttons = [
       { name: 'settings' },
-      { name: 'glass' },
-      { name: 'zoom-out' },
       { name: 'zoom-in' },
+      { name: 'zoom-out' },
     ];
   }
 
@@ -32,7 +31,8 @@ export default class Zoom {
       this.store.dispatch(clickedLeft());
       switch(button.name) {
         case 'settings':
-          this.store.dispatch(send(logoutRequest()));
+          this.store.dispatch(setModal(MODAL.IN_GAME_MENU));
+          // this.store.dispatch(send(logoutRequest()));
           break;
         case 'zoom-out':
           this.store.dispatch(zoomOut());
