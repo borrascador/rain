@@ -20,7 +20,7 @@ export default class Vehicle {
     const { vehicle } = this.connect;
     if (vehicle) {
       this.buttons = [
-        { id: vehicle.icon, onClick: () => console.log(vehicle.type) }
+        { id: vehicle.icon, onClick: () => console.log(vehicle.type) },
       ];
     } else {
       this.buttons = [];
@@ -41,7 +41,7 @@ export default class Vehicle {
         drawByName(
           this.ctx, this.icons, 'wrench',
           this.vehicleSize + index * (this.wrenchSize + 8),
-          this.canvas.height - (this.wrenchSize + this.vehicleSize) / 2
+          this.canvas.height - (this.wrenchSize + this.vehicleSize) / 2,
         );
       });
       return Object.assign({}, button, {
@@ -49,7 +49,7 @@ export default class Vehicle {
         xPos: x,
         yPos: y,
         width: this.vehicleSize,
-        height: this.vehicleSize
+        height: this.vehicleSize,
       });
     });
   }

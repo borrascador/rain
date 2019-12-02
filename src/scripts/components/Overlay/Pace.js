@@ -35,8 +35,8 @@ export default class Pace {
         this.store.dispatch(clickedLeft());
         this.store.dispatch(send(eventRequest(EVENTS.PACE, { id: button.id })));
       }
-  
-      const { pace } = selectedPlayer
+
+      const { pace } = selectedPlayer;
       switch (pace) {
         case 0:
           this.animateStop.tick(step);
@@ -69,47 +69,47 @@ export default class Pace {
       const { pace } = selectedPlayer;
       const yPos = (this.walkSize - this.iconSize) / 2;
       const [width, height] = Array(2).fill(this.iconSize);
-  
+
       switch (pace) {
         case 0:
           this.buttons = [
             {
-              id: 1, xPos: this.getXPos(1), yPos, width, height
+              id: 1, xPos: this.getXPos(1), yPos, width, height,
             },
             {
-              id: 2, xPos: this.getXPos(2), yPos, width, height
-            }
+              id: 2, xPos: this.getXPos(2), yPos, width, height,
+            },
           ];
           break;
-  
+
         case 1:
           this.buttons = [
             {
-              id: 0, xPos: this.getXPos(-1), yPos, width, height
+              id: 0, xPos: this.getXPos(-1), yPos, width, height,
             },
             {
-              id: 2, xPos: this.getXPos(1), yPos, width, height
-            }
+              id: 2, xPos: this.getXPos(1), yPos, width, height,
+            },
           ];
           break;
-  
+
         case 2:
           this.buttons = [
             {
-              id: 0, xPos: this.getXPos(-2), yPos, width, height
+              id: 0, xPos: this.getXPos(-2), yPos, width, height,
             },
             {
-              id: 1, xPos: this.getXPos(-1), yPos, width, height
-            }
+              id: 1, xPos: this.getXPos(-1), yPos, width, height,
+            },
           ];
           break;
-  
+
         default:
           break;
       }
-  
+
       this.buttons.forEach(button => drawById(
-        this.ctx, this.icons, 20 + button.id, button.xPos, yPos
+        this.ctx, this.icons, 20 + button.id, button.xPos, yPos,
       ));
     }
   }
@@ -132,7 +132,7 @@ export default class Pace {
         default:
           break;
       }
-  
+
       const x = (this.canvas.width - this.walkSize) / 2;
       const y = 0;
       drawById(this.ctx, this.walk, offset, x, y);

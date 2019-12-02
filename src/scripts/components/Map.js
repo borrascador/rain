@@ -66,7 +66,7 @@ export default class Map {
       const yCoord = Math.floor((y - tile.yPos) / zoom);
       this.store.dispatch(clickedLeft());
       this.store.dispatch(
-        send(eventRequest(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord }))
+        send(eventRequest(EVENTS.MOVE, { id: tile.id, x: xCoord, y: yCoord })),
       );
     }
 
@@ -76,7 +76,7 @@ export default class Map {
 
   render() {
     const {
-      pos, coords, positionTarget, coordsTarget, tiles, sight, zoom
+      pos, coords, positionTarget, coordsTarget, tiles, sight, zoom,
     } = this.connect.map;
     const {
       xStart, yStart, width, height,
@@ -141,7 +141,7 @@ export default class Map {
                   x - xOffset + xStart, // destX
                   y - yOffset + yStart, // destY
                   widthOffset, // destWidth
-                  heightOffset // destHeight
+                  heightOffset, // destHeight
                 );
               }
             }
@@ -163,7 +163,7 @@ export default class Map {
                 x - xOffset + xStart, // destX
                 y - yOffset + yStart, // destY
                 widthOffset, // destWidth
-                heightOffset // destHeight
+                heightOffset, // destHeight
               );
             }
           }
@@ -213,7 +213,7 @@ export default class Map {
                   xIcon - xOffset + xStart, // destX
                   yIcon - yOffset + yStart, // destY
                   widthOffset, // destWidth
-                  heightOffset // destHeight
+                  heightOffset, // destHeight
                 ],
                 xPos: xIcon - xOffset + xStart,
                 yPos: yIcon - yOffset + yStart,
@@ -248,7 +248,7 @@ export default class Map {
                   xIcon - xOffset + xStart, // destX
                   yIcon - yOffset + yStart, // destY
                   widthOffset, // destWidth
-                  heightOffset // destHeight
+                  heightOffset, // destHeight
                 ],
                 xPos: xIcon - xOffset + xStart,
                 yPos: yIcon - yOffset + yStart,
@@ -285,7 +285,7 @@ export default class Map {
                       xIcon - xOffset + xStart, // destX
                       yIcon - yOffset + yStart, // destY
                       widthOffset, // destWidth
-                      heightOffset // destHeight
+                      heightOffset, // destHeight
                     ],
                     name: visitor.name,
                     xPos: xIcon - xOffset + xStart,
@@ -295,7 +295,7 @@ export default class Map {
                   };
                 }
                 return {};
-              })
+              }),
             );
           }
         }

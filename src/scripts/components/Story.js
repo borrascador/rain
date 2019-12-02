@@ -1,10 +1,10 @@
-import { clickedLeft, closeStory, eventRequest } from '../actions/actions';
 import { send } from '@giantmachines/redux-websocket';
+import { clickedLeft, closeStory, eventRequest } from '../actions/actions';
 import { EVENTS } from '../actions/types';
 import Connect from '../Connect';
 import { screenToTextButton, screenToImageButton } from './utils';
 import {
-  mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines, drawHover
+  mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines, drawHover,
 } from '../utils/draw';
 import Animation from '../utils/Animation';
 import { PALE_GREEN, MEDIUM_RED } from '../utils/colors';
@@ -34,16 +34,16 @@ export default class Story {
     this.stories = [];
 
     this.mainText = mainText.bind(
-      null, this.canvas, this.ctx, this.fontSize, this.lineHeight
+      null, this.canvas, this.ctx, this.fontSize, this.lineHeight,
     );
     this.buttonText = buttonText.bind(
-      null, this.canvas, this.ctx, this.fontSize, this.lineHeight
+      null, this.canvas, this.ctx, this.fontSize, this.lineHeight,
     );
     this.itemChangeText = itemChangeText.bind(
-      null, this.canvas, this.ctx, this.fontSize, this.lineHeight
+      null, this.canvas, this.ctx, this.fontSize, this.lineHeight,
     );
     this.partyChangeText = partyChangeText.bind(
-      null, this.canvas, this.ctx, this.fontSize, this.lineHeight
+      null, this.canvas, this.ctx, this.fontSize, this.lineHeight,
     );
   }
 
@@ -109,7 +109,7 @@ export default class Story {
     const { inventoryChanges, partyChanges } = story;
     let buttons = story && story.buttons.map((button, idx) => Object.assign({}, button, {
       text: splitIntoLines(this.ctx, button.text, maxButtonWidth),
-      oneIndex: idx + 1
+      oneIndex: idx + 1,
     }));
     const promptText = `What is your choice? ${this.selected ? this.selected.oneIndex : ''}`;
     const cursor = this.blink.getValue() ? '' : '_';

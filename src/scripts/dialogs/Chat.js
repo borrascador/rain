@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { send } from '@giantmachines/redux-websocket';
 import { chatBroadcast } from '../actions/actions';
-import { Button } from './Button';
-import { TextInput } from './TextInput';
+import Button from './Button';
+import TextInput from './TextInput';
 
 const styles = {
   chat: {
@@ -29,19 +29,19 @@ const styles = {
 
 const Chat = ({ messageLog, broadcastMessage }) => {
   const [message, setMessage] = useState('');
-  const messagesEndRef = useRef(null)
+  const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
-  }
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(scrollToBottom, [messageLog]);
 
-  const handleMessageInput = e => {
+  const handleMessageInput = (e) => {
     setMessage(e.target.value);
   };
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
     if (message) broadcastMessage(message);
     setMessage('');
@@ -51,7 +51,7 @@ const Chat = ({ messageLog, broadcastMessage }) => {
     <div style={styles.chat}>
       <div style={styles.messageLog}>
         <div>Welcome to Rainforest Trail</div>
-        { messageLog.map((({ user='SERVER', text }, index) => (
+        { messageLog.map((({ user = 'SERVER', text }, index) => (
           <div key={index}>
             { user }: { text }
           </div>
@@ -70,7 +70,7 @@ const Chat = ({ messageLog, broadcastMessage }) => {
       </form>
     </div>
   );
-}
+};
 
 const mapStateToProps = state => ({
   messageLog: state.messageLog,

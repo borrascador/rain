@@ -13,43 +13,43 @@ describe('reducer', () => {
     let initialState = newInitialState();
     expect(
       reducer(initialState, {
-        type: ACTIONS.ZOOM_IN
-      })
+        type: ACTIONS.ZOOM_IN,
+      }),
     ).toEqual(
       Object.assign(
         initialState,
-        { zoom: 8 }
-      )
+        { zoom: 8 },
+      ),
     );
 
     initialState = newInitialState({ zoom: 10 });
     expect(
       reducer(initialState, {
-        type: ACTIONS.ZOOM_IN
-      })
+        type: ACTIONS.ZOOM_IN,
+      }),
     ).toEqual(
-      initialState
+      initialState,
     );
 
     initialState = newInitialState();
     expect(
       reducer(initialState, {
-        type: ACTIONS.ZOOM_OUT
-      })
+        type: ACTIONS.ZOOM_OUT,
+      }),
     ).toEqual(
       Object.assign(
         initialState,
-        { zoom: 6 }
-      )
+        { zoom: 6 },
+      ),
     );
 
     initialState = newInitialState({ zoom: 5 });
     expect(
       reducer(initialState, {
-        type: ACTIONS.ZOOM_OUT
-      })
+        type: ACTIONS.ZOOM_OUT,
+      }),
     ).toEqual(
-      initialState
+      initialState,
     );
   });
 });

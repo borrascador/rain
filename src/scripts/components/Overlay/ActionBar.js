@@ -5,7 +5,7 @@ import { checkImageCollision, screenToImageButton } from '../utils';
 import { clickedLeft, eventRequest, selectAction } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
 import {
-  BRIGHT_GREEN, BRIGHT_RED, MEDIUM_RED, SOLID_WHITE
+  BRIGHT_GREEN, BRIGHT_RED, MEDIUM_RED, SOLID_WHITE,
 } from '../../utils/colors';
 
 export default class ActionBar {
@@ -36,9 +36,7 @@ export default class ActionBar {
     if (selectedAction === 'main') {
       if (keys.includes('a')) this.store.dispatch(selectAction('attack'));
       if (keys.includes('e')) this.store.dispatch(selectAction('eat'));
-    } else {
-      if (keys.includes('q')) this.store.dispatch(selectAction('main'));      
-    }
+    } else if (keys.includes('q')) this.store.dispatch(selectAction('main'));
     if (x && y && this.box && checkImageCollision(x, y, this.box)) {
       this.store.dispatch(clickedLeft());
     }
@@ -76,13 +74,13 @@ export default class ActionBar {
       (this.canvas.width - this.barWidth) / 2,
       this.canvas.height - this.barSize,
       this.barWidth,
-      this.barSize
+      this.barSize,
     );
     this.box = {
       xPos: (this.canvas.width - this.barWidth) / 2,
       yPos: this.canvas.height - this.barSize,
       width: this.barWidth,
-      height: this.barSize
+      height: this.barSize,
     };
 
     this.ctx.fillStyle = MEDIUM_RED;
@@ -90,14 +88,14 @@ export default class ActionBar {
       (this.canvas.width - titleWidth) / 2 - 8,
       this.canvas.height - (this.barSize + this.fontSize + 4),
       titleWidth + 16,
-      this.fontSize + 4
+      this.fontSize + 4,
     );
 
     this.ctx.fillStyle = SOLID_WHITE;
     this.ctx.fillText(
       selectedAction,
       (this.canvas.width - titleWidth) / 2,
-      this.canvas.height - this.barSize
+      this.canvas.height - this.barSize,
     );
   }
 
@@ -119,14 +117,14 @@ export default class ActionBar {
         this.ctx.fillText(
           text,
           x + 2 + (this.buttonSize - textWidth) / 2,
-          buttonY + 6 + this.buttonSize
+          buttonY + 6 + this.buttonSize,
         );
       }
       return Object.assign({}, button, {
         xPos: x,
         yPos: buttonY,
         width: this.buttonSize,
-        height: this.buttonSize
+        height: this.buttonSize,
       });
     });
   }

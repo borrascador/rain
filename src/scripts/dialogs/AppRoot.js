@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { MODAL, VIEW } from '../utils/constants';
 import TitleView from './TitleView';
 import Dialog from './Dialog';
@@ -48,7 +48,7 @@ class AppRoot extends React.Component {
             { modal === MODAL.FAILURE && <Failure /> }
             { modal === MODAL.SERVER_SELECT && <ServerSelect /> }
             { modal === MODAL.JUKEBOX && this.audioRef && (
-              <Jukebox setSong={this.setSong} play={this.play} pause={this.pause} /> 
+              <Jukebox setSong={this.setSong} play={this.play} pause={this.pause} />
             )}
             { modal === MODAL.IN_GAME_MENU && <InGameMenu /> }
           </Dialog>
@@ -57,7 +57,7 @@ class AppRoot extends React.Component {
       </>
     );
   }
-};
+}
 
 const mapStateToProps = state => ({
   view: state.view,

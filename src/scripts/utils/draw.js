@@ -1,6 +1,6 @@
 import {
   BRIGHT_RED, BRIGHT_YELLOW, BRIGHT_GREEN, HOVER_GREEN, PALE_GREEN,
-  SOLID_WHITE, FOREST_BLACK, alphaForestBlack, alphaGreen, alphaRed
+  SOLID_WHITE, FOREST_BLACK, alphaForestBlack, alphaGreen, alphaRed,
 } from './colors';
 
 export function drawById(ctx, img, id, x, y) {
@@ -11,7 +11,7 @@ export function drawById(ctx, img, id, x, y) {
     Math.floor(id / columns) * tileheight,
     tilewidth, tileheight,
     Math.floor(x), Math.floor(y),
-    tilewidth, tileheight
+    tilewidth, tileheight,
   );
 }
 
@@ -48,7 +48,7 @@ export function centerText(canvas, ctx, zoom, gutter, lines, fontSize, pos) {
       xPos: x,
       yPos: y,
       width: lineWidth,
-      height: fontSize
+      height: fontSize,
     });
   });
 }
@@ -64,7 +64,7 @@ export function mainText(canvas, ctx, fontSize, lineHeight, lines, xPos, yPos) {
     xPos,
     yPos: y,
     width: lengths.reduce((a, b) => Math.max(a, b)),
-    height: lineHeight * lines.length
+    height: lineHeight * lines.length,
   };
 }
 
@@ -83,7 +83,7 @@ export function itemChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, y
     xPos,
     yPos: y,
     width: lengths.reduce((a, b) => Math.max(a, b)),
-    height: lineHeight * lines.length
+    height: lineHeight * lines.length,
   };
 }
 
@@ -123,7 +123,7 @@ export function partyChangeText(canvas, ctx, fontSize, lineHeight, lines, xPos, 
     xPos,
     yPos: y,
     width: lengths.reduce((a, b) => Math.max(a, b)),
-    height: lineHeight * lines.length
+    height: lineHeight * lines.length,
   };
 }
 
@@ -143,13 +143,13 @@ export function drawMultipliers(ctx, img, scale, fontSize, lineHeight, multiplie
       yPos: yPos - lineHeight,
       width: width + size,
       height: size,
-      hoverText: `${text} ${item.name}`
+      hoverText: `${text} ${item.name}`,
     });
   });
 }
 
 export function buttonText(
-  canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, selected, icons, scale
+  canvas, ctx, fontSize, lineHeight, buttons, xPos, yPos, selected, icons, scale,
 ) {
   const x = xPos + fontSize * 2;
   let y = yPos;
@@ -163,13 +163,13 @@ export function buttonText(
     const coords = mainText(canvas, ctx, fontSize, lineHeight, button.text, x, y);
     result.push(Object.assign({}, button, coords, {
       xPos,
-      width: coords.width + fontSize * 2
+      width: coords.width + fontSize * 2,
     }));
     y = coords.yPos + lineHeight;
     if (button.multipliers) {
       y += lineHeight / 4;
       const multipliers = drawMultipliers(
-        ctx, icons, scale, fontSize, lineHeight, button.multipliers, x, y
+        ctx, icons, scale, fontSize, lineHeight, button.multipliers, x, y,
       );
       result.push(...multipliers);
       y = multipliers[multipliers.length - 1].yPos + lineHeight * 2;
@@ -212,7 +212,7 @@ export function drawHover(ctx, fontSize, button) {
     button.xPos + button.width / 2 - textWidth / 2 - padding,
     button.yPos - fontSize - padding * 3.5,
     textWidth + padding * 2,
-    fontSize + padding * 2
+    fontSize + padding * 2,
   );
   const y = button.yPos - padding * 1.5;
   ctx.beginPath();
@@ -227,7 +227,7 @@ export function drawHover(ctx, fontSize, button) {
   ctx.fillText(
     text,
     button.xPos + button.width / 2 - textWidth / 2,
-    button.yPos - padding * 2.5
+    button.yPos - padding * 2.5,
   );
 }
 

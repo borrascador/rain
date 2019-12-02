@@ -11,7 +11,9 @@ const styles = {
   },
 };
 
-export const TextInput = ({ onChange, value, placeholder, password }) => (
+const TextInput = ({
+  onChange, value, placeholder, password,
+}) => (
   <input
     type={password ? 'password' : 'text'}
     style={styles.input}
@@ -20,3 +22,5 @@ export const TextInput = ({ onChange, value, placeholder, password }) => (
     placeholder={placeholder}
   />
 );
+
+export default TextInput;

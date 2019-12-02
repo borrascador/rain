@@ -29,7 +29,7 @@ export default class Zoom {
     const button = x && y && screenToImageButton(x, y, this.buttons);
     if (button) {
       this.store.dispatch(clickedLeft());
-      switch(button.name) {
+      switch (button.name) {
         case 'settings':
           this.store.dispatch(setModal(MODAL.IN_GAME_MENU));
           // this.store.dispatch(send(logoutRequest()));
@@ -61,7 +61,7 @@ export default class Zoom {
       const [width, height] = Array(2).fill(this.size);
       drawByName(this.ctx, this.iconsXl, button.name, xPos, yPos);
       return Object.assign({}, button, {
-        xPos, yPos, width, height
+        xPos, yPos, width, height,
       });
     });
   }

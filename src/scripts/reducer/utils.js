@@ -115,6 +115,7 @@ function getSlotProps({
 // function getRestProps(item, destType) { // TODO Use this later
 function getRestProps(item) {
   const {
+    // eslint-disable-next-line no-unused-vars
     type, position, xPos, yPos, width, height, quantity, ...rest
   } = item;
   // TODO Remove portion if destType = SLOTS.BACKPACK

@@ -1,8 +1,8 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { send } from '@giantmachines/redux-websocket';
 import { closeModal, setModal, logoutRequest } from '../actions/actions';
-import { BigButton } from './BigButton';
+import BigButton from './BigButton';
 import { MODAL } from '../utils/constants';
 
 const InGameMenu = ({ selectJukebox, sendLogout, dismiss }) => {
@@ -25,7 +25,7 @@ const InGameMenu = ({ selectJukebox, sendLogout, dismiss }) => {
       </BigButton>
     </>
   );
-}
+};
 
 const mapStateToProps = () => ({});
 

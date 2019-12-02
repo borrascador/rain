@@ -1,10 +1,10 @@
-import { MODAL, SLOTS, UPDATE_TEXT_DURATION } from '../../utils/constants';
+import { MODAL, SLOTS } from '../../utils/constants';
 import Connect from '../../Connect';
 import { screenToImageButton } from '../utils';
 import {
-  clickedLeft, clickedRight, setPartyTab, setModal, selectPlayer, removePartyMember
+  clickedLeft, clickedRight, setPartyTab, setModal, selectPlayer, removePartyMember,
 } from '../../actions/actions';
-import { drawById, drawByName, fadeText } from '../../utils/draw';
+import { drawById, drawByName } from '../../utils/draw';
 import { MEDIUM_RED, DARK_RED } from '../../utils/colors';
 
 export default class Party {
@@ -74,10 +74,12 @@ export default class Party {
       this.ctx.strokeStyle = 'rgba(256, 256, 256, 0.8)';
       this.ctx.strokeRect(
         xPos - lineWidth / 2, yPos - lineWidth / 2,
-        width + lineWidth, height + lineWidth
+        width + lineWidth, height + lineWidth,
       );
     }
-    this.boxes.push({ xPos, yPos, width, height });
+    this.boxes.push({
+      xPos, yPos, width, height,
+    });
   }
 
   renderSlot(id, xPos, yPos) {
@@ -87,13 +89,13 @@ export default class Party {
     this.ctx.fillStyle = DARK_RED;
     this.ctx.fillRect(xPos, yPos, this.size, this.size);
     this.slots.push({
-      type, position, xPos, yPos, width, height
+      type, position, xPos, yPos, width, height,
     });
   }
 
   renderPartyMember(member, index) {
     const [x, y] = [0, index * this.height];
-    
+
     if (member.health === 0) {
       this.store.dispatch(removePartyMember(member.id));
     }
@@ -114,19 +116,21 @@ export default class Party {
         drawByName(
           this.ctx, this.icons, 'heart',
           this.portraitSize + this.size + this.gutter / 2 + i * (this.iconSize + 2),
-          y + this.gutter
+          y + this.gutter,
         );
       });
       [...Array(member.jeito)].forEach((_, i) => {
         drawByName(
           this.ctx, this.icons, 'bolt',
           this.portraitSize + this.size + this.gutter / 2 + i * (this.iconSize + 2),
-          y + this.iconSize + this.gutter
+          y + this.iconSize + this.gutter,
         );
       });
     }
 
-    return Object.assign({}, member, { xPos, yPos, width: height, height });
+    return Object.assign({}, member, {
+      xPos, yPos, width: height, height,
+    });
   }
 
   render() {

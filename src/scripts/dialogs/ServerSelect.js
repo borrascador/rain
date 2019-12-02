@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { connect as reduxConnect } from 'react-redux'
+import { connect as reduxConnect } from 'react-redux';
 import { connect as wsConnect } from '@giantmachines/redux-websocket';
 import { closeModal } from '../actions/actions';
-import { Button } from './Button';
-import { TextInput } from './TextInput';
+import Button from './Button';
+import TextInput from './TextInput';
 
 const ServerSelect = ({ serverEndpoint, connectToEndpoint, dismiss }) => {
   const [endpoint, setEndpoint] = useState(serverEndpoint);
 
-  const handleEndpointInput = e => {
+  const handleEndpointInput = (e) => {
     setEndpoint(e.target.value);
   };
 
@@ -35,14 +35,14 @@ const ServerSelect = ({ serverEndpoint, connectToEndpoint, dismiss }) => {
       </div>
     </>
   );
-}
+};
 
 const mapStateToProps = state => ({
   serverEndpoint: state.serverEndpoint,
 });
 
 const mapDispatchToProps = dispatch => ({
-  connectToEndpoint: (endpoint) => dispatch(wsConnect(endpoint)),
+  connectToEndpoint: endpoint => dispatch(wsConnect(endpoint)),
   dismiss: () => dispatch(closeModal()),
 });
 

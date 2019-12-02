@@ -80,7 +80,7 @@ export default class Items {
     drawById(this.ctx, this.items, stack.id, x, y);
     if (stack.durability) {
       drawDurability(
-        this.ctx, this.size, this.scale, stack.durability, x, y
+        this.ctx, this.size, this.scale, stack.durability, x, y,
       );
     } else {
       if (stack.portion) {
@@ -99,12 +99,12 @@ export default class Items {
     this.ctx.font = `${this.fontSize}px MECC`;
     const { draggedItem, mousePos, slots } = this.connect;
     const stack = screenToImageButton(
-      mousePos.x, mousePos.y, slots
+      mousePos.x, mousePos.y, slots,
     );
 
     slots.forEach((slot) => {
       const {
-        type, position, xPos, yPos, quantity
+        type, position, xPos, yPos, quantity,
       } = slot;
       const drag = draggedItem && (
         draggedItem.position === position
@@ -131,7 +131,7 @@ export default class Items {
         this.renderItem(
           draggedItem,
           mousePos.x - draggedItem.width / 2,
-          mousePos.y - draggedItem.height / 2
+          mousePos.y - draggedItem.height / 2,
         );
       }
     });
@@ -153,7 +153,7 @@ export default class Items {
           quantity: dragQuantity,
           type: stack.type,
           position: stack.position,
-        }))
+        })),
       );
     }
   }
@@ -169,7 +169,7 @@ export default class Items {
           quantity: dragQuantity,
           type: stack.type,
           position: stack.position,
-        }))
+        })),
       );
     }
   }
@@ -201,8 +201,8 @@ export default class Items {
           id: draggedItem.id,
           quantity,
           type: stack.type,
-          position: stack.position
-        }))
+          position: stack.position,
+        })),
       );
     } else {
       this.store.dispatch(error(801, 'Cannot move item to this slot'));

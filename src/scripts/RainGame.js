@@ -1,3 +1,4 @@
+import { connect } from '@giantmachines/redux-websocket';
 import addInputListeners from './utils/addInputListeners';
 import Connect from './Connect';
 import Loader from './utils/Loader';
@@ -24,8 +25,9 @@ import newTileset from '../data/new.json';
 import GameView from './views/GameView';
 import TitleView from './views/TitleView';
 import { VIEW } from './utils/constants';
-import { clickedLeft, clickedRight, setView, loginRequest } from './actions/actions';
-import { connect } from '@giantmachines/redux-websocket';
+import {
+  clickedLeft, clickedRight, setView,
+} from './actions/actions';
 
 export default class RainGame {
   constructor(store, canvas, ctx) {
@@ -51,7 +53,7 @@ export default class RainGame {
     this.offScreenCanvas = document.createElement('canvas');
     this.offScreenCanvas.width = this.canvas.width;
     this.offScreenCanvas.height = this.canvas.height;
-    this.offScreenContext = this.offScreenCanvas.getContext('2d')
+    this.offScreenContext = this.offScreenCanvas.getContext('2d');
     this.offScreenContext.imageSmoothingEnabled = false;
   }
 
@@ -82,7 +84,7 @@ export default class RainGame {
           this.store, this.offScreenCanvas, this.offScreenContext, this.loader,
         );
         this.titleView = new TitleView(
-          this.store, this.offScreenCanvas, this.offScreenContext, this.loader
+          this.store, this.offScreenCanvas, this.offScreenContext, this.loader,
         );
       })
       .then(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { setModal } from '../actions/actions';
 import { MODAL } from '../utils/constants';
 import { CONNECT_GREEN, DISCONNECT_RED } from '../utils/colors';
@@ -36,8 +36,7 @@ const styles = {
 
 const TitleView = ({
   showLogin, showRegister, showJukebox, showServerSelect, connected,
-}) => {
-  return (
+}) => (
     <div style={styles.titleView}>
       <div style={styles.top}>
         <h1>RAINFOREST TRAIL</h1>
@@ -56,8 +55,7 @@ const TitleView = ({
         </div>
       </div>
     </div>
-  );
-};
+);
 
 const mapStateToProps = state => ({
   connected: state.connected,

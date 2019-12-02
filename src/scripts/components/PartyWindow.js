@@ -82,7 +82,7 @@ export default class PartyWindow {
         xPos,
         yPos,
         width: this.sizeXl,
-        height: this.sizeXl
+        height: this.sizeXl,
       });
     });
     renderLast();
@@ -113,7 +113,7 @@ export default class PartyWindow {
       drawByName(
         this.ctx, this.icons, 'heart',
         xPos + lineWidth + 8 + index * (this.size + 8),
-        yPos - this.iconOffset
+        yPos - this.iconOffset,
       );
     });
 
@@ -123,7 +123,7 @@ export default class PartyWindow {
       drawByName(
         this.ctx, this.icons, 'bolt',
         xPos + lineWidth + 8 + index * (this.size + 8),
-        yPos - this.iconOffset
+        yPos - this.iconOffset,
       );
     });
 
@@ -136,13 +136,13 @@ export default class PartyWindow {
         drawByName(
           this.ctx, this.icons, 'question',
           xPos + index * (this.size + 8),
-          yPos - this.iconOffset
+          yPos - this.iconOffset,
         );
         return Object.assign({}, skill, {
           xPos: xPos + index * (this.size + 8),
           yPos: yPos - this.iconOffset,
           width: this.size,
-          height: this.size
+          height: this.size,
         });
       });
     } else {
@@ -158,13 +158,13 @@ export default class PartyWindow {
         drawByName(
           this.ctx, this.icons, 'question',
           xPos + index * (this.size + 8),
-          yPos - this.iconOffset
+          yPos - this.iconOffset,
         );
         return Object.assign({}, modifier, {
           xPos: xPos + index * (this.size + 8),
           yPos: yPos - this.iconOffset,
           width: this.size,
-          height: this.size
+          height: this.size,
         });
       });
     } else {

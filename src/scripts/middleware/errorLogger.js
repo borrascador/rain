@@ -14,21 +14,21 @@ function getErrorType(code) {
 const errorLogger = () => next => (action) => {
   // TODO: Check if action type is a non-empty string
   const actionSignature = action.type.substring(
-    action.type.length - 5, action.type.length
+    action.type.length - 5, action.type.length,
   );
   if (actionSignature === 'ERROR') {
     if (!action.payload.code) {
       Object.assign(action, {
         payload: {
           code: 800,
-          message: 'ERROR bad payload'
-        }
+          message: 'ERROR bad payload',
+        },
       });
     }
     const type = getErrorType(action.payload.code);
     if (action.payload.message) {
       console.error(
-        `${type}Error #${action.payload.code}: ${action.payload.message}`
+        `${type}Error #${action.payload.code}: ${action.payload.message}`,
       );
     } else {
       // TODO: Lookup some error messages here?
