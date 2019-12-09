@@ -6,7 +6,7 @@ export default class Loader {
   createOffscreenCanvas(image, scale) {
     const canvas = document.createElement('canvas');
     const { tileset } = image;
-    let {
+    const {
       imagewidth,
       imageheight,
       tilewidth,
@@ -72,11 +72,11 @@ export default class Loader {
     });
   }
 
-  getImage(key, scale) {  
+  getImage(key, scale) {
     const image = (key in this.images) ? this.images[key] : null;
     if (image && (scale === undefined || scale === null || scale % 1 !== 0)) {
       return image;
-    } else if (!image.scaled[scale]) {
+    } if (!image.scaled[scale]) {
       image.scaled[scale] = this.createOffscreenCanvas(image, scale);
     }
     return image.scaled[scale];

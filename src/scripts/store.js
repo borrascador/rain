@@ -28,7 +28,7 @@ function configureStore() {
 
   return createStore(
     reducer,
-    applyMiddleware(...middleware)
+    applyMiddleware(...middleware),
   );
 }
 

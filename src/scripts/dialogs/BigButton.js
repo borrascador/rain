@@ -12,8 +12,10 @@ const styles = {
   },
 };
 
-export const BigButton = ({ onClick, children }) => (
+const BigButton = ({ onClick, children }) => (
   <button onClick={onClick} style={styles.button}>
     <h3>{children}</h3>
   </button>
 );
+
+export default BigButton;

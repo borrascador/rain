@@ -1,16 +1,34 @@
 {
-  "parser": "babel-eslint",
-  "extends": ["airbnb/base"],
-  "env": {
-    "browser": true,
-    "node": true,
-    "jest": true
-  },
-  "rules": {
-    "no-console": "off",
-    "comma-dangle": "off",
-    "react/jsx-filename-extension": "off",
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
-    "no-underscore-dangle": ["error", { "allow": ["_shouldReconnect", "_connect"] } ]
-  }
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jasmine": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+      "react/prop-types": "warn"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
 }

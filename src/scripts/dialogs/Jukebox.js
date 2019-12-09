@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { closeModal } from '../actions/actions';
-import { Button } from './Button';
+import Button from './Button';
 
 const Jukebox = ({
   play,
@@ -9,8 +9,7 @@ const Jukebox = ({
   setSong,
   dismiss,
   songs,
-}) => {
-  return (
+}) => (
     <>
       <h1>JUKEBOX</h1>
       {
@@ -30,7 +29,7 @@ const Jukebox = ({
           </div>
         ))
       }
-      <div style={{display:'inline-block'}}>
+      <div style={{ display: 'inline-block' }}>
         <Button onClick={play}>
           PLAY
         </Button>
@@ -42,8 +41,7 @@ const Jukebox = ({
         </Button>
       </div>
     </>
-  );
-}
+);
 
 const mapStateToProps = state => ({
   songs: state.songs,

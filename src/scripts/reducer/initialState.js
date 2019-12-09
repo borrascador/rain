@@ -28,6 +28,7 @@ const uiState = {
 
 const gameState = {
   tiles: [],
+  sightTiles: [],
   party: [], // DEBUG with party
   players: [],
   npcs: [],
@@ -56,7 +57,7 @@ const inputState = {
   mousePos: { x: undefined, y: undefined },
   clickLeft: { x: undefined, y: undefined },
   clickRight: { x: undefined, y: undefined },
-  keys: makeKeys()
+  keys: makeKeys(),
 };
 
 const connectionState = {
@@ -66,7 +67,7 @@ const connectionState = {
   sending: false,
   error: undefined,
   errorMessage: undefined,
-  errorLog: []
+  errorLog: [],
 };
 
 export const revisedInitialState = newState => Object.assign({},
@@ -85,6 +86,6 @@ export const initialState = Object.assign({},
 export const newInitialState = newState => (
   Object.assign(
     JSON.parse(JSON.stringify(initialState)),
-    newState || {}
+    newState || {},
   )
 );

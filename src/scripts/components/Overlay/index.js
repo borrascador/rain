@@ -23,11 +23,11 @@ export default class Overlay {
     this.party = new Party(this.store, this.canvas, this.ctx, this.loader);
     this.inventory = new Inventory(
       this.store, this.canvas, this.ctx, this.loader,
-      SLOTS.BACKPACK, 4, 5
+      SLOTS.BACKPACK, 4, 5,
     );
     this.loot = new Inventory(
       this.store, this.canvas, this.ctx, this.loader,
-      SLOTS.LOOT, 4, 1
+      SLOTS.LOOT, 4, 1,
     );
     this.actionBar = new ActionBar(this.store, this.canvas, this.ctx, this.loader);
     // this.habitat = new Habitat(this.store, this.canvas, this.ctx, this.loader);
@@ -71,7 +71,7 @@ export default class Overlay {
       this.inventory.render(),
       ...[(currentTile && currentTile.loot)
         ? this.loot.render()
-        : []
+        : [],
       ],
     );
     this.store.dispatch(refreshSlots(slots));

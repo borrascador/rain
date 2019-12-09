@@ -6,7 +6,7 @@ import { checkImageCollision, screenToImageButton } from '../utils';
 import { drawByName } from '../../utils/draw';
 import { SLOTS } from '../../utils/constants';
 import {
-  MEDIUM_RED, DARK_RED, alphaGreen, alphaYellow, alphaDarkRed
+  MEDIUM_RED, DARK_RED, alphaGreen, alphaYellow, alphaDarkRed,
 } from '../../utils/colors';
 
 export default class Food {
@@ -38,13 +38,13 @@ export default class Food {
         id: 0,
         name: 'up',
         pos: -this.stepperOffset,
-        onClick: rations => this.increaseRations(rations)
+        onClick: rations => this.increaseRations(rations),
       },
       {
         id: 1,
         name: 'down',
         pos: this.stepperOffset,
-        onClick: rations => this.decreaseRations(rations)
+        onClick: rations => this.decreaseRations(rations),
       },
     ];
   }
@@ -82,7 +82,7 @@ export default class Food {
       xPos: this.xStart,
       yPos: this.yStart,
       width: this.width,
-      height: this.height
+      height: this.height,
     };
   }
 
@@ -109,7 +109,7 @@ export default class Food {
     this.ctx.fillText(
       text,
       x + (this.size - textWidth) / 2,
-      y + (this.size + this.fontSize) / 2
+      y + (this.size + this.fontSize) / 2,
     );
     this.buttons = this.buttons.map((button) => {
       const yPos = y + button.pos;
@@ -118,7 +118,7 @@ export default class Food {
         xPos: x,
         yPos,
         width: this.size,
-        height: this.size
+        height: this.size,
       });
     });
   }
@@ -146,7 +146,7 @@ export default class Food {
           xPos,
           yPos,
           width: this.size,
-          height: this.size
+          height: this.size,
         });
         counter += 1;
       }

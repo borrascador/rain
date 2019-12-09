@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { send } from '@giantmachines/redux-websocket';
 import { closeModal, registerRequest, error } from '../actions/actions';
-import { Button } from './Button';
-import { TextInput } from './TextInput';
+import Button from './Button';
+import TextInput from './TextInput';
 
 const Register = ({ sendRegister, setError, dismiss }) => {
   const [username, setUsername] = useState('');
@@ -11,19 +11,19 @@ const Register = ({ sendRegister, setError, dismiss }) => {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
 
-  const handleUsernameInput = e => {
+  const handleUsernameInput = (e) => {
     setUsername(e.target.value);
   };
 
-  const handleEmailInput = e => {
+  const handleEmailInput = (e) => {
     setEmail(e.target.value);
   };
 
-  const handlePassword1Input = e => {
+  const handlePassword1Input = (e) => {
     setPassword1(e.target.value);
   };
 
-  const handlePassword2Input = e => {
+  const handlePassword2Input = (e) => {
     setPassword2(e.target.value);
   };
 
@@ -71,7 +71,7 @@ const Register = ({ sendRegister, setError, dismiss }) => {
       </div>
     </>
   );
-}
+};
 
 const mapStateToProps = () => ({});
 

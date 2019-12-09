@@ -22,11 +22,11 @@ export default class Camera {
     // Tactical.js
     this.x = Math.round(
       (xPos * 64 + xCoords) * this.gridSize * this.zoom
-      - (this.width - this.gridSize * this.zoom) / 2
+      - (this.width - this.gridSize * this.zoom) / 2,
     );
     this.y = Math.round(
       (yPos * 64 + yCoords) * this.gridSize * this.zoom
-      - (this.height - this.gridSize * this.zoom) / 2
+      - (this.height - this.gridSize * this.zoom) / 2,
     );
     // Map.js
     // this.x = Math.round(((xPos + xCoords / 32) * this.gridSize * zoom) - this.width / 2);

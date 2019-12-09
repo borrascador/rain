@@ -4,7 +4,7 @@ module.exports = {
   output: {
     path: `${__dirname}/dist`,
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -14,12 +14,12 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: ['@babel/preset-env'],
-          plugins: ['@babel/plugin-proposal-object-rest-spread']
-        }
+          plugins: ['@babel/plugin-proposal-object-rest-spread'],
+        },
       },
       { test: /\.css$/, loader: ['style-loader', 'css-loader'] },
-      { test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf)$/, loader: 'url-loader' }
-    ]
+      { test: /\.(png|svg|jpg|gif|woff|woff2|eot|ttf)$/, loader: 'url-loader' },
+    ],
   },
-  plugins: []
+  plugins: [],
 };

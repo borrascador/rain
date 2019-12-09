@@ -46,3 +46,7 @@
 
 * Random stupid thoughts
   * Do not place a period where God has placed a comma. But where God has placed a period, begins a paragraph.
+
+## 12/1/19
+
+* Add a different level of brightness for stuff that's currently in your party's sight range

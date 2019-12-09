@@ -1,7 +1,6 @@
 import Connect from '../../Connect';
 import { clickedLeft } from '../../actions/actions';
 import { checkImageCollision } from '../utils';
-import { SLOTS } from '../../utils/constants';
 import { DARK_RED, MEDIUM_RED } from '../../utils/colors';
 
 export default class Inventory {
@@ -36,7 +35,7 @@ export default class Inventory {
       xPos: this.xStart,
       yPos: this.yStart,
       width: this.width,
-      height: this.height
+      height: this.height,
     };
   }
 
@@ -62,7 +61,7 @@ export default class Inventory {
           xPos,
           yPos,
           width: this.size,
-          height: this.size
+          height: this.size,
         });
         counter += 1;
       }

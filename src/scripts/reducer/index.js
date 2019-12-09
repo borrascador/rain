@@ -8,7 +8,7 @@ import {
 } from './ui';
 import {
   request, error, registerResponse, loginResponse, logoutResponse,
-  update, eventResponse, connectSocket, openSocket, closeSocket
+  update, eventResponse, connectSocket, openSocket, closeSocket,
 } from './game';
 import { initialState } from './initialState';
 

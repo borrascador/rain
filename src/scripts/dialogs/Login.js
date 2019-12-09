@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { send } from '@giantmachines/redux-websocket';
 import { closeModal, loginRequest } from '../actions/actions';
-import { Button } from './Button';
-import { TextInput } from './TextInput';
+import Button from './Button';
+import TextInput from './TextInput';
 
 const Login = ({ sendLogin, dismiss }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleUsernameInput = e => {
+  const handleUsernameInput = (e) => {
     setUsername(e.target.value);
   };
 
-  const handlePasswordInput = e => {
+  const handlePasswordInput = (e) => {
     setPassword(e.target.value);
   };
 
@@ -46,7 +46,7 @@ const Login = ({ sendLogin, dismiss }) => {
       </div>
     </>
   );
-}
+};
 
 const mapStateToProps = () => ({});
 

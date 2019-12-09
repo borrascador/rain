@@ -12,8 +12,10 @@ const styles = {
   },
 };
 
-export const Button = ({ onClick, children }) => (
+const Button = ({ onClick, children }) => (
   <button onClick={onClick} style={styles.button}>
     {children}
   </button>
 );
+
+export default Button;

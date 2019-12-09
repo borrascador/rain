@@ -23,6 +23,6 @@ window.onload = () => {
     <Provider store={store}>
       <AppRoot />
     </Provider>,
-    document.getElementById('app-root')
+    document.getElementById('app-root'),
   );
 };
