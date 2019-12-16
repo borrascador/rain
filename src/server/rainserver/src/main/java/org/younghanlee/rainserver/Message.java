@@ -58,6 +58,11 @@ public class Message {
 		payload.put("rations", p.getRations());
 		payload.put("inventory", p.getInventory().ToJSONArray());
 		payload.put("party", p.partyToJSONArray());
+		if (p.getMember() != null) {
+			Member m = World.getMember(p.getMember());
+			Tile t = World.getTile(m.getTile());
+			payload.put("loot", t.getLoot(m.getSubTile()));
+		}
 		jo.accumulate("payload", payload);
 		return jo;
 	}

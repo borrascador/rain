@@ -298,6 +298,7 @@ public class Member {
 		LootPile lp = new LootPile(player.getInventory());
 		Tile t = World.getTile(getTile());
 		t.addLoot(getSubTile(), lp);
+		t.broadcastLoot(getSubTile());
 		t.changeMemberPosition(getSubTile(), null, this);
 		player.respawn();
 	}
