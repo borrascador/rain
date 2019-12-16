@@ -171,16 +171,29 @@ public class Member {
 		return yCoord*World.getTileSize() + xCoord;
 	}
 	
-	public JSONObject getPosition() {
+	public JSONObject getPositionJSON() {
 		JSONObject jo = new JSONObject();
 		int ts = World.getTileSize();
 		int xCoord = x % ts;
 		jo.put("xCoord", xCoord);
-		jo.put("xPos", (x - xCoord)/ts);
+		int xPos = (x-xCoord)/ts;
+		jo.put("xPos", xPos);
 		int yCoord = y % ts;
 		jo.put("yCoord", yCoord);
-		jo.put("yPos", (y - yCoord)/ts);
+		int yPos = (y-yCoord)/ts;
+		jo.put("yPos", yPos);
 		return jo;
+	}
+	
+	public JSONArray getLoot() {
+		int ts = World.getTileSize();
+		int xCoord = x % ts;
+		int xPos = (x-xCoord)/ts;
+		int yCoord = y % ts;
+		int yPos = (y-yCoord)/ts;
+		int subtile = xCoord + yCoord*ts;
+		Tile tile = World.getTile(xPos + yPos*World.getWidth());
+		return tile.getLoot(subtile);
 	}
 	
 	public void setPosition(int x, int y) {
@@ -261,7 +274,7 @@ public class Member {
 	}
 	
 	public JSONObject change(Player p, int health_change, int jeito_change) {
-		JSONObject jo = getPosition();
+		JSONObject jo = getPositionJSON();
 		jo.put("id", id);
 		jo.put("icon", icon);
 		jo.put("name", name);
@@ -285,10 +298,12 @@ public class Member {
 		LootPile lp = new LootPile(player.getInventory());
 		Tile t = World.getTile(getTile());
 		t.addLoot(getSubTile(), lp);
+		t.changeMemberPosition(getSubTile(), null, this);
+		player.respawn();
 	}
 	
 	public JSONObject changeSkills(HashMap<Integer, Integer> skills_add, ArrayList<Integer> modifiers_add, ArrayList<Integer> modifiers_remove) {
-		JSONObject jo = getPosition();
+		JSONObject jo = getPositionJSON();
 		
 		if (skills_add != null) {
 			JSONArray skillsArray = new JSONArray();
@@ -316,7 +331,7 @@ public class Member {
 	}
 	
 	public JSONObject toJSONObject(int id, Player p) {
-		JSONObject jo = getPosition();
+		JSONObject jo = getPositionJSON();
 		jo.put("id", id);
 		jo.put("health", health);
 		jo.put("jeito", jeito);

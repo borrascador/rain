@@ -91,6 +91,7 @@ public class Tribe {
 		Party party = new Party(partySize);
 		int index = World.createParty(party);;
 		p.setParty(index);
+		p.setDead(false);
 		String partyName = "";
 		partyName = "Party " + index;
 		party.setName(partyName);
@@ -103,6 +104,7 @@ public class Tribe {
 			}
 			public JSONObject result(Player p, ArrayList<Multiplier> multipliers) {
 				p.removeDecision();
+				p.setDead(false);
 				
 				p.setParty(index);
 				generatePartyMember(p, position);

@@ -19,6 +19,7 @@ public class Tile {
 	private HashMap<Integer, Integer> crops;
 	private HashMap<Integer, ArrayList<Member>> members;
 	private HashMap<Integer, LootPile> loot;
+	private HashMap<Integer, Integer> fire;
 	private int habitat;
 	private int elevation;
 	
@@ -31,6 +32,7 @@ public class Tile {
 		this.trees = new HashMap<Integer, Integer>();
 		this.members = new HashMap<Integer, ArrayList<Member>>();
 		this.loot = new HashMap<Integer, LootPile>();
+		this.fire = new HashMap<Integer, Integer>();
 		
 		int ts = World.getTileSize();
 		for (int t=0; t<ts*ts; t++) {
@@ -148,6 +150,12 @@ public class Tile {
 	
 	public void addLoot(int position, LootPile lp) {
 		loot.put(position, lp);
+	}
+	
+	public JSONArray getLoot(int position) {
+		if (loot.containsKey(position)) {
+			return loot.get(position).toJSONArray();
+		} else return null;
 	}
 	
 	public JSONObject plant (int seed_id, Player p) {
