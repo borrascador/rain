@@ -70,7 +70,7 @@ public class Move {
 			
 			System.out.println("Moving to " + xNew + ", " + yNew);
 		
-			JSONObject payload = m.getPosition();
+			JSONObject payload = m.getPositionJSON();
 
 			if (x == xTarget && y == yTarget) {
 				m.stopMoving();

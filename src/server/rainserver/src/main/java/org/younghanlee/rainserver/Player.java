@@ -18,6 +18,7 @@ public class Player {
 	private String passwordSalt;
 	
 	private boolean online;
+	private boolean dead;
 	private Integer tribe; 
 	
 	private int pace;
@@ -51,6 +52,8 @@ public class Player {
 		
 		// Player is offline upon registration. Call Login afterwards
 		online = false;
+		
+		dead = false;
 		
 		// Empty data structures
 		tilesSeen = new ArrayList<Integer>();
@@ -109,6 +112,17 @@ public class Player {
 		//t.removeVisitor(this);
 		// t.updateNeighbors(this, 1);
 		inventory.logoff();
+		if (dead) {
+			Member m = World.getMember(member);
+			m.setHealth(5);
+			m.setJeito(5);
+			String [] choiceNames = new String[2];
+			choiceNames[0] = "newParty";
+			choiceNames[1] = "joinParty";
+			String story = "You have died.";
+			Decision d = new Decision(choiceNames, story, this);
+			this.decision = d;
+		}
 		World.getParty(party).logout(member);
 		connection.setPlayer(null);
 		return Message.LOGOUT_RESPONSE();
@@ -137,6 +151,10 @@ public class Player {
 	
 	public Inventory getInventory() {
 		return inventory;
+	}
+	
+	public void setDead(boolean b) {
+		this.dead = b;
 	}
 	
 	// Called every tick
@@ -277,6 +295,10 @@ public class Player {
 				JSONObject payload = new JSONObject();
 				payload.put("party", updates);
 				payload.put("tiles", World.getMember(member).inSightTiles());
+				JSONArray loot = World.getMember(member).getLoot();
+				if (loot != null) {
+					payload.put("loot", loot);
+				}
 				connection.sendJSON(Message.UPDATE(payload));
 			}
 			System.out.println("moveTick:" + moveTick);
@@ -313,11 +335,22 @@ public class Player {
 	}
 	
 	public JSONObject respawn() {
+		JSONObject deathBroadcast = new JSONObject();
+		JSONArray messages = new JSONArray();
+		JSONObject message = new JSONObject();
+		message.put("text", name + " has died");
+		messages.put(message);
+		deathBroadcast.put("messages", messages);
+		Party p = World.getParty(party);
+		p.partyBroadcast(Message.UPDATE(deathBroadcast), null);
+		p.removeMember(member);
+		
+		dead = true;
+		
 		JSONObject payload = new JSONObject();
 		JSONArray newInventory = new JSONArray();
 		payload.put("inventory", newInventory);
-		// payload.put("tiles", inSightArray());
-		return Message.EVENT_RESPONSE(payload);
+		return Message.UPDATE(payload);
 	}
 	
 	public int getSight() {
