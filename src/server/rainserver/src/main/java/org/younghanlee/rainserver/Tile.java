@@ -148,6 +148,18 @@ public class Tile {
 		} else return null;
 	}
 	
+	public void broadcastLoot(int subtile) {
+		ArrayList<Member> memberList = subTileMembers(subtile);
+		if (memberList != null) {
+			JSONObject payload = new JSONObject();
+			JSONArray loot = getLoot(subtile);
+			payload.put("loot", loot);
+			for (Member m: memberList) {
+				m.getPlayer().send(Message.UPDATE(payload));
+			}
+		}
+	}
+	
 	public void addLoot(int position, LootPile lp) {
 		loot.put(position, lp);
 	}
