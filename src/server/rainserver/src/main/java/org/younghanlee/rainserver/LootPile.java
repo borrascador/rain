@@ -3,6 +3,7 @@ package org.younghanlee.rainserver;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class LootPile {
 	private ArrayList<ItemStack> loot;
@@ -17,8 +18,13 @@ public class LootPile {
 	
 	public JSONArray toJSONArray() {
 		JSONArray ja = new JSONArray();
+		int counter = 0;
 		for (ItemStack itemstack: loot) {
-			ja.put(itemstack.toJSONObject(null));
+			JSONObject i = itemstack.toJSONObject(null);
+			i.put("position", counter);
+			i.put("type", "LOOT");
+			ja.put(i);
+			counter++;
 		}
 		return ja;
 	}
