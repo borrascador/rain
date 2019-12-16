@@ -2,7 +2,7 @@ import Connect from '../../Connect';
 import {
   clickedLeft, zoomIn, zoomOut, setModal, needRender,
 } from '../../actions/actions';
-import { screenToImageButton } from '../utils';
+import { screenToTile } from '../utils';
 import { drawByName } from '../../utils/draw';
 import { MODAL } from '../../utils/constants';
 
@@ -26,7 +26,7 @@ export default class Zoom {
 
   update() {
     const { x, y } = this.connect.clickLeft;
-    const button = x && y && screenToImageButton(x, y, this.buttons);
+    const button = x && y && screenToTile(x, y, this.buttons);
     if (button) {
       this.store.dispatch(clickedLeft());
       switch (button.name) {
@@ -56,12 +56,12 @@ export default class Zoom {
 
   render() {
     this.buttons = this.buttons.map((button, index) => {
-      const xPos = this.size * index;
-      const yPos = this.canvas.height - this.size;
-      const [width, height] = Array(2).fill(this.size);
-      drawByName(this.ctx, this.iconsXl, button.name, xPos, yPos);
+      const destX = this.size * index;
+      const destY = this.canvas.height - this.size;
+      const [destWidth, destHeight] = Array(2).fill(this.size);
+      drawByName(this.ctx, this.iconsXl, button.name, destX, destY);
       return Object.assign({}, button, {
-        xPos, yPos, width, height,
+        destX, destY, destWidth, destHeight,
       });
     });
   }

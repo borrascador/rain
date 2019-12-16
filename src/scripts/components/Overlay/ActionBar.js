@@ -1,7 +1,7 @@
 import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import { drawById, drawHover } from '../../utils/draw';
-import { checkImageCollision, screenToImageButton } from '../utils';
+import { checkTileCollision, screenToTile } from '../utils';
 import { clickedLeft, eventRequest, selectAction } from '../../actions/actions';
 import { EVENTS } from '../../actions/types';
 import {
@@ -37,10 +37,10 @@ export default class ActionBar {
       if (keys.includes('a')) this.store.dispatch(selectAction('attack'));
       if (keys.includes('e')) this.store.dispatch(selectAction('eat'));
     } else if (keys.includes('q')) this.store.dispatch(selectAction('main'));
-    if (x && y && this.box && checkImageCollision(x, y, this.box)) {
+    if (x && y && this.box && checkTileCollision(x, y, this.box)) {
       this.store.dispatch(clickedLeft());
     }
-    const button = x && y && screenToImageButton(x, y, this.buttons);
+    const button = x && y && screenToTile(x, y, this.buttons);
 
     if (button) {
       if (button.target && Object.keys(this.connect.actions).includes(button.target)) {
@@ -77,10 +77,10 @@ export default class ActionBar {
       this.barSize,
     );
     this.box = {
-      xPos: (this.canvas.width - this.barWidth) / 2,
-      yPos: this.canvas.height - this.barSize,
-      width: this.barWidth,
-      height: this.barSize,
+      destX: (this.canvas.width - this.barWidth) / 2,
+      destY: this.canvas.height - this.barSize,
+      destWidth: this.barWidth,
+      destHeight: this.barSize,
     };
 
     this.ctx.fillStyle = MEDIUM_RED;
@@ -121,10 +121,10 @@ export default class ActionBar {
         );
       }
       return Object.assign({}, button, {
-        xPos: x,
-        yPos: buttonY,
-        width: this.buttonSize,
-        height: this.buttonSize,
+        destX: x,
+        destY: buttonY,
+        destWidth: this.buttonSize,
+        destHeight: this.buttonSize,
       });
     });
   }
@@ -132,7 +132,7 @@ export default class ActionBar {
   renderHover() {
     const { mousePos } = this.connect;
     if (mousePos.x && mousePos.y) {
-      const button = screenToImageButton(mousePos.x, mousePos.y, this.buttons);
+      const button = screenToTile(mousePos.x, mousePos.y, this.buttons);
       if (button) drawHover(this.ctx, this.fontSize, button);
     }
   }

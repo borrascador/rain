@@ -3,7 +3,7 @@ import Connect from '../../Connect';
 import Animation from '../../utils/Animation';
 import { drawById } from '../../utils/draw';
 import { clickedLeft, eventRequest } from '../../actions/actions';
-import { screenToImageButton } from '../utils';
+import { screenToTile } from '../utils';
 import { EVENTS } from '../../actions/types';
 
 export default class Pace {
@@ -30,7 +30,7 @@ export default class Pace {
   update(step) {
     const { selectedPlayer, clickLeft: { x, y } } = this.connect;
     if (selectedPlayer) {
-      const button = x && y && screenToImageButton(x, y, this.buttons);
+      const button = x && y && screenToTile(x, y, this.buttons);
       if (button) {
         this.store.dispatch(clickedLeft());
         this.store.dispatch(send(eventRequest(EVENTS.PACE, { id: button.id })));
@@ -53,31 +53,31 @@ export default class Pace {
     }
   }
 
-  getXPos(relativeIndex) {
-    let xPos = this.canvas.width / 2;
+  getDestX(relativeIndex) {
+    let destX = this.canvas.width / 2;
     if (relativeIndex > 0) {
-      xPos += -this.iconSize / 2 + relativeIndex * (this.iconSize + this.gutter);
+      destX += -this.iconSize / 2 + relativeIndex * (this.iconSize + this.gutter);
     } else {
-      xPos += this.iconSize / 2 + relativeIndex * this.gutter + (relativeIndex - 1) * this.iconSize;
+      destX += this.iconSize / 2 + relativeIndex * this.gutter + (relativeIndex - 1) * this.iconSize;
     }
-    return xPos;
+    return destX;
   }
 
   renderIcons() {
     const { selectedPlayer } = this.connect;
     if (selectedPlayer) {
       const { pace } = selectedPlayer;
-      const yPos = (this.walkSize - this.iconSize) / 2;
-      const [width, height] = Array(2).fill(this.iconSize);
+      const destY = (this.walkSize - this.iconSize) / 2;
+      const [destWidth, destHeight] = Array(2).fill(this.iconSize);
 
       switch (pace) {
         case 0:
           this.buttons = [
             {
-              id: 1, xPos: this.getXPos(1), yPos, width, height,
+              id: 1, destX: this.getDestX(1), destY, destWidth, destHeight,
             },
             {
-              id: 2, xPos: this.getXPos(2), yPos, width, height,
+              id: 2, destX: this.getDestX(2), destY, destWidth, destHeight,
             },
           ];
           break;
@@ -85,10 +85,10 @@ export default class Pace {
         case 1:
           this.buttons = [
             {
-              id: 0, xPos: this.getXPos(-1), yPos, width, height,
+              id: 0, destX: this.getDestX(-1), destY, destWidth, destHeight,
             },
             {
-              id: 2, xPos: this.getXPos(1), yPos, width, height,
+              id: 2, destX: this.getDestX(1), destY, destWidth, destHeight,
             },
           ];
           break;
@@ -96,10 +96,10 @@ export default class Pace {
         case 2:
           this.buttons = [
             {
-              id: 0, xPos: this.getXPos(-2), yPos, width, height,
+              id: 0, destX: this.getDestX(-2), destY, destWidth, destHeight,
             },
             {
-              id: 1, xPos: this.getXPos(-1), yPos, width, height,
+              id: 1, destX: this.getDestX(-1), destY, destWidth, destHeight,
             },
           ];
           break;
@@ -109,7 +109,7 @@ export default class Pace {
       }
 
       this.buttons.forEach(button => drawById(
-        this.ctx, this.icons, 20 + button.id, button.xPos, yPos,
+        this.ctx, this.icons, 20 + button.id, button.destX, destY,
       ));
     }
   }

@@ -2,7 +2,7 @@ import { send } from '@giantmachines/redux-websocket';
 import { clickedLeft, closeStory, eventRequest } from '../actions/actions';
 import { EVENTS } from '../actions/types';
 import Connect from '../Connect';
-import { screenToTextButton, screenToImageButton } from './utils';
+import { screenToTextButton, screenToTile } from './utils';
 import {
   mainText, itemChangeText, partyChangeText, buttonText, splitIntoLines, drawHover,
 } from '../utils/draw';
@@ -152,7 +152,7 @@ export default class Story {
     const { mousePos } = this.connect;
     if (mousePos.x && mousePos.y) {
       const filteredButtons = buttons.filter(button => button.hoverText);
-      const item = screenToImageButton(mousePos.x, mousePos.y, filteredButtons);
+      const item = screenToTile(mousePos.x, mousePos.y, filteredButtons);
       if (item && item.hoverText) {
         drawHover(this.ctx, this.fontSize, item);
       }

@@ -10,6 +10,11 @@ export default class Camera {
     this.zoom = zoom;
   }
 
+  updateSize(width, height) {
+    this.width = width;
+    this.height = height;
+  }
+
   lazyCenter(xPos, yPos, xCoords, yCoords, zoom) {
     if (!this.x || !this.y) {
       this.centerToPoint(xPos, yPos, xCoords, yCoords);

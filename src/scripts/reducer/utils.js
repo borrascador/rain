@@ -259,7 +259,7 @@ function getGroundTiles(party, oldTiles) {
 export function mergeTiles(oldTiles, newTiles) {
   const tiles = [...oldTiles];
   newTiles.forEach(({
-    xPos, yPos, trees, loot,
+    xPos, yPos, trees, loot, fire = [],
   }) => {
     tiles[xPos] = tiles[xPos] || [];
     tiles[xPos][yPos] = tiles[xPos][yPos]
@@ -283,6 +283,13 @@ export function mergeTiles(oldTiles, newTiles) {
       tiles[xPos][yPos][xCoord][yCoord] = {
         ...tiles[xPos][yPos][xCoord][yCoord],
         treeLayer: id,
+      };
+    });
+    fire.forEach(({ xCoord, yCoord, id }) => {
+      tiles[xPos][yPos][xCoord] = tiles[xPos][yPos][xCoord] || [];
+      tiles[xPos][yPos][xCoord][yCoord] = {
+        ...tiles[xPos][yPos][xCoord][yCoord],
+        fireLayer: id,
       };
     });
   });

@@ -1,7 +1,7 @@
 import { send } from '@giantmachines/redux-websocket';
 import Connect from '../../Connect';
 import { drawById, drawHover, drawDurability } from '../../utils/draw';
-import { screenToImageButton } from '../utils';
+import { screenToTile } from '../utils';
 import {
   clickedLeft, clickedRight, dragItem, error, eventRequest,
 } from '../../actions/actions';
@@ -34,7 +34,7 @@ export default class Items {
   updateLeftClick(draggedItem, slots) {
     const { x, y } = this.connect.clickLeft;
     if (x && y) {
-      const leftClickSlot = screenToImageButton(x, y, slots);
+      const leftClickSlot = screenToTile(x, y, slots);
       if (leftClickSlot) {
         this.store.dispatch(clickedLeft());
         if (draggedItem) {
@@ -49,7 +49,7 @@ export default class Items {
   updateRightClick(draggedItem, slots) {
     const { x, y } = this.connect.clickRight;
     if (x && y) {
-      const rightClickSlot = screenToImageButton(x, y, slots);
+      const rightClickSlot = screenToTile(x, y, slots);
       if (rightClickSlot) {
         this.store.dispatch(clickedRight());
         if (draggedItem) {
@@ -64,7 +64,7 @@ export default class Items {
   updateDrag(draggedItem, slots) {
     const { mouseOffset, mousePos } = this.connect;
     if (!draggedItem && mouseOffset.x && mouseOffset.y) {
-      const dragSlot = screenToImageButton(mousePos.x, mousePos.y, slots);
+      const dragSlot = screenToTile(mousePos.x, mousePos.y, slots);
       this.grabFullStack(dragSlot);
     }
   }
@@ -98,13 +98,11 @@ export default class Items {
     this.ctx.textAlign = 'alphabetical';
     this.ctx.font = `${this.fontSize}px MECC`;
     const { draggedItem, mousePos, slots } = this.connect;
-    const stack = screenToImageButton(
-      mousePos.x, mousePos.y, slots,
-    );
+    const stack = screenToTile(mousePos.x, mousePos.y, slots);
 
     slots.forEach((slot) => {
       const {
-        type, position, xPos, yPos, quantity,
+        type, position, destX, destY, quantity,
       } = slot;
       const drag = draggedItem && (
         draggedItem.position === position
@@ -117,21 +115,23 @@ export default class Items {
 
       // Render non-dragging items
       if (!drag && quantity > 0) {
-        this.renderItem(slot, xPos, yPos);
+        this.renderItem(slot, destX, destY);
       }
 
       // Render hover transparency effect
       if (hover) {
         this.ctx.fillStyle = BRIGHT_OPAQUE;
-        this.ctx.fillRect(stack.xPos, stack.yPos, stack.width, stack.height);
+        this.ctx.fillRect(
+          stack.destX, stack.destY, stack.destWidth, stack.destHeight,
+        );
       }
 
       // Render dragging item
       if (drag) {
         this.renderItem(
           draggedItem,
-          mousePos.x - draggedItem.width / 2,
-          mousePos.y - draggedItem.height / 2,
+          mousePos.x - draggedItem.destWidth / 2,
+          mousePos.y - draggedItem.destHeight / 2,
         );
       }
     });

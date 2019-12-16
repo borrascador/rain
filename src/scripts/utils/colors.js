@@ -8,6 +8,9 @@ export const BRIGHT_GREEN = '#0F0';
 export const CONNECT_GREEN = '#3F6';
 export const HOVER_GREEN = 'rgba(10, 100, 15, 0.95)';
 
+export const PARTY_MEMBER_BLUE = 'rgba(0, 0, 128, 0.4)';
+export const CURRENT_PLAYER_BLUE = 'rgba(16, 16, 160, 0.4)';
+
 export const BRIGHT_YELLOW = '#FF0';
 
 export const SOLID_WHITE = '#FFF';

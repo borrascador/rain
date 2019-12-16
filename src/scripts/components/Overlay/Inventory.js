@@ -1,6 +1,6 @@
 import Connect from '../../Connect';
 import { clickedLeft } from '../../actions/actions';
-import { checkImageCollision } from '../utils';
+import { checkTileCollision } from '../utils';
 import { DARK_RED, MEDIUM_RED } from '../../utils/colors';
 
 export default class Inventory {
@@ -23,7 +23,7 @@ export default class Inventory {
 
   update() {
     const { x, y } = this.connect.clickLeft;
-    if (x && y && this.box && checkImageCollision(x, y, this.box)) {
+    if (x && y && this.box && checkTileCollision(x, y, this.box)) {
       this.store.dispatch(clickedLeft());
     }
   }
@@ -32,10 +32,10 @@ export default class Inventory {
     this.ctx.fillStyle = MEDIUM_RED;
     this.ctx.fillRect(this.xStart, this.yStart, this.width, this.height);
     this.box = {
-      xPos: this.xStart,
-      yPos: this.yStart,
-      width: this.width,
-      height: this.height,
+      destX: this.xStart,
+      destY: this.yStart,
+      destWidth: this.width,
+      destHeight: this.height,
     };
   }
 
@@ -58,10 +58,10 @@ export default class Inventory {
         slots.push({
           type: this.slotType,
           position: counter,
-          xPos,
-          yPos,
-          width: this.size,
-          height: this.size,
+          destX: xPos,
+          destY: yPos,
+          destWidth: this.size,
+          destHeight: this.size,
         });
         counter += 1;
       }

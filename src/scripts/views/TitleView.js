@@ -1,3 +1,4 @@
+import Connect from '../Connect';
 import Animation from '../utils/Animation';
 import { drawById, drawByName } from '../utils/draw';
 
@@ -6,6 +7,7 @@ export default class TitleView {
     this.store = store;
     this.canvas = canvas;
     this.ctx = ctx;
+    this.connect = new Connect(this.store);
 
     const zoom = 4;
     this.water = loader.getImage('water', zoom);

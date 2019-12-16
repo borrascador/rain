@@ -231,6 +231,40 @@ export function drawHover(ctx, fontSize, button) {
   );
 }
 
+export function drawTileText(ctx, fontSize, button) {
+  const text = button.hoverText || button.name || button.target || 'no text';
+  const textWidth = ctx.measureText(text).width;
+  const padding = 8;
+
+  const { destX, destY, destWidth } = button;
+
+  // draw box
+  ctx.fillStyle = HOVER_GREEN;
+  ctx.fillRect(
+    destX + destWidth / 2 - textWidth / 2 - padding,
+    destY - fontSize - padding * 3.5,
+    textWidth + padding * 2,
+    fontSize + padding * 2,
+  );
+
+  // draw arrow
+  ctx.beginPath();
+  ctx.moveTo(destX + destWidth / 2 - padding, destY - padding * 1.5);
+  ctx.lineTo(destX + destWidth / 2 + padding, destY - padding * 1.5);
+  ctx.lineTo(destX + destWidth / 2, destY - padding * 0.5);
+  ctx.closePath();
+  ctx.fill();
+
+  // draw text
+  ctx.font = `${fontSize}px MECC`;
+  ctx.fillStyle = SOLID_WHITE;
+  ctx.fillText(
+    text,
+    destX + destWidth / 2 - textWidth / 2,
+    destY - padding * 2.5,
+  );
+}
+
 export function drawDurability(ctx, buttonSize, scale, durability, x, y) {
   const length = (buttonSize - scale * 2) * (durability / 100);
   const xPos = x + scale;

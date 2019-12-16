@@ -1,6 +1,6 @@
 import { MODAL, SLOTS } from '../../utils/constants';
 import Connect from '../../Connect';
-import { screenToImageButton } from '../utils';
+import { screenToTile } from '../utils';
 import {
   clickedLeft, clickedRight, setPartyTab, setModal, selectPlayer, removePartyMember,
 } from '../../actions/actions';
@@ -37,10 +37,10 @@ export default class Party {
     const { clickLeft, clickRight, selectedPlayer } = this.connect;
     if (clickLeft.x && clickLeft.y) {
       const { x, y } = clickLeft;
-      if (this.boxes && screenToImageButton(x, y, this.boxes)) {
+      if (this.boxes && screenToTile(x, y, this.boxes)) {
         this.store.dispatch(clickedLeft());
       }
-      const button = screenToImageButton(x, y, this.buttons);
+      const button = screenToTile(x, y, this.buttons);
       if (button) {
         this.store.dispatch(selectPlayer(button.id));
         if (selectedPlayer === button.id) {
@@ -51,10 +51,10 @@ export default class Party {
     }
     if (clickRight.x && clickRight.y) {
       const { x, y } = clickRight;
-      if (this.boxes && screenToImageButton(x, y, this.boxes)) {
+      if (this.boxes && screenToTile(x, y, this.boxes)) {
         this.store.dispatch(clickedRight());
       }
-      const button = screenToImageButton(x, y, this.buttons);
+      const button = screenToTile(x, y, this.buttons);
       if (button) {
         this.store.dispatch(setPartyTab(button.id));
         this.store.dispatch(setModal(MODAL.PARTY));
@@ -62,34 +62,34 @@ export default class Party {
     }
   }
 
-  renderBox(member, xPos, yPos, width, height) {
+  renderBox(member, destX, destY, destWidth, destHeight) {
     const { selectedPlayer } = this.connect;
     if (member.self === true) {
       this.ctx.fillStyle = MEDIUM_RED;
-      this.ctx.fillRect(xPos, yPos, width, height);
+      this.ctx.fillRect(destX, destY, destWidth, destHeight);
     }
     if (selectedPlayer && selectedPlayer.id === member.id) {
       const lineWidth = 4;
       this.ctx.lineWidth = lineWidth;
       this.ctx.strokeStyle = 'rgba(256, 256, 256, 0.8)';
       this.ctx.strokeRect(
-        xPos - lineWidth / 2, yPos - lineWidth / 2,
-        width + lineWidth, height + lineWidth,
+        destX - lineWidth / 2, destY - lineWidth / 2,
+        destWidth + lineWidth, destHeight + lineWidth,
       );
     }
     this.boxes.push({
-      xPos, yPos, width, height,
+      destX, destY, destWidth, destHeight,
     });
   }
 
-  renderSlot(id, xPos, yPos) {
+  renderSlot(id, destX, destY) {
     const type = SLOTS.PARTY;
     const position = id;
-    const [width, height] = Array(2).fill(this.size);
+    const [destWidth, destHeight] = Array(2).fill(this.size);
     this.ctx.fillStyle = DARK_RED;
-    this.ctx.fillRect(xPos, yPos, this.size, this.size);
+    this.ctx.fillRect(destX, destY, this.size, this.size);
     this.slots.push({
-      type, position, xPos, yPos, width, height,
+      type, position, destX, destY, destWidth, destHeight,
     });
   }
 
@@ -100,10 +100,10 @@ export default class Party {
       this.store.dispatch(removePartyMember(member.id));
     }
 
-    const [xPos, yPos] = [this.gutter / 2, y + this.gutter / 2];
-    const [width, height] = [this.width, this.height - this.gutter];
+    const [destX, destY] = [this.gutter / 2, y + this.gutter / 2];
+    const [destWidth, destHeight] = [this.width, this.height - this.gutter];
 
-    this.renderBox(member, xPos, yPos, width, height);
+    this.renderBox(member, destX, destY, destWidth, destHeight);
     drawById(this.ctx, this.portrait, member.icon, x, y);
     this.renderSlot(member.id, this.portraitSize, y + this.gutter);
 
@@ -129,7 +129,7 @@ export default class Party {
     }
 
     return Object.assign({}, member, {
-      xPos, yPos, width: height, height,
+      destX, destY, destWidth: destHeight, destHeight,
     });
   }
 

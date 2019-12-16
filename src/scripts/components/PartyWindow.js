@@ -1,6 +1,6 @@
 import Connect from '../Connect';
 import { drawById, drawByName, drawHover } from '../utils/draw';
-import { screenToImageButton, getItemById } from './utils';
+import { screenToTile, getItemById } from './utils';
 import { clickedLeft, setPartyTab, closeModal } from '../actions/actions';
 import { DARK_RED, MEDIUM_RED, PALE_GREEN } from '../utils/colors';
 
@@ -42,7 +42,7 @@ export default class PartyWindow {
       const xMax = xMin + this.width;
       const yMin = (this.canvas.height - this.height) / 2;
       const yMax = yMin + this.height;
-      const button = screenToImageButton(x, y, this.party);
+      const button = screenToTile(x, y, this.party);
       if (x > xMin && x < xMax && y > yMin && y < yMax) {
         console.log('Click inside party window');
       } else if (button) {
@@ -70,19 +70,19 @@ export default class PartyWindow {
     let renderLast;
     const activeTab = this.connect.partyTab;
     this.party = this.connect.party.map((button) => {
-      const xPos = x + this.gutter;
-      const yPos = y - this.sizeXl;
+      const destX = x + this.gutter;
+      const destY = y - this.sizeXl;
       if (button.id === activeTab) {
-        renderLast = this.renderTab.bind(this, button, MEDIUM_RED, x, y, xPos, yPos);
+        renderLast = this.renderTab.bind(this, button, MEDIUM_RED, x, y, destX, destY);
       } else {
-        this.renderTab(button, DARK_RED, x, y, xPos, yPos);
+        this.renderTab(button, DARK_RED, x, y, destX, destY);
       }
       x = x + this.sizeXl + this.gutter;
       return Object.assign({}, button, {
-        xPos,
-        yPos,
-        width: this.sizeXl,
-        height: this.sizeXl,
+        destX,
+        destY,
+        destWidth: this.sizeXl,
+        destHeight: this.sizeXl,
       });
     });
     renderLast();
@@ -175,12 +175,12 @@ export default class PartyWindow {
   renderHover() {
     const { mousePos, partyTab } = this.connect;
     if (mousePos.x && mousePos.y) {
-      const hoverTab = screenToImageButton(mousePos.x, mousePos.y, this.party);
+      const hoverTab = screenToTile(mousePos.x, mousePos.y, this.party);
       if (hoverTab && hoverTab.id !== partyTab) {
         drawHover(this.ctx, this.fontSize, hoverTab);
       }
       const iconList = this.skills.concat(this.modifiers);
-      const hoverIcon = screenToImageButton(mousePos.x, mousePos.y, iconList);
+      const hoverIcon = screenToTile(mousePos.x, mousePos.y, iconList);
       if (hoverIcon) {
         drawHover(this.ctx, this.fontSize, hoverIcon);
       }

@@ -1,5 +1,5 @@
 import Connect from '../Connect';
-import { screenToImageButton } from './utils';
+import { screenToTile } from './utils';
 import { drawById, drawByName } from '../utils/draw';
 
 export default class Vehicle {
@@ -28,7 +28,7 @@ export default class Vehicle {
   }
 
   update(x, y) {
-    const button = x && y && screenToImageButton(x, y, this.buttons);
+    const button = x && y && screenToTile(x, y, this.buttons);
     if (button) button.onClick();
   }
 
@@ -46,10 +46,10 @@ export default class Vehicle {
       });
       return Object.assign({}, button, {
         id: vehicle.icon,
-        xPos: x,
-        yPos: y,
-        width: this.vehicleSize,
-        height: this.vehicleSize,
+        destX: x,
+        destY: y,
+        destWidth: this.vehicleSize,
+        destHeight: this.vehicleSize,
       });
     });
   }
