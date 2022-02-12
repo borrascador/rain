@@ -36,7 +36,7 @@
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.4",
     "acorn": "^7.1.0",
-    "ajv": "^6.5.5",
+    "ajv": "^6.12.3",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
